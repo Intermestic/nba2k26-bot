@@ -59,9 +59,12 @@ export default function Home() {
       <header className="border-b border-slate-700 bg-slate-900/50 backdrop-blur-sm sticky top-0 z-10">
         <div className="container mx-auto px-4 py-6">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div>
-              <h1 className="text-3xl md:text-4xl font-bold text-white">HoF NBA 2K26 Player Database</h1>
-              <p className="text-slate-400 mt-1">Complete roster with ratings and photos</p>
+            <div className="flex items-center gap-4">
+              <img src="/hof-logo.png" alt="Hall of Fame Basketball Association" className="h-16 md:h-20 w-auto" />
+              <div>
+                <h1 className="text-3xl md:text-4xl font-bold text-white">HoF NBA 2K26 Player Database</h1>
+                <p className="text-slate-400 mt-1">Complete roster with ratings and photos</p>
+              </div>
             </div>
             <div className="flex gap-2">
               <Button asChild variant="outline" className="bg-slate-800 border-slate-700 hover:bg-slate-700">
