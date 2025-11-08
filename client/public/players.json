@@ -151,15 +151,6 @@
     "k26_player_page_url": "https://www.hoopshype.com/nba-2k/players/devin-booker/845564/"
   },
   {
-    "id": "P0468",
-    "name": "Karl-Anthony Towns",
-    "nba_player_id": "1626157",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1626157.png",
-    "overall": 92,
-    "player_page_url": "https://www.nba.com/player/1626157",
-    "k26_player_page_url": "https://www.hoopshype.com/player/karl-anthony-towns/"
-  },
-  {
     "id": "P0275",
     "name": "Kawhi Leonard",
     "nba_player_id": "202695",
@@ -193,6 +184,15 @@
     "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/203954.png",
     "overall": 90,
     "player_page_url": "https://www.nba.com/player/203954"
+  },
+  {
+    "id": "P0468",
+    "name": "Karl-Anthony Towns",
+    "nba_player_id": "1626157",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1626157.png",
+    "overall": 90,
+    "player_page_url": "https://www.nba.com/player/1626157",
+    "k26_player_page_url": "https://www.hoopshype.com/player/karl-anthony-towns/"
   },
   {
     "id": "P0215",
