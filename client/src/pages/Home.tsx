@@ -60,7 +60,7 @@ export default function Home() {
         <div className="container mx-auto px-4 py-6">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
-              <h1 className="text-3xl md:text-4xl font-bold text-white">NBA 2K26 Player Database</h1>
+              <h1 className="text-3xl md:text-4xl font-bold text-white">HoF NBA 2K26 Player Database</h1>
               <p className="text-slate-400 mt-1">Complete roster with ratings and photos</p>
             </div>
             <div className="flex gap-2">
@@ -198,7 +198,7 @@ export default function Home() {
       <footer className="border-t border-slate-700 bg-slate-900/50 mt-12">
         <div className="container mx-auto px-4 py-6 text-center text-slate-400 text-sm">
           <p>
-            NBA 2K26 Player Database • {stats.total} Players • {stats.photoPercent}% Photo Coverage
+            HoF NBA 2K26 Player Database • {stats.total} Players • {stats.photoPercent}% Photo Coverage
           </p>
           <p className="mt-2">
             Data from{" "}
