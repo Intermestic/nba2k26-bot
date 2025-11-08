@@ -18,6 +18,8 @@ export default function Home() {
   const [searchTerm, setSearchTerm] = useState("");
   const [minRating, setMinRating] = useState("0");
   const [loading, setLoading] = useState(true);
+  const [lastUpdated, setLastUpdated] = useState<string>("");
+  const [showSuggestions, setShowSuggestions] = useState(false);
 
   useEffect(() => {
     // Add cache-busting timestamp to force fresh data load
@@ -25,7 +27,13 @@ export default function Home() {
     fetch(`/players.json?v=${timestamp}`)
       .then((res) => res.json())
       .then((data) => {
-        setPlayers(data);
+        // Handle both old format (array) and new format (object with metadata)
+        if (Array.isArray(data)) {
+          setPlayers(data);
+        } else {
+          setPlayers(data.players || []);
+          setLastUpdated(data.lastUpdated || "");
+        }
         setLoading(false);
       })
       .catch((err) => {
@@ -43,6 +51,15 @@ export default function Home() {
       })
       .sort((a, b) => b.overall - a.overall);
   }, [players, searchTerm, minRating]);
+
+  // Autocomplete suggestions (top 10 matches)
+  const suggestions = useMemo(() => {
+    if (!searchTerm || searchTerm.length < 2) return [];
+    return players
+      .filter((p) => p.name.toLowerCase().includes(searchTerm.toLowerCase()))
+      .sort((a, b) => b.overall - a.overall)
+      .slice(0, 10);
+  }, [players, searchTerm]);
 
   const stats = useMemo(() => {
     const withPhotos = players.filter((p) => p.photo_url).length;
@@ -118,13 +135,49 @@ export default function Home() {
         {/* Filters */}
         <div className="flex flex-col md:flex-row gap-4 mb-8">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 z-10" />
             <Input
               placeholder="Search players..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
+              onFocus={() => setShowSuggestions(true)}
+              onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
               className="pl-10 bg-slate-800 border-slate-700 text-white placeholder:text-slate-400"
             />
+            {/* Autocomplete dropdown */}
+            {showSuggestions && suggestions.length > 0 && (
+              <div className="absolute top-full mt-1 w-full bg-slate-800 border border-slate-700 rounded-lg shadow-xl z-20 max-h-80 overflow-y-auto">
+                {suggestions.map((player) => (
+                  <button
+                    key={player.id}
+                    onClick={() => {
+                      setSearchTerm(player.name);
+                      setShowSuggestions(false);
+                    }}
+                    className="w-full px-4 py-3 flex items-center gap-3 hover:bg-slate-700 transition-colors text-left"
+                  >
+                    {player.photo_url ? (
+                      <img
+                        src={player.photo_url}
+                        alt={player.name}
+                        className="w-10 h-10 rounded-full object-cover"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                        }}
+                      />
+                    ) : (
+                      <div className="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center text-slate-400 font-bold">
+                        {player.name.charAt(0)}
+                      </div>
+                    )}
+                    <div className="flex-1">
+                      <div className="text-white font-medium">{player.name}</div>
+                    </div>
+                    <div className="text-slate-400 font-bold">{player.overall}</div>
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
           <div className="flex items-center gap-2">
             <Filter className="w-4 h-4 text-slate-400" />
@@ -205,6 +258,17 @@ export default function Home() {
           <p>
             HoF NBA 2K26 Player Database • {stats.total} Players • {stats.photoPercent}% Photo Coverage
           </p>
+          {lastUpdated && (
+            <p className="mt-1 text-xs text-slate-500">
+              Last Updated: {new Date(lastUpdated).toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+              })}
+            </p>
+          )}
           <p className="mt-2">
             Data from{" "}
             <a href="https://www.2kratings.com" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300">
