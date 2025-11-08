@@ -9,7 +9,7 @@
   {
     "name": "Kristaps Porzingis",
     "overall": 85,
-    "photo_url": null,
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/204001.png",
     "player_page_url": "https://www.2kratings.com/players/kristaps-porzingis",
     "id": "P0002"
   },
@@ -81,7 +81,7 @@
   {
     "name": "Vit Krejci",
     "overall": 73,
-    "photo_url": null,
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1630249.png",
     "player_page_url": "https://www.2kratings.com/players/vit-krejci",
     "id": "P0012"
   },
@@ -218,7 +218,7 @@
   {
     "name": "Hugo Gonzalez",
     "overall": 70,
-    "photo_url": null,
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1642864.png",
     "player_page_url": "https://www.2kratings.com/players/hugo-gonzalez",
     "id": "P0031"
   },
@@ -409,7 +409,7 @@
   {
     "name": "Jusuf Nurkic",
     "overall": 80,
-    "photo_url": null,
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/203994.png",
     "player_page_url": "https://www.hoopshype.com/nba-2k/players/jusuf-nurkic/830642/",
     "id": "P0057"
   },
@@ -452,7 +452,7 @@
   {
     "name": "Monte Morris",
     "overall": 75,
-    "photo_url": null,
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1628420.png",
     "player_page_url": "https://www.hoopshype.com/nba-2k/players/monte-morris/741011/",
     "id": "P0063"
   },
@@ -1348,7 +1348,7 @@
   {
     "name": "Dante Exum",
     "overall": 75,
-    "photo_url": "https://www.nba2klab.com/_next/image?url=https%3A%2F%2Fres.cloudinary.com%2Fnba2klab%2Fimage%2Fupload%2Fv1757545680%2F2026%2FNBA%2FRoster%2FPlayers%2FDante-Exum-75.png&w=640&q=75",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/203957.png",
     "player_page_url": "https://www.nba2klab.com/teams/dallas-mavericks/dante-exum",
     "id": "P0187"
   },
@@ -1609,7 +1609,7 @@
   {
     "name": "Yanic Konan Niederhauser",
     "overall": 69,
-    "photo_url": "https://res.cloudinary.com/nba2klab/image/upload/v1757545680/2026/NBA/Roster/Players/Yanic-Konan_Niederhauser-69.png",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1642949.png",
     "player_page_url": "https://www.nba2klab.com/players/yanic-konan-niederhauser",
     "id": "P0223"
   },
@@ -1639,7 +1639,7 @@
   {
     "name": "Luka Doncic",
     "overall": 97,
-    "photo_url": null,
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1629029.png",
     "player_page_url": null,
     "id": "P0227"
   },
@@ -2279,7 +2279,7 @@
   {
     "name": "Nikola Jovic",
     "overall": 75,
-    "photo_url": "",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1631107.png",
     "player_page_url": "https://www.hoopshype.com/nba-2k/players/nikola-jovic/1349630/",
     "id": "P0316"
   },
@@ -2308,7 +2308,7 @@
   {
     "name": "Kasparas Jakucionis",
     "overall": 71,
-    "photo_url": "",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1642857.png",
     "player_page_url": "https://www.hoopshype.com/nba-2k/players/kasparas-jakucionis/1448788/",
     "id": "P0320"
   },
@@ -3244,7 +3244,7 @@
   {
     "name": "Monte Morris",
     "overall": 73,
-    "photo_url": null,
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1628420.png",
     "player_page_url": "https://www.2kratings.com/players/monte-morris",
     "id": "P0448"
   },

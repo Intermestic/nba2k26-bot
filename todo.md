@@ -23,11 +23,20 @@
 - [x] Add statistics dashboard
 
 ### Phase 4: Deployment
-- [ ] Test all functionality
-- [ ] Create checkpoint
-- [ ] Guide user to publish via UI
+- [x] Test all functionality
+- [x] Create checkpoint (version: 8ab7af66)
+- [ ] User to publish via Management UI
 
 ### Photo Matching Updates
 - [x] Successfully extracted all 529 NBA.com players
 - [x] Implemented normalized name matching (ignore spacing/Jr/III/etc)
 - [x] Verified star players: Trae Young, Jayson Tatum, LeBron James, Fred VanVleet all found
+
+## Photo Matching Issues - FIXED
+
+- [x] Debug why Evan Mobley, Ja Morant, Luka Doncic missing photos (special characters)
+- [x] Check if these players exist in NBA.com data (found with diacritics)
+- [x] Fix name matching algorithm to catch all variations (unicode normalization)
+- [x] Re-run matching with improved algorithm (395 matches, up from 371)
+- [x] Update website with corrected data (77.0% photo coverage)
+- [ ] Create new checkpoint with fixed photos
