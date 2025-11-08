@@ -108,15 +108,6 @@
     "k26_player_page_url": "https://www.nba2klab.com/teams/dallas-mavericks/anthony-davis"
   },
   {
-    "id": "P0042",
-    "name": "Devin Booker",
-    "nba_player_id": "1626164",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1626164.png",
-    "overall": 93,
-    "player_page_url": "https://www.nba.com/player/1626164",
-    "k26_player_page_url": "https://www.hoopshype.com/nba-2k/players/devin-booker/845564/"
-  },
-  {
     "id": "P0324",
     "name": "Donovan Mitchell",
     "nba_player_id": "1628378",
@@ -151,6 +142,15 @@
     "player_page_url": "https://www.nba.com/player/1630595"
   },
   {
+    "id": "P0042",
+    "name": "Devin Booker",
+    "nba_player_id": "1626164",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1626164.png",
+    "overall": 92,
+    "player_page_url": "https://www.nba.com/player/1626164",
+    "k26_player_page_url": "https://www.hoopshype.com/nba-2k/players/devin-booker/845564/"
+  },
+  {
     "id": "P0468",
     "name": "Karl-Anthony Towns",
     "nba_player_id": "1626157",
@@ -167,15 +167,6 @@
     "overall": 92,
     "player_page_url": "https://www.nba.com/player/202695",
     "k26_player_page_url": "https://www.nba2klab.com/players/kawhi-leonard"
-  },
-  {
-    "id": "P0329",
-    "name": "Ja Morant",
-    "nba_player_id": "1629630",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1629630.png",
-    "overall": 91,
-    "player_page_url": "https://www.nba.com/player/1629630",
-    "k26_player_page_url": "https://www.nba2klab.com/players/ja-morant"
   },
   {
     "id": "P0053",
@@ -222,6 +213,15 @@
     "k26_player_page_url": "https://www.2kratings.com/players/paolo-banchero"
   },
   {
+    "id": "P0003",
+    "name": "Bam Adebayo",
+    "nba_player_id": "1628389",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1628389.png",
+    "overall": 89,
+    "player_page_url": "https://www.nba.com/player/1628389",
+    "k26_player_page_url": "https://www.hoopshype.com/nba-2k/players/bam-adebayo/1134176/"
+  },
+  {
     "id": "P0325",
     "name": "Evan Mobley",
     "nba_player_id": "1630596",
@@ -229,6 +229,15 @@
     "overall": 89,
     "player_page_url": "https://www.nba.com/player/1630596",
     "k26_player_page_url": "https://www.nba2klab.com/players/evan-mobley"
+  },
+  {
+    "id": "P0329",
+    "name": "Ja Morant",
+    "nba_player_id": "1629630",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1629630.png",
+    "overall": 89,
+    "player_page_url": "https://www.nba.com/player/1629630",
+    "k26_player_page_url": "https://www.nba2klab.com/players/ja-morant"
   },
   {
     "id": "P0177",
@@ -274,15 +283,6 @@
     "k26_player_page_url": "https://www.2kratings.com/players/alperen-sengun"
   },
   {
-    "id": "P0003",
-    "name": "Bam Adebayo",
-    "nba_player_id": "1628389",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1628389.png",
-    "overall": 88,
-    "player_page_url": "https://www.nba.com/player/1628389",
-    "k26_player_page_url": "https://www.hoopshype.com/nba-2k/players/bam-adebayo/1134176/"
-  },
-  {
     "id": "P0201",
     "name": "Chet Holmgren",
     "nba_player_id": "1631096",
@@ -298,6 +298,24 @@
     "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/203081.png",
     "overall": 88,
     "player_page_url": "https://www.nba.com/player/203081"
+  },
+  {
+    "id": "P0058",
+    "name": "Jimmy Butler III",
+    "nba_player_id": "202710",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/202710.png",
+    "overall": 88,
+    "player_page_url": "https://www.nba.com/player/202710",
+    "k26_player_page_url": "https://www.nba2klab.com/teams/golden-state-warriors/jimmy-butler"
+  },
+  {
+    "id": "P0386",
+    "name": "Julius Randle",
+    "nba_player_id": "203944",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/203944.png",
+    "overall": 88,
+    "player_page_url": "https://www.nba.com/player/203944",
+    "k26_player_page_url": "https://www.hoopshype.com/player/julius-randle/"
   },
   {
     "id": "P0526",
@@ -345,15 +363,6 @@
     "k26_player_page_url": "https://www.nba2klab.com/players/ivica-zubac"
   },
   {
-    "id": "P0058",
-    "name": "Jimmy Butler III",
-    "nba_player_id": "202710",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/202710.png",
-    "overall": 87,
-    "player_page_url": "https://www.nba.com/player/202710",
-    "k26_player_page_url": "https://www.nba2klab.com/teams/golden-state-warriors/jimmy-butler"
-  },
-  {
     "id": "P0021",
     "name": "LaMelo Ball",
     "nba_player_id": "1630163",
@@ -390,21 +399,21 @@
     "k26_player_page_url": "https://www.nba2klab.com/players/jamal-murray"
   },
   {
-    "id": "P0386",
-    "name": "Julius Randle",
-    "nba_player_id": "203944",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/203944.png",
-    "overall": 86,
-    "player_page_url": "https://www.nba.com/player/203944",
-    "k26_player_page_url": "https://www.hoopshype.com/player/julius-randle/"
-  },
-  {
     "id": "P0082",
     "name": "Nic Claxton",
     "nba_player_id": "1629651",
     "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1629651.png",
     "overall": 86,
     "player_page_url": "https://www.nba.com/player/1629651"
+  },
+  {
+    "id": "P0027",
+    "name": "Scottie Barnes",
+    "nba_player_id": "1630567",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1630567.png",
+    "overall": 86,
+    "player_page_url": "https://www.nba.com/player/1630567",
+    "k26_player_page_url": "https://www.nba2klab.com/teams/toronto-raptors/scottie-barnes"
   },
   {
     "id": "P0194",
@@ -414,6 +423,15 @@
     "overall": 86,
     "player_page_url": "https://www.nba.com/player/1629639",
     "k26_player_page_url": "https://www.hoopshype.com/nba-2k/players/tyler-herro/1134176/"
+  },
+  {
+    "id": "P0213",
+    "name": "Brandon Ingram",
+    "nba_player_id": "1627742",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1627742.png",
+    "overall": 85,
+    "player_page_url": "https://www.nba.com/player/1627742",
+    "k26_player_page_url": "https://www.nba2klab.com/teams/toronto-raptors/brandon-ingram"
   },
   {
     "id": "P0144",
@@ -452,14 +470,6 @@
     "k26_player_page_url": "https://www.nba2klab.com/players/josh-giddey"
   },
   {
-    "id": "P0198",
-    "name": "Jrue Holiday",
-    "nba_player_id": "201950",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/201950.png",
-    "overall": 85,
-    "player_page_url": "https://www.nba.com/player/201950"
-  },
-  {
     "id": "P0374",
     "name": "Kristaps Porzi\u0146\u0123is",
     "nba_player_id": "204001",
@@ -467,6 +477,15 @@
     "overall": 85,
     "player_page_url": "https://www.nba.com/player/204001",
     "k26_player_page_url": "https://www.2kratings.com/players/kristaps-porzingis"
+  },
+  {
+    "id": "P0378",
+    "name": "Norman Powell",
+    "nba_player_id": "1626181",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1626181.png",
+    "overall": 85,
+    "player_page_url": "https://www.nba.com/player/1626181",
+    "k26_player_page_url": "https://www.hoopshype.com/nba-2k/players/norman-powell/609861/"
   },
   {
     "id": "P0016",
@@ -478,15 +497,6 @@
     "k26_player_page_url": "https://www.hoopshype.com/player/og-anunoby/"
   },
   {
-    "id": "P0027",
-    "name": "Scottie Barnes",
-    "nba_player_id": "1630567",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1630567.png",
-    "overall": 85,
-    "player_page_url": "https://www.nba.com/player/1630567",
-    "k26_player_page_url": "https://www.nba2klab.com/teams/toronto-raptors/scottie-barnes"
-  },
-  {
     "id": "P0273",
     "name": "Zach LaVine",
     "nba_player_id": "203897",
@@ -494,15 +504,6 @@
     "overall": 85,
     "player_page_url": "https://www.nba.com/player/203897",
     "k26_player_page_url": "https://www.nba2klab.com/players/zach-lavine"
-  },
-  {
-    "id": "P0213",
-    "name": "Brandon Ingram",
-    "nba_player_id": "1627742",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1627742.png",
-    "overall": 84,
-    "player_page_url": "https://www.nba.com/player/1627742",
-    "k26_player_page_url": "https://www.nba2klab.com/teams/toronto-raptors/brandon-ingram"
   },
   {
     "id": "P0017",
@@ -520,6 +521,14 @@
     "overall": 84,
     "player_page_url": "https://www.nba.com/player/1628401",
     "k26_player_page_url": "https://www.2kratings.com/players/derrick-white"
+  },
+  {
+    "id": "P0123",
+    "name": "Jalen Duren",
+    "nba_player_id": "1631105",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1631105.png",
+    "overall": 84,
+    "player_page_url": "https://www.nba.com/player/1631105"
   },
   {
     "id": "P0009",
@@ -549,24 +558,6 @@
     "k26_player_page_url": "https://www.hoopshype.com/player/mikal-bridges/"
   },
   {
-    "id": "P0378",
-    "name": "Norman Powell",
-    "nba_player_id": "1626181",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1626181.png",
-    "overall": 84,
-    "player_page_url": "https://www.nba.com/player/1626181",
-    "k26_player_page_url": "https://www.hoopshype.com/nba-2k/players/norman-powell/609861/"
-  },
-  {
-    "id": "P0158",
-    "name": "Rudy Gobert",
-    "nba_player_id": "203497",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/203497.png",
-    "overall": 84,
-    "player_page_url": "https://www.nba.com/player/203497",
-    "k26_player_page_url": "https://www.hoopshype.com/player/rudy-gobert/"
-  },
-  {
     "id": "P0071",
     "name": "Stephon Castle",
     "nba_player_id": "1642264",
@@ -574,6 +565,14 @@
     "overall": 84,
     "player_page_url": "https://www.nba.com/player/1642264",
     "k26_player_page_url": "https://www.2kratings.com/players/stephon-castle"
+  },
+  {
+    "id": "P0414",
+    "name": "Alex Sarr",
+    "nba_player_id": "1642259",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1642259.png",
+    "overall": 83,
+    "player_page_url": "https://www.nba.com/player/1642259"
   },
   {
     "id": "P0539",
@@ -611,6 +610,15 @@
     "player_page_url": "https://www.nba.com/player/1629028"
   },
   {
+    "id": "P0307",
+    "name": "Jaden McDaniels",
+    "nba_player_id": "1630183",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1630183.png",
+    "overall": 83,
+    "player_page_url": "https://www.nba.com/player/1630183",
+    "k26_player_page_url": "https://www.hoopshype.com/player/jaden-mcdaniels/"
+  },
+  {
     "id": "P0481",
     "name": "Nikola Vu\u010devi\u0107",
     "nba_player_id": "202696",
@@ -620,6 +628,15 @@
     "k26_player_page_url": "https://www.nba2klab.com/players/nikola-vucevic"
   },
   {
+    "id": "P0158",
+    "name": "Rudy Gobert",
+    "nba_player_id": "203497",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/203497.png",
+    "overall": 83,
+    "player_page_url": "https://www.nba.com/player/203497",
+    "k26_player_page_url": "https://www.hoopshype.com/player/rudy-gobert/"
+  },
+  {
     "id": "P0162",
     "name": "Aaron Gordon",
     "nba_player_id": "203932",
@@ -627,6 +644,14 @@
     "overall": 82,
     "player_page_url": "https://www.nba.com/player/203932",
     "k26_player_page_url": "https://www.nba2klab.com/players/aaron-gordon"
+  },
+  {
+    "id": "P0458",
+    "name": "Ausar Thompson",
+    "nba_player_id": "1641709",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1641709.png",
+    "overall": 82,
+    "player_page_url": "https://www.nba.com/player/1641709"
   },
   {
     "id": "P0315",
@@ -647,6 +672,15 @@
     "k26_player_page_url": "https://www.nba2klab.com/teams/dallas-mavericks/cooper-flagg"
   },
   {
+    "id": "P0102",
+    "name": "Dyson Daniels",
+    "nba_player_id": "1630700",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1630700.png",
+    "overall": 82,
+    "player_page_url": "https://www.nba.com/player/1630700",
+    "k26_player_page_url": "https://nba.2k.com/players/dyson-daniels"
+  },
+  {
     "id": "P0478",
     "name": "Fred VanVleet",
     "nba_player_id": "1627832",
@@ -663,15 +697,6 @@
     "overall": 82,
     "player_page_url": "https://www.nba.com/player/1628392",
     "k26_player_page_url": "https://www.nba2klab.com/players/isaiah-hartenstein"
-  },
-  {
-    "id": "P0307",
-    "name": "Jaden McDaniels",
-    "nba_player_id": "1630183",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1630183.png",
-    "overall": 82,
-    "player_page_url": "https://www.nba.com/player/1630183",
-    "k26_player_page_url": "https://www.hoopshype.com/player/jaden-mcdaniels/"
   },
   {
     "id": "P0167",
@@ -692,13 +717,12 @@
     "k26_player_page_url": "https://www.2kratings.com/players/jalen-suggs"
   },
   {
-    "id": "P0089",
-    "name": "John Collins",
-    "nba_player_id": "1628381",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1628381.png",
+    "id": "P0198",
+    "name": "Jrue Holiday",
+    "nba_player_id": "201950",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/201950.png",
     "overall": 82,
-    "player_page_url": "https://www.nba.com/player/1628381",
-    "k26_player_page_url": "https://www.nba2klab.com/players/john-collins"
+    "player_page_url": "https://www.nba.com/player/201950"
   },
   {
     "id": "P0372",
@@ -797,30 +821,13 @@
     "k26_player_page_url": "https://www.2kratings.com/players/devin-vassell"
   },
   {
-    "id": "P0166",
-    "name": "Draymond Green",
-    "nba_player_id": "203110",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/203110.png",
+    "id": "P0050",
+    "name": "Dillon Brooks",
+    "nba_player_id": "1628415",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1628415.png",
     "overall": 81,
-    "player_page_url": "https://www.nba.com/player/203110",
-    "k26_player_page_url": "https://www.nba2klab.com/teams/golden-state-warriors/draymond-green"
-  },
-  {
-    "id": "P0385",
-    "name": "Immanuel Quickley",
-    "nba_player_id": "1630193",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1630193.png",
-    "overall": 81,
-    "player_page_url": "https://www.nba.com/player/1630193",
-    "k26_player_page_url": "https://www.nba2klab.com/teams/toronto-raptors/immanuel-quickley"
-  },
-  {
-    "id": "P0123",
-    "name": "Jalen Duren",
-    "nba_player_id": "1631105",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1631105.png",
-    "overall": 81,
-    "player_page_url": "https://www.nba.com/player/1631105"
+    "player_page_url": "https://www.nba.com/player/1628415",
+    "k26_player_page_url": "https://www.2kratings.com/players/dillon-brooks"
   },
   {
     "id": "P0164",
@@ -829,6 +836,24 @@
     "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/203924.png",
     "overall": 81,
     "player_page_url": "https://www.nba.com/player/203924"
+  },
+  {
+    "id": "P0089",
+    "name": "John Collins",
+    "nba_player_id": "1628381",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1628381.png",
+    "overall": 81,
+    "player_page_url": "https://www.nba.com/player/1628381",
+    "k26_player_page_url": "https://www.nba2klab.com/players/john-collins"
+  },
+  {
+    "id": "P0267",
+    "name": "Jonathan Kuminga",
+    "nba_player_id": "1630228",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1630228.png",
+    "overall": 81,
+    "player_page_url": "https://www.nba.com/player/1630228",
+    "k26_player_page_url": "https://www.nba2klab.com/teams/golden-state-warriors/jonathan-kuminga"
   },
   {
     "id": "P0185",
@@ -908,14 +933,6 @@
     "player_page_url": "https://www.nba.com/player/1630174"
   },
   {
-    "id": "P0202",
-    "name": "Al Horford",
-    "nba_player_id": "201143",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/201143.png",
-    "overall": 80,
-    "player_page_url": "https://www.nba.com/player/201143"
-  },
-  {
     "id": "P0070",
     "name": "Alex Caruso",
     "nba_player_id": "1627936",
@@ -943,24 +960,6 @@
     "k26_player_page_url": "https://www.2kratings.com/players/bobby-portis-jr"
   },
   {
-    "id": "P0034",
-    "name": "Bradley Beal",
-    "nba_player_id": "203078",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/203078.png",
-    "overall": 80,
-    "player_page_url": "https://www.nba.com/player/203078",
-    "k26_player_page_url": "https://www.nba2klab.com/players/bradley-beal"
-  },
-  {
-    "id": "P0283",
-    "name": "Brook Lopez",
-    "nba_player_id": "201572",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/201572.png",
-    "overall": 80,
-    "player_page_url": "https://www.nba.com/player/201572",
-    "k26_player_page_url": "https://www.nba2klab.com/players/brook-lopez"
-  },
-  {
     "id": "P0456",
     "name": "Cam Thomas",
     "nba_player_id": "1630560",
@@ -977,6 +976,15 @@
     "player_page_url": "https://www.nba2klab.com/players/cameron-thomas",
     "k26_player_page_url": "https://www.nba2klab.com/players/cameron-thomas",
     "source": "2K26_only"
+  },
+  {
+    "id": "P0096",
+    "name": "Cedric Coward",
+    "nba_player_id": "1642907",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1642907.png",
+    "overall": 80,
+    "player_page_url": "https://www.nba.com/player/1642907",
+    "k26_player_page_url": "https://www.nba2klab.com/players/cedric-coward"
   },
   {
     "id": "P0046",
@@ -1041,13 +1049,13 @@
     "player_page_url": "https://www.nba.com/player/1642270"
   },
   {
-    "id": "P0368",
-    "name": "Jakob Poeltl",
-    "nba_player_id": "1627751",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1627751.png",
+    "id": "P0166",
+    "name": "Draymond Green",
+    "nba_player_id": "203110",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/203110.png",
     "overall": 80,
-    "player_page_url": "https://www.nba.com/player/1627751",
-    "k26_player_page_url": "https://www.nba2klab.com/teams/toronto-raptors/jakob-poeltl"
+    "player_page_url": "https://www.nba.com/player/203110",
+    "k26_player_page_url": "https://www.nba2klab.com/teams/golden-state-warriors/draymond-green"
   },
   {
     "id": "P0302",
@@ -1100,6 +1108,15 @@
     "overall": 80,
     "player_page_url": "https://www.nba.com/player/203935",
     "k26_player_page_url": null
+  },
+  {
+    "id": "P0059",
+    "name": "Matas Buzelis",
+    "nba_player_id": "1641824",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1641824.png",
+    "overall": 80,
+    "player_page_url": "https://www.nba.com/player/1641824",
+    "k26_player_page_url": "https://www.nba2klab.com/players/matas-buzelis"
   },
   {
     "id": "P0049",
@@ -1169,6 +1186,24 @@
     "player_page_url": "https://www.nba.com/player/1630530"
   },
   {
+    "id": "P0505",
+    "name": "Aaron Wiggins",
+    "nba_player_id": "1630598",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1630598.png",
+    "overall": 79,
+    "player_page_url": "https://www.nba.com/player/1630598",
+    "k26_player_page_url": "https://www.nba2klab.com/players/aaron-wiggins"
+  },
+  {
+    "id": "P0322",
+    "name": "Ajay Mitchell",
+    "nba_player_id": "1642349",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1642349.png",
+    "overall": 79,
+    "player_page_url": "https://www.nba.com/player/1642349",
+    "k26_player_page_url": "https://www.nba2klab.com/players/ajay-mitchell"
+  },
+  {
     "id": "P0095",
     "name": "Bilal Coulibaly",
     "nba_player_id": "1641731",
@@ -1205,13 +1240,13 @@
     "k26_player_page_url": "https://www.nba2klab.com/players/cason-wallace"
   },
   {
-    "id": "P0050",
-    "name": "Dillon Brooks",
-    "nba_player_id": "1628415",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1628415.png",
+    "id": "P0180",
+    "name": "Dylan Harper",
+    "nba_player_id": "1642844",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1642844.png",
     "overall": 79,
-    "player_page_url": "https://www.nba.com/player/1628415",
-    "k26_player_page_url": "https://www.2kratings.com/players/dillon-brooks"
+    "player_page_url": "https://www.nba.com/player/1642844",
+    "k26_player_page_url": "https://www.2kratings.com/players/dylan-harper"
   },
   {
     "id": "P0242",
@@ -1222,12 +1257,39 @@
     "player_page_url": "https://www.nba.com/player/1630529"
   },
   {
+    "id": "P0385",
+    "name": "Immanuel Quickley",
+    "nba_player_id": "1630193",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1630193.png",
+    "overall": 79,
+    "player_page_url": "https://www.nba.com/player/1630193",
+    "k26_player_page_url": "https://www.nba2klab.com/teams/toronto-raptors/immanuel-quickley"
+  },
+  {
+    "id": "P0232",
+    "name": "Isaiah Joe",
+    "nba_player_id": "1630198",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1630198.png",
+    "overall": 79,
+    "player_page_url": "https://www.nba.com/player/1630198",
+    "k26_player_page_url": "https://www.nba2klab.com/players/isaiah-joe"
+  },
+  {
     "id": "P0217",
     "name": "Jaden Ivey",
     "nba_player_id": "1631093",
     "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1631093.png",
     "overall": 79,
     "player_page_url": "https://www.nba.com/player/1631093"
+  },
+  {
+    "id": "P0368",
+    "name": "Jakob Poeltl",
+    "nba_player_id": "1627751",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1627751.png",
+    "overall": 79,
+    "player_page_url": "https://www.nba.com/player/1627751",
+    "k26_player_page_url": "https://www.nba2klab.com/teams/toronto-raptors/jakob-poeltl"
   },
   {
     "id": "P0492",
@@ -1246,15 +1308,6 @@
     "overall": 79,
     "player_page_url": "https://www.nba.com/player/202691",
     "k26_player_page_url": "https://www.nba2klab.com/teams/dallas-mavericks/klay-thompson"
-  },
-  {
-    "id": "P0059",
-    "name": "Matas Buzelis",
-    "nba_player_id": "1641824",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1641824.png",
-    "overall": 79,
-    "player_page_url": "https://www.nba.com/player/1641824",
-    "k26_player_page_url": "https://www.nba2klab.com/players/matas-buzelis"
   },
   {
     "id": "P0545",
@@ -1347,23 +1400,6 @@
     "k26_player_page_url": "https://www.2kratings.com/players/anfernee-simons"
   },
   {
-    "id": "P0458",
-    "name": "Ausar Thompson",
-    "nba_player_id": "1641709",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1641709.png",
-    "overall": 78,
-    "player_page_url": "https://www.nba.com/player/1641709"
-  },
-  {
-    "id": "P0040",
-    "name": "Bogdan Bogdanovi\u0107",
-    "nba_player_id": "203992",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/203992.png",
-    "overall": 78,
-    "player_page_url": "https://www.nba.com/player/203992",
-    "k26_player_page_url": "https://www.nba2klab.com/players/bogdan-bogdanovic"
-  },
-  {
     "id": "P0080",
     "name": "Brandon Clarke",
     "nba_player_id": "1629634",
@@ -1373,21 +1409,13 @@
     "k26_player_page_url": "https://www.nba2klab.com/players/brandon-clarke"
   },
   {
-    "id": "P0276",
-    "name": "Caris LeVert",
-    "nba_player_id": "1627747",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1627747.png",
+    "id": "P0283",
+    "name": "Brook Lopez",
+    "nba_player_id": "201572",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/201572.png",
     "overall": 78,
-    "player_page_url": "https://www.nba.com/player/1627747"
-  },
-  {
-    "id": "P0356",
-    "name": "Chris Paul",
-    "nba_player_id": "101108",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/101108.png",
-    "overall": 78,
-    "player_page_url": "https://www.nba.com/player/101108",
-    "k26_player_page_url": "https://www.nba2klab.com/players/chris-paul"
+    "player_page_url": "https://www.nba.com/player/201572",
+    "k26_player_page_url": "https://www.nba2klab.com/players/brook-lopez"
   },
   {
     "id": "P0015",
@@ -1426,24 +1454,6 @@
     "k26_player_page_url": "https://www.hoopshype.com/player/donte-divincenzo/"
   },
   {
-    "id": "P0180",
-    "name": "Dylan Harper",
-    "nba_player_id": "1642844",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1642844.png",
-    "overall": 78,
-    "player_page_url": "https://www.nba.com/player/1642844",
-    "k26_player_page_url": "https://www.2kratings.com/players/dylan-harper"
-  },
-  {
-    "id": "P0111",
-    "name": "Gradey Dick",
-    "nba_player_id": "1641711",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1641711.png",
-    "overall": 78,
-    "player_page_url": "https://www.nba.com/player/1641711",
-    "k26_player_page_url": "https://www.nba2klab.com/teams/toronto-raptors/gradey-dick"
-  },
-  {
     "id": "P0008",
     "name": "Grayson Allen",
     "nba_player_id": "1628960",
@@ -1469,15 +1479,6 @@
     "overall": 78,
     "player_page_url": "https://www.nba.com/player/1642268",
     "k26_player_page_url": "/nba-2k/players/isaiah-collier/1463591/"
-  },
-  {
-    "id": "P0232",
-    "name": "Isaiah Joe",
-    "nba_player_id": "1630198",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1630198.png",
-    "overall": 78,
-    "player_page_url": "https://www.nba.com/player/1630198",
-    "k26_player_page_url": "https://www.nba2klab.com/players/isaiah-joe"
   },
   {
     "id": "P0439",
@@ -1512,15 +1513,6 @@
     "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1642847.png",
     "overall": 78,
     "player_page_url": "https://www.nba.com/player/1642847"
-  },
-  {
-    "id": "P0267",
-    "name": "Jonathan Kuminga",
-    "nba_player_id": "1630228",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1630228.png",
-    "overall": 78,
-    "player_page_url": "https://www.nba.com/player/1630228",
-    "k26_player_page_url": "https://www.nba2klab.com/teams/golden-state-warriors/jonathan-kuminga"
   },
   {
     "id": "P0081",
@@ -1584,15 +1576,6 @@
     "k26_player_page_url": "https://nba.2k.com/players/larry-nance-jr"
   },
   {
-    "id": "P0022",
-    "name": "Lonzo Ball",
-    "nba_player_id": "1628366",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1628366.png",
-    "overall": 78,
-    "player_page_url": "https://www.nba.com/player/1628366",
-    "k26_player_page_url": "https://www.nba2klab.com/players/lonzo-ball"
-  },
-  {
     "id": "P0565",
     "name": "Malik Beasley",
     "nba_player_id": null,
@@ -1603,15 +1586,6 @@
     "source": "2K26_only"
   },
   {
-    "id": "P0091",
-    "name": "Mike Conley",
-    "nba_player_id": "201144",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/201144.png",
-    "overall": 78,
-    "player_page_url": "https://www.nba.com/player/201144",
-    "k26_player_page_url": "https://www.hoopshype.com/player/mike-conley/"
-  },
-  {
     "id": "P0399",
     "name": "Mitchell Robinson",
     "nba_player_id": "1629011",
@@ -1619,6 +1593,15 @@
     "overall": 78,
     "player_page_url": "https://www.nba.com/player/1629011",
     "k26_player_page_url": "https://www.hoopshype.com/player/mitchell-robinson/"
+  },
+  {
+    "id": "P0328",
+    "name": "Moses Moody",
+    "nba_player_id": "1630541",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1630541.png",
+    "overall": 78,
+    "player_page_url": "https://www.nba.com/player/1630541",
+    "k26_player_page_url": "https://www.nba2klab.com/teams/golden-state-warriors/moses-moody"
   },
   {
     "id": "P0517",
@@ -1644,6 +1627,15 @@
     "overall": 78,
     "player_page_url": "https://www.nba.com/player/1630583",
     "k26_player_page_url": "https://www.nba2klab.com/players/santi-aldama"
+  },
+  {
+    "id": "P0246",
+    "name": "Tre Jones",
+    "nba_player_id": "1630200",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1630200.png",
+    "overall": 78,
+    "player_page_url": "https://www.nba.com/player/1630200",
+    "k26_player_page_url": "https://www.nba2klab.com/players/tre-jones"
   },
   {
     "id": "P0247",
@@ -1673,15 +1665,6 @@
     "k26_player_page_url": "https://www.2kratings.com/players/zaccharie-risacher"
   },
   {
-    "id": "P0505",
-    "name": "Aaron Wiggins",
-    "nba_player_id": "1630598",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1630598.png",
-    "overall": 77,
-    "player_page_url": "https://www.nba.com/player/1630598",
-    "k26_player_page_url": "https://www.nba2klab.com/players/aaron-wiggins"
-  },
-  {
     "id": "P0020",
     "name": "Ace Bailey",
     "nba_player_id": "1642846",
@@ -1689,6 +1672,23 @@
     "overall": 77,
     "player_page_url": "https://www.nba.com/player/1642846",
     "k26_player_page_url": "/nba-2k/players/ace-bailey/1519363/"
+  },
+  {
+    "id": "P0202",
+    "name": "Al Horford",
+    "nba_player_id": "201143",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/201143.png",
+    "overall": 77,
+    "player_page_url": "https://www.nba.com/player/201143"
+  },
+  {
+    "id": "P0118",
+    "name": "Ayo Dosunmu",
+    "nba_player_id": "1630245",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1630245.png",
+    "overall": 77,
+    "player_page_url": "https://www.nba.com/player/1630245",
+    "k26_player_page_url": "https://www.nba2klab.com/players/ayo-dosunmu"
   },
   {
     "id": "P0566",
@@ -1701,13 +1701,13 @@
     "source": "2K26_only"
   },
   {
-    "id": "P0195",
-    "name": "Buddy Hield",
-    "nba_player_id": "1627741",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1627741.png",
+    "id": "P0034",
+    "name": "Bradley Beal",
+    "nba_player_id": "203078",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/203078.png",
     "overall": 77,
-    "player_page_url": "https://www.nba.com/player/1627741",
-    "k26_player_page_url": "https://www.nba2klab.com/teams/golden-state-warriors/buddy-hield"
+    "player_page_url": "https://www.nba.com/player/203078",
+    "k26_player_page_url": "https://www.nba2klab.com/players/bradley-beal"
   },
   {
     "id": "P0063",
@@ -1716,6 +1716,15 @@
     "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/203991.png",
     "overall": 77,
     "player_page_url": "https://www.nba.com/player/203991"
+  },
+  {
+    "id": "P0336",
+    "name": "Collin Murray-Boyles",
+    "nba_player_id": "1642867",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1642867.png",
+    "overall": 77,
+    "player_page_url": "https://www.nba.com/player/1642867",
+    "k26_player_page_url": "https://www.nba2klab.com/teams/toronto-raptors/collin-murray-boyles"
   },
   {
     "id": "P0323",
@@ -1777,15 +1786,6 @@
     "k26_player_page_url": "https://nba.2k.com/players/jonas-valanciunas"
   },
   {
-    "id": "P0010",
-    "name": "Jose Alvarado",
-    "nba_player_id": "1630631",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1630631.png",
-    "overall": 77,
-    "player_page_url": "https://www.nba.com/player/1630631",
-    "k26_player_page_url": "https://nba.2k.com/players/jose-alvarado"
-  },
-  {
     "id": "P0348",
     "name": "Jusuf Nurki\u0107",
     "nba_player_id": "203994",
@@ -1795,6 +1795,15 @@
     "k26_player_page_url": "/nba-2k/players/jusuf-nurkic/830642/"
   },
   {
+    "id": "P0205",
+    "name": "Kevin Huerter",
+    "nba_player_id": "1628989",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1628989.png",
+    "overall": 77,
+    "player_page_url": "https://www.nba.com/player/1628989",
+    "k26_player_page_url": "https://www.nba2klab.com/players/kevin-huerter"
+  },
+  {
     "id": "P0268",
     "name": "Kyle Kuzma",
     "nba_player_id": "1628398",
@@ -1802,6 +1811,23 @@
     "overall": 77,
     "player_page_url": "https://www.nba.com/player/1628398",
     "k26_player_page_url": "https://www.2kratings.com/players/kyle-kuzma"
+  },
+  {
+    "id": "P0022",
+    "name": "Lonzo Ball",
+    "nba_player_id": "1628366",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1628366.png",
+    "overall": 77,
+    "player_page_url": "https://www.nba.com/player/1628366",
+    "k26_player_page_url": "https://www.nba2klab.com/players/lonzo-ball"
+  },
+  {
+    "id": "P0265",
+    "name": "Luke Kornet",
+    "nba_player_id": "1628436",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1628436.png",
+    "overall": 77,
+    "player_page_url": "https://www.nba.com/player/1628436"
   },
   {
     "id": "P0538",
@@ -1833,13 +1859,13 @@
     "k26_player_page_url": "https://www.nba2klab.com/players/max-strus"
   },
   {
-    "id": "P0328",
-    "name": "Moses Moody",
-    "nba_player_id": "1630541",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1630541.png",
+    "id": "P0091",
+    "name": "Mike Conley",
+    "nba_player_id": "201144",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/201144.png",
     "overall": 77,
-    "player_page_url": "https://www.nba.com/player/1630541",
-    "k26_player_page_url": "https://www.nba2klab.com/teams/golden-state-warriors/moses-moody"
+    "player_page_url": "https://www.nba.com/player/201144",
+    "k26_player_page_url": "https://www.hoopshype.com/player/mike-conley/"
   },
   {
     "id": "P0394",
@@ -1868,13 +1894,13 @@
     "player_page_url": "https://www.nba.com/player/1641842"
   },
   {
-    "id": "P0036",
-    "name": "Saddiq Bey",
-    "nba_player_id": "1630180",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1630180.png",
+    "id": "P0121",
+    "name": "Ryan Dunn",
+    "nba_player_id": "1642346",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1642346.png",
     "overall": 77,
-    "player_page_url": "https://www.nba.com/player/1630180",
-    "k26_player_page_url": null
+    "player_page_url": "https://www.nba.com/player/1642346",
+    "k26_player_page_url": "https://www.hoopshype.com/nba-2k/players/ryan-dunn/1406029/"
   },
   {
     "id": "P0090",
@@ -1912,15 +1938,6 @@
     "k26_player_page_url": "https://www.2kratings.com/players/anthony-black"
   },
   {
-    "id": "P0118",
-    "name": "Ayo Dosunmu",
-    "nba_player_id": "1630245",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1630245.png",
-    "overall": 76,
-    "player_page_url": "https://www.nba.com/player/1630245",
-    "k26_player_page_url": "https://www.nba2klab.com/players/ayo-dosunmu"
-  },
-  {
     "id": "P0052",
     "name": "Bruce Brown",
     "nba_player_id": "1628971",
@@ -1937,6 +1954,41 @@
     "overall": 76,
     "player_page_url": "https://www.nba.com/player/1642267",
     "k26_player_page_url": null
+  },
+  {
+    "id": "P0195",
+    "name": "Buddy Hield",
+    "nba_player_id": "1627741",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1627741.png",
+    "overall": 76,
+    "player_page_url": "https://www.nba.com/player/1627741",
+    "k26_player_page_url": "https://www.nba2klab.com/teams/golden-state-warriors/buddy-hield"
+  },
+  {
+    "id": "P0276",
+    "name": "Caris LeVert",
+    "nba_player_id": "1627747",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1627747.png",
+    "overall": 76,
+    "player_page_url": "https://www.nba.com/player/1627747"
+  },
+  {
+    "id": "P0356",
+    "name": "Chris Paul",
+    "nba_player_id": "101108",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/101108.png",
+    "overall": 76,
+    "player_page_url": "https://www.nba.com/player/101108",
+    "k26_player_page_url": "https://www.nba2klab.com/players/chris-paul"
+  },
+  {
+    "id": "P0157",
+    "name": "Collin Gillespie",
+    "nba_player_id": "1631221",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1631221.png",
+    "overall": 76,
+    "player_page_url": "https://www.nba.com/player/1631221",
+    "k26_player_page_url": "https://www.hoopshype.com/nba-2k/players/collin-gillespie/1070352/"
   },
   {
     "id": "P0257",
@@ -1966,15 +2018,6 @@
     "k26_player_page_url": null
   },
   {
-    "id": "P0102",
-    "name": "Dyson Daniels",
-    "nba_player_id": "1630700",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1630700.png",
-    "overall": 76,
-    "player_page_url": "https://www.nba.com/player/1630700",
-    "k26_player_page_url": "https://nba.2k.com/players/dyson-daniels"
-  },
-  {
     "id": "P0037",
     "name": "Goga Bitadze",
     "nba_player_id": "1629048",
@@ -1982,6 +2025,15 @@
     "overall": 76,
     "player_page_url": "https://www.nba.com/player/1629048",
     "k26_player_page_url": "https://www.2kratings.com/players/goga-bitadze"
+  },
+  {
+    "id": "P0111",
+    "name": "Gradey Dick",
+    "nba_player_id": "1641711",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1641711.png",
+    "overall": 76,
+    "player_page_url": "https://www.nba.com/player/1641711",
+    "k26_player_page_url": "https://www.nba2klab.com/teams/toronto-raptors/gradey-dick"
   },
   {
     "id": "P0228",
@@ -2010,6 +2062,15 @@
     "k26_player_page_url": "https://www.nba2klab.com/players/jaylen-wells"
   },
   {
+    "id": "P0269",
+    "name": "Jock Landale",
+    "nba_player_id": "1629111",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1629111.png",
+    "overall": 76,
+    "player_page_url": "https://www.nba.com/player/1629111",
+    "k26_player_page_url": "https://www.nba2klab.com/players/jock-landale"
+  },
+  {
     "id": "P0320",
     "name": "Josh Minott",
     "nba_player_id": "1631169",
@@ -2035,15 +2096,6 @@
     "overall": 76,
     "player_page_url": "https://www.nba.com/player/1631165",
     "k26_player_page_url": "https://www.nba2klab.com/players/keon-ellis"
-  },
-  {
-    "id": "P0205",
-    "name": "Kevin Huerter",
-    "nba_player_id": "1628989",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1628989.png",
-    "overall": 76,
-    "player_page_url": "https://www.nba.com/player/1628989",
-    "k26_player_page_url": "https://www.nba2klab.com/players/kevin-huerter"
   },
   {
     "id": "P0371",
@@ -2098,12 +2150,48 @@
     "k26_player_page_url": "https://www.2kratings.com/players/neemias-queta"
   },
   {
+    "id": "P0515",
+    "name": "Patrick Williams",
+    "nba_player_id": "1630172",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1630172.png",
+    "overall": 76,
+    "player_page_url": "https://www.nba.com/player/1630172",
+    "k26_player_page_url": "https://www.nba2klab.com/players/patrick-williams"
+  },
+  {
     "id": "P0001",
     "name": "Precious Achiuwa",
     "nba_player_id": "1630173",
     "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1630173.png",
     "overall": 76,
     "player_page_url": "https://www.nba.com/player/1630173"
+  },
+  {
+    "id": "P0428",
+    "name": "Reed Sheppard",
+    "nba_player_id": "1642263",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1642263.png",
+    "overall": 76,
+    "player_page_url": "https://www.nba.com/player/1642263",
+    "k26_player_page_url": "https://www.2kratings.com/players/reed-sheppard"
+  },
+  {
+    "id": "P0354",
+    "name": "Royce O'Neale",
+    "nba_player_id": "1626220",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1626220.png",
+    "overall": 76,
+    "player_page_url": "https://www.nba.com/player/1626220",
+    "k26_player_page_url": "https://www.hoopshype.com/nba-2k/players/royce-oneale/604479/"
+  },
+  {
+    "id": "P0036",
+    "name": "Saddiq Bey",
+    "nba_player_id": "1630180",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1630180.png",
+    "overall": 76,
+    "player_page_url": "https://www.nba.com/player/1630180",
+    "k26_player_page_url": null
   },
   {
     "id": "P0187",
@@ -2113,6 +2201,15 @@
     "overall": 76,
     "player_page_url": "https://www.nba.com/player/1630573",
     "k26_player_page_url": "https://www.2kratings.com/players/sam-hauser"
+  },
+  {
+    "id": "P0313",
+    "name": "Sam Merrill",
+    "nba_player_id": "1630241",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1630241.png",
+    "overall": 76,
+    "player_page_url": "https://www.nba.com/player/1630241",
+    "k26_player_page_url": "https://www.nba2klab.com/players/sam-merrill"
   },
   {
     "id": "P0364",
@@ -2160,15 +2257,6 @@
     "player_page_url": "https://www.nba.com/player/1642848"
   },
   {
-    "id": "P0246",
-    "name": "Tre Jones",
-    "nba_player_id": "1630200",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1630200.png",
-    "overall": 76,
-    "player_page_url": "https://www.nba.com/player/1630200",
-    "k26_player_page_url": "https://www.nba2klab.com/players/tre-jones"
-  },
-  {
     "id": "P0100",
     "name": "Tristan da Silva",
     "nba_player_id": "1641783",
@@ -2177,12 +2265,13 @@
     "player_page_url": "https://www.nba.com/player/1641783"
   },
   {
-    "id": "P0414",
-    "name": "Alex Sarr",
-    "nba_player_id": "1642259",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1642259.png",
+    "id": "P0040",
+    "name": "Bogdan Bogdanovi\u0107",
+    "nba_player_id": "203992",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/203992.png",
     "overall": 75,
-    "player_page_url": "https://www.nba.com/player/1642259"
+    "player_page_url": "https://www.nba.com/player/203992",
+    "k26_player_page_url": "https://www.nba2klab.com/players/bogdan-bogdanovic"
   },
   {
     "id": "P0420",
@@ -2254,6 +2343,33 @@
     "overall": 75,
     "player_page_url": "https://www.nba.com/player/1631119",
     "k26_player_page_url": "https://www.nba2klab.com/players/jaylin-williams"
+  },
+  {
+    "id": "P0264",
+    "name": "John Konchar",
+    "nba_player_id": "1629723",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1629723.png",
+    "overall": 75,
+    "player_page_url": "https://www.nba.com/player/1629723",
+    "k26_player_page_url": "https://www.nba2klab.com/players/john-konchar"
+  },
+  {
+    "id": "P0010",
+    "name": "Jose Alvarado",
+    "nba_player_id": "1630631",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1630631.png",
+    "overall": 75,
+    "player_page_url": "https://www.nba.com/player/1630631",
+    "k26_player_page_url": "https://nba.2k.com/players/jose-alvarado"
+  },
+  {
+    "id": "P0349",
+    "name": "Josh Okogie",
+    "nba_player_id": "1629006",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1629006.png",
+    "overall": 75,
+    "player_page_url": "https://www.nba.com/player/1629006",
+    "k26_player_page_url": "https://www.hoopshype.com/nba-2k/players/josh-okogie/941460/"
   },
   {
     "id": "P0129",
@@ -2360,21 +2476,21 @@
     "k26_player_page_url": "https://www.hoopshype.com/nba-2k/players/nikola-jovic/1349630/"
   },
   {
-    "id": "P0515",
-    "name": "Patrick Williams",
-    "nba_player_id": "1630172",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1630172.png",
-    "overall": 75,
-    "player_page_url": "https://www.nba.com/player/1630172",
-    "k26_player_page_url": "https://www.nba2klab.com/players/patrick-williams"
-  },
-  {
     "id": "P0390",
     "name": "Paul Reed",
     "nba_player_id": "1630194",
     "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1630194.png",
     "overall": 75,
     "player_page_url": "https://www.nba.com/player/1630194"
+  },
+  {
+    "id": "P0272",
+    "name": "Pelle Larsson",
+    "nba_player_id": "1641796",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1641796.png",
+    "overall": 75,
+    "player_page_url": "https://www.nba.com/player/1641796",
+    "k26_player_page_url": "https://www.hoopshype.com/nba-2k/players/pelle-larsson/1231950/"
   },
   {
     "id": "P0497",
@@ -2394,24 +2510,6 @@
     "player_page_url": "https://www.nba.com/player/1631245"
   },
   {
-    "id": "P0428",
-    "name": "Reed Sheppard",
-    "nba_player_id": "1642263",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1642263.png",
-    "overall": 75,
-    "player_page_url": "https://www.nba.com/player/1642263",
-    "k26_player_page_url": "https://www.2kratings.com/players/reed-sheppard"
-  },
-  {
-    "id": "P0354",
-    "name": "Royce O'Neale",
-    "nba_player_id": "1626220",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1626220.png",
-    "overall": 75,
-    "player_page_url": "https://www.nba.com/player/1626220",
-    "k26_player_page_url": "https://www.hoopshype.com/nba-2k/players/royce-oneale/604479/"
-  },
-  {
     "id": "P0288",
     "name": "Sandro Mamukelashvili",
     "nba_player_id": "1630572",
@@ -2419,6 +2517,15 @@
     "overall": 75,
     "player_page_url": "https://www.nba.com/player/1630572",
     "k26_player_page_url": "https://www.nba2klab.com/teams/toronto-raptors/sandro-mamukelashvili"
+  },
+  {
+    "id": "P0143",
+    "name": "Simone Fontecchio",
+    "nba_player_id": "1631323",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1631323.png",
+    "overall": 75,
+    "player_page_url": "https://www.nba.com/player/1631323",
+    "k26_player_page_url": "https://www.hoopshype.com/nba-2k/players/simone-fontecchio/1314104/"
   },
   {
     "id": "P0379",
@@ -2465,6 +2572,15 @@
     "player_page_url": "https://www.hoopshype.com/nba-2k/players/vasilije-micic/830652/",
     "k26_player_page_url": "https://www.hoopshype.com/nba-2k/players/vasilije-micic/830652/",
     "source": "2K26_only"
+  },
+  {
+    "id": "P0393",
+    "name": "Will Richard",
+    "nba_player_id": "1642954",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1642954.png",
+    "overall": 75,
+    "player_page_url": "https://www.nba.com/player/1642954",
+    "k26_player_page_url": "https://www.nba2klab.com/teams/golden-state-warriors/will-richard"
   },
   {
     "id": "P0516",
@@ -2538,6 +2654,15 @@
     "overall": 74,
     "player_page_url": "https://www.nba.com/player/1628997",
     "k26_player_page_url": "https://www.nba2klab.com/teams/dallas-mavericks/caleb-martin"
+  },
+  {
+    "id": "P0443",
+    "name": "Cam Spencer",
+    "nba_player_id": "1642285",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1642285.png",
+    "overall": 74,
+    "player_page_url": "https://www.nba.com/player/1642285",
+    "k26_player_page_url": "https://www.nba2klab.com/players/cam-spencer"
   },
   {
     "id": "P0296",
@@ -2680,15 +2805,6 @@
     "player_page_url": "https://www.nba.com/player/1630543"
   },
   {
-    "id": "P0491",
-    "name": "Ja'Kobe Walter",
-    "nba_player_id": "1642266",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1642266.png",
-    "overall": 74,
-    "player_page_url": "https://www.nba.com/player/1642266",
-    "k26_player_page_url": "https://www.nba2klab.com/teams/toronto-raptors/ja'kobe-walter"
-  },
-  {
     "id": "P0520",
     "name": "Jalen Wilson",
     "nba_player_id": "1630592",
@@ -2698,12 +2814,22 @@
     "k26_player_page_url": "https://www.nba2klab.com/players/jalen-wilson"
   },
   {
-    "id": "P0168",
-    "name": "Javonte Green",
-    "nba_player_id": "1629750",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1629750.png",
+    "id": "P0426",
+    "name": "Jamal Shead",
+    "nba_player_id": "1642347",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1642347.png",
     "overall": 74,
-    "player_page_url": "https://www.nba.com/player/1629750"
+    "player_page_url": "https://www.nba.com/player/1642347",
+    "k26_player_page_url": "https://www.nba2klab.com/teams/toronto-raptors/jamal-shead"
+  },
+  {
+    "id": "P0032",
+    "name": "Jamison Battle",
+    "nba_player_id": "1642419",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1642419.png",
+    "overall": 74,
+    "player_page_url": "https://www.nba.com/player/1642419",
+    "k26_player_page_url": "https://www.nba2klab.com/teams/toronto-raptors/jamison-battle"
   },
   {
     "id": "P0206",
@@ -2712,6 +2838,24 @@
     "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1630643.png",
     "overall": 74,
     "player_page_url": "https://www.nba.com/player/1630643"
+  },
+  {
+    "id": "P0079",
+    "name": "Jaylen Clark",
+    "nba_player_id": "1641740",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1641740.png",
+    "overall": 74,
+    "player_page_url": "https://www.nba.com/player/1641740",
+    "k26_player_page_url": "https://www.hoopshype.com/player/jaylen-clark/"
+  },
+  {
+    "id": "P0475",
+    "name": "Jaylon Tyson",
+    "nba_player_id": "1642281",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1642281.png",
+    "overall": 74,
+    "player_page_url": "https://www.nba.com/player/1642281",
+    "k26_player_page_url": "https://www.nba2klab.com/players/jaylon-tyson"
   },
   {
     "id": "P0401",
@@ -2732,15 +2876,6 @@
     "k26_player_page_url": "https://www.2kratings.com/players/jett-howard"
   },
   {
-    "id": "P0269",
-    "name": "Jock Landale",
-    "nba_player_id": "1629111",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1629111.png",
-    "overall": 74,
-    "player_page_url": "https://www.nba.com/player/1629111",
-    "k26_player_page_url": "https://www.nba2klab.com/players/jock-landale"
-  },
-  {
     "id": "P0326",
     "name": "Jonathan Mogbo",
     "nba_player_id": "1642367",
@@ -2757,15 +2892,6 @@
     "overall": 74,
     "player_page_url": "https://www.nba.com/player/1630692",
     "k26_player_page_url": null
-  },
-  {
-    "id": "P0349",
-    "name": "Josh Okogie",
-    "nba_player_id": "1629006",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1629006.png",
-    "overall": 74,
-    "player_page_url": "https://www.nba.com/player/1629006",
-    "k26_player_page_url": "https://www.hoopshype.com/nba-2k/players/josh-okogie/941460/"
   },
   {
     "id": "P0447",
@@ -2866,15 +2992,6 @@
     "k26_player_page_url": "https://www.nba2klab.com/players/nick-smith-jr"
   },
   {
-    "id": "P0272",
-    "name": "Pelle Larsson",
-    "nba_player_id": "1641796",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1641796.png",
-    "overall": 74,
-    "player_page_url": "https://www.nba.com/player/1641796",
-    "k26_player_page_url": "https://www.hoopshype.com/nba-2k/players/pelle-larsson/1231950/"
-  },
-  {
     "id": "P0375",
     "name": "Quinten Post",
     "nba_player_id": "1642366",
@@ -2882,24 +2999,6 @@
     "overall": 74,
     "player_page_url": "https://www.nba.com/player/1642366",
     "k26_player_page_url": "https://www.nba2klab.com/teams/golden-state-warriors/quinten-post"
-  },
-  {
-    "id": "P0114",
-    "name": "Rob Dillingham",
-    "nba_player_id": "1642265",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1642265.png",
-    "overall": 74,
-    "player_page_url": "https://www.nba.com/player/1642265",
-    "k26_player_page_url": "https://www.hoopshype.com/player/rob-dillingham/"
-  },
-  {
-    "id": "P0313",
-    "name": "Sam Merrill",
-    "nba_player_id": "1630241",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1630241.png",
-    "overall": 74,
-    "player_page_url": "https://www.nba.com/player/1630241",
-    "k26_player_page_url": "https://www.nba2klab.com/players/sam-merrill"
   },
   {
     "id": "P0574",
@@ -2993,15 +3092,6 @@
     "overall": 73,
     "player_page_url": "https://www.nba.com/player/1630639",
     "k26_player_page_url": "https://www.nba2klab.com/teams/toronto-raptors/aj-lawson"
-  },
-  {
-    "id": "P0322",
-    "name": "Ajay Mitchell",
-    "nba_player_id": "1642349",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1642349.png",
-    "overall": 73,
-    "player_page_url": "https://www.nba.com/player/1642349",
-    "k26_player_page_url": "https://www.nba2klab.com/players/ajay-mitchell"
   },
   {
     "id": "P0087",
@@ -3141,6 +3231,15 @@
     "source": "2K26_only"
   },
   {
+    "id": "P0436",
+    "name": "Dru Smith",
+    "nba_player_id": "1630696",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1630696.png",
+    "overall": 73,
+    "player_page_url": "https://www.nba.com/player/1630696",
+    "k26_player_page_url": "https://www.hoopshype.com/nba-2k/players/dru-smith/953243/"
+  },
+  {
     "id": "P0277",
     "name": "E.J. Liddell",
     "nba_player_id": "1630604",
@@ -3195,6 +3294,15 @@
     "k26_player_page_url": "https://www.nba2klab.com/players/haywood-highsmith"
   },
   {
+    "id": "P0491",
+    "name": "Ja'Kobe Walter",
+    "nba_player_id": "1642266",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1642266.png",
+    "overall": 73,
+    "player_page_url": "https://www.nba.com/player/1642266",
+    "k26_player_page_url": "https://www.nba2klab.com/teams/toronto-raptors/ja'kobe-walter"
+  },
+  {
     "id": "P0178",
     "name": "Jaden Hardy",
     "nba_player_id": "1630702",
@@ -3214,15 +3322,6 @@
     "source": "2K26_only"
   },
   {
-    "id": "P0426",
-    "name": "Jamal Shead",
-    "nba_player_id": "1642347",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1642347.png",
-    "overall": 73,
-    "player_page_url": "https://www.nba.com/player/1642347",
-    "k26_player_page_url": "https://www.nba2klab.com/teams/toronto-raptors/jamal-shead"
-  },
-  {
     "id": "P0189",
     "name": "Jaxson Hayes",
     "nba_player_id": "1629637",
@@ -3230,15 +3329,6 @@
     "overall": 73,
     "player_page_url": "https://www.nba.com/player/1629637",
     "k26_player_page_url": null
-  },
-  {
-    "id": "P0079",
-    "name": "Jaylen Clark",
-    "nba_player_id": "1641740",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1641740.png",
-    "overall": 73,
-    "player_page_url": "https://www.nba.com/player/1641740",
-    "k26_player_page_url": "https://www.hoopshype.com/player/jaylen-clark/"
   },
   {
     "id": "P0169",
@@ -3266,15 +3356,6 @@
     "overall": 73,
     "player_page_url": "https://www.nba.com/player/204060",
     "k26_player_page_url": "https://www.hoopshype.com/player/joe-ingles/"
-  },
-  {
-    "id": "P0264",
-    "name": "John Konchar",
-    "nba_player_id": "1629723",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1629723.png",
-    "overall": 73,
-    "player_page_url": "https://www.nba.com/player/1629723",
-    "k26_player_page_url": "https://www.nba2klab.com/players/john-konchar"
   },
   {
     "id": "P0216",
@@ -3394,6 +3475,15 @@
     "k26_player_page_url": "https://www.nba2klab.com/teams/toronto-raptors/ochai-agbaji"
   },
   {
+    "id": "P0211",
+    "name": "Oso Ighodaro",
+    "nba_player_id": "1642345",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1642345.png",
+    "overall": 73,
+    "player_page_url": "https://www.nba.com/player/1642345",
+    "k26_player_page_url": "https://www.hoopshype.com/nba-2k/players/oso-ighodaro/1232477/"
+  },
+  {
     "id": "P0580",
     "name": "Reggie Jackson",
     "nba_player_id": null,
@@ -3422,6 +3512,15 @@
     "player_page_url": "https://www.2kratings.com/players/richaun-holmes",
     "k26_player_page_url": "https://www.2kratings.com/players/richaun-holmes",
     "source": "2K26_only"
+  },
+  {
+    "id": "P0114",
+    "name": "Rob Dillingham",
+    "nba_player_id": "1642265",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1642265.png",
+    "overall": 73,
+    "player_page_url": "https://www.nba.com/player/1642265",
+    "k26_player_page_url": "https://www.hoopshype.com/player/rob-dillingham/"
   },
   {
     "id": "P0078",
@@ -3513,15 +3612,6 @@
     "player_page_url": "https://www.nba.com/player/1642868"
   },
   {
-    "id": "P0096",
-    "name": "Cedric Coward",
-    "nba_player_id": "1642907",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1642907.png",
-    "overall": 72,
-    "player_page_url": "https://www.nba.com/player/1642907",
-    "k26_player_page_url": "https://www.nba2klab.com/players/cedric-coward"
-  },
-  {
     "id": "P0263",
     "name": "Christian Koloko",
     "nba_player_id": "1631132",
@@ -3548,15 +3638,6 @@
     "overall": 72,
     "player_page_url": "https://www.nba.com/player/1642262",
     "k26_player_page_url": "/nba-2k/players/cody-williams/1458830/"
-  },
-  {
-    "id": "P0336",
-    "name": "Collin Murray-Boyles",
-    "nba_player_id": "1642867",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1642867.png",
-    "overall": 72,
-    "player_page_url": "https://www.nba.com/player/1642867",
-    "k26_player_page_url": "https://www.nba2klab.com/teams/toronto-raptors/collin-murray-boyles"
   },
   {
     "id": "P0587",
@@ -3707,13 +3788,12 @@
     "source": "2K26_only"
   },
   {
-    "id": "P0475",
-    "name": "Jaylon Tyson",
-    "nba_player_id": "1642281",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1642281.png",
+    "id": "P0168",
+    "name": "Javonte Green",
+    "nba_player_id": "1629750",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1629750.png",
     "overall": 72,
-    "player_page_url": "https://www.nba.com/player/1642281",
-    "k26_player_page_url": "https://www.nba2klab.com/players/jaylon-tyson"
+    "player_page_url": "https://www.nba.com/player/1629750"
   },
   {
     "id": "P0252",
@@ -3723,6 +3803,15 @@
     "overall": 72,
     "player_page_url": "https://www.nba.com/player/1630548",
     "k26_player_page_url": "https://www.hoopshype.com/player/johnny-juzang/"
+  },
+  {
+    "id": "P0188",
+    "name": "Jordan Hawkins",
+    "nba_player_id": "1641722",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1641722.png",
+    "overall": 72,
+    "player_page_url": "https://www.nba.com/player/1641722",
+    "k26_player_page_url": "https://nba.2k.com/players/jordan-hawkins"
   },
   {
     "id": "P0310",
@@ -3848,15 +3937,6 @@
     "player_page_url": "https://www.nba2klab.com/players/ricky-council-iv",
     "k26_player_page_url": "https://www.nba2klab.com/players/ricky-council-iv",
     "source": "2K26_only"
-  },
-  {
-    "id": "P0143",
-    "name": "Simone Fontecchio",
-    "nba_player_id": "1631323",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1631323.png",
-    "overall": 72,
-    "player_page_url": "https://www.nba.com/player/1631323",
-    "k26_player_page_url": "https://www.hoopshype.com/nba-2k/players/simone-fontecchio/1314104/"
   },
   {
     "id": "P0337",
@@ -4049,15 +4129,6 @@
     "k26_player_page_url": "https://www.nba2klab.com/players/jalen-pickett"
   },
   {
-    "id": "P0032",
-    "name": "Jamison Battle",
-    "nba_player_id": "1642419",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1642419.png",
-    "overall": 71,
-    "player_page_url": "https://www.nba.com/player/1642419",
-    "k26_player_page_url": "https://www.nba2klab.com/teams/toronto-raptors/jamison-battle"
-  },
-  {
     "id": "P0599",
     "name": "Jared Rhoden",
     "nba_player_id": null,
@@ -4084,15 +4155,6 @@
     "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1630579.png",
     "overall": 71,
     "player_page_url": "https://www.nba.com/player/1630579"
-  },
-  {
-    "id": "P0188",
-    "name": "Jordan Hawkins",
-    "nba_player_id": "1641722",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1641722.png",
-    "overall": 71,
-    "player_page_url": "https://www.nba.com/player/1641722",
-    "k26_player_page_url": "https://nba.2k.com/players/jordan-hawkins"
   },
   {
     "id": "P0317",
@@ -4169,14 +4231,6 @@
     "overall": 71,
     "player_page_url": "https://www.nba.com/player/1629013",
     "k26_player_page_url": "https://www.hoopshype.com/player/landry-shamet/"
-  },
-  {
-    "id": "P0265",
-    "name": "Luke Kornet",
-    "nba_player_id": "1628436",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1628436.png",
-    "overall": 71,
-    "player_page_url": "https://www.nba.com/player/1628436"
   },
   {
     "id": "P0303",
@@ -4583,15 +4637,6 @@
     "k26_player_page_url": "https://www.nba2klab.com/players/cam-christie"
   },
   {
-    "id": "P0443",
-    "name": "Cam Spencer",
-    "nba_player_id": "1642285",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1642285.png",
-    "overall": 70,
-    "player_page_url": "https://www.nba.com/player/1642285",
-    "k26_player_page_url": "https://www.nba2klab.com/players/cam-spencer"
-  },
-  {
     "id": "P0270",
     "name": "Chaz Lanier",
     "nba_player_id": "1642404",
@@ -4661,15 +4706,6 @@
     "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1630658.png",
     "overall": 70,
     "player_page_url": "https://www.nba.com/player/1630658"
-  },
-  {
-    "id": "P0157",
-    "name": "Collin Gillespie",
-    "nba_player_id": "1631221",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1631221.png",
-    "overall": 70,
-    "player_page_url": "https://www.nba.com/player/1631221",
-    "k26_player_page_url": "https://www.hoopshype.com/nba-2k/players/collin-gillespie/1070352/"
   },
   {
     "id": "P0672",
@@ -4792,15 +4828,6 @@
     "player_page_url": "https://www.nba2klab.com/players/drew-timme",
     "k26_player_page_url": "https://www.nba2klab.com/players/drew-timme",
     "source": "2K26_only"
-  },
-  {
-    "id": "P0436",
-    "name": "Dru Smith",
-    "nba_player_id": "1630696",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1630696.png",
-    "overall": 70,
-    "player_page_url": "https://www.nba.com/player/1630696",
-    "k26_player_page_url": "https://www.hoopshype.com/nba-2k/players/dru-smith/953243/"
   },
   {
     "id": "P0064",
@@ -5630,15 +5657,6 @@
     "source": "2K26_only"
   },
   {
-    "id": "P0211",
-    "name": "Oso Ighodaro",
-    "nba_player_id": "1642345",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1642345.png",
-    "overall": 70,
-    "player_page_url": "https://www.nba.com/player/1642345",
-    "k26_player_page_url": "https://www.hoopshype.com/nba-2k/players/oso-ighodaro/1232477/"
-  },
-  {
     "id": "P0618",
     "name": "P.J. Dozier",
     "nba_player_id": null,
@@ -5745,15 +5763,6 @@
     "overall": 70,
     "player_page_url": "https://www.nba.com/player/1631199",
     "k26_player_page_url": "https://www.2kratings.com/players/ron-harper-jr"
-  },
-  {
-    "id": "P0121",
-    "name": "Ryan Dunn",
-    "nba_player_id": "1642346",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1642346.png",
-    "overall": 70,
-    "player_page_url": "https://www.nba.com/player/1642346",
-    "k26_player_page_url": "https://www.hoopshype.com/nba-2k/players/ryan-dunn/1406029/"
   },
   {
     "id": "P0253",
@@ -5996,15 +6005,6 @@
     "player_page_url": "https://www.2kratings.com/players/wendell-moore-jr",
     "k26_player_page_url": "https://www.2kratings.com/players/wendell-moore-jr",
     "source": "2K26_only"
-  },
-  {
-    "id": "P0393",
-    "name": "Will Richard",
-    "nba_player_id": "1642954",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1642954.png",
-    "overall": 70,
-    "player_page_url": "https://www.nba.com/player/1642954",
-    "k26_player_page_url": "https://www.nba2klab.com/teams/golden-state-warriors/will-richard"
   },
   {
     "id": "P0396",
