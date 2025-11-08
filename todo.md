@@ -66,4 +66,18 @@
 - [x] Add 143 NBA 2K26-only players (free agents, G-League)
 - [x] Clean bad data entries (removed 2)
 - [x] Update website with complete 672-player database
-- [ ] Create final checkpoint and deploy
+- [x] Create final checkpoint and deploy (version: a74f3f3f)
+
+## Fix Missing Ratings for Major Stars
+
+- [x] Investigate why Stephen Curry, Joel Embiid, Paul George, etc. don't have ratings
+- [x] Search for these players in the original NBA 2K26 data
+- [x] Create manual mappings for name variations (11 stars updated)
+- [x] Update database with correct ratings
+- [x] Verify all major stars have ratings
+- [x] Re-extract ALL team rosters from 2kratings.com systematically
+- [x] Use fuzzy matching to catch misspellings and name variations (80% threshold)
+- [x] Merged user-provided CSV with 191 players
+- [x] Update database with complete 2K26 ratings (86.3% coverage)
+- [x] Update website with merged database
+- [ ] Create final checkpoint and publish
