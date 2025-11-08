@@ -222,14 +222,6 @@
     "k26_player_page_url": "https://www.2kratings.com/players/paolo-banchero"
   },
   {
-    "id": "P0278",
-    "name": "Damian Lillard",
-    "nba_player_id": "203081",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/203081.png",
-    "overall": 89,
-    "player_page_url": "https://www.nba.com/player/203081"
-  },
-  {
     "id": "P0325",
     "name": "Evan Mobley",
     "nba_player_id": "1630596",
@@ -298,6 +290,14 @@
     "overall": 88,
     "player_page_url": "https://www.nba.com/player/1631096",
     "k26_player_page_url": "https://www.nba2klab.com/players/chet-holmgren"
+  },
+  {
+    "id": "P0278",
+    "name": "Damian Lillard",
+    "nba_player_id": "203081",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/203081.png",
+    "overall": 88,
+    "player_page_url": "https://www.nba.com/player/203081"
   },
   {
     "id": "P0526",
@@ -505,6 +505,14 @@
     "k26_player_page_url": "https://www.nba2klab.com/teams/toronto-raptors/brandon-ingram"
   },
   {
+    "id": "P0017",
+    "name": "Deni Avdija",
+    "nba_player_id": "1630166",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1630166.png",
+    "overall": 84,
+    "player_page_url": "https://www.nba.com/player/1630166"
+  },
+  {
     "id": "P0503",
     "name": "Derrick White",
     "nba_player_id": "1628401",
@@ -684,14 +692,6 @@
     "k26_player_page_url": "https://www.2kratings.com/players/jalen-suggs"
   },
   {
-    "id": "P0164",
-    "name": "Jerami Grant",
-    "nba_player_id": "203924",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/203924.png",
-    "overall": 82,
-    "player_page_url": "https://www.nba.com/player/203924"
-  },
-  {
     "id": "P0089",
     "name": "John Collins",
     "nba_player_id": "1628381",
@@ -726,6 +726,14 @@
     "overall": 82,
     "player_page_url": "https://www.nba.com/player/1629628",
     "k26_player_page_url": "https://www.nba2klab.com/teams/toronto-raptors/rj-barrett"
+  },
+  {
+    "id": "P0062",
+    "name": "Toumani Camara",
+    "nba_player_id": "1641739",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1641739.png",
+    "overall": 82,
+    "player_page_url": "https://www.nba.com/player/1641739"
   },
   {
     "id": "P0256",
@@ -815,6 +823,14 @@
     "player_page_url": "https://www.nba.com/player/1631105"
   },
   {
+    "id": "P0164",
+    "name": "Jerami Grant",
+    "nba_player_id": "203924",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/203924.png",
+    "overall": 81,
+    "player_page_url": "https://www.nba.com/player/203924"
+  },
+  {
     "id": "P0185",
     "name": "Josh Hart",
     "nba_player_id": "1628404",
@@ -866,6 +882,14 @@
     "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/202331.png",
     "overall": 81,
     "player_page_url": "https://www.nba.com/player/202331"
+  },
+  {
+    "id": "P0425",
+    "name": "Shaedon Sharpe",
+    "nba_player_id": "1631101",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1631101.png",
+    "overall": 81,
+    "player_page_url": "https://www.nba.com/player/1631101"
   },
   {
     "id": "P0127",
@@ -1000,14 +1024,6 @@
     "k26_player_page_url": "https://www.nba2klab.com/players/de'andre-hunter"
   },
   {
-    "id": "P0017",
-    "name": "Deni Avdija",
-    "nba_player_id": "1630166",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1630166.png",
-    "overall": 80,
-    "player_page_url": "https://www.nba.com/player/1630166"
-  },
-  {
     "id": "P0279",
     "name": "Dereck Lively II",
     "nba_player_id": "1641726",
@@ -1015,6 +1031,14 @@
     "overall": 80,
     "player_page_url": "https://www.nba.com/player/1641726",
     "k26_player_page_url": "https://www.nba2klab.com/teams/dallas-mavericks/dereck-lively%20ii"
+  },
+  {
+    "id": "P0085",
+    "name": "Donovan Clingan",
+    "nba_player_id": "1642270",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1642270.png",
+    "overall": 80,
+    "player_page_url": "https://www.nba.com/player/1642270"
   },
   {
     "id": "P0368",
@@ -1119,14 +1143,6 @@
     "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1629656.png",
     "overall": 80,
     "player_page_url": "https://www.nba.com/player/1629656"
-  },
-  {
-    "id": "P0517",
-    "name": "Robert Williams III",
-    "nba_player_id": "1629057",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1629057.png",
-    "overall": 80,
-    "player_page_url": "https://www.nba.com/player/1629057"
   },
   {
     "id": "P0305",
@@ -1284,14 +1300,6 @@
     "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1630703.png",
     "overall": 79,
     "player_page_url": "https://www.nba.com/player/1630703"
-  },
-  {
-    "id": "P0425",
-    "name": "Shaedon Sharpe",
-    "nba_player_id": "1631101",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1631101.png",
-    "overall": 79,
-    "player_page_url": "https://www.nba.com/player/1631101"
   },
   {
     "id": "P0176",
@@ -1613,6 +1621,14 @@
     "k26_player_page_url": "https://www.hoopshype.com/player/mitchell-robinson/"
   },
   {
+    "id": "P0517",
+    "name": "Robert Williams III",
+    "nba_player_id": "1629057",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1629057.png",
+    "overall": 78,
+    "player_page_url": "https://www.nba.com/player/1629057"
+  },
+  {
     "id": "P0501",
     "name": "Russell Westbrook",
     "nba_player_id": "201566",
@@ -1735,6 +1751,14 @@
     "player_page_url": "https://www.nba.com/player/1629018"
   },
   {
+    "id": "P0446",
+    "name": "Isaiah Stewart",
+    "nba_player_id": "1630191",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1630191.png",
+    "overall": 77,
+    "player_page_url": "https://www.nba.com/player/1630191"
+  },
+  {
     "id": "P0441",
     "name": "Jeremy Sochan",
     "nba_player_id": "1631110",
@@ -1834,6 +1858,14 @@
     "overall": 77,
     "player_page_url": "https://www.nba.com/player/1626192",
     "k26_player_page_url": "https://www.2kratings.com/players/pat-connaughton"
+  },
+  {
+    "id": "P0199",
+    "name": "Ronald Holland II",
+    "nba_player_id": "1641842",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1641842.png",
+    "overall": 77,
+    "player_page_url": "https://www.nba.com/player/1641842"
   },
   {
     "id": "P0036",
@@ -1952,14 +1984,6 @@
     "k26_player_page_url": "https://www.2kratings.com/players/goga-bitadze"
   },
   {
-    "id": "P0446",
-    "name": "Isaiah Stewart",
-    "nba_player_id": "1630191",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1630191.png",
-    "overall": 76,
-    "player_page_url": "https://www.nba.com/player/1630191"
-  },
-  {
     "id": "P0228",
     "name": "Jaime Jaquez Jr.",
     "nba_player_id": "1631170",
@@ -2037,14 +2061,6 @@
     "overall": 76,
     "player_page_url": "https://www.nba.com/player/1627739",
     "k26_player_page_url": "https://www.nba2klab.com/players/kris-dunn"
-  },
-  {
-    "id": "P0265",
-    "name": "Luke Kornet",
-    "nba_player_id": "1628436",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1628436.png",
-    "overall": 76,
-    "player_page_url": "https://www.nba.com/player/1628436"
   },
   {
     "id": "P0019",
@@ -2292,6 +2308,14 @@
     "k26_player_page_url": "https://www.nba2klab.com/players/mason-plumlee"
   },
   {
+    "id": "P0460",
+    "name": "Matisse Thybulle",
+    "nba_player_id": "1629680",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1629680.png",
+    "overall": 75,
+    "player_page_url": "https://www.nba.com/player/1629680"
+  },
+  {
     "id": "P0076",
     "name": "Max Christie",
     "nba_player_id": "1631108",
@@ -2414,14 +2438,6 @@
     "player_page_url": "https://www.nba2klab.com/players/terence-mann",
     "k26_player_page_url": "https://www.nba2klab.com/players/terence-mann",
     "source": "2K26_only"
-  },
-  {
-    "id": "P0057",
-    "name": "Thomas Bryant",
-    "nba_player_id": "1628418",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1628418.png",
-    "overall": 75,
-    "player_page_url": "https://www.nba.com/player/1628418"
   },
   {
     "id": "P0290",
@@ -2593,14 +2609,6 @@
     "overall": 74,
     "player_page_url": "https://www.nba.com/player/1629234",
     "k26_player_page_url": "https://www.nba2klab.com/players/drew-eubanks"
-  },
-  {
-    "id": "P0388",
-    "name": "Duop Reath",
-    "nba_player_id": "1641871",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1641871.png",
-    "overall": 74,
-    "player_page_url": "https://www.nba.com/player/1641871"
   },
   {
     "id": "P0163",
@@ -2807,28 +2815,12 @@
     "k26_player_page_url": "/nba-2k/players/kyle-anderson/697720/"
   },
   {
-    "id": "P0494",
-    "name": "Lindy Waters III",
-    "nba_player_id": "1630322",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1630322.png",
-    "overall": 74,
-    "player_page_url": "https://www.nba.com/player/1630322"
-  },
-  {
     "id": "P0415",
     "name": "Marcus Sasser",
     "nba_player_id": "1631204",
     "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1631204.png",
     "overall": 74,
     "player_page_url": "https://www.nba.com/player/1631204"
-  },
-  {
-    "id": "P0460",
-    "name": "Matisse Thybulle",
-    "nba_player_id": "1629680",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1629680.png",
-    "overall": 74,
-    "player_page_url": "https://www.nba.com/player/1629680"
   },
   {
     "id": "P0258",
@@ -2933,6 +2925,14 @@
     "k26_player_page_url": "https://www.hoopshype.com/nba-2k/players/terry-rozier/786293/"
   },
   {
+    "id": "P0057",
+    "name": "Thomas Bryant",
+    "nba_player_id": "1628418",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1628418.png",
+    "overall": 74,
+    "player_page_url": "https://www.nba.com/player/1628418"
+  },
+  {
     "id": "P0569",
     "name": "Torrey Craig",
     "nba_player_id": null,
@@ -2941,14 +2941,6 @@
     "player_page_url": "https://www.2kratings.com/players/torrey-craig",
     "k26_player_page_url": "https://www.2kratings.com/players/torrey-craig",
     "source": "2K26_only"
-  },
-  {
-    "id": "P0062",
-    "name": "Toumani Camara",
-    "nba_player_id": "1641739",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1641739.png",
-    "overall": 74,
-    "player_page_url": "https://www.nba.com/player/1641739"
   },
   {
     "id": "P0223",
@@ -3011,6 +3003,14 @@
     "overall": 73,
     "player_page_url": "https://www.nba.com/player/1642854",
     "k26_player_page_url": "https://www.2kratings.com/players/asa-newell"
+  },
+  {
+    "id": "P0500",
+    "name": "Blake Wesley",
+    "nba_player_id": "1631104",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1631104.png",
+    "overall": 73,
+    "player_page_url": "https://www.nba.com/player/1631104"
   },
   {
     "id": "P0534",
@@ -3123,14 +3123,6 @@
     "player_page_url": "https://www.2kratings.com/players/delon-wright",
     "k26_player_page_url": "https://www.2kratings.com/players/delon-wright",
     "source": "2K26_only"
-  },
-  {
-    "id": "P0085",
-    "name": "Donovan Clingan",
-    "nba_player_id": "1642270",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1642270.png",
-    "overall": 73,
-    "player_page_url": "https://www.nba.com/player/1642270"
   },
   {
     "id": "P0277",
@@ -3323,6 +3315,14 @@
     "player_page_url": "https://www.nba.com/player/1631200"
   },
   {
+    "id": "P0494",
+    "name": "Lindy Waters III",
+    "nba_player_id": "1630322",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1630322.png",
+    "overall": 73,
+    "player_page_url": "https://www.nba.com/player/1630322"
+  },
+  {
     "id": "P0150",
     "name": "Luka Garza",
     "nba_player_id": "1630568",
@@ -3479,22 +3479,6 @@
     "k26_player_page_url": "https://www.2kratings.com/players/aaron-holiday"
   },
   {
-    "id": "P0038",
-    "name": "Bismack Biyombo",
-    "nba_player_id": "202687",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/202687.png",
-    "overall": 72,
-    "player_page_url": "https://www.nba.com/player/202687"
-  },
-  {
-    "id": "P0500",
-    "name": "Blake Wesley",
-    "nba_player_id": "1631104",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1631104.png",
-    "overall": 72,
-    "player_page_url": "https://www.nba.com/player/1631104"
-  },
-  {
     "id": "P0594",
     "name": "Cam Reddish",
     "nba_player_id": null,
@@ -3503,6 +3487,14 @@
     "player_page_url": "https://www.2kratings.com/players/cam-reddish",
     "k26_player_page_url": "https://www.2kratings.com/players/cam-reddish",
     "source": "2K26_only"
+  },
+  {
+    "id": "P0056",
+    "name": "Carter Bryant",
+    "nba_player_id": "1642868",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1642868.png",
+    "overall": 72,
+    "player_page_url": "https://www.nba.com/player/1642868"
   },
   {
     "id": "P0096",
@@ -3607,6 +3599,14 @@
     "player_page_url": "https://www.2kratings.com/players/dariq-whitehead",
     "k26_player_page_url": "https://www.2kratings.com/players/dariq-whitehead",
     "source": "2K26_only"
+  },
+  {
+    "id": "P0388",
+    "name": "Duop Reath",
+    "nba_player_id": "1641871",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1641871.png",
+    "overall": 72,
+    "player_page_url": "https://www.nba.com/player/1641871"
   },
   {
     "id": "P0377",
@@ -3792,6 +3792,14 @@
     "k26_player_page_url": "https://www.nba2klab.com/players/ousmane-dieng"
   },
   {
+    "id": "P0405",
+    "name": "Rayan Rupert",
+    "nba_player_id": "1641712",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1641712.png",
+    "overall": 72,
+    "player_page_url": "https://www.nba.com/player/1641712"
+  },
+  {
     "id": "P0549",
     "name": "Ricky Council IV",
     "nba_player_id": null,
@@ -3800,14 +3808,6 @@
     "player_page_url": "https://www.nba2klab.com/players/ricky-council-iv",
     "k26_player_page_url": "https://www.nba2klab.com/players/ricky-council-iv",
     "source": "2K26_only"
-  },
-  {
-    "id": "P0199",
-    "name": "Ronald Holland II",
-    "nba_player_id": "1641842",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1641842.png",
-    "overall": 72,
-    "player_page_url": "https://www.nba.com/player/1641842"
   },
   {
     "id": "P0143",
@@ -4131,6 +4131,14 @@
     "k26_player_page_url": "https://www.hoopshype.com/player/landry-shamet/"
   },
   {
+    "id": "P0265",
+    "name": "Luke Kornet",
+    "nba_player_id": "1628436",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1628436.png",
+    "overall": 71,
+    "player_page_url": "https://www.nba.com/player/1628436"
+  },
+  {
     "id": "P0303",
     "name": "Mac McClung",
     "nba_player_id": "1630644",
@@ -4371,6 +4379,14 @@
     "overall": 70,
     "player_page_url": "https://www.nba.com/player/1630574",
     "k26_player_page_url": "https://www.hoopshype.com/player/ariel-hukporti/"
+  },
+  {
+    "id": "P0038",
+    "name": "Bismack Biyombo",
+    "nba_player_id": "202687",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/202687.png",
+    "overall": 70,
+    "player_page_url": "https://www.nba.com/player/202687"
   },
   {
     "id": "P0065",
@@ -4793,14 +4809,6 @@
     "source": "2K26_only"
   },
   {
-    "id": "P0405",
-    "name": "Rayan Rupert",
-    "nba_player_id": "1641712",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1641712.png",
-    "overall": 70,
-    "player_page_url": "https://www.nba.com/player/1641712"
-  },
-  {
     "id": "P0121",
     "name": "Ryan Dunn",
     "nba_player_id": "1642346",
@@ -4903,6 +4911,14 @@
     "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1642860.png",
     "overall": 70,
     "player_page_url": "https://www.nba.com/player/1642860"
+  },
+  {
+    "id": "P0524",
+    "name": "Yang Hansen",
+    "nba_player_id": "1642905",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1642905.png",
+    "overall": 70,
+    "player_page_url": "https://www.nba.com/player/1642905"
   },
   {
     "id": "P0294",
@@ -5152,6 +5168,14 @@
     "k26_player_page_url": "https://www.hoopshype.com/player/pacome-dadiet/"
   },
   {
+    "id": "P0444",
+    "name": "Pat Spencer",
+    "nba_player_id": "1630311",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1630311.png",
+    "overall": 69,
+    "player_page_url": "https://www.nba.com/player/1630311"
+  },
+  {
     "id": "P0644",
     "name": "Reece Beekman",
     "nba_player_id": null,
@@ -5253,6 +5277,14 @@
     "k26_player_page_url": null
   },
   {
+    "id": "P0284",
+    "name": "Caleb Love",
+    "nba_player_id": "1631126",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1631126.png",
+    "overall": 68,
+    "player_page_url": "https://www.nba.com/player/1631126"
+  },
+  {
     "id": "P0075",
     "name": "Cam Christie",
     "nba_player_id": "1642353",
@@ -5340,6 +5372,14 @@
     "overall": 68,
     "player_page_url": "https://www.nba.com/player/1631342",
     "k26_player_page_url": "https://www.nba2klab.com/players/daeqwon-plowden"
+  },
+  {
+    "id": "P0248",
+    "name": "David Jones Garcia",
+    "nba_player_id": "1642357",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1642357.png",
+    "overall": 68,
+    "player_page_url": "https://www.nba.com/player/1642357"
   },
   {
     "id": "P0064",
@@ -5457,6 +5497,14 @@
     "player_page_url": "https://www.2kratings.com/players/javante-mccoy",
     "k26_player_page_url": "https://www.2kratings.com/players/javante-mccoy",
     "source": "2K26_only"
+  },
+  {
+    "id": "P0093",
+    "name": "Javonte Cooke",
+    "nba_player_id": "1631451",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1631451.png",
+    "overall": 68,
+    "player_page_url": "https://www.nba.com/player/1631451"
   },
   {
     "id": "P0244",
@@ -5898,22 +5946,6 @@
     "player_page_url": "https://www.nba.com/player/1643047"
   },
   {
-    "id": "P0284",
-    "name": "Caleb Love",
-    "nba_player_id": "1631126",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1631126.png",
-    "overall": null,
-    "player_page_url": "https://www.nba.com/player/1631126"
-  },
-  {
-    "id": "P0056",
-    "name": "Carter Bryant",
-    "nba_player_id": "1642868",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1642868.png",
-    "overall": null,
-    "player_page_url": "https://www.nba.com/player/1642868"
-  },
-  {
     "id": "P0527",
     "name": "Chris Youngblood",
     "nba_player_id": "1642959",
@@ -5922,28 +5954,12 @@
     "player_page_url": "https://www.nba.com/player/1642959"
   },
   {
-    "id": "P0248",
-    "name": "David Jones Garcia",
-    "nba_player_id": "1642357",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1642357.png",
-    "overall": null,
-    "player_page_url": "https://www.nba.com/player/1642357"
-  },
-  {
     "id": "P0060",
     "name": "Jamal Cain",
     "nba_player_id": "1631288",
     "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1631288.png",
     "overall": null,
     "player_page_url": "https://www.nba.com/player/1631288"
-  },
-  {
-    "id": "P0093",
-    "name": "Javonte Cooke",
-    "nba_player_id": "1631451",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1631451.png",
-    "overall": null,
-    "player_page_url": "https://www.nba.com/player/1631451"
   },
   {
     "id": "P0463",
@@ -6010,14 +6026,6 @@
     "player_page_url": "https://www.nba.com/player/1641765"
   },
   {
-    "id": "P0444",
-    "name": "Pat Spencer",
-    "nba_player_id": "1630311",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1630311.png",
-    "overall": null,
-    "player_page_url": "https://www.nba.com/player/1630311"
-  },
-  {
     "id": "P0141",
     "name": "Rasheer Fleming",
     "nba_player_id": "1642853",
@@ -6032,13 +6040,5 @@
     "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1641783.png",
     "overall": null,
     "player_page_url": "https://www.nba.com/player/1641783"
-  },
-  {
-    "id": "P0524",
-    "name": "Yang Hansen",
-    "nba_player_id": "1642905",
-    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1642905.png",
-    "overall": null,
-    "player_page_url": "https://www.nba.com/player/1642905"
   }
 ]

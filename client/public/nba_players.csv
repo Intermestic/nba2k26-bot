@@ -24,7 +24,6 @@ player_id,name,overall,photo_url,player_page_url,nba_player_id,source
 ,Joel Embiid,90,https://cdn.nba.com/headshots/nba/latest/1040x760/203954.png,https://www.nba.com/player/203954,203954,
 ,Kyrie Irving,90,https://cdn.nba.com/headshots/nba/latest/1040x760/202681.png,https://www.nba.com/player/202681,202681,
 ,Paolo Banchero,90,https://cdn.nba.com/headshots/nba/latest/1040x760/1631094.png,https://www.nba.com/player/1631094,1631094,
-,Damian Lillard,89,https://cdn.nba.com/headshots/nba/latest/1040x760/203081.png,https://www.nba.com/player/203081,203081,
 ,Evan Mobley,89,https://cdn.nba.com/headshots/nba/latest/1040x760/1630596.png,https://www.nba.com/player/1630596,1630596,
 ,James Harden,89,https://cdn.nba.com/headshots/nba/latest/1040x760/201935.png,https://www.nba.com/player/201935,201935,
 ,Jaren Jackson Jr.,89,https://cdn.nba.com/headshots/nba/latest/1040x760/1628991.png,https://www.nba.com/player/1628991,1628991,
@@ -33,6 +32,7 @@ player_id,name,overall,photo_url,player_page_url,nba_player_id,source
 ,Alperen Sengun,88,https://cdn.nba.com/headshots/nba/latest/1040x760/1630578.png,https://www.nba.com/player/1630578,1630578,
 ,Bam Adebayo,88,https://cdn.nba.com/headshots/nba/latest/1040x760/1628389.png,https://www.nba.com/player/1628389,1628389,
 ,Chet Holmgren,88,https://cdn.nba.com/headshots/nba/latest/1040x760/1631096.png,https://www.nba.com/player/1631096,1631096,
+,Damian Lillard,88,https://cdn.nba.com/headshots/nba/latest/1040x760/203081.png,https://www.nba.com/player/203081,203081,
 ,Trae Young,88,https://cdn.nba.com/headshots/nba/latest/1040x760/1629027.png,https://www.nba.com/player/1629027,1629027,
 ,Amen Thompson,87,https://cdn.nba.com/headshots/nba/latest/1040x760/1641708.png,https://www.nba.com/player/1641708,1641708,
 ,Darius Garland,87,https://cdn.nba.com/headshots/nba/latest/1040x760/1629636.png,https://www.nba.com/player/1629636,1629636,
@@ -56,6 +56,7 @@ player_id,name,overall,photo_url,player_page_url,nba_player_id,source
 ,Scottie Barnes,85,https://cdn.nba.com/headshots/nba/latest/1040x760/1630567.png,https://www.nba.com/player/1630567,1630567,
 ,Zach LaVine,85,https://cdn.nba.com/headshots/nba/latest/1040x760/203897.png,https://www.nba.com/player/203897,203897,
 ,Brandon Ingram,84,https://cdn.nba.com/headshots/nba/latest/1040x760/1627742.png,https://www.nba.com/player/1627742,1627742,
+,Deni Avdija,84,https://cdn.nba.com/headshots/nba/latest/1040x760/1630166.png,https://www.nba.com/player/1630166,1630166,
 ,Derrick White,84,https://cdn.nba.com/headshots/nba/latest/1040x760/1628401.png,https://www.nba.com/player/1628401,1628401,
 ,Jarrett Allen,84,https://cdn.nba.com/headshots/nba/latest/1040x760/1628386.png,https://www.nba.com/player/1628386,1628386,
 ,Lauri Markkanen,84,https://cdn.nba.com/headshots/nba/latest/1040x760/1628374.png,https://www.nba.com/player/1628374,1628374,
@@ -76,11 +77,11 @@ player_id,name,overall,photo_url,player_page_url,nba_player_id,source
 ,Jaden McDaniels,82,https://cdn.nba.com/headshots/nba/latest/1040x760/1630183.png,https://www.nba.com/player/1630183,1630183,
 ,Jalen Green,82,https://cdn.nba.com/headshots/nba/latest/1040x760/1630224.png,https://www.nba.com/player/1630224,1630224,
 ,Jalen Suggs,82,https://cdn.nba.com/headshots/nba/latest/1040x760/1630591.png,https://www.nba.com/player/1630591,1630591,
-,Jerami Grant,82,https://cdn.nba.com/headshots/nba/latest/1040x760/203924.png,https://www.nba.com/player/203924,203924,
 ,John Collins,82,https://cdn.nba.com/headshots/nba/latest/1040x760/1628381.png,https://www.nba.com/player/1628381,1628381,
 ,Michael Porter Jr.,82,https://cdn.nba.com/headshots/nba/latest/1040x760/1629008.png,https://www.nba.com/player/1629008,1629008,
 ,Naz Reid,82,https://cdn.nba.com/headshots/nba/latest/1040x760/1629675.png,https://www.nba.com/player/1629675,1629675,
 ,RJ Barrett,82,https://cdn.nba.com/headshots/nba/latest/1040x760/1629628.png,https://www.nba.com/player/1629628,1629628,
+,Toumani Camara,82,https://cdn.nba.com/headshots/nba/latest/1040x760/1641739.png,https://www.nba.com/player/1641739,1641739,
 ,Walker Kessler,82,https://cdn.nba.com/headshots/nba/latest/1040x760/1631117.png,https://www.nba.com/player/1631117,1631117,
 ,Andrew Nembhard,81,https://cdn.nba.com/headshots/nba/latest/1040x760/1629614.png,https://www.nba.com/player/1629614,1629614,
 ,Austin Reaves,81,https://cdn.nba.com/headshots/nba/latest/1040x760/1630559.png,https://www.nba.com/player/1630559,1630559,
@@ -91,12 +92,14 @@ player_id,name,overall,photo_url,player_page_url,nba_player_id,source
 ,Draymond Green,81,https://cdn.nba.com/headshots/nba/latest/1040x760/203110.png,https://www.nba.com/player/203110,203110,
 ,Immanuel Quickley,81,https://cdn.nba.com/headshots/nba/latest/1040x760/1630193.png,https://www.nba.com/player/1630193,1630193,
 ,Jalen Duren,81,https://cdn.nba.com/headshots/nba/latest/1040x760/1631105.png,https://www.nba.com/player/1631105,1631105,
+,Jerami Grant,81,https://cdn.nba.com/headshots/nba/latest/1040x760/203924.png,https://www.nba.com/player/203924,203924,
 ,Josh Hart,81,https://cdn.nba.com/headshots/nba/latest/1040x760/1628404.png,https://www.nba.com/player/1628404,1628404,
 ,Kyshawn George,81,https://cdn.nba.com/headshots/nba/latest/1040x760/1642273.png,https://www.nba.com/player/1642273,1642273,
 ,Luguentz Dort,81,https://cdn.nba.com/headshots/nba/latest/1040x760/1629652.png,https://www.nba.com/player/1629652,1629652,
 ,Myles Turner,81,https://cdn.nba.com/headshots/nba/latest/1040x760/1626167.png,https://www.nba.com/player/1626167,1626167,
 ,Onyeka Okongwu,81,https://cdn.nba.com/headshots/nba/latest/1040x760/1630168.png,https://www.nba.com/player/1630168,1630168,
 ,Paul George,81,https://cdn.nba.com/headshots/nba/latest/1040x760/202331.png,https://www.nba.com/player/202331,202331,
+,Shaedon Sharpe,81,https://cdn.nba.com/headshots/nba/latest/1040x760/1631101.png,https://www.nba.com/player/1631101,1631101,
 ,VJ Edgecombe,81,https://cdn.nba.com/headshots/nba/latest/1040x760/1642845.png,https://www.nba.com/player/1642845,1642845,
 ,Aaron Nesmith,80,https://cdn.nba.com/headshots/nba/latest/1040x760/1630174.png,https://www.nba.com/player/1630174,1630174,
 ,Al Horford,80,https://cdn.nba.com/headshots/nba/latest/1040x760/201143.png,https://www.nba.com/player/201143,201143,
@@ -112,8 +115,8 @@ player_id,name,overall,photo_url,player_page_url,nba_player_id,source
 ,Daniel Gaffford,80,https://cdn.nba.com/headshots/nba/latest/1040x760/1629655.png,https://www.nba2klab.com/teams/dallas-mavericks/daniel-gaffford,,2K26_only
 ,Daniel Gafford,80,https://cdn.nba.com/headshots/nba/latest/1040x760/1629655.png,https://www.nba.com/player/1629655,1629655,
 ,De'Andre Hunter,80,https://cdn.nba.com/headshots/nba/latest/1040x760/1629631.png,https://www.nba.com/player/1629631,1629631,
-,Deni Avdija,80,https://cdn.nba.com/headshots/nba/latest/1040x760/1630166.png,https://www.nba.com/player/1630166,1630166,
 ,Dereck Lively II,80,https://cdn.nba.com/headshots/nba/latest/1040x760/1641726.png,https://www.nba.com/player/1641726,1641726,
+,Donovan Clingan,80,https://cdn.nba.com/headshots/nba/latest/1040x760/1642270.png,https://www.nba.com/player/1642270,1642270,
 ,Jakob Poeltl,80,https://cdn.nba.com/headshots/nba/latest/1040x760/1627751.png,https://www.nba.com/player/1627751,1627751,
 ,Jared McCain,80,https://cdn.nba.com/headshots/nba/latest/1040x760/1642272.png,https://www.nba.com/player/1642272,1642272,
 ,Jordan Poole,80,https://cdn.nba.com/headshots/nba/latest/1040x760/1629673.png,https://www.nba.com/player/1629673,1629673,
@@ -126,7 +129,6 @@ player_id,name,overall,photo_url,player_page_url,nba_player_id,source
 ,Obi Toppin,80,https://cdn.nba.com/headshots/nba/latest/1040x760/1630167.png,https://www.nba.com/player/1630167,1630167,
 ,Payton Pritchard,80,https://cdn.nba.com/headshots/nba/latest/1040x760/1630202.png,https://www.nba.com/player/1630202,1630202,
 ,Quentin Grimes,80,https://cdn.nba.com/headshots/nba/latest/1040x760/1629656.png,https://www.nba.com/player/1629656,1629656,
-,Robert Williams III,80,https://cdn.nba.com/headshots/nba/latest/1040x760/1629057.png,https://www.nba.com/player/1629057,1629057,
 ,T.J. McConnell,80,https://cdn.nba.com/headshots/nba/latest/1040x760/204456.png,https://www.nba.com/player/204456,204456,
 ,Tobias Harris,80,https://cdn.nba.com/headshots/nba/latest/1040x760/202699.png,https://www.nba.com/player/202699,202699,
 ,Trey Murphy III,80,https://cdn.nba.com/headshots/nba/latest/1040x760/1630530.png,https://www.nba.com/player/1630530,1630530,
@@ -145,7 +147,6 @@ player_id,name,overall,photo_url,player_page_url,nba_player_id,source
 ,Rui Hachimura,79,https://cdn.nba.com/headshots/nba/latest/1040x760/1629060.png,https://www.nba.com/player/1629060,1629060,
 ,Ryan Rollins,79,https://cdn.nba.com/headshots/nba/latest/1040x760/1631157.png,https://www.nba.com/player/1631157,1631157,
 ,Scoot Henderson,79,https://cdn.nba.com/headshots/nba/latest/1040x760/1630703.png,https://www.nba.com/player/1630703,1630703,
-,Shaedon Sharpe,79,https://cdn.nba.com/headshots/nba/latest/1040x760/1631101.png,https://www.nba.com/player/1631101,1631101,
 ,Tim Hardaway Jr.,79,https://cdn.nba.com/headshots/nba/latest/1040x760/203501.png,https://www.nba.com/player/203501,203501,
 ,Ty Jerome,79,https://cdn.nba.com/headshots/nba/latest/1040x760/1629660.png,https://www.nba.com/player/1629660,1629660,
 ,Yves Missi,79,https://cdn.nba.com/headshots/nba/latest/1040x760/1642274.png,https://www.nba.com/player/1642274,1642274,
@@ -182,6 +183,7 @@ player_id,name,overall,photo_url,player_page_url,nba_player_id,source
 ,Malik Beasley,78,https://www.2kratings.com/malik-beasley,https://www.2kratings.com/players/malik-beasley,,2K26_only
 ,Mike Conley,78,https://cdn.nba.com/headshots/nba/latest/1040x760/201144.png,https://www.nba.com/player/201144,201144,
 ,Mitchell Robinson,78,https://cdn.nba.com/headshots/nba/latest/1040x760/1629011.png,https://www.nba.com/player/1629011,1629011,
+,Robert Williams III,78,https://cdn.nba.com/headshots/nba/latest/1040x760/1629057.png,https://www.nba.com/player/1629057,1629057,
 ,Russell Westbrook,78,https://cdn.nba.com/headshots/nba/latest/1040x760/201566.png,https://www.nba.com/player/201566,201566,
 ,Santi Aldama,78,https://cdn.nba.com/headshots/nba/latest/1040x760/1630583.png,https://www.nba.com/player/1630583,1630583,
 ,Tyus Jones,78,https://cdn.nba.com/headshots/nba/latest/1040x760/1626145.png,https://www.nba.com/player/1626145,1626145,
@@ -196,6 +198,7 @@ player_id,name,overall,photo_url,player_page_url,nba_player_id,source
 ,De'Anthony Melton,77,https://cdn.nba.com/headshots/nba/latest/1040x760/1629001.png,https://www.nba.com/player/1629001,1629001,
 ,Duncan Robinson,77,https://cdn.nba.com/headshots/nba/latest/1040x760/1629130.png,https://www.nba.com/player/1629130,1629130,
 ,Gary Trent Jr.,77,https://cdn.nba.com/headshots/nba/latest/1040x760/1629018.png,https://www.nba.com/player/1629018,1629018,
+,Isaiah Stewart,77,https://cdn.nba.com/headshots/nba/latest/1040x760/1630191.png,https://www.nba.com/player/1630191,1630191,
 ,Jeremy Sochan,77,https://cdn.nba.com/headshots/nba/latest/1040x760/1631110.png,https://www.nba.com/player/1631110,1631110,
 ,Jonas Valančiūnas,77,https://cdn.nba.com/headshots/nba/latest/1040x760/202685.png,https://www.nba.com/player/202685,202685,
 ,Jose Alvarado,77,https://cdn.nba.com/headshots/nba/latest/1040x760/1630631.png,https://www.nba.com/player/1630631,1630631,
@@ -207,6 +210,7 @@ player_id,name,overall,photo_url,player_page_url,nba_player_id,source
 ,Moses Moody,77,https://cdn.nba.com/headshots/nba/latest/1040x760/1630541.png,https://www.nba.com/player/1630541,1630541,
 ,Nick Richards,77,https://cdn.nba.com/headshots/nba/latest/1040x760/1630208.png,https://www.nba.com/player/1630208,1630208,
 ,Pat Connaughton,77,https://cdn.nba.com/headshots/nba/latest/1040x760/1626192.png,https://www.nba.com/player/1626192,1626192,
+,Ronald Holland II,77,https://cdn.nba.com/headshots/nba/latest/1040x760/1641842.png,https://www.nba.com/player/1641842,1641842,
 ,Saddiq Bey,77,https://cdn.nba.com/headshots/nba/latest/1040x760/1630180.png,https://www.nba.com/player/1630180,1630180,
 ,Zach Collins,77,https://cdn.nba.com/headshots/nba/latest/1040x760/1628380.png,https://www.nba.com/player/1628380,1628380,
 ,AJ Green,76,https://cdn.nba.com/headshots/nba/latest/1040x760/1631260.png,https://www.nba.com/player/1631260,1631260,
@@ -220,7 +224,6 @@ player_id,name,overall,photo_url,player_page_url,nba_player_id,source
 ,Dorian Finney-Smith,76,https://cdn.nba.com/headshots/nba/latest/1040x760/1627827.png,https://www.nba.com/player/1627827,1627827,
 ,Dyson Daniels,76,https://cdn.nba.com/headshots/nba/latest/1040x760/1630700.png,https://www.nba.com/player/1630700,1630700,
 ,Goga Bitadze,76,https://cdn.nba.com/headshots/nba/latest/1040x760/1629048.png,https://www.nba.com/player/1629048,1629048,
-,Isaiah Stewart,76,https://cdn.nba.com/headshots/nba/latest/1040x760/1630191.png,https://www.nba.com/player/1630191,1630191,
 ,Jaime Jaquez Jr.,76,https://cdn.nba.com/headshots/nba/latest/1040x760/1631170.png,https://www.nba.com/player/1631170,1631170,
 ,Jarace Walker,76,https://cdn.nba.com/headshots/nba/latest/1040x760/1641716.png,https://www.nba.com/player/1641716,1641716,
 ,Jaylen Wells,76,https://cdn.nba.com/headshots/nba/latest/1040x760/1642377.png,https://www.nba.com/player/1642377,1642377,
@@ -230,7 +233,6 @@ player_id,name,overall,photo_url,player_page_url,nba_player_id,source
 ,Kevin Huerter,76,https://cdn.nba.com/headshots/nba/latest/1040x760/1628989.png,https://www.nba.com/player/1628989,1628989,
 ,Kevin Porter Jr.,76,https://cdn.nba.com/headshots/nba/latest/1040x760/1629645.png,https://www.nba.com/player/1629645,1629645,
 ,Kris Dunn,76,https://cdn.nba.com/headshots/nba/latest/1040x760/1627739.png,https://www.nba.com/player/1627739,1627739,
-,Luke Kornet,76,https://cdn.nba.com/headshots/nba/latest/1040x760/1628436.png,https://www.nba.com/player/1628436,1628436,
 ,Marvin Bagley III,76,https://cdn.nba.com/headshots/nba/latest/1040x760/1628963.png,https://www.nba.com/player/1628963,1628963,
 ,Miles McBride,76,https://cdn.nba.com/headshots/nba/latest/1040x760/1630540.png,https://www.nba.com/player/1630540,1630540,
 ,Moritz Wagner,76,https://cdn.nba.com/headshots/nba/latest/1040x760/1629021.png,https://www.nba.com/player/1629021,1629021,
@@ -259,6 +261,7 @@ player_id,name,overall,photo_url,player_page_url,nba_player_id,source
 ,Kyle Lowry,75,https://cdn.nba.com/headshots/nba/latest/1040x760/200768.png,https://www.nba.com/player/200768,200768,
 ,Luke Kennard,75,https://cdn.nba.com/headshots/nba/latest/1040x760/1628379.png,https://www.nba.com/player/1628379,1628379,
 ,Mason Plumlee,75,https://cdn.nba.com/headshots/nba/latest/1040x760/203486.png,https://www.nba.com/player/203486,203486,
+,Matisse Thybulle,75,https://cdn.nba.com/headshots/nba/latest/1040x760/1629680.png,https://www.nba.com/player/1629680,1629680,
 ,Max Christie,75,https://cdn.nba.com/headshots/nba/latest/1040x760/1631108.png,https://www.nba.com/player/1631108,1631108,
 ,Naji Marshall,75,https://cdn.nba.com/headshots/nba/latest/1040x760/1630230.png,https://www.nba.com/player/1630230,1630230,
 ,Nicolas Batum,75,https://cdn.nba.com/headshots/nba/latest/1040x760/201587.png,https://www.nba.com/player/201587,201587,
@@ -273,7 +276,6 @@ player_id,name,overall,photo_url,player_page_url,nba_player_id,source
 ,Taurean Prince,75,https://cdn.nba.com/headshots/nba/latest/1040x760/1627752.png,https://www.nba.com/player/1627752,1627752,
 ,Terance Mann,75,https://cdn.nba.com/headshots/nba/latest/1040x760/1629611.png,https://www.nba.com/player/1629611,1629611,
 ,Terence Mann,75,https://www.nba2klab.com/assets/images/players/terence-mann.png,https://www.nba2klab.com/players/terence-mann,,2K26_only
-,Thomas Bryant,75,https://cdn.nba.com/headshots/nba/latest/1040x760/1628418.png,https://www.nba.com/player/1628418,1628418,
 ,Tre Mann,75,https://cdn.nba.com/headshots/nba/latest/1040x760/1630544.png,https://www.nba.com/player/1630544,1630544,
 ,Vasilije Micic,75,,https://www.hoopshype.com/nba-2k/players/vasilije-micic/830652/,,2K26_only
 ,Ziaire Williams,75,https://cdn.nba.com/headshots/nba/latest/1040x760/1630533.png,https://www.nba.com/player/1630533,1630533,
@@ -293,7 +295,6 @@ player_id,name,overall,photo_url,player_page_url,nba_player_id,source
 ,Derik Queen,74,https://cdn.nba.com/headshots/nba/latest/1040x760/1642852.png,https://www.nba.com/player/1642852,1642852,
 ,Devin Carter,74,https://cdn.nba.com/headshots/nba/latest/1040x760/1642269.png,https://www.nba.com/player/1642269,1642269,
 ,Drew Eubanks,74,https://cdn.nba.com/headshots/nba/latest/1040x760/1629234.png,https://www.nba.com/player/1629234,1629234,
-,Duop Reath,74,https://cdn.nba.com/headshots/nba/latest/1040x760/1641871.png,https://www.nba.com/player/1641871,1641871,
 ,Eric Gordon,74,https://cdn.nba.com/headshots/nba/latest/1040x760/201569.png,https://www.nba.com/player/201569,201569,
 ,GG Jackson,74,https://cdn.nba.com/headshots/nba/latest/1040x760/1641713.png,https://www.nba.com/player/1641713,1641713,
 ,Gabe Vincent,74,https://cdn.nba.com/headshots/nba/latest/1040x760/1629216.png,https://www.nba.com/player/1629216,1629216,
@@ -317,9 +318,7 @@ player_id,name,overall,photo_url,player_page_url,nba_player_id,source
 ,Kevon Looney,74,https://cdn.nba.com/headshots/nba/latest/1040x760/1626172.png,https://www.nba.com/player/1626172,1626172,
 ,Kira Lewis Jr.,74,https://nba.2k.com/assets/players/kira-lewis-jr.png,https://nba.2k.com/players/kira-lewis-jr,,2K26_only
 ,Kyle Anderson,74,https://cdn.nba.com/headshots/nba/latest/1040x760/203937.png,https://www.nba.com/player/203937,203937,
-,Lindy Waters III,74,https://cdn.nba.com/headshots/nba/latest/1040x760/1630322.png,https://www.nba.com/player/1630322,1630322,
 ,Marcus Sasser,74,https://cdn.nba.com/headshots/nba/latest/1040x760/1631204.png,https://www.nba.com/player/1631204,1631204,
-,Matisse Thybulle,74,https://cdn.nba.com/headshots/nba/latest/1040x760/1629680.png,https://www.nba.com/player/1629680,1629680,
 ,Maxi Kleber,74,https://cdn.nba.com/headshots/nba/latest/1040x760/1628467.png,https://www.nba.com/player/1628467,1628467,
 ,Mouhamed Gueye,74,https://cdn.nba.com/headshots/nba/latest/1040x760/1631243.png,https://www.nba.com/player/1631243,1631243,
 ,Nick Smith Jr.,74,https://cdn.nba.com/headshots/nba/latest/1040x760/1641733.png,https://www.nba.com/player/1641733,1641733,
@@ -331,8 +330,8 @@ player_id,name,overall,photo_url,player_page_url,nba_player_id,source
 ,Shake Milton,74,https://www.2kratings.com/shake-milton,,,2K26_only
 ,Shake Milton,74,,https://www.2kratings.com/players/shake-milton,,2K26_only
 ,Terry Rozier,74,https://cdn.nba.com/headshots/nba/latest/1040x760/1626179.png,https://www.nba.com/player/1626179,1626179,
+,Thomas Bryant,74,https://cdn.nba.com/headshots/nba/latest/1040x760/1628418.png,https://www.nba.com/player/1628418,1628418,
 ,Torrey Craig,74,https://www.2kratings.com/torrey-craig,https://www.2kratings.com/players/torrey-craig,,2K26_only
-,Toumani Camara,74,https://cdn.nba.com/headshots/nba/latest/1040x760/1641739.png,https://www.nba.com/player/1641739,1641739,
 ,Trayce Jackson-Davis,74,https://cdn.nba.com/headshots/nba/latest/1040x760/1631218.png,https://www.nba.com/player/1631218,1631218,
 ,Trendon Watford,74,https://cdn.nba.com/headshots/nba/latest/1040x760/1630570.png,https://www.nba.com/player/1630570,1630570,
 ,Trey Lyles,74,https://www.2kratings.com/trey-lyles,https://www.2kratings.com/players/trey-lyles,,2K26_only
@@ -340,6 +339,7 @@ player_id,name,overall,photo_url,player_page_url,nba_player_id,source
 ,Ajay Mitchell,73,https://cdn.nba.com/headshots/nba/latest/1040x760/1642349.png,https://www.nba.com/player/1642349,1642349,
 ,Amir Coffey,73,https://cdn.nba.com/headshots/nba/latest/1040x760/1629599.png,https://www.nba.com/player/1629599,1629599,
 ,Asa Newell,73,https://cdn.nba.com/headshots/nba/latest/1040x760/1642854.png,https://www.nba.com/player/1642854,1642854,
+,Blake Wesley,73,https://cdn.nba.com/headshots/nba/latest/1040x760/1631104.png,https://www.nba.com/player/1631104,1631104,
 ,Bol Bol,73,https://www.2kratings.com/bol-bol,https://www.hoopshype.com/nba-2k/players/bol-bol/1134730/,,2K26_only
 ,Bol Bol,73,,https://www.2kratings.com/players/bol-bol,,2K26_only
 ,Bones Hyland,73,https://cdn.nba.com/headshots/nba/latest/1040x760/1630538.png,https://www.nba.com/player/1630538,1630538,
@@ -352,7 +352,6 @@ player_id,name,overall,photo_url,player_page_url,nba_player_id,source
 ,Damion Lee,73,https://www.2kratings.com/damion-lee,https://www.hoopshype.com/nba-2k/players/damion-lee/609081/,,2K26_only
 ,Damion Lee,73,,https://www.2kratings.com/players/damion-lee,,2K26_only
 ,Delon Wright,73,https://www.2kratings.com/delon-wright,https://www.2kratings.com/players/delon-wright,,2K26_only
-,Donovan Clingan,73,https://cdn.nba.com/headshots/nba/latest/1040x760/1642270.png,https://www.nba.com/player/1642270,1642270,
 ,E.J. Liddell,73,https://cdn.nba.com/headshots/nba/latest/1040x760/1630604.png,https://www.nba.com/player/1630604,1630604,
 ,Garrison Mathews,73,https://www.2kratings.com/garrison-mathews,https://www.2kratings.com/players/garrison-mathews,,2K26_only
 ,Gary Harris,73,https://cdn.nba.com/headshots/nba/latest/1040x760/203914.png,https://www.nba.com/player/203914,203914,
@@ -374,6 +373,7 @@ player_id,name,overall,photo_url,player_page_url,nba_player_id,source
 ,Kenyon Martin Jr.,73,https://www.2kratings.com/kenyon-martin-jr,https://www.2kratings.com/players/kenyon-martin-jr,,2K26_only
 ,Kevin Love,73,https://cdn.nba.com/headshots/nba/latest/1040x760/201567.png,https://www.nba.com/player/201567,201567,
 ,Kris Murray,73,https://cdn.nba.com/headshots/nba/latest/1040x760/1631200.png,https://www.nba.com/player/1631200,1631200,
+,Lindy Waters III,73,https://cdn.nba.com/headshots/nba/latest/1040x760/1630322.png,https://www.nba.com/player/1630322,1630322,
 ,Luka Garza,73,https://cdn.nba.com/headshots/nba/latest/1040x760/1630568.png,https://www.nba.com/player/1630568,1630568,
 ,MarJon Beauchamp,73,,https://www.2kratings.com/players/marjon-beauchamp,,2K26_only
 ,Monté Morris,73,https://cdn.nba.com/headshots/nba/latest/1040x760/1628420.png,https://www.nba.com/player/1628420,1628420,
@@ -391,9 +391,8 @@ player_id,name,overall,photo_url,player_page_url,nba_player_id,source
 ,Vince Williams Jr.,73,https://cdn.nba.com/headshots/nba/latest/1040x760/1631246.png,https://www.nba.com/player/1631246,1631246,
 ,Vít Krejčí,73,https://cdn.nba.com/headshots/nba/latest/1040x760/1630249.png,https://www.nba.com/player/1630249,1630249,
 ,Aaron Holiday,72,https://cdn.nba.com/headshots/nba/latest/1040x760/1628988.png,https://www.nba.com/player/1628988,1628988,
-,Bismack Biyombo,72,https://cdn.nba.com/headshots/nba/latest/1040x760/202687.png,https://www.nba.com/player/202687,202687,
-,Blake Wesley,72,https://cdn.nba.com/headshots/nba/latest/1040x760/1631104.png,https://www.nba.com/player/1631104,1631104,
 ,Cam Reddish,72,https://www.2kratings.com/cam-reddish,https://www.2kratings.com/players/cam-reddish,,2K26_only
+,Carter Bryant,72,https://cdn.nba.com/headshots/nba/latest/1040x760/1642868.png,https://www.nba.com/player/1642868,1642868,
 ,Cedric Coward,72,https://cdn.nba.com/headshots/nba/latest/1040x760/1642907.png,https://www.nba.com/player/1642907,1642907,
 ,Christian Koloko,72,https://cdn.nba.com/headshots/nba/latest/1040x760/1631132.png,https://www.nba.com/player/1631132,1631132,
 ,Christian Wood,72,https://www.2kratings.com/christian-wood,https://www.2kratings.com/players/christian-wood,,2K26_only
@@ -405,6 +404,7 @@ player_id,name,overall,photo_url,player_page_url,nba_player_id,source
 ,Daniel Theis,72,https://www.2kratings.com/daniel-theis,https://www.2kratings.com/players/daniel-theis,,2K26_only
 ,Dario Whitehead,72,https://www.nba2klab.com/assets/images/players/dario-whitehead.png,https://www.nba2klab.com/players/dario-whitehead,,2K26_only
 ,Dariq Whitehead,72,https://www.2kratings.com/dariq-whitehead,https://www.2kratings.com/players/dariq-whitehead,,2K26_only
+,Duop Reath,72,https://cdn.nba.com/headshots/nba/latest/1040x760/1641871.png,https://www.nba.com/player/1641871,1641871,
 ,Dwight Powell,72,https://cdn.nba.com/headshots/nba/latest/1040x760/203939.png,https://www.nba.com/player/203939,203939,
 ,Egor Dëmin,72,https://cdn.nba.com/headshots/nba/latest/1040x760/1642856.png,https://www.nba.com/player/1642856,1642856,
 ,Elfrid Payton,72,https://www.2kratings.com/elfrid-payton,https://www.2kratings.com/players/elfrid-payton,,2K26_only
@@ -425,8 +425,8 @@ player_id,name,overall,photo_url,player_page_url,nba_player_id,source
 ,Noa Essengue,72,https://cdn.nba.com/headshots/nba/latest/1040x760/1642855.png,https://www.nba.com/player/1642855,1642855,
 ,Orlando Robinson,72,https://cdn.nba.com/headshots/nba/latest/1040x760/1631115.png,https://www.nba.com/player/1631115,1631115,
 ,Ousmane Dieng,72,https://cdn.nba.com/headshots/nba/latest/1040x760/1631172.png,https://www.nba.com/player/1631172,1631172,
+,Rayan Rupert,72,https://cdn.nba.com/headshots/nba/latest/1040x760/1641712.png,https://www.nba.com/player/1641712,1641712,
 ,Ricky Council IV,72,https://www.nba2klab.com/assets/images/players/ricky-council-iv.png,https://www.nba2klab.com/players/ricky-council-iv,,2K26_only
-,Ronald Holland II,72,https://cdn.nba.com/headshots/nba/latest/1040x760/1641842.png,https://www.nba.com/player/1641842,1641842,
 ,Simone Fontecchio,72,https://cdn.nba.com/headshots/nba/latest/1040x760/1631323.png,https://www.nba.com/player/1631323,1631323,
 ,Svi Mykhailiuk,72,https://cdn.nba.com/headshots/nba/latest/1040x760/1629004.png,https://www.nba.com/player/1629004,1629004,
 ,Tidjane Salaün,72,https://cdn.nba.com/headshots/nba/latest/1040x760/1642275.png,https://www.nba.com/player/1642275,1642275,
@@ -462,6 +462,7 @@ player_id,name,overall,photo_url,player_page_url,nba_player_id,source
 ,Kobe Brown,71,https://cdn.nba.com/headshots/nba/latest/1040x760/1641738.png,https://www.nba.com/player/1641738,1641738,
 ,Lamar Stevens,71,https://www.2kratings.com/lamar-stevens,https://www.2kratings.com/players/lamar-stevens,,2K26_only
 ,Landry Shamet,71,https://cdn.nba.com/headshots/nba/latest/1040x760/1629013.png,https://www.nba.com/player/1629013,1629013,
+,Luke Kornet,71,https://cdn.nba.com/headshots/nba/latest/1040x760/1628436.png,https://www.nba.com/player/1628436,1628436,
 ,Mac McClung,71,https://cdn.nba.com/headshots/nba/latest/1040x760/1630644.png,https://www.nba.com/player/1630644,1630644,
 ,Malaki Branham,71,https://cdn.nba.com/headshots/nba/latest/1040x760/1631103.png,https://www.nba.com/player/1631103,1631103,
 ,Markelle Fultz,71,https://www.2kratings.com/markelle-fultz,https://www.2kratings.com/players/markelle-fultz,,2K26_only
@@ -488,6 +489,7 @@ player_id,name,overall,photo_url,player_page_url,nba_player_id,source
 ,Alex Reese,70,https://www.2kratings.com/alex-reese,https://www.2kratings.com/players/alex-reese,,2K26_only
 ,Antonio Reeves,70,https://cdn.nba.com/headshots/nba/latest/1040x760/1641810.png,https://www.nba.com/player/1641810,1641810,
 ,Ariel Hukporti,70,https://cdn.nba.com/headshots/nba/latest/1040x760/1630574.png,https://www.nba.com/player/1630574,1630574,
+,Bismack Biyombo,70,https://cdn.nba.com/headshots/nba/latest/1040x760/202687.png,https://www.nba.com/player/202687,202687,
 ,Branden Carlson,70,https://cdn.nba.com/headshots/nba/latest/1040x760/1642382.png,https://www.nba.com/player/1642382,1642382,
 ,Bruno Fernando,70,https://www.2kratings.com/bruno-fernando,https://www.2kratings.com/players/bruno-fernando,,2K26_only
 ,Chuma Okeke,70,https://www.2kratings.com/chuma-okeke,https://www.2kratings.com/players/chuma-okeke,,2K26_only
@@ -532,7 +534,6 @@ player_id,name,overall,photo_url,player_page_url,nba_player_id,source
 ,Oshae Brissett,70,https://www.2kratings.com/oshae-brissett,https://www.2kratings.com/players/oshae-brissett,,2K26_only
 ,P.J. Dozier,70,https://www.2kratings.com/pj-dozier,https://www.2kratings.com/players/pj-dozier,,2K26_only
 ,Patrick Baldwin Jr.,70,https://www.2kratings.com/patrick-baldwin-jr,https://www.2kratings.com/players/patrick-baldwin-jr,,2K26_only
-,Rayan Rupert,70,https://cdn.nba.com/headshots/nba/latest/1040x760/1641712.png,https://www.nba.com/player/1641712,1641712,
 ,Ryan Dunn,70,https://cdn.nba.com/headshots/nba/latest/1040x760/1642346.png,https://www.nba.com/player/1642346,1642346,
 ,Ryan Kalkbrenner,70,https://cdn.nba.com/headshots/nba/latest/1040x760/1641750.png,https://www.nba.com/player/1641750,1641750,
 ,Sion James,70,https://cdn.nba.com/headshots/nba/latest/1040x760/1642883.png,https://www.nba.com/player/1642883,1642883,
@@ -544,6 +545,7 @@ player_id,name,overall,photo_url,player_page_url,nba_player_id,source
 ,Tyson Etienne,70,https://cdn.nba.com/headshots/nba/latest/1040x760/1630623.png,https://www.nba.com/player/1630623,1630623,
 ,Wendell Moore Jr.,70,https://www.2kratings.com/wendell-moore-jr,https://www.2kratings.com/players/wendell-moore-jr,,2K26_only
 ,Will Riley,70,https://cdn.nba.com/headshots/nba/latest/1040x760/1642860.png,https://www.nba.com/player/1642860,1642860,
+,Yang Hansen,70,https://cdn.nba.com/headshots/nba/latest/1040x760/1642905.png,https://www.nba.com/player/1642905,1642905,
 ,Alijah Martin,69,https://cdn.nba.com/headshots/nba/latest/1040x760/1642918.png,https://www.nba.com/player/1642918,1642918,
 ,Amari Williams,69,https://cdn.nba.com/headshots/nba/latest/1040x760/1642873.png,https://www.nba.com/player/1642873,1642873,
 ,Ben Saraf,69,https://cdn.nba.com/headshots/nba/latest/1040x760/1642879.png,https://www.nba.com/player/1642879,1642879,
@@ -571,6 +573,7 @@ player_id,name,overall,photo_url,player_page_url,nba_player_id,source
 ,Nae'Qwan Tomlin,69,https://cdn.nba.com/headshots/nba/latest/1040x760/1641772.png,https://www.nba.com/player/1641772,1641772,
 ,Nate Williams,69,https://www.2kratings.com/nate-williams,https://www.2kratings.com/players/nate-williams,,2K26_only
 ,Pacôme Dadiet,69,https://cdn.nba.com/headshots/nba/latest/1040x760/1642359.png,https://www.nba.com/player/1642359,1642359,
+,Pat Spencer,69,https://cdn.nba.com/headshots/nba/latest/1040x760/1630311.png,https://www.nba.com/player/1630311,1630311,
 ,Reece Beekman,69,https://www.2kratings.com/reece-beekman,https://www.2kratings.com/players/reece-beekman,,2K26_only
 ,Skal Labissiere,69,https://www.2kratings.com/skal-labissiere,https://www.2kratings.com/players/skal-labissiere,,2K26_only
 ,Thanasis Antetokounmpo,69,https://cdn.nba.com/headshots/nba/latest/1040x760/203648.png,https://www.nba.com/player/203648,203648,
@@ -582,6 +585,7 @@ player_id,name,overall,photo_url,player_page_url,nba_player_id,source
 ,Alex Antetokounmpo,68,https://cdn.nba.com/headshots/nba/latest/1040x760/1630828.png,https://www.nba.com/player/1630828,1630828,
 ,Alex Toohey,68,https://cdn.nba.com/headshots/nba/latest/1040x760/1642893.png,https://www.nba.com/player/1642893,1642893,
 ,Bronny James,68,https://cdn.nba.com/headshots/nba/latest/1040x760/1642355.png,https://www.nba.com/player/1642355,1642355,
+,Caleb Love,68,https://cdn.nba.com/headshots/nba/latest/1040x760/1631126.png,https://www.nba.com/player/1631126,1631126,
 ,Cam Christie,68,https://cdn.nba.com/headshots/nba/latest/1040x760/1642353.png,https://www.nba.com/player/1642353,1642353,
 ,Cam Spencer,68,https://cdn.nba.com/headshots/nba/latest/1040x760/1642285.png,https://www.nba.com/player/1642285,1642285,
 ,Chaz Lanier,68,https://cdn.nba.com/headshots/nba/latest/1040x760/1642404.png,https://www.nba.com/player/1642404,1642404,
@@ -592,6 +596,7 @@ player_id,name,overall,photo_url,player_page_url,nba_player_id,source
 ,D.J. Carton,68,https://www.2kratings.com/dj-carton,https://www.2kratings.com/players/dj-carton,,2K26_only
 ,DJ Steward,68,https://www.2kratings.com/dj-steward,https://www.2kratings.com/players/dj-steward,,2K26_only
 ,Daeqwon Plowden,68,https://cdn.nba.com/headshots/nba/latest/1040x760/1631342.png,https://www.nba.com/player/1631342,1631342,
+,David Jones Garcia,68,https://cdn.nba.com/headshots/nba/latest/1040x760/1642357.png,https://www.nba.com/player/1642357,1642357,
 ,Dylan Cardwell,68,https://cdn.nba.com/headshots/nba/latest/1040x760/1642928.png,https://www.nba.com/player/1642928,1642928,
 ,Eli John Ndiaye,68,https://cdn.nba.com/headshots/nba/latest/1040x760/1642947.png,https://www.nba.com/player/1642947,1642947,
 ,Eli N’Diaye,68,,https://www.2kratings.com/players/eli-n’diaye,,2K26_only
@@ -605,6 +610,7 @@ player_id,name,overall,photo_url,player_page_url,nba_player_id,source
 ,Jahmai Mashack,68,https://www.nba2klab.com/images/players/jahmai-mashack.png,https://www.nba2klab.com/players/jahmai-mashack,,2K26_only
 ,Jahmyl Telfort,68,https://cdn.nba.com/headshots/nba/latest/1040x760/1643141.png,https://www.nba.com/player/1643141,1643141,
 ,Javante McCoy,68,https://www.2kratings.com/javante-mccoy,https://www.2kratings.com/players/javante-mccoy,,2K26_only
+,Javonte Cooke,68,https://cdn.nba.com/headshots/nba/latest/1040x760/1631451.png,https://www.nba.com/player/1631451,1631451,
 ,Kam Jones,68,https://cdn.nba.com/headshots/nba/latest/1040x760/1642880.png,https://www.nba.com/player/1642880,1642880,
 ,Kobe Sanders,68,https://cdn.nba.com/headshots/nba/latest/1040x760/1642920.png,https://www.nba.com/player/1642920,1642920,
 ,Lachlan Olbrich,68,https://cdn.nba.com/headshots/nba/latest/1040x760/1642950.png,https://www.nba.com/player/1642950,1642950,
@@ -653,12 +659,8 @@ player_id,name,overall,photo_url,player_page_url,nba_player_id,source
 ,Taran Armstrong,67,https://www.2kratings.com/taran-armstrong,https://www.2kratings.com/players/taran-armstrong,,2K26_only
 ,Tolu Smith,67,https://cdn.nba.com/headshots/nba/latest/1040x760/1642449.png,https://www.nba.com/player/1642449,1642449,
 ,CJ Huntley,,https://cdn.nba.com/headshots/nba/latest/1040x760/1643047.png,https://www.nba.com/player/1643047,1643047,
-,Caleb Love,,https://cdn.nba.com/headshots/nba/latest/1040x760/1631126.png,https://www.nba.com/player/1631126,1631126,
-,Carter Bryant,,https://cdn.nba.com/headshots/nba/latest/1040x760/1642868.png,https://www.nba.com/player/1642868,1642868,
 ,Chris Youngblood,,https://cdn.nba.com/headshots/nba/latest/1040x760/1642959.png,https://www.nba.com/player/1642959,1642959,
-,David Jones Garcia,,https://cdn.nba.com/headshots/nba/latest/1040x760/1642357.png,https://www.nba.com/player/1642357,1642357,
 ,Jamal Cain,,https://cdn.nba.com/headshots/nba/latest/1040x760/1631288.png,https://www.nba.com/player/1631288,1631288,
-,Javonte Cooke,,https://cdn.nba.com/headshots/nba/latest/1040x760/1631451.png,https://www.nba.com/player/1631451,1631451,
 ,John Tonje,,https://cdn.nba.com/headshots/nba/latest/1040x760/1642910.png,https://www.nba.com/player/1642910,1642910,
 ,Khaman Maluach,,https://cdn.nba.com/headshots/nba/latest/1040x760/1642863.png,https://www.nba.com/player/1642863,1642863,
 ,Koby Brea,,https://cdn.nba.com/headshots/nba/latest/1040x760/1642886.png,https://www.nba.com/player/1642886,1642886,
@@ -667,7 +669,5 @@ player_id,name,overall,photo_url,player_page_url,nba_player_id,source
 ,Nigel Hayes-Davis,,https://cdn.nba.com/headshots/nba/latest/1040x760/1628502.png,https://www.nba.com/player/1628502,1628502,
 ,Noah Penda,,https://cdn.nba.com/headshots/nba/latest/1040x760/1642869.png,https://www.nba.com/player/1642869,1642869,
 ,Olivier-Maxence Prosper,,https://cdn.nba.com/headshots/nba/latest/1040x760/1641765.png,https://www.nba.com/player/1641765,1641765,
-,Pat Spencer,,https://cdn.nba.com/headshots/nba/latest/1040x760/1630311.png,https://www.nba.com/player/1630311,1630311,
 ,Rasheer Fleming,,https://cdn.nba.com/headshots/nba/latest/1040x760/1642853.png,https://www.nba.com/player/1642853,1642853,
 ,Tristan da Silva,,https://cdn.nba.com/headshots/nba/latest/1040x760/1641783.png,https://www.nba.com/player/1641783,1641783,
-,Yang Hansen,,https://cdn.nba.com/headshots/nba/latest/1040x760/1642905.png,https://www.nba.com/player/1642905,1642905,
