@@ -97,4 +97,12 @@
 - [x] Update database with new ratings (626/672 = 93.2%)
 - [x] Update website with complete database
 - [x] Calculate final coverage statistics
-- [ ] Create final checkpoint and publish
+- [x] Create final checkpoint and publish (version: 0617328e)
+
+## Extract Final 46 Player Ratings from 2kratings.com
+
+- [ ] Search for Damian Lillard on 2kratings.com
+- [ ] Search for Jerami Grant on 2kratings.com
+- [ ] Search for remaining 44 players
+- [ ] Update database with found ratings
+- [ ] Create final checkpoint with maximum coverage
