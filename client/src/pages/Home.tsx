@@ -156,7 +156,7 @@ export default function Home() {
                     }}
                     className="w-full px-4 py-3 flex items-center gap-3 hover:bg-slate-700 transition-colors text-left"
                   >
-                    {player.photo_url ? (
+                    {player.photo_url && player.photo_url.includes('cdn.nba.com') ? (
                       <img
                         src={player.photo_url}
                         alt={player.name}
@@ -167,7 +167,7 @@ export default function Home() {
                       />
                     ) : (
                       <div className="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center text-slate-400 font-bold">
-                        {player.name.charAt(0)}
+                        {player.name.split(' ').map((n: string) => n[0]).join('')}
                       </div>
                     )}
                     <div className="flex-1">
@@ -209,7 +209,7 @@ export default function Home() {
               >
                 <CardContent className="p-0">
                   <div className="aspect-square bg-gradient-to-br from-slate-700 to-slate-800 relative overflow-hidden">
-                    {player.photo_url ? (
+                    {player.photo_url && player.photo_url.includes('cdn.nba.com') ? (
                       <img
                         src={player.photo_url}
                         alt={player.name}
@@ -220,8 +220,8 @@ export default function Home() {
                         }}
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-slate-600 text-6xl font-bold">
-                        {player.name.charAt(0)}
+                      <div className="w-full h-full flex items-center justify-center text-white text-5xl font-bold">
+                        {player.name.split(' ').map((n: string) => n[0]).join('')}
                       </div>
                     )}
                     <div className="absolute top-2 right-2 bg-black/70 text-white px-2 py-1 rounded text-sm font-bold">

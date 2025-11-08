@@ -1,6 +1,6 @@
 {
-  "lastUpdated": "2025-11-08T16:23:48.709120",
-  "version": "1.0",
+  "lastUpdated": "2025-11-08T17:08:54.893517",
+  "version": "1.1",
   "totalPlayers": 672,
   "players": [
     {
@@ -1761,8 +1761,8 @@
     {
       "id": "P0565",
       "name": "Malik Beasley",
-      "nba_player_id": null,
-      "photo_url": "https://www.2kratings.com/malik-beasley",
+      "nba_player_id": "1627736",
+      "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1627736.png",
       "overall": 78,
       "player_page_url": "https://www.2kratings.com/malik-beasley",
       "k26_player_page_url": "https://www.2kratings.com/players/malik-beasley",
@@ -2479,8 +2479,8 @@
     {
       "id": "P0551",
       "name": "Spencer Dinwiddie",
-      "nba_player_id": null,
-      "photo_url": "https://www.nba2klab.com/assets/images/players/spencer-dinwiddie.png",
+      "nba_player_id": "203915",
+      "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/203915.png",
       "overall": 76,
       "player_page_url": "https://www.2kratings.com/spencer-dinwiddie",
       "k26_player_page_url": "https://www.nba2klab.com/players/spencer-dinwiddie",
