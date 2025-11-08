@@ -39,4 +39,31 @@
 - [x] Fix name matching algorithm to catch all variations (unicode normalization)
 - [x] Re-run matching with improved algorithm (395 matches, up from 371)
 - [x] Update website with corrected data (77.0% photo coverage)
-- [ ] Create new checkpoint with fixed photos
+- [x] Create new checkpoint with fixed photos (version: c69de34a)
+
+## Maximize Photo Coverage - Get All 529 NBA.com Photos
+
+- [ ] Analyze 145 unmatched players to categorize them
+- [ ] Identify players that SHOULD match but don't (name variations)
+- [ ] Use fuzzy matching for close name matches
+- [ ] Manually map remaining matchable players
+- [ ] Update database with maximum coverage
+- [ ] Create final checkpoint with best possible photo coverage
+
+## Investigation: Why only 395/529 NBA.com players matched?
+
+- [ ] Reverse analysis: Check how many of 529 NBA.com players are being used
+- [ ] Identify which NBA.com players are NOT being matched to 2K26
+- [ ] Find the gap between 395 matched and 529 available
+- [ ] Fix matching to use all 529 NBA.com photos
+
+## Create Comprehensive Database - ALL 529 NBA.com Players
+
+- [x] Start with all 529 NBA.com players as base
+- [x] Add photo URLs for all 529 players from NBA.com
+- [x] Merge NBA 2K26 ratings where players match (380 matched)
+- [x] Leave rating blank for players not in 2K26 (149 players)
+- [x] Add 143 NBA 2K26-only players (free agents, G-League)
+- [x] Clean bad data entries (removed 2)
+- [x] Update website with complete 672-player database
+- [ ] Create final checkpoint and deploy
