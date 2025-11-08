@@ -20,7 +20,9 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/players.json")
+    // Add cache-busting timestamp to force fresh data load
+    const timestamp = new Date().getTime();
+    fetch(`/players.json?v=${timestamp}`)
       .then((res) => res.json())
       .then((data) => {
         setPlayers(data);
