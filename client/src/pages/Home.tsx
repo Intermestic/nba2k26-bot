@@ -1,4 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
+import { useAuth } from "@/_core/hooks/useAuth";
+import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -9,38 +11,24 @@ interface Player {
   id: string;
   name: string;
   overall: number;
-  photo_url?: string;
-  player_page_url?: string;
+  photoUrl?: string | null;
+  playerPageUrl?: string | null;
+  badgeCount?: number | null;
 }
 
 export default function Home() {
-  const [players, setPlayers] = useState<Player[]>([]);
+  // The userAuth hooks provides authentication state
+  // To implement login/logout functionality, simply call logout() or redirect to getLoginUrl()
+  let { user, loading: authLoading, error, isAuthenticated, logout } = useAuth();
+
   const [searchTerm, setSearchTerm] = useState("");
   const [minRating, setMinRating] = useState("0");
-  const [loading, setLoading] = useState(true);
-  const [lastUpdated, setLastUpdated] = useState<string>("");
   const [showSuggestions, setShowSuggestions] = useState(false);
 
-  useEffect(() => {
-    // Add cache-busting timestamp to force fresh data load
-    const timestamp = new Date().getTime();
-    fetch(`/players.json?v=${timestamp}`)
-      .then((res) => res.json())
-      .then((data) => {
-        // Handle both old format (array) and new format (object with metadata)
-        if (Array.isArray(data)) {
-          setPlayers(data);
-        } else {
-          setPlayers(data.players || []);
-          setLastUpdated(data.lastUpdated || "");
-        }
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Error loading players:", err);
-        setLoading(false);
-      });
-  }, []);
+  // Fetch players from database API
+  const { data: players = [], isLoading: loading } = trpc.player.list.useQuery({
+    limit: 1000,
+  });
 
   const filteredPlayers = useMemo(() => {
     return players
@@ -62,12 +50,12 @@ export default function Home() {
   }, [players, searchTerm]);
 
   const stats = useMemo(() => {
-    const withPhotos = players.filter((p) => p.photo_url).length;
-    const avgRating = players.reduce((sum, p) => sum + p.overall, 0) / players.length;
+    const withPhotos = players.filter((p) => p.photoUrl).length;
+    const avgRating = players.length > 0 ? players.reduce((sum, p) => sum + p.overall, 0) / players.length : 0;
     return {
       total: players.length,
       withPhotos,
-      photoPercent: ((withPhotos / players.length) * 100).toFixed(1),
+      photoPercent: players.length > 0 ? ((withPhotos / players.length) * 100).toFixed(1) : "0.0",
       avgRating: avgRating.toFixed(1),
     };
   }, [players]);
@@ -156,9 +144,9 @@ export default function Home() {
                     }}
                     className="w-full px-4 py-3 flex items-center gap-3 hover:bg-slate-700 transition-colors text-left"
                   >
-                    {player.photo_url && player.photo_url.includes('cdn.nba.com') ? (
+                    {player.photoUrl && player.photoUrl.includes('cdn.nba.com') ? (
                       <img
-                        src={player.photo_url}
+                        src={player.photoUrl}
                         alt={player.name}
                         className="w-10 h-10 rounded-full object-cover"
                         onError={(e) => {
@@ -209,9 +197,9 @@ export default function Home() {
               >
                 <CardContent className="p-0">
                   <div className="aspect-square bg-gradient-to-br from-slate-700 to-slate-800 relative overflow-hidden">
-                    {player.photo_url && player.photo_url.includes('cdn.nba.com') ? (
+                    {player.photoUrl && player.photoUrl.includes('cdn.nba.com') ? (
                       <img
-                        src={player.photo_url}
+                        src={player.photoUrl}
                         alt={player.name}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                         onError={(e) => {
@@ -230,9 +218,9 @@ export default function Home() {
                   </div>
                   <div className="p-3">
                     <h3 className="font-semibold text-white text-sm line-clamp-2">{player.name}</h3>
-                    {player.player_page_url && (
+                    {player.playerPageUrl && (
                       <a
-                        href={player.player_page_url}
+                        href={player.playerPageUrl}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-xs text-blue-400 hover:text-blue-300 mt-1 inline-block"
@@ -258,17 +246,9 @@ export default function Home() {
           <p>
             HoF NBA 2K26 Player Database • {stats.total} Players • {stats.photoPercent}% Photo Coverage
           </p>
-          {lastUpdated && (
-            <p className="mt-1 text-xs text-slate-500">
-              Last Updated: {new Date(lastUpdated).toLocaleDateString('en-US', { 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-              })}
-            </p>
-          )}
+          <p className="mt-1 text-xs text-slate-500">
+            Database: {stats.total} players | Photos: {stats.photoPercent}% | Avg Rating: {stats.avgRating}
+          </p>
           <p className="mt-2">
             Data from{" "}
             <a href="https://www.2kratings.com" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300">

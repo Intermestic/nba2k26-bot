@@ -106,3 +106,25 @@
 - [ ] Search for remaining 44 players
 - [ ] Update database with found ratings
 - [ ] Create final checkpoint with maximum coverage
+
+## Add In-House Player Comparison Tool
+
+- [ ] Scrape badge totals for all 672 players from 2kratings.com
+- [ ] Update database with badge counts
+- [ ] Add "Compare" checkbox to player cards
+- [ ] Create side-by-side comparison UI (photos, ratings, badges, team, position)
+- [ ] Add link to view full comparison on 2kratings.com
+- [ ] Deploy comparison feature
+
+## Migrate to Database and Add Admin Panel
+
+- [x] Fix Sion James rating (70 → 76 OVR)
+- [x] Upgrade project to web-db-user (database + authentication)
+- [x] Create database schema for players table
+- [x] Migrate 672 players from JSON to PostgreSQL database
+- [x] Create tRPC procedures for player CRUD operations
+- [x] Build admin UI for editing players (overall, photo, links, badges)
+- [x] Add role-based access control (owner + approved users)
+- [x] Update frontend to fetch from database API instead of JSON files
+- [ ] Test database-backed system
+- [ ] Deploy with database migration complete
