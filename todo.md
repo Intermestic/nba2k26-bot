@@ -128,3 +128,11 @@
 - [x] Update frontend to fetch from database API instead of JSON files
 - [ ] Test database-backed system
 - [ ] Deploy with database migration complete
+
+## Verify and Update Player Ratings
+
+- [ ] Check Austin Reaves rating (should be 88 OVR)
+- [ ] Apply all rating updates from first batch (Philadelphia, Milwaukee, Chicago, Cleveland, Boston, LA Clippers, Memphis, Atlanta, Miami, Indiana, New Orleans, Detroit, Toronto, Houston)
+- [ ] Apply all rating updates from second batch (user will provide)
+- [ ] Verify all updates in database
+- [ ] Save checkpoint with corrected ratings
