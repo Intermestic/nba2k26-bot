@@ -140,3 +140,4 @@
 ## Add User Authentication UI
 
 - [x] Add login/logout button to header for user authentication
+- [x] Fix OAuth login redirect to return to database website instead of Manus dashboard

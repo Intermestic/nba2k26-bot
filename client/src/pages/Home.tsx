@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { useAuth } from "@/_core/hooks/useAuth";
+import { getLoginUrl } from "@/const";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -91,7 +92,7 @@ export default function Home() {
                 </>
               ) : (
                 <Button asChild variant="outline" className="bg-slate-800 border-slate-700 hover:bg-slate-700">
-                  <a href={`${import.meta.env.VITE_OAUTH_PORTAL_URL}/login?app_id=${import.meta.env.VITE_APP_ID}&redirect_uri=${encodeURIComponent(window.location.origin + '/oauth/callback')}`}>
+                  <a href={getLoginUrl()}>
                     Login
                   </a>
                 </Button>
