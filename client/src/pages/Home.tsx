@@ -1,10 +1,11 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
-import { Download, Search, Filter } from "lucide-react";
+import { Download, Search, Filter, Shield } from "lucide-react";
+import { Link } from "wouter";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface Player {
@@ -74,6 +75,14 @@ export default function Home() {
               </div>
             </div>
             <div className="flex gap-2">
+              {user?.role === 'admin' && (
+                <Button asChild variant="outline" className="bg-blue-900 border-blue-700 hover:bg-blue-800">
+                  <Link href="/admin">
+                    <Shield className="w-4 h-4 mr-2" />
+                    Admin
+                  </Link>
+                </Button>
+              )}
               <Button asChild variant="outline" className="bg-slate-800 border-slate-700 hover:bg-slate-700">
                 <a href="/players.csv" download>
                   <Download className="w-4 h-4 mr-2" />
