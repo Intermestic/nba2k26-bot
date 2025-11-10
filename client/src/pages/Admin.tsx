@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Edit, Loader2 } from "lucide-react";
+import { Edit, Loader2, Trash2 } from "lucide-react";
 
 export default function Admin() {
   const { user, isAuthenticated } = useAuth();
@@ -31,6 +31,17 @@ export default function Admin() {
     },
     onError: (error) => {
       toast.error(`Failed to update player: ${error.message}`);
+    },
+  });
+
+  // Delete player mutation (owner only)
+  const deleteMutation = trpc.player.delete.useMutation({
+    onSuccess: () => {
+      toast.success("Player deleted successfully!");
+      refetch();
+    },
+    onError: (error) => {
+      toast.error(`Failed to delete player: ${error.message}`);
     },
   });
 
@@ -125,14 +136,32 @@ export default function Admin() {
                       </p>
                     </div>
                   </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleEdit(player)}
-                  >
-                    <Edit className="h-4 w-4 mr-2" />
-                    Edit
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleEdit(player)}
+                    >
+                      <Edit className="h-4 w-4 mr-2" />
+                      Edit
+                    </Button>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => {
+                        if (confirm(`Are you sure you want to delete ${player.name}? This action cannot be undone.`)) {
+                          deleteMutation.mutate({ id: player.id });
+                        }
+                      }}
+                      disabled={deleteMutation.isPending}
+                    >
+                      {deleteMutation.isPending ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Trash2 className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
             ))}

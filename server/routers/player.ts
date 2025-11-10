@@ -117,13 +117,14 @@ export const playerRouter = router({
       return { success: true };
     }),
 
-  // Protected: Delete player (admin only)
+  // Protected: Delete player (owner only)
   delete: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ input, ctx }) => {
-      // Check if user is admin
-      if (ctx.user?.role !== "admin") {
-        throw new Error("Unauthorized: Admin access required");
+      // Check if user is the project owner
+      const ownerOpenId = process.env.OWNER_OPEN_ID;
+      if (ctx.user?.openId !== ownerOpenId) {
+        throw new Error("Unauthorized: Only the project owner can delete players");
       }
 
       const db = await getDb();
