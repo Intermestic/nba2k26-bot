@@ -145,3 +145,4 @@
 - [x] Add delete player functionality for owner-only in admin panel
 - [x] Fix owner recognition issue in delete player functionality - Added debug endpoint
 - [x] Change delete to allow all admins with two-step confirmation
+- [x] Add fuzzy search to admin panel matching main search behavior

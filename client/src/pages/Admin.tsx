@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
@@ -18,14 +18,35 @@ export default function Admin() {
   const [playerToDelete, setPlayerToDelete] = useState<any>(null);
   const [deleteCode, setDeleteCode] = useState("");
 
+  // Normalize name for fuzzy search (same as Home page)
+  const normalizeName = (name: string) => {
+    return name
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '') // Remove diacritics
+      .replace(/[^a-z0-9\s]/g, '') // Remove special chars
+      .replace(/\s+/g, ' ')
+      .trim();
+  };
+
   // Check owner status
   const { data: ownerStatus } = trpc.player.checkOwner.useQuery();
 
-  // Fetch players
-  const { data: players, isLoading, refetch } = trpc.player.list.useQuery({
-    search: searchTerm || undefined,
-    limit: 100,
+  // Fetch all players and filter client-side with fuzzy search
+  const { data: allPlayers, isLoading, refetch } = trpc.player.list.useQuery({
+    limit: 1000,
   });
+
+  // Filter players with fuzzy search
+  const players = useMemo(() => {
+    if (!allPlayers) return [];
+    if (!searchTerm) return allPlayers.slice(0, 100); // Show first 100 if no search
+    
+    const normalizedSearch = normalizeName(searchTerm);
+    return allPlayers
+      .filter(p => normalizeName(p.name).includes(normalizedSearch))
+      .slice(0, 100); // Limit to 100 results
+  }, [allPlayers, searchTerm]);
 
   // Update player mutation
   const updateMutation = trpc.player.update.useMutation({
