@@ -14,6 +14,9 @@ export default function Admin() {
   const [searchTerm, setSearchTerm] = useState("");
   const [editingPlayer, setEditingPlayer] = useState<any>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [playerToDelete, setPlayerToDelete] = useState<any>(null);
+  const [deleteCode, setDeleteCode] = useState("");
 
   // Check owner status
   const { data: ownerStatus } = trpc.player.checkOwner.useQuery();
@@ -37,16 +40,35 @@ export default function Admin() {
     },
   });
 
-  // Delete player mutation (owner only)
+  // Delete player mutation (admin only)
   const deleteMutation = trpc.player.delete.useMutation({
     onSuccess: () => {
       toast.success("Player deleted successfully!");
+      setDeleteDialogOpen(false);
+      setPlayerToDelete(null);
+      setDeleteCode("");
       refetch();
     },
     onError: (error) => {
       toast.error(`Failed to delete player: ${error.message}`);
     },
   });
+
+  const handleDeleteClick = (player: any) => {
+    setPlayerToDelete(player);
+    setDeleteCode("");
+    setDeleteDialogOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (deleteCode.length !== 4 || !/^\d{4}$/.test(deleteCode)) {
+      toast.error("Please enter a 4-digit code");
+      return;
+    }
+    if (playerToDelete) {
+      deleteMutation.mutate({ id: playerToDelete.id });
+    }
+  };
 
   // Check if user is admin
   if (!isAuthenticated || user?.role !== "admin") {
@@ -156,18 +178,9 @@ export default function Admin() {
                     <Button
                       variant="destructive"
                       size="sm"
-                      onClick={() => {
-                        if (confirm(`Are you sure you want to delete ${player.name}? This action cannot be undone.`)) {
-                          deleteMutation.mutate({ id: player.id });
-                        }
-                      }}
-                      disabled={deleteMutation.isPending}
+                      onClick={() => handleDeleteClick(player)}
                     >
-                      {deleteMutation.isPending ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                      ) : (
-                        <Trash2 className="h-4 w-4" />
-                      )}
+                      <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
                 </CardContent>
@@ -259,6 +272,70 @@ export default function Admin() {
                       </>
                     ) : (
                       "Save Changes"
+                    )}
+                  </Button>
+                </div>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
+
+        {/* Delete Confirmation Dialog */}
+        <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle className="text-red-500">Delete Player</DialogTitle>
+            </DialogHeader>
+            {playerToDelete && (
+              <div className="space-y-4">
+                <p className="text-sm text-muted-foreground">
+                  You are about to delete <strong>{playerToDelete.name}</strong> (Overall: {playerToDelete.overall}).
+                  This action cannot be undone.
+                </p>
+                <div>
+                  <Label htmlFor="deleteCode">Enter a 4-digit code to confirm</Label>
+                  <Input
+                    id="deleteCode"
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]{4}"
+                    maxLength={4}
+                    placeholder="Enter 4 digits"
+                    value={deleteCode}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/\D/g, '');
+                      setDeleteCode(value);
+                    }}
+                    className="text-center text-2xl tracking-widest"
+                    autoFocus
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Choose any 4-digit code (e.g., 1234)
+                  </p>
+                </div>
+                <div className="flex justify-end gap-2">
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setDeleteDialogOpen(false);
+                      setPlayerToDelete(null);
+                      setDeleteCode("");
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    onClick={handleConfirmDelete}
+                    disabled={deleteMutation.isPending || deleteCode.length !== 4}
+                  >
+                    {deleteMutation.isPending ? (
+                      <>
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        Deleting...
+                      </>
+                    ) : (
+                      "Delete Player"
                     )}
                   </Button>
                 </div>

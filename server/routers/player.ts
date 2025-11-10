@@ -10,15 +10,25 @@ export const playerRouter = router({
   checkOwner: protectedProcedure.query(async ({ ctx }) => {
     const ownerOpenId = ENV.ownerOpenId;
     const userOpenId = ctx.user?.openId;
+    const processEnvOwner = process.env.OWNER_OPEN_ID;
+    
+    console.log('[CHECK_OWNER]', {
+      'ENV.ownerOpenId': ownerOpenId,
+      'process.env.OWNER_OPEN_ID': processEnvOwner,
+      'userOpenId': userOpenId,
+      'match': userOpenId === ownerOpenId
+    });
+    
     return {
       isOwner: userOpenId === ownerOpenId,
       userOpenId: userOpenId,
       ownerOpenId: ownerOpenId,
+      processEnvOwner: processEnvOwner,
       userName: ctx.user?.name,
       userRole: ctx.user?.role,
       message: userOpenId === ownerOpenId 
         ? "You are the project owner" 
-        : `Not owner. Your OpenID: ${userOpenId}, Expected: ${ownerOpenId}`
+        : `Not owner. Your OpenID: ${userOpenId}, Expected: ${ownerOpenId} (process.env: ${processEnvOwner})`
     };
   }),
 
@@ -134,28 +144,13 @@ export const playerRouter = router({
       return { success: true };
     }),
 
-  // Protected: Delete player (owner only)
+  // Protected: Delete player (admin only with confirmation)
   delete: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ input, ctx }) => {
-      // Check if user is the project owner
-      const ownerOpenId = ENV.ownerOpenId;
-      const userOpenId = ctx.user?.openId;
-      
-      console.log('[DELETE] Owner check:', {
-        ownerOpenId,
-        userOpenId,
-        userName: ctx.user?.name,
-        userRole: ctx.user?.role,
-        match: userOpenId === ownerOpenId
-      });
-      
-      if (!ownerOpenId) {
-        throw new Error("Owner OpenID not configured in environment");
-      }
-      
-      if (userOpenId !== ownerOpenId) {
-        throw new Error(`Unauthorized: Only the project owner can delete players. Your OpenID: ${userOpenId?.substring(0, 8)}...`);
+      // Check if user is admin
+      if (ctx.user?.role !== "admin") {
+        throw new Error("Unauthorized: Admin access required");
       }
 
       const db = await getDb();
