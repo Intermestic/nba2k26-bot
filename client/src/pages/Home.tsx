@@ -27,6 +27,17 @@ export default function Home() {
   const [minRating, setMinRating] = useState("0");
   const [showSuggestions, setShowSuggestions] = useState(false);
 
+  // Normalize name for fuzzy search (remove special chars, lowercase)
+  const normalizeName = (name: string) => {
+    return name
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '') // Remove diacritics
+      .replace(/[^a-z0-9\s]/g, '') // Remove special chars (hyphens, apostrophes, etc)
+      .replace(/\s+/g, ' ') // Normalize whitespace
+      .trim();
+  };
+
   // Fetch players from database API
   const { data: players = [], isLoading: loading } = trpc.player.list.useQuery({
     limit: 1000,
@@ -35,7 +46,9 @@ export default function Home() {
   const filteredPlayers = useMemo(() => {
     return players
       .filter((p) => {
-        const matchesSearch = p.name.toLowerCase().includes(searchTerm.toLowerCase());
+        const normalizedPlayerName = normalizeName(p.name);
+        const normalizedSearch = normalizeName(searchTerm);
+        const matchesSearch = normalizedPlayerName.includes(normalizedSearch);
         const matchesRating = p.overall >= parseInt(minRating);
         return matchesSearch && matchesRating;
       })
@@ -45,8 +58,9 @@ export default function Home() {
   // Autocomplete suggestions (top 10 matches)
   const suggestions = useMemo(() => {
     if (!searchTerm || searchTerm.length < 2) return [];
+    const normalizedSearch = normalizeName(searchTerm);
     return players
-      .filter((p) => p.name.toLowerCase().includes(searchTerm.toLowerCase()))
+      .filter((p) => normalizeName(p.name).includes(normalizedSearch))
       .sort((a, b) => b.overall - a.overall)
       .slice(0, 10);
   }, [players, searchTerm]);
