@@ -136,3 +136,7 @@
 - [ ] Apply all rating updates from second batch (user will provide)
 - [ ] Verify all updates in database
 - [ ] Save checkpoint with corrected ratings
+
+## Add User Authentication UI
+
+- [x] Add login/logout button to header for user authentication

@@ -75,12 +75,25 @@ export default function Home() {
               </div>
             </div>
             <div className="flex gap-2">
-              {user?.role === 'admin' && (
-                <Button asChild variant="outline" className="bg-blue-900 border-blue-700 hover:bg-blue-800">
-                  <Link href="/admin">
-                    <Shield className="w-4 h-4 mr-2" />
-                    Admin
-                  </Link>
+              {isAuthenticated ? (
+                <>
+                  {user?.role === 'admin' && (
+                    <Button asChild variant="outline" className="bg-blue-900 border-blue-700 hover:bg-blue-800">
+                      <Link href="/admin">
+                        <Shield className="w-4 h-4 mr-2" />
+                        Admin
+                      </Link>
+                    </Button>
+                  )}
+                  <Button onClick={logout} variant="outline" className="bg-slate-800 border-slate-700 hover:bg-slate-700">
+                    Logout
+                  </Button>
+                </>
+              ) : (
+                <Button asChild variant="outline" className="bg-slate-800 border-slate-700 hover:bg-slate-700">
+                  <a href={`${import.meta.env.VITE_OAUTH_PORTAL_URL}/login?app_id=${import.meta.env.VITE_APP_ID}&redirect_uri=${encodeURIComponent(window.location.origin + '/oauth/callback')}`}>
+                    Login
+                  </a>
                 </Button>
               )}
               <Button asChild variant="outline" className="bg-slate-800 border-slate-700 hover:bg-slate-700">
