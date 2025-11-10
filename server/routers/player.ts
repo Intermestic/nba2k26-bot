@@ -3,8 +3,25 @@ import { eq, like, and, gte } from "drizzle-orm";
 import { players } from "../../drizzle/schema";
 import { getDb } from "../db";
 import { protectedProcedure, publicProcedure, router } from "../_core/trpc";
+import { ENV } from "../_core/env";
 
 export const playerRouter = router({
+  // Debug: Check owner status
+  checkOwner: protectedProcedure.query(async ({ ctx }) => {
+    const ownerOpenId = ENV.ownerOpenId;
+    const userOpenId = ctx.user?.openId;
+    return {
+      isOwner: userOpenId === ownerOpenId,
+      userOpenId: userOpenId,
+      ownerOpenId: ownerOpenId,
+      userName: ctx.user?.name,
+      userRole: ctx.user?.role,
+      message: userOpenId === ownerOpenId 
+        ? "You are the project owner" 
+        : `Not owner. Your OpenID: ${userOpenId}, Expected: ${ownerOpenId}`
+    };
+  }),
+
   // Public: List all players with optional filters
   list: publicProcedure
     .input(
@@ -122,9 +139,23 @@ export const playerRouter = router({
     .input(z.object({ id: z.string() }))
     .mutation(async ({ input, ctx }) => {
       // Check if user is the project owner
-      const ownerOpenId = process.env.OWNER_OPEN_ID;
-      if (ctx.user?.openId !== ownerOpenId) {
-        throw new Error("Unauthorized: Only the project owner can delete players");
+      const ownerOpenId = ENV.ownerOpenId;
+      const userOpenId = ctx.user?.openId;
+      
+      console.log('[DELETE] Owner check:', {
+        ownerOpenId,
+        userOpenId,
+        userName: ctx.user?.name,
+        userRole: ctx.user?.role,
+        match: userOpenId === ownerOpenId
+      });
+      
+      if (!ownerOpenId) {
+        throw new Error("Owner OpenID not configured in environment");
+      }
+      
+      if (userOpenId !== ownerOpenId) {
+        throw new Error(`Unauthorized: Only the project owner can delete players. Your OpenID: ${userOpenId?.substring(0, 8)}...`);
       }
 
       const db = await getDb();

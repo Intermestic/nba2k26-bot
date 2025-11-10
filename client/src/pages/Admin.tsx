@@ -15,6 +15,9 @@ export default function Admin() {
   const [editingPlayer, setEditingPlayer] = useState<any>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
+  // Check owner status
+  const { data: ownerStatus } = trpc.player.checkOwner.useQuery();
+
   // Fetch players
   const { data: players, isLoading, refetch } = trpc.player.list.useQuery({
     search: searchTerm || undefined,
@@ -94,6 +97,11 @@ export default function Admin() {
         <Card className="mb-6">
           <CardHeader>
             <CardTitle className="text-2xl">Admin Panel - Player Management</CardTitle>
+            {ownerStatus && (
+              <p className={`text-sm mt-2 ${ownerStatus.isOwner ? 'text-green-400' : 'text-yellow-400'}`}>
+                {ownerStatus.message}
+              </p>
+            )}
           </CardHeader>
           <CardContent>
             <div className="flex gap-4">
