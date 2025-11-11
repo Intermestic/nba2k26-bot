@@ -1,0 +1,40 @@
+{
+  "query": "SELECT name, overall, position, team FROM players WHERE name IN ('Nikola Jokić', 'Luka Dončić', 'Victor Wembanyama', 'Tyler Herro', 'Ja Morant') ORDER BY overall DESC;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT name, overall, position, team FROM players WHERE name IN ('Nikola Jokić', 'Luka Dončić', 'Victor Wembanyama', 'Tyler Herro', 'Ja Morant') ORDER BY overall DESC;",
+  "rows": [
+    {
+      "name": "Nikola Jokić",
+      "overall": "98",
+      "position": "NULL",
+      "team": "NULL"
+    },
+    {
+      "name": "Luka Dončić",
+      "overall": "97",
+      "position": "NULL",
+      "team": "NULL"
+    },
+    {
+      "name": "Victor Wembanyama",
+      "overall": "95",
+      "position": "NULL",
+      "team": "NULL"
+    },
+    {
+      "name": "Ja Morant",
+      "overall": "89",
+      "position": "NULL",
+      "team": "NULL"
+    },
+    {
+      "name": "Tyler Herro",
+      "overall": "86",
+      "position": "NULL",
+      "team": "NULL"
+    }
+  ],
+  "messages": [],
+  "stdout": "name\toverall\tposition\tteam\nNikola Jokić\t98\tNULL\tNULL\nLuka Dončić\t97\tNULL\tNULL\nVictor Wembanyama\t95\tNULL\tNULL\nJa Morant\t89\tNULL\tNULL\nTyler Herro\t86\tNULL\tNULL\n",
+  "stderr": "",
+  "execution_time_ms": 48
+}

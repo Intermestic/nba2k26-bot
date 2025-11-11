@@ -44,15 +44,30 @@ export default function Home() {
   });
 
   const filteredPlayers = useMemo(() => {
-    return players
+    const minRatingNum = parseInt(minRating);
+    console.log('[FILTER DEBUG]', { 
+      totalPlayers: players.length, 
+      searchTerm, 
+      minRating, 
+      minRatingNum 
+    });
+    
+    const filtered = players
       .filter((p) => {
         const normalizedPlayerName = normalizeName(p.name);
         const normalizedSearch = normalizeName(searchTerm);
         const matchesSearch = normalizedPlayerName.includes(normalizedSearch);
-        const matchesRating = p.overall >= parseInt(minRating);
+        const matchesRating = p.overall >= minRatingNum;
         return matchesSearch && matchesRating;
       })
       .sort((a, b) => b.overall - a.overall);
+    
+    console.log('[FILTER RESULT]', {
+      filteredCount: filtered.length,
+      firstFive: filtered.slice(0, 5).map(p => ({ name: p.name, overall: p.overall }))
+    });
+    
+    return filtered;
   }, [players, searchTerm, minRating]);
 
   // Autocomplete suggestions (top 10 matches)
