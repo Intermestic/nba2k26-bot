@@ -146,5 +146,3 @@
 - [x] Fix owner recognition issue in delete player functionality - Added debug endpoint
 - [x] Change delete to allow all admins with two-step confirmation
 - [x] Add fuzzy search to admin panel matching main search behavior
-- [ ] Fix player cards not updating when rating filter changes
-- [x] Update database with SZN17 roster information

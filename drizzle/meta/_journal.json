@@ -15,13 +15,6 @@
       "when": 1762765106178,
       "tag": "0001_normal_mesmero",
       "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "5",
-      "when": 1762903280997,
-      "tag": "0002_pale_taskmaster",
-      "breakpoints": true
     }
   ]
 }
