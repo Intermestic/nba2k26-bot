@@ -91,7 +91,6 @@ export function TeamSummariesTable({ summaries, onTeamClick }: TeamSummariesTabl
                     <ArrowUpDown className="w-4 h-4" />
                   </div>
                 </TableHead>
-                <TableHead className="text-slate-300 text-center">Status</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -112,11 +111,6 @@ export function TeamSummariesTable({ summaries, onTeamClick }: TeamSummariesTabl
                   </TableCell>
                   <TableCell className={`text-center font-semibold ${getCapStatusColor(summary.totalOverall)}`}>
                     {summary.totalOverall}
-                  </TableCell>
-                  <TableCell className="text-center text-xs text-slate-400">
-                    {summary.totalOverall < OVERALL_CAP_LIMIT && "Under Cap"}
-                    {summary.totalOverall === OVERALL_CAP_LIMIT && "At Cap"}
-                    {summary.totalOverall > OVERALL_CAP_LIMIT && "Over Cap"}
                   </TableCell>
                 </TableRow>
               ))}

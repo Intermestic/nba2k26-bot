@@ -213,3 +213,10 @@
 - [x] Add optimistic updates for better UX
 - [x] Test team assignment changes
 - [x] Save checkpoint
+
+## Fix Team Summaries Table
+
+- [x] Remove Status column (color already indicates status)
+- [x] Exclude Free Agents from team summaries table
+- [x] Add 76ers logo to teamLogos mapping
+- [x] Test and save checkpoint

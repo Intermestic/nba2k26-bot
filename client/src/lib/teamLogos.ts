@@ -28,6 +28,7 @@ export const TEAM_LOGOS: Record<string, string> = {
   "Thunder": "https://cdn.nba.com/logos/nba/1610612760/primary/L/logo.svg",
   "Magic": "https://cdn.nba.com/logos/nba/1610612753/primary/L/logo.svg",
   "76ers": "https://cdn.nba.com/logos/nba/1610612755/primary/L/logo.svg",
+  "Sixers": "https://cdn.nba.com/logos/nba/1610612755/primary/L/logo.svg", // Alias for 76ers
   "Suns": "https://cdn.nba.com/logos/nba/1610612756/primary/L/logo.svg",
   "Trail Blazers": "https://cdn.nba.com/logos/nba/1610612757/primary/L/logo.svg",
   "Kings": "https://cdn.nba.com/logos/nba/1610612758/primary/L/logo.svg",
