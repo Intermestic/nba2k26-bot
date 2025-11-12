@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { PlayerAvatar } from "@/components/PlayerAvatar";
 import { FreeAgentBadge } from "@/components/FreeAgentBadge";
 import { TeamLogoBadge } from "@/components/TeamLogoBadge";
+import { TeamRosterSummary } from "@/components/TeamRosterSummary";
 
 interface Player {
   id: string;
@@ -20,6 +21,7 @@ interface Player {
   photoUrl?: string | null;
   playerPageUrl?: string | null;
   badgeCount?: number | null;
+  salaryCap?: number | null;
 }
 
 export default function Home() {
@@ -87,6 +89,32 @@ export default function Home() {
       avgRating: avgRating.toFixed(1),
     };
   }, [players]);
+
+  // Calculate team roster summaries (only for NBA teams, not Free Agents)
+  const teamSummaries = useMemo(() => {
+    const summaries = new Map<string, { playerCount: number; totalCap: number }>();
+    
+    players.forEach(player => {
+      const team = player.team;
+      if (!team || team === "Free Agent") return;
+      
+      const current = summaries.get(team) || { playerCount: 0, totalCap: 0 };
+      summaries.set(team, {
+        playerCount: current.playerCount + 1,
+        totalCap: current.totalCap + (player.salaryCap || 0)
+      });
+    });
+    
+    return Array.from(summaries.entries())
+      .map(([team, data]) => ({ team, ...data }))
+      .sort((a, b) => a.team.localeCompare(b.team));
+  }, [players]);
+
+  // Show team summary when a specific team is selected
+  const selectedTeamSummary = useMemo(() => {
+    if (selectedTeam === "all" || selectedTeam === "Free Agent") return null;
+    return teamSummaries.find(t => t.team === selectedTeam);
+  }, [selectedTeam, teamSummaries]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
@@ -247,6 +275,17 @@ export default function Home() {
           </div>
         </div>
 
+        {/* Team Roster Summary (shown when filtering by team) */}
+        {selectedTeamSummary && (
+          <div className="mb-6">
+            <TeamRosterSummary
+              team={selectedTeamSummary.team}
+              playerCount={selectedTeamSummary.playerCount}
+              totalCap={selectedTeamSummary.totalCap}
+            />
+          </div>
+        )}
+
         {/* Player Grid */}
         {loading ? (
           <div className="text-center py-12 text-slate-400">Loading players...</div>
@@ -270,7 +309,7 @@ export default function Home() {
                       {player.overall}
                     </div>
                     <div className="absolute bottom-2 left-2">
-                      <TeamLogoBadge team={player.team} size="md" />
+                      <TeamLogoBadge team={player.team} size="xl" />
                     </div>
                   </div>
                   <div className="p-3">

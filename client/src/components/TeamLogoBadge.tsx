@@ -3,7 +3,7 @@ import { getTeamLogo } from "@/lib/teamLogos";
 interface TeamLogoBadgeProps {
   team: string | null | undefined;
   className?: string;
-  size?: "sm" | "md" | "lg";
+  size?: "sm" | "md" | "lg" | "xl";
 }
 
 /**
@@ -20,7 +20,8 @@ export function TeamLogoBadge({ team, className = "", size = "md" }: TeamLogoBad
   const sizeClasses = {
     sm: "w-6 h-6",
     md: "w-8 h-8",
-    lg: "w-10 h-10"
+    lg: "w-10 h-10",
+    xl: "w-14 h-14"
   };
   
   return (

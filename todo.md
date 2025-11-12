@@ -176,3 +176,12 @@
 - [x] Update player cards to display team logo badges
 - [x] Test team logos display correctly
 - [x] Save checkpoint
+
+## Team Roster Summary & Larger Badges
+
+- [x] Increase team logo badge size (xl)
+- [x] Add salary cap field to players table
+- [x] Create TeamRosterSummary component with cap tracking
+- [x] Display team summaries when filtering by team
+- [x] Color-code cap status (green=under, neutral=at, red=over)
+- [x] Test and save checkpoint

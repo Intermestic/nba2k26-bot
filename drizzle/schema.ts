@@ -38,6 +38,7 @@ export const players = mysqlTable("players", {
   nbaId: varchar("nbaId", { length: 64 }), // NBA.com player ID
   source: varchar("source", { length: 64 }), // Data source (nba.com, 2kratings, etc.)
   badgeCount: int("badgeCount"), // Total badge count from 2kratings
+  salaryCap: int("salaryCap"), // Salary cap hit in millions (based on overall rating)
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
