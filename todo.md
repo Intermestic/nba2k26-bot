@@ -168,3 +168,11 @@
 - [x] Update player cards to use PlayerAvatar fallback when photoUrl is missing
 - [x] Test both features on the website
 - [x] Save final checkpoint
+
+## Add Team Logo Badges
+
+- [x] Create team logo mapping with NBA.com logo URLs
+- [x] Create TeamLogoBadge component
+- [x] Update player cards to display team logo badges
+- [x] Test team logos display correctly
+- [x] Save checkpoint

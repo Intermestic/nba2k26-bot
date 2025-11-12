@@ -10,6 +10,7 @@ import { Link } from "wouter";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PlayerAvatar } from "@/components/PlayerAvatar";
 import { FreeAgentBadge } from "@/components/FreeAgentBadge";
+import { TeamLogoBadge } from "@/components/TeamLogoBadge";
 
 interface Player {
   id: string;
@@ -267,6 +268,9 @@ export default function Home() {
                     />
                     <div className="absolute top-2 right-2 bg-black/70 text-white px-2 py-1 rounded text-sm font-bold">
                       {player.overall}
+                    </div>
+                    <div className="absolute bottom-2 left-2">
+                      <TeamLogoBadge team={player.team} size="md" />
                     </div>
                   </div>
                   <div className="p-3">
