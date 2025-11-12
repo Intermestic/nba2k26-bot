@@ -151,3 +151,11 @@
 - [x] Add team filter dropdown
 - [ ] Delete all players and repopulate from master CSV
 - [ ] Add team/free agent badges to player cards
+
+## Populate Missing Player Photos
+
+- [x] Identify all players missing photos (empty or invalid photoUrl)
+- [x] Search for missing player photo URLs from NBA.com headshots
+- [x] Update database with found photo URLs (25 players updated) (20 players updated)
+- [x] Verify photos display correctly on website
+- [ ] Save checkpoint with improved photo coverage (82.1% coverage)
