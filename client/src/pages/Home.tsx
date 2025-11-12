@@ -8,6 +8,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Download, Search, Filter, Shield } from "lucide-react";
 import { Link } from "wouter";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { PlayerAvatar } from "@/components/PlayerAvatar";
+import { FreeAgentBadge } from "@/components/FreeAgentBadge";
 
 interface Player {
   id: string;
@@ -255,29 +257,24 @@ export default function Home() {
                 className="bg-slate-800/50 border-slate-700 hover:bg-slate-800 transition-colors overflow-hidden group"
               >
                 <CardContent className="p-0">
-                  <div className="aspect-square bg-gradient-to-br from-slate-700 to-slate-800 relative overflow-hidden">
-                    {player.photoUrl && player.photoUrl.includes('cdn.nba.com') ? (
-                      <img
-                        src={player.photoUrl}
-                        alt={player.name}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                        onError={(e) => {
-                          e.currentTarget.src = "";
-                          e.currentTarget.style.display = "none";
-                        }}
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-white text-5xl font-bold">
-                        {player.name.split(' ').map((n: string) => n[0]).join('')}
-                      </div>
-                    )}
+                  <div className="aspect-square bg-gradient-to-br from-slate-700 to-slate-800 relative overflow-hidden flex items-center justify-center">
+                    <PlayerAvatar 
+                      name={player.name}
+                      photoUrl={player.photoUrl}
+                      team={player.team || "Free Agent"}
+                      size="lg"
+                      className="w-full h-full rounded-none group-hover:scale-110 transition-transform duration-300"
+                    />
                     <div className="absolute top-2 right-2 bg-black/70 text-white px-2 py-1 rounded text-sm font-bold">
                       {player.overall}
                     </div>
                   </div>
                   <div className="p-3">
-                    <h3 className="font-semibold text-white text-sm line-clamp-2">{player.name}</h3>
-                    {player.team && (
+                    <div className="flex items-start justify-between gap-2 mb-1">
+                      <h3 className="font-semibold text-white text-sm line-clamp-2 flex-1">{player.name}</h3>
+                      <FreeAgentBadge team={player.team || ""} className="text-xs shrink-0" />
+                    </div>
+                    {player.team && player.team !== "Free Agent" && (
                       <p className="text-xs text-slate-400 mt-1">{player.team}</p>
                     )}
                     {player.playerPageUrl && (

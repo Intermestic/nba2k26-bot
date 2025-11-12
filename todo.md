@@ -159,3 +159,12 @@
 - [x] Update database with found photo URLs (25 players updated) (20 players updated)
 - [x] Verify photos display correctly on website
 - [x] Save checkpoint with improved photo coverage (95.2% coverage - 612/643 players)
+
+## Add Placeholder Images and Free Agent Badges
+
+- [x] Create PlayerAvatar component with initials for players without photos
+- [x] Add Free Agent badge component
+- [x] Update player cards to show Free Agent badge when team is "Free Agent"
+- [x] Update player cards to use PlayerAvatar fallback when photoUrl is missing
+- [x] Test both features on the website
+- [x] Save final checkpoint
