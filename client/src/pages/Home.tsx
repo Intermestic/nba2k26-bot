@@ -74,15 +74,15 @@ export default function Home() {
       .slice(0, 10);
   }, [players, searchTerm]);
 
-  // Get unique teams for filter (Free Agent at the end)
+  // Get unique teams for filter (Free Agents at the end)
   const teams = useMemo(() => {
     const uniqueTeams = Array.from(new Set(players.map(p => p.team).filter(Boolean)));
     const sorted = uniqueTeams.sort();
-    // Move "Free Agent" to the end
-    const freeAgentIndex = sorted.indexOf("Free Agent");
+    // Move "Free Agents" to the end
+    const freeAgentIndex = sorted.indexOf("Free Agents");
     if (freeAgentIndex > -1) {
       sorted.splice(freeAgentIndex, 1);
-      sorted.push("Free Agent");
+      sorted.push("Free Agents");
     }
     return sorted;
   }, [players]);
@@ -104,7 +104,7 @@ export default function Home() {
     
     players.forEach(player => {
       const team = player.team;
-      if (!team || team === "Free Agent") return;
+      if (!team || team === "Free Agents") return;
       
       const current = summaries.get(team) || { playerCount: 0, totalOverall: 0 };
       summaries.set(team, {
@@ -118,16 +118,16 @@ export default function Home() {
       .sort((a, b) => a.team.localeCompare(b.team));
   }, [players]);
 
-  // Get Free Agent count
+  // Get Free Agents count
   const freeAgentCount = useMemo(() => {
-    return players.filter(p => p.team === "Free Agent").length;
+    return players.filter(p => p.team === "Free Agents").length;
   }, [players]);
 
   // Show team summary when a specific team is selected
   const selectedTeamSummary = useMemo(() => {
     if (selectedTeam === "all") return null;
-    if (selectedTeam === "Free Agent") {
-      return { team: "Free Agent", playerCount: freeAgentCount, totalOverall: 0, isFreeAgent: true };
+    if (selectedTeam === "Free Agents") {
+      return { team: "Free Agents", playerCount: freeAgentCount, totalOverall: 0, isFreeAgent: true };
     }
     return teamSummaries.find(t => t.team === selectedTeam);
   }, [selectedTeam, teamSummaries, freeAgentCount]);
@@ -326,7 +326,7 @@ export default function Home() {
                     <PlayerAvatar 
                       name={player.name}
                       photoUrl={player.photoUrl}
-                      team={player.team || "Free Agent"}
+                      team={player.team || "Free Agents"}
                       size="lg"
                       className="w-full h-full rounded-none group-hover:scale-110 transition-transform duration-300"
                     />
@@ -342,7 +342,7 @@ export default function Home() {
                       <h3 className="font-semibold text-white text-sm line-clamp-2 flex-1">{player.name}</h3>
                       <FreeAgentBadge team={player.team || ""} className="text-xs shrink-0" />
                     </div>
-                    {player.team && player.team !== "Free Agent" && (
+                    {player.team && player.team !== "Free Agents" && (
                       <p className="text-xs text-slate-400 mt-1">{player.team}</p>
                     )}
                     {player.playerPageUrl && (

@@ -42,7 +42,7 @@ export const TEAM_LOGOS: Record<string, string> = {
  * Get team logo URL by team name
  */
 export function getTeamLogo(teamName: string | null | undefined): string | null {
-  if (!teamName || teamName === "Free Agent") {
+  if (!teamName || teamName === "Free Agents") {
     return null;
   }
   

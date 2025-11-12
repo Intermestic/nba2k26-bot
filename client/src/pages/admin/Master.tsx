@@ -38,11 +38,11 @@ export default function Master() {
   const teams = useMemo(() => {
     const uniqueTeams = Array.from(new Set(players.map(p => p.team).filter(Boolean)));
     const sorted = uniqueTeams.sort();
-    // Move "Free Agent" to the end
-    const freeAgentIndex = sorted.indexOf("Free Agent");
+    // Move "Free Agents" to the end
+    const freeAgentIndex = sorted.indexOf("Free Agents");
     if (freeAgentIndex > -1) {
       sorted.splice(freeAgentIndex, 1);
-      sorted.push("Free Agent");
+      sorted.push("Free Agents");
     }
     return sorted;
   }, [players]);

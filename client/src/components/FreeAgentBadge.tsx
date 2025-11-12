@@ -7,10 +7,10 @@ interface FreeAgentBadgeProps {
 
 /**
  * FreeAgentBadge component that displays a badge for free agent players
- * Only shows when player's team is "Free Agent"
+ * Only shows when player's team is "Free Agents"
  */
 export function FreeAgentBadge({ team, className = "" }: FreeAgentBadgeProps) {
-  if (team !== "Free Agent") {
+  if (team !== "Free Agents") {
     return null;
   }
   

@@ -15,7 +15,7 @@ interface PlayerAvatarProps {
 export function PlayerAvatar({ 
   name, 
   photoUrl, 
-  team = "Free Agent",
+  team = "Free Agents",
   size = "md",
   className = "" 
 }: PlayerAvatarProps) {

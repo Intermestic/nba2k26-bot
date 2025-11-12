@@ -220,3 +220,12 @@
 - [x] Exclude Free Agents from team summaries table
 - [x] Add 76ers logo to teamLogos mapping
 - [x] Test and save checkpoint
+
+## Remove Duplicates & Fix Free Agents
+
+- [x] Find duplicate players in database
+- [x] Remove duplicate entries (keep one copy)
+- [x] Report on duplicates removed
+- [x] Fix Free Agents roster display (remove /14)
+- [x] Move Free Agents to end of team dropdown
+- [x] Test and save checkpoint
