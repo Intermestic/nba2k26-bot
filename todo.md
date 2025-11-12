@@ -149,3 +149,5 @@
 - [x] Sync database with new SZN17 roster (update existing, delete missing players)
 - [x] Display team names in player cards
 - [x] Add team filter dropdown
+- [ ] Delete all players and repopulate from master CSV
+- [ ] Add team/free agent badges to player cards
