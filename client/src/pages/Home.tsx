@@ -12,6 +12,7 @@ import { PlayerAvatar } from "@/components/PlayerAvatar";
 import { FreeAgentBadge } from "@/components/FreeAgentBadge";
 import { TeamLogoBadge } from "@/components/TeamLogoBadge";
 import { TeamRosterSummary } from "@/components/TeamRosterSummary";
+import { TeamSummariesTable } from "@/components/TeamSummariesTable";
 
 interface Player {
   id: string;
@@ -73,10 +74,17 @@ export default function Home() {
       .slice(0, 10);
   }, [players, searchTerm]);
 
-  // Get unique teams for filter
+  // Get unique teams for filter (Free Agent at the end)
   const teams = useMemo(() => {
     const uniqueTeams = Array.from(new Set(players.map(p => p.team).filter(Boolean)));
-    return uniqueTeams.sort();
+    const sorted = uniqueTeams.sort();
+    // Move "Free Agent" to the end
+    const freeAgentIndex = sorted.indexOf("Free Agent");
+    if (freeAgentIndex > -1) {
+      sorted.splice(freeAgentIndex, 1);
+      sorted.push("Free Agent");
+    }
+    return sorted;
   }, [players]);
 
   const stats = useMemo(() => {
@@ -92,7 +100,7 @@ export default function Home() {
 
   // Calculate team roster summaries (only for NBA teams, not Free Agents)
   const teamSummaries = useMemo(() => {
-    const summaries = new Map<string, { playerCount: number; totalOverall: number }>();
+    const summaries = new Map<string, { playerCount: number; totalOverall: number; isFreeAgent?: boolean }>();
     
     players.forEach(player => {
       const team = player.team;
@@ -110,11 +118,19 @@ export default function Home() {
       .sort((a, b) => a.team.localeCompare(b.team));
   }, [players]);
 
+  // Get Free Agent count
+  const freeAgentCount = useMemo(() => {
+    return players.filter(p => p.team === "Free Agent").length;
+  }, [players]);
+
   // Show team summary when a specific team is selected
   const selectedTeamSummary = useMemo(() => {
-    if (selectedTeam === "all" || selectedTeam === "Free Agent") return null;
+    if (selectedTeam === "all") return null;
+    if (selectedTeam === "Free Agent") {
+      return { team: "Free Agent", playerCount: freeAgentCount, totalOverall: 0, isFreeAgent: true };
+    }
     return teamSummaries.find(t => t.team === selectedTeam);
-  }, [selectedTeam, teamSummaries]);
+  }, [selectedTeam, teamSummaries, freeAgentCount]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
@@ -125,8 +141,8 @@ export default function Home() {
             <div className="flex items-center gap-4">
               <img src="/hof-logo.png" alt="Hall of Fame Basketball Association" className="h-16 md:h-20 w-auto" />
               <div>
-                <h1 className="text-3xl md:text-4xl font-bold text-white">HoF NBA 2K26 Player Database</h1>
-                <p className="text-slate-400 mt-1">Complete roster with ratings and photos</p>
+                <h1 className="text-3xl md:text-4xl font-bold text-white">Hall of Fame Basketball Association - SZN 17 Roster</h1>
+                <p className="text-slate-400 mt-1">Complete player database with ratings and photos</p>
               </div>
             </div>
             <div className="flex gap-2">
@@ -195,6 +211,14 @@ export default function Home() {
               <div className="text-sm text-slate-400">Filtered</div>
             </CardContent>
           </Card>
+        </div>
+
+        {/* All Teams Overview Table */}
+        <div className="mb-8">
+          <TeamSummariesTable 
+            summaries={teamSummaries} 
+            onTeamClick={(team) => setSelectedTeam(team)}
+          />
         </div>
 
         {/* Filters */}
@@ -282,6 +306,7 @@ export default function Home() {
               team={selectedTeamSummary.team}
               playerCount={selectedTeamSummary.playerCount}
               totalOverall={selectedTeamSummary.totalOverall}
+              isFreeAgent={selectedTeamSummary.isFreeAgent}
             />
           </div>
         )}

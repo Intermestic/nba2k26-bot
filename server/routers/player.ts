@@ -144,6 +144,34 @@ export const playerRouter = router({
       return { success: true };
     }),
 
+  // Protected: Update player team (admin only)
+  updateTeam: protectedProcedure
+    .input(
+      z.object({
+        playerId: z.string(),
+        team: z.string(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      // Check if user is admin
+      if (ctx.user?.role !== "admin") {
+        throw new Error("Unauthorized: Admin access required");
+      }
+
+      const db = await getDb();
+      if (!db) throw new Error("Database not available");
+
+      await db
+        .update(players)
+        .set({
+          team: input.team,
+          updatedAt: new Date(),
+        })
+        .where(eq(players.id, input.playerId));
+
+      return { success: true };
+    }),
+
   // Protected: Delete player (admin only with confirmation)
   delete: protectedProcedure
     .input(z.object({ id: z.string() }))

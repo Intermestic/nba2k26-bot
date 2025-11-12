@@ -194,3 +194,22 @@
 - [x] Update color coding logic (cap = 1098 max total overall ratings)
 - [x] Test with team filter
 - [x] Save corrected checkpoint
+
+## Title Update & Team Summaries Table
+
+- [x] Change page title to "Hall of Fame Basketball Association - SZN 17 Roster"
+- [x] Update document title and metadata
+- [x] Create sortable team summaries table showing all 28 teams
+- [x] Adjust Free Agent display (no /14, just player count)
+- [x] Move Free Agent to end of team sort order
+- [x] Test and save checkpoint
+
+## Admin Master Page for Team Management
+
+- [x] Create /admin/master route (admin-only access)
+- [x] Display all players in alphabetical order
+- [x] Add team dropdown for each player
+- [x] Create tRPC mutation to update player team
+- [x] Add optimistic updates for better UX
+- [x] Test team assignment changes
+- [x] Save checkpoint
