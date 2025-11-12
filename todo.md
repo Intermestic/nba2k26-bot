@@ -147,3 +147,5 @@
 - [x] Change delete to allow all admins with two-step confirmation
 - [x] Add fuzzy search to admin panel matching main search behavior
 - [x] Sync database with new SZN17 roster (update existing, delete missing players)
+- [x] Display team names in player cards
+- [x] Add team filter dropdown

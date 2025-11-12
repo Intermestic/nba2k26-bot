@@ -13,6 +13,7 @@ interface Player {
   id: string;
   name: string;
   overall: number;
+  team?: string | null;
   photoUrl?: string | null;
   playerPageUrl?: string | null;
   badgeCount?: number | null;
@@ -25,6 +26,7 @@ export default function Home() {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [minRating, setMinRating] = useState("0");
+  const [selectedTeam, setSelectedTeam] = useState("all");
   const [showSuggestions, setShowSuggestions] = useState(false);
 
   // Normalize name for fuzzy search (remove special chars, lowercase)
@@ -50,10 +52,11 @@ export default function Home() {
         const normalizedSearch = normalizeName(searchTerm);
         const matchesSearch = normalizedPlayerName.includes(normalizedSearch);
         const matchesRating = p.overall >= parseInt(minRating);
-        return matchesSearch && matchesRating;
+        const matchesTeam = selectedTeam === "all" || p.team === selectedTeam;
+        return matchesSearch && matchesRating && matchesTeam;
       })
       .sort((a, b) => b.overall - a.overall);
-  }, [players, searchTerm, minRating]);
+  }, [players, searchTerm, minRating, selectedTeam]);
 
   // Autocomplete suggestions (top 10 matches)
   const suggestions = useMemo(() => {
@@ -64,6 +67,12 @@ export default function Home() {
       .sort((a, b) => b.overall - a.overall)
       .slice(0, 10);
   }, [players, searchTerm]);
+
+  // Get unique teams for filter
+  const teams = useMemo(() => {
+    const uniqueTeams = Array.from(new Set(players.map(p => p.team).filter(Boolean)));
+    return uniqueTeams.sort();
+  }, [players]);
 
   const stats = useMemo(() => {
     const withPhotos = players.filter((p) => p.photoUrl).length;
@@ -204,7 +213,7 @@ export default function Home() {
               </div>
             )}
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             <Filter className="w-4 h-4 text-slate-400" />
             <Select value={minRating} onValueChange={setMinRating}>
               <SelectTrigger className="w-[180px] bg-slate-800 border-slate-700 text-white">
@@ -217,6 +226,19 @@ export default function Home() {
                 <SelectItem value="80">80+ Starter</SelectItem>
                 <SelectItem value="75">75+ Rotation</SelectItem>
                 <SelectItem value="70">70+ Bench</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={selectedTeam} onValueChange={setSelectedTeam}>
+              <SelectTrigger className="w-[180px] bg-slate-800 border-slate-700 text-white">
+                <SelectValue placeholder="All Teams" />
+              </SelectTrigger>
+              <SelectContent className="bg-slate-800 border-slate-700 max-h-[300px]">
+                <SelectItem value="all">All Teams</SelectItem>
+                {teams.map((team) => (
+                  <SelectItem key={team} value={team as string}>
+                    {team}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
@@ -255,6 +277,9 @@ export default function Home() {
                   </div>
                   <div className="p-3">
                     <h3 className="font-semibold text-white text-sm line-clamp-2">{player.name}</h3>
+                    {player.team && (
+                      <p className="text-xs text-slate-400 mt-1">{player.team}</p>
+                    )}
                     {player.playerPageUrl && (
                       <a
                         href={player.playerPageUrl}
