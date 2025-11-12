@@ -4,26 +4,26 @@ import { TeamLogoBadge } from "./TeamLogoBadge";
 interface TeamRosterSummaryProps {
   team: string;
   playerCount: number;
-  totalCap: number;
+  totalOverall: number;
 }
 
-const SALARY_CAP_LIMIT = 1098; // NBA salary cap in millions
+const OVERALL_CAP_LIMIT = 1098; // Maximum sum of player overall ratings
 
 /**
  * TeamRosterSummary component displays team roster information
  * Shows player count (x/14) and total salary cap with color-coded status
  */
-export function TeamRosterSummary({ team, playerCount, totalCap }: TeamRosterSummaryProps) {
-  // Determine cap status color
+export function TeamRosterSummary({ team, playerCount, totalOverall }: TeamRosterSummaryProps) {
+  // Determine cap status color based on total overall ratings
   const getCapStatusColor = () => {
-    if (totalCap < SALARY_CAP_LIMIT) return "text-green-500"; // Under cap
-    if (totalCap === SALARY_CAP_LIMIT) return "text-foreground"; // At cap
+    if (totalOverall < OVERALL_CAP_LIMIT) return "text-green-500"; // Under cap
+    if (totalOverall === OVERALL_CAP_LIMIT) return "text-foreground"; // At cap
     return "text-red-500"; // Over cap
   };
 
   const getCapStatusText = () => {
-    if (totalCap < SALARY_CAP_LIMIT) return "Under Cap";
-    if (totalCap === SALARY_CAP_LIMIT) return "At Cap";
+    if (totalOverall < OVERALL_CAP_LIMIT) return "Under Cap";
+    if (totalOverall === OVERALL_CAP_LIMIT) return "At Cap";
     return "Over Cap";
   };
 
@@ -42,11 +42,11 @@ export function TeamRosterSummary({ team, playerCount, totalCap }: TeamRosterSum
                 Roster: <span className="font-semibold text-foreground">{playerCount}/14</span>
               </span>
               <span className="text-muted-foreground">
-                Total Cap: <span className={`font-semibold ${getCapStatusColor()}`}>${totalCap}M</span>
+                Total Overall: <span className={`font-semibold ${getCapStatusColor()}`}>{totalOverall}</span>
               </span>
             </div>
             <div className="text-xs text-muted-foreground mt-1">
-              {getCapStatusText()} (Cap: ${SALARY_CAP_LIMIT}M)
+              {getCapStatusText()} (Cap: {OVERALL_CAP_LIMIT})
             </div>
           </div>
         </div>

@@ -92,16 +92,16 @@ export default function Home() {
 
   // Calculate team roster summaries (only for NBA teams, not Free Agents)
   const teamSummaries = useMemo(() => {
-    const summaries = new Map<string, { playerCount: number; totalCap: number }>();
+    const summaries = new Map<string, { playerCount: number; totalOverall: number }>();
     
     players.forEach(player => {
       const team = player.team;
       if (!team || team === "Free Agent") return;
       
-      const current = summaries.get(team) || { playerCount: 0, totalCap: 0 };
+      const current = summaries.get(team) || { playerCount: 0, totalOverall: 0 };
       summaries.set(team, {
         playerCount: current.playerCount + 1,
-        totalCap: current.totalCap + (player.salaryCap || 0)
+        totalOverall: current.totalOverall + player.overall
       });
     });
     
@@ -281,7 +281,7 @@ export default function Home() {
             <TeamRosterSummary
               team={selectedTeamSummary.team}
               playerCount={selectedTeamSummary.playerCount}
-              totalCap={selectedTeamSummary.totalCap}
+              totalOverall={selectedTeamSummary.totalOverall}
             />
           </div>
         )}

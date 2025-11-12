@@ -185,3 +185,12 @@
 - [x] Display team summaries when filtering by team
 - [x] Color-code cap status (green=under, neutral=at, red=over)
 - [x] Test and save checkpoint
+
+## Fix Cap System - Use Overall Ratings Sum
+
+- [x] Remove salaryCap field from database schema (not needed)
+- [x] Update TeamRosterSummary to calculate sum of overall ratings
+- [x] Update component labels to show "Total Overall" instead of "Total Cap"
+- [x] Update color coding logic (cap = 1098 max total overall ratings)
+- [x] Test with team filter
+- [x] Save corrected checkpoint
