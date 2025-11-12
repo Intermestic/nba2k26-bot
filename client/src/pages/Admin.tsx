@@ -1,380 +1,195 @@
-import { useState, useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Search, Shield } from "lucide-react";
+import { Link, useLocation } from "wouter";
+import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Edit, Loader2, Trash2, Users } from "lucide-react";
-import { Link } from "wouter";
+
+interface Player {
+  id: string;
+  name: string;
+  overall: number;
+  team?: string | null;
+  photoUrl?: string | null;
+}
 
 export default function Admin() {
   const { user, isAuthenticated } = useAuth();
+  const [, setLocation] = useLocation();
   const [searchTerm, setSearchTerm] = useState("");
-  const [editingPlayer, setEditingPlayer] = useState<any>(null);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [playerToDelete, setPlayerToDelete] = useState<any>(null);
-  const [deleteCode, setDeleteCode] = useState("");
 
-  // Normalize name for fuzzy search (same as Home page)
-  const normalizeName = (name: string) => {
-    return name
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '') // Remove diacritics
-      .replace(/[^a-z0-9\s]/g, '') // Remove special chars
-      .replace(/\s+/g, ' ')
-      .trim();
-  };
+  // Redirect if not admin
+  if (isAuthenticated && user?.role !== "admin") {
+    setLocation("/");
+    return null;
+  }
 
-  // Check owner status
-  const { data: ownerStatus } = trpc.player.checkOwner.useQuery();
-
-  // Fetch all players and filter client-side with fuzzy search
-  const { data: allPlayers, isLoading, refetch } = trpc.player.list.useQuery({
+  // Fetch all players
+  const { data: players = [], isLoading } = trpc.player.list.useQuery({
     limit: 1000,
   });
 
-  // Filter players with fuzzy search
-  const players = useMemo(() => {
-    if (!allPlayers) return [];
-    if (!searchTerm) return allPlayers.slice(0, 100); // Show first 100 if no search
-    
-    const normalizedSearch = normalizeName(searchTerm);
-    return allPlayers
-      .filter(p => normalizeName(p.name).includes(normalizedSearch))
-      .slice(0, 100); // Limit to 100 results
-  }, [allPlayers, searchTerm]);
+  // Get unique teams for dropdown
+  const teams = useMemo(() => {
+    const uniqueTeams = Array.from(new Set(players.map(p => p.team).filter(Boolean)));
+    const sorted = uniqueTeams.sort();
+    // Move "Free Agents" to the end
+    const freeAgentIndex = sorted.indexOf("Free Agents");
+    if (freeAgentIndex > -1) {
+      sorted.splice(freeAgentIndex, 1);
+      sorted.push("Free Agents");
+    }
+    return sorted;
+  }, [players]);
 
-  // Update player mutation
-  const updateMutation = trpc.player.update.useMutation({
+  // Sort players alphabetically and filter by search
+  const sortedPlayers = useMemo(() => {
+    return players
+      .filter(p => p.name.toLowerCase().includes(searchTerm.toLowerCase()))
+      .sort((a, b) => a.name.localeCompare(b.name));
+  }, [players, searchTerm]);
+
+  // Mutation to update player team
+  const utils = trpc.useUtils();
+  const updateTeam = trpc.player.updateTeam.useMutation({
     onSuccess: () => {
-      toast.success("Player updated successfully!");
-      setIsDialogOpen(false);
-      setEditingPlayer(null);
-      refetch();
+      toast.success("Player team updated successfully");
+      utils.player.list.invalidate();
     },
-    onError: (error) => {
-      toast.error(`Failed to update player: ${error.message}`);
+    onError: (error: any) => {
+      toast.error(`Failed to update team: ${error.message}`);
     },
   });
 
-  // Delete player mutation (admin only)
-  const deleteMutation = trpc.player.delete.useMutation({
-    onSuccess: () => {
-      toast.success("Player deleted successfully!");
-      setDeleteDialogOpen(false);
-      setPlayerToDelete(null);
-      setDeleteCode("");
-      refetch();
-    },
-    onError: (error) => {
-      toast.error(`Failed to delete player: ${error.message}`);
-    },
-  });
-
-  const handleDeleteClick = (player: any) => {
-    setPlayerToDelete(player);
-    setDeleteCode("");
-    setDeleteDialogOpen(true);
+  const handleTeamChange = (playerId: string, newTeam: string) => {
+    updateTeam.mutate({ playerId, team: newTeam });
   };
 
-  const handleConfirmDelete = () => {
-    if (deleteCode.length !== 4 || !/^\d{4}$/.test(deleteCode)) {
-      toast.error("Please enter a 4-digit code");
-      return;
-    }
-    if (playerToDelete) {
-      deleteMutation.mutate({ id: playerToDelete.id });
-    }
-  };
-
-  // Check if user is admin
-  if (!isAuthenticated || user?.role !== "admin") {
+  if (!isAuthenticated) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900">
-        <Card className="w-full max-w-md">
-          <CardHeader>
-            <CardTitle>Access Denied</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-muted-foreground">
-              You must be an admin to access this page.
-            </p>
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
+        <Card className="bg-slate-800/50 border-slate-700 max-w-md">
+          <CardContent className="p-8 text-center">
+            <Shield className="w-16 h-16 mx-auto mb-4 text-slate-400" />
+            <h2 className="text-2xl font-bold text-white mb-2">Admin Access Required</h2>
+            <p className="text-slate-400 mb-4">You must be logged in as an admin to access this page.</p>
+            <Button asChild>
+              <Link href="/">Return Home</Link>
+            </Button>
           </CardContent>
         </Card>
       </div>
     );
   }
 
-  const handleEdit = (player: any) => {
-    setEditingPlayer({
-      id: player.id,
-      name: player.name,
-      overall: player.overall,
-      photoUrl: player.photoUrl || "",
-      playerPageUrl: player.playerPageUrl || "",
-      badgeCount: player.badgeCount || "",
-    });
-    setIsDialogOpen(true);
-  };
-
-  const handleSave = () => {
-    if (!editingPlayer) return;
-
-    updateMutation.mutate({
-      id: editingPlayer.id,
-      name: editingPlayer.name,
-      overall: parseInt(editingPlayer.overall),
-      photoUrl: editingPlayer.photoUrl || null,
-      playerPageUrl: editingPlayer.playerPageUrl || null,
-      badgeCount: editingPlayer.badgeCount ? parseInt(editingPlayer.badgeCount) : null,
-    });
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900 p-6">
-      <div className="container mx-auto">
-        <Card className="mb-6">
-          <CardHeader>
-            <div className="flex items-center justify-between">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+      {/* Header */}
+      <header className="border-b border-slate-700 bg-slate-900/50 backdrop-blur-sm sticky top-0 z-10">
+        <div className="container mx-auto px-4 py-4 md:py-6">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div className="flex items-center gap-2 md:gap-4">
+              <img src="/hof-logo.png" alt="Hall of Fame Basketball Association" className="h-12 md:h-16 w-auto" />
               <div>
-                <CardTitle className="text-2xl">Admin Panel - Player Management</CardTitle>
-                {ownerStatus && (
-                  <p className={`text-sm mt-2 ${ownerStatus.isOwner ? 'text-green-400' : 'text-yellow-400'}`}>
-                    {ownerStatus.message}
-                  </p>
-                )}
+                <h1 className="text-xl md:text-3xl font-bold text-white">Team Management</h1>
+                <p className="text-xs md:text-sm text-slate-400 mt-1">Assign players to teams</p>
               </div>
-              <Button asChild variant="outline" className="bg-blue-900 border-blue-700 hover:bg-blue-800">
-                <Link href="/admin/master">
-                  <Users className="w-4 h-4 mr-2" />
-                  Team Management
+            </div>
+            <div className="flex gap-2">
+              <Button asChild variant="outline" size="sm" className="bg-slate-800 border-slate-700 hover:bg-slate-700">
+                <Link href="/admin/players">
+                  Player Management
+                </Link>
+              </Button>
+              <Button asChild variant="outline" size="sm" className="bg-slate-800 border-slate-700 hover:bg-slate-700">
+                <Link href="/">
+                  Home
                 </Link>
               </Button>
             </div>
+          </div>
+        </div>
+      </header>
+
+      <div className="container mx-auto px-4 py-8">
+        {/* Search */}
+        <div className="mb-6">
+          <div className="relative max-w-md">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <Input
+              placeholder="Search players..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10 bg-slate-800 border-slate-700 text-white placeholder:text-slate-400"
+            />
+          </div>
+        </div>
+
+        {/* Players Table */}
+        <Card className="bg-slate-800/50 border-slate-700">
+          <CardHeader>
+            <CardTitle className="text-white">
+              All Players ({sortedPlayers.length})
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex gap-4">
-              <Input
-                placeholder="Search players..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="flex-1"
-              />
-              <Button onClick={() => refetch()}>Refresh</Button>
-            </div>
+            {isLoading ? (
+              <div className="text-center py-12 text-slate-400">Loading players...</div>
+            ) : (
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="border-slate-700 hover:bg-slate-800/50">
+                      <TableHead className="text-slate-300">Player Name</TableHead>
+                      <TableHead className="text-slate-300 text-center hidden sm:table-cell">Overall</TableHead>
+                      <TableHead className="text-slate-300">Team</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {sortedPlayers.map((player) => (
+                      <TableRow 
+                        key={player.id}
+                        className="border-slate-700 hover:bg-slate-800/70"
+                      >
+                        <TableCell className="font-medium text-white">
+                          <div>
+                            <div>{player.name}</div>
+                            <div className="text-xs text-slate-400 sm:hidden">OVR: {player.overall}</div>
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-center text-slate-300 hidden sm:table-cell">
+                          {player.overall}
+                        </TableCell>
+                        <TableCell>
+                          <Select
+                            value={player.team || ""}
+                            onValueChange={(value) => handleTeamChange(player.id, value)}
+                          >
+                            <SelectTrigger className="w-full sm:w-[200px] bg-slate-800 border-slate-700 text-white text-sm">
+                              <SelectValue placeholder="Select team" />
+                            </SelectTrigger>
+                            <SelectContent className="bg-slate-800 border-slate-700 max-h-[300px]">
+                              {teams.map((team) => (
+                                <SelectItem key={team} value={team as string}>
+                                  {team}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
           </CardContent>
         </Card>
-
-        {isLoading ? (
-          <div className="flex justify-center items-center py-12">
-            <Loader2 className="h-8 w-8 animate-spin" />
-          </div>
-        ) : (
-          <div className="grid gap-4">
-            {players?.map((player) => (
-              <Card key={player.id}>
-                <CardContent className="flex items-center justify-between p-4">
-                  <div className="flex items-center gap-4">
-                    {player.photoUrl ? (
-                      <img
-                        src={player.photoUrl}
-                        alt={player.name}
-                        className="w-12 h-12 rounded-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-12 h-12 rounded-full bg-gray-700 flex items-center justify-center text-white font-bold">
-                        {player.name.split(" ").map(n => n[0]).join("").slice(0, 2)}
-                      </div>
-                    )}
-                    <div>
-                      <h3 className="font-semibold">{player.name}</h3>
-                      <p className="text-sm text-muted-foreground">
-                        Overall: {player.overall} | Badges: {player.badgeCount || "N/A"}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleEdit(player)}
-                    >
-                      <Edit className="h-4 w-4 mr-2" />
-                      Edit
-                    </Button>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => handleDeleteClick(player)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        )}
-
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogContent className="max-w-md">
-            <DialogHeader>
-              <DialogTitle>Edit Player</DialogTitle>
-            </DialogHeader>
-            {editingPlayer && (
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="name">Name</Label>
-                  <Input
-                    id="name"
-                    value={editingPlayer.name}
-                    onChange={(e) =>
-                      setEditingPlayer({ ...editingPlayer, name: e.target.value })
-                    }
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="overall">Overall Rating</Label>
-                  <Input
-                    id="overall"
-                    type="number"
-                    min="0"
-                    max="99"
-                    value={editingPlayer.overall}
-                    onChange={(e) =>
-                      setEditingPlayer({ ...editingPlayer, overall: e.target.value })
-                    }
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="badgeCount">Badge Count</Label>
-                  <Input
-                    id="badgeCount"
-                    type="number"
-                    min="0"
-                    value={editingPlayer.badgeCount}
-                    onChange={(e) =>
-                      setEditingPlayer({ ...editingPlayer, badgeCount: e.target.value })
-                    }
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="photoUrl">Photo URL</Label>
-                  <Input
-                    id="photoUrl"
-                    value={editingPlayer.photoUrl}
-                    onChange={(e) =>
-                      setEditingPlayer({ ...editingPlayer, photoUrl: e.target.value })
-                    }
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="playerPageUrl">2kratings URL</Label>
-                  <Input
-                    id="playerPageUrl"
-                    value={editingPlayer.playerPageUrl}
-                    onChange={(e) =>
-                      setEditingPlayer({
-                        ...editingPlayer,
-                        playerPageUrl: e.target.value,
-                      })
-                    }
-                  />
-                </div>
-                <div className="flex justify-end gap-2">
-                  <Button
-                    variant="outline"
-                    onClick={() => setIsDialogOpen(false)}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    onClick={handleSave}
-                    disabled={updateMutation.isPending}
-                  >
-                    {updateMutation.isPending ? (
-                      <>
-                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                        Saving...
-                      </>
-                    ) : (
-                      "Save Changes"
-                    )}
-                  </Button>
-                </div>
-              </div>
-            )}
-          </DialogContent>
-        </Dialog>
-
-        {/* Delete Confirmation Dialog */}
-        <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-          <DialogContent className="max-w-md">
-            <DialogHeader>
-              <DialogTitle className="text-red-500">Delete Player</DialogTitle>
-            </DialogHeader>
-            {playerToDelete && (
-              <div className="space-y-4">
-                <p className="text-sm text-muted-foreground">
-                  You are about to delete <strong>{playerToDelete.name}</strong> (Overall: {playerToDelete.overall}).
-                  This action cannot be undone.
-                </p>
-                <div>
-                  <Label htmlFor="deleteCode">Enter a 4-digit code to confirm</Label>
-                  <Input
-                    id="deleteCode"
-                    type="text"
-                    inputMode="numeric"
-                    pattern="[0-9]{4}"
-                    maxLength={4}
-                    placeholder="Enter 4 digits"
-                    value={deleteCode}
-                    onChange={(e) => {
-                      const value = e.target.value.replace(/\D/g, '');
-                      setDeleteCode(value);
-                    }}
-                    className="text-center text-2xl tracking-widest"
-                    autoFocus
-                  />
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Choose any 4-digit code (e.g., 1234)
-                  </p>
-                </div>
-                <div className="flex justify-end gap-2">
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      setDeleteDialogOpen(false);
-                      setPlayerToDelete(null);
-                      setDeleteCode("");
-                    }}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    variant="destructive"
-                    onClick={handleConfirmDelete}
-                    disabled={deleteMutation.isPending || deleteCode.length !== 4}
-                  >
-                    {deleteMutation.isPending ? (
-                      <>
-                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                        Deleting...
-                      </>
-                    ) : (
-                      "Delete Player"
-                    )}
-                  </Button>
-                </div>
-              </div>
-            )}
-          </DialogContent>
-        </Dialog>
       </div>
     </div>
   );

@@ -235,3 +235,14 @@
 - [x] Add link to Master page from Admin page
 - [x] Test navigation
 - [x] Save checkpoint
+
+## Restructure Admin Pages & Mobile Optimization
+
+- [x] Swap routes: /admin → Team Management, /admin/players → Player Management
+- [x] Rename Master.tsx to Admin.tsx and Admin.tsx to Players.tsx
+- [x] Update App.tsx routes
+- [x] Optimize team assignment interface for mobile (touch-friendly dropdowns)
+- [x] Add responsive layout for mobile devices
+- [x] Add navigation between admin pages
+- [x] Test on mobile viewport
+- [x] Save checkpoint
