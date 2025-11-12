@@ -5,7 +5,7 @@ import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
-import { Download, Search, Filter, Shield, Camera } from "lucide-react";
+import { Download, Search, Filter, Shield, Camera, Share2 } from "lucide-react";
 import html2canvas from "html2canvas";
 import { Link } from "wouter";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -136,10 +136,9 @@ export default function Home() {
   }, [selectedTeam, teamSummaries, freeAgentCount]);
 
   // Screenshot functionality
-  const handleScreenshot = async () => {
-    if (!rosterRef.current) return;
+  const captureRoster = async (): Promise<Blob | null> => {
+    if (!rosterRef.current) return null;
     
-    setIsCapturing(true);
     try {
       const canvas = await html2canvas(rosterRef.current, {
         backgroundColor: '#0f172a',
@@ -148,14 +147,53 @@ export default function Home() {
         useCORS: true,
       });
       
-      const link = document.createElement('a');
-      link.download = `${selectedTeam}-roster.png`;
-      link.href = canvas.toDataURL('image/png');
-      link.click();
+      return new Promise((resolve) => {
+        canvas.toBlob((blob) => resolve(blob), 'image/png');
+      });
     } catch (error) {
       console.error('Screenshot failed:', error);
-    } finally {
-      setIsCapturing(false);
+      return null;
+    }
+  };
+
+  const handleScreenshot = async () => {
+    setIsCapturing(true);
+    const blob = await captureRoster();
+    setIsCapturing(false);
+    
+    if (!blob) return;
+    
+    const link = document.createElement('a');
+    link.download = `${selectedTeam}-roster.png`;
+    link.href = URL.createObjectURL(blob);
+    link.click();
+    URL.revokeObjectURL(link.href);
+  };
+
+  const handleShare = async () => {
+    if (!navigator.share) {
+      // Fallback to download if share API not available
+      handleScreenshot();
+      return;
+    }
+    
+    setIsCapturing(true);
+    const blob = await captureRoster();
+    setIsCapturing(false);
+    
+    if (!blob) return;
+    
+    try {
+      const file = new File([blob], `${selectedTeam}-roster.png`, { type: 'image/png' });
+      await navigator.share({
+        files: [file],
+        title: `${selectedTeam} Roster`,
+        text: `Check out the ${selectedTeam} roster!`,
+      });
+    } catch (error) {
+      if ((error as Error).name !== 'AbortError') {
+        console.error('Share failed:', error);
+      }
     }
   };
 
@@ -336,16 +374,28 @@ export default function Home() {
                 totalOverall={selectedTeamSummary.totalOverall}
                 isFreeAgent={selectedTeamSummary.isFreeAgent}
               />
-              <Button
-                onClick={handleScreenshot}
-                disabled={isCapturing}
-                variant="outline"
-                size="sm"
-                className="bg-slate-800 border-slate-700 hover:bg-slate-700 w-full sm:w-auto"
-              >
-                <Camera className="w-4 h-4 mr-2" />
-                {isCapturing ? "Capturing..." : "Screenshot Roster"}
-              </Button>
+              <div className="flex gap-2 w-full sm:w-auto">
+                <Button
+                  onClick={handleShare}
+                  disabled={isCapturing}
+                  variant="outline"
+                  size="sm"
+                  className="bg-blue-900 border-blue-700 hover:bg-blue-800 flex-1 sm:flex-none"
+                >
+                  <Share2 className="w-4 h-4 mr-2" />
+                  {isCapturing ? "Capturing..." : "Share"}
+                </Button>
+                <Button
+                  onClick={handleScreenshot}
+                  disabled={isCapturing}
+                  variant="outline"
+                  size="sm"
+                  className="bg-slate-800 border-slate-700 hover:bg-slate-700 flex-1 sm:flex-none"
+                >
+                  <Camera className="w-4 h-4 mr-2" />
+                  {isCapturing ? "Capturing..." : "Download"}
+                </Button>
+              </div>
             </div>
           </div>
         )}
@@ -354,7 +404,23 @@ export default function Home() {
         {loading ? (
           <div className="text-center py-12 text-slate-400">Loading players...</div>
         ) : (
-          <div ref={rosterRef} className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+          <div ref={rosterRef}>
+            {/* Screenshot Header (only visible in screenshots when team is selected) */}
+            {selectedTeam !== "all" && (
+              <div className="bg-slate-800/90 rounded-lg p-6 mb-6 flex items-center gap-4">
+                {selectedTeam !== "Free Agents" && (
+                  <TeamLogoBadge team={selectedTeam} size="xl" className="!w-16 !h-16" />
+                )}
+                <div>
+                  <h2 className="text-3xl font-bold text-white">{selectedTeam}</h2>
+                  <p className="text-slate-400 mt-1">
+                    {selectedTeamSummary?.playerCount} Players
+                    {!selectedTeamSummary?.isFreeAgent && ` • Total Overall: ${selectedTeamSummary?.totalOverall}`}
+                  </p>
+                </div>
+              </div>
+            )}
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
             {filteredPlayers.map((player) => (
               <Card
                 key={player.id}
@@ -398,6 +464,7 @@ export default function Home() {
                 </CardContent>
               </Card>
             ))}
+            </div>
           </div>
         )}
 
