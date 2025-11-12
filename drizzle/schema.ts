@@ -32,6 +32,7 @@ export const players = mysqlTable("players", {
   id: varchar("id", { length: 64 }).primaryKey(), // NBA player ID or generated ID
   name: varchar("name", { length: 255 }).notNull(),
   overall: int("overall").notNull(), // NBA 2K26 overall rating
+  team: varchar("team", { length: 100 }), // Team name
   photoUrl: text("photoUrl"), // NBA.com or 2kratings photo URL
   playerPageUrl: text("playerPageUrl"), // 2kratings player page URL
   nbaId: varchar("nbaId", { length: 64 }), // NBA.com player ID
