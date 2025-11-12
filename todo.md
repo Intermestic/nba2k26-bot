@@ -158,4 +158,4 @@
 - [x] Search for missing player photo URLs from NBA.com headshots
 - [x] Update database with found photo URLs (25 players updated) (20 players updated)
 - [x] Verify photos display correctly on website
-- [ ] Save checkpoint with improved photo coverage (82.1% coverage)
+- [x] Save checkpoint with improved photo coverage (95.2% coverage - 612/643 players)
