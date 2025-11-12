@@ -246,3 +246,13 @@
 - [x] Add navigation between admin pages
 - [x] Test on mobile viewport
 - [x] Save checkpoint
+
+## Team Roster Screenshot Feature
+
+- [x] Install html2canvas library
+- [x] Add "Screenshot Roster" button when team is selected
+- [x] Implement screenshot capture logic
+- [x] Optimize screenshot layout for mobile sharing
+- [x] Add download functionality
+- [x] Test on mobile devices
+- [x] Save checkpoint

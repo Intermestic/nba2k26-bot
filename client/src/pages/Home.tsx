@@ -1,11 +1,12 @@
-import { useState, useMemo } from "react";
+import { useMemo, useState, useRef } from "react";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { getLoginUrl } from "@/const";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
-import { Download, Search, Filter, Shield } from "lucide-react";
+import { Download, Search, Filter, Shield, Camera } from "lucide-react";
+import html2canvas from "html2canvas";
 import { Link } from "wouter";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PlayerAvatar } from "@/components/PlayerAvatar";
@@ -34,6 +35,8 @@ export default function Home() {
   const [minRating, setMinRating] = useState("0");
   const [selectedTeam, setSelectedTeam] = useState("all");
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [isCapturing, setIsCapturing] = useState(false);
+  const rosterRef = useRef<HTMLDivElement>(null);
 
   // Normalize name for fuzzy search (remove special chars, lowercase)
   const normalizeName = (name: string) => {
@@ -131,6 +134,30 @@ export default function Home() {
     }
     return teamSummaries.find(t => t.team === selectedTeam);
   }, [selectedTeam, teamSummaries, freeAgentCount]);
+
+  // Screenshot functionality
+  const handleScreenshot = async () => {
+    if (!rosterRef.current) return;
+    
+    setIsCapturing(true);
+    try {
+      const canvas = await html2canvas(rosterRef.current, {
+        backgroundColor: '#0f172a',
+        scale: 2,
+        logging: false,
+        useCORS: true,
+      });
+      
+      const link = document.createElement('a');
+      link.download = `${selectedTeam}-roster.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    } catch (error) {
+      console.error('Screenshot failed:', error);
+    } finally {
+      setIsCapturing(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
@@ -302,12 +329,24 @@ export default function Home() {
         {/* Team Roster Summary (shown when filtering by team) */}
         {selectedTeamSummary && (
           <div className="mb-6">
-            <TeamRosterSummary
-              team={selectedTeamSummary.team}
-              playerCount={selectedTeamSummary.playerCount}
-              totalOverall={selectedTeamSummary.totalOverall}
-              isFreeAgent={selectedTeamSummary.isFreeAgent}
-            />
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+              <TeamRosterSummary
+                team={selectedTeamSummary.team}
+                playerCount={selectedTeamSummary.playerCount}
+                totalOverall={selectedTeamSummary.totalOverall}
+                isFreeAgent={selectedTeamSummary.isFreeAgent}
+              />
+              <Button
+                onClick={handleScreenshot}
+                disabled={isCapturing}
+                variant="outline"
+                size="sm"
+                className="bg-slate-800 border-slate-700 hover:bg-slate-700 w-full sm:w-auto"
+              >
+                <Camera className="w-4 h-4 mr-2" />
+                {isCapturing ? "Capturing..." : "Screenshot Roster"}
+              </Button>
+            </div>
           </div>
         )}
 
@@ -315,7 +354,7 @@ export default function Home() {
         {loading ? (
           <div className="text-center py-12 text-slate-400">Loading players...</div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+          <div ref={rosterRef} className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
             {filteredPlayers.map((player) => (
               <Card
                 key={player.id}
