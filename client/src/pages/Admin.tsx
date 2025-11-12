@@ -7,7 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Edit, Loader2, Trash2 } from "lucide-react";
+import { Edit, Loader2, Trash2, Users } from "lucide-react";
+import { Link } from "wouter";
 
 export default function Admin() {
   const { user, isAuthenticated } = useAuth();
@@ -139,12 +140,22 @@ export default function Admin() {
       <div className="container mx-auto">
         <Card className="mb-6">
           <CardHeader>
-            <CardTitle className="text-2xl">Admin Panel - Player Management</CardTitle>
-            {ownerStatus && (
-              <p className={`text-sm mt-2 ${ownerStatus.isOwner ? 'text-green-400' : 'text-yellow-400'}`}>
-                {ownerStatus.message}
-              </p>
-            )}
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="text-2xl">Admin Panel - Player Management</CardTitle>
+                {ownerStatus && (
+                  <p className={`text-sm mt-2 ${ownerStatus.isOwner ? 'text-green-400' : 'text-yellow-400'}`}>
+                    {ownerStatus.message}
+                  </p>
+                )}
+              </div>
+              <Button asChild variant="outline" className="bg-blue-900 border-blue-700 hover:bg-blue-800">
+                <Link href="/admin/master">
+                  <Users className="w-4 h-4 mr-2" />
+                  Team Management
+                </Link>
+              </Button>
+            </div>
           </CardHeader>
           <CardContent>
             <div className="flex gap-4">

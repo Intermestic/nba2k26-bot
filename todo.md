@@ -229,3 +229,9 @@
 - [x] Fix Free Agents roster display (remove /14)
 - [x] Move Free Agents to end of team dropdown
 - [x] Test and save checkpoint
+
+## Add Master Page Navigation
+
+- [x] Add link to Master page from Admin page
+- [x] Test navigation
+- [x] Save checkpoint
