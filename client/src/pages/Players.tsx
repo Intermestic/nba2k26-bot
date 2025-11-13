@@ -183,9 +183,9 @@ export default function Players() {
                 </Link>
               </Button>
               <Button asChild variant="outline" className="bg-blue-900 border-blue-700 hover:bg-blue-800">
-                <Link href="/admin/trades">
+                <Link href="/admin/transactions">
                   <Users className="w-4 h-4 mr-2" />
-                  Bulk Trades
+                  Bulk Transactions
                 </Link>
               </Button>
               <Button asChild variant="outline" className="bg-blue-900 border-blue-700 hover:bg-blue-800">

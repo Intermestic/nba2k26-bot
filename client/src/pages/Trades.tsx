@@ -3,8 +3,9 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Loader2, ArrowRight, Home, Users } from "lucide-react";
+import { Loader2, Home, Users } from "lucide-react";
 import { Link } from "wouter";
 
 interface TradeMove {
@@ -52,11 +53,9 @@ const TEAM_NAME_MAP: Record<string, string> = {
 };
 
 function normalizeTeamName(teamName: string): string {
-  // Try exact match first
   if (TEAM_NAME_MAP[teamName]) {
     return TEAM_NAME_MAP[teamName];
   }
-  // Return as-is if no mapping found
   return teamName;
 }
 
@@ -66,30 +65,24 @@ export default function Trades() {
   const [parsedTrades, setParsedTrades] = useState<TradeMove[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
 
-  // Fetch all players for matching
-  const { data: allPlayers } = trpc.player.list.useQuery({
-    limit: 1000,
-  });
-
-  // Update team mutation
+  const { data: allPlayers } = trpc.player.list.useQuery({ limit: 1000 });
   const updateTeamMutation = trpc.player.updateTeam.useMutation();
 
-  // Check if user is admin
   if (!isAuthenticated || user?.role !== "admin") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white p-4">
-        <div className="bg-slate-800 p-8 rounded-lg border border-slate-700 max-w-md w-full">
-          <h2 className="text-2xl font-bold mb-4">Access Denied</h2>
-          <p className="text-gray-300 mb-4">
-            You must be an admin to access this page.
-          </p>
-          <Button asChild>
-            <Link href="/">
-              <Home className="w-4 h-4 mr-2" />
-              Go Home
-            </Link>
-          </Button>
-        </div>
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-4">
+        <Card className="bg-slate-800/50 border-slate-700 max-w-md w-full">
+          <CardContent className="p-8 text-center">
+            <h2 className="text-2xl font-bold text-white mb-4">Admin Access Required</h2>
+            <p className="text-slate-400 mb-4">You must be logged in as an admin to access this page.</p>
+            <Button asChild>
+              <Link href="/">
+                <Home className="w-4 h-4 mr-2" />
+                Go Home
+              </Link>
+            </Button>
+          </CardContent>
+        </Card>
       </div>
     );
   }
@@ -105,25 +98,21 @@ export default function Trades() {
     let currentTeam = "";
 
     for (const line of lines) {
-      // Check if line is "Team Receive:"
       if (line.endsWith("Receive:")) {
         const rawTeamName = line.replace("Receive:", "").trim();
         currentTeam = normalizeTeamName(rawTeamName);
         continue;
       }
 
-      // Check if line is a separator
       if (line === "---" || line.startsWith("---")) {
         continue;
       }
 
-      // Check if line is a player (format: "Player Name (XX OVR)")
       const playerMatch = line.match(/^(.+?)\s*\((\d+)\s*OVR\)$/i);
       if (playerMatch && currentTeam) {
         const playerName = playerMatch[1].trim();
         const overall = parseInt(playerMatch[2]);
 
-        // Find player in database
         const player = allPlayers.find(p => 
           p.name.toLowerCase() === playerName.toLowerCase()
         );
@@ -142,7 +131,7 @@ export default function Trades() {
     }
 
     if (trades.length === 0) {
-      toast.error("No valid trades found. Check format:\\n\\nTeam Name Receive:\\nPlayer Name (XX OVR)");
+      toast.error("No valid trades found");
       return;
     }
 
@@ -152,66 +141,76 @@ export default function Trades() {
 
   const processTrades = async () => {
     if (parsedTrades.length === 0) {
-      toast.error("No trades to process");
+      toast.error("Please parse trades first");
       return;
     }
 
     setIsProcessing(true);
+    let successCount = 0;
+    let errorCount = 0;
 
-    try {
-      // Process all trades
-      for (const trade of parsedTrades) {
+    for (const trade of parsedTrades) {
+      try {
         const player = allPlayers?.find(p => p.name === trade.playerName);
         if (player) {
           await updateTeamMutation.mutateAsync({
             playerId: player.id,
             team: trade.toTeam,
           });
+          successCount++;
         }
+      } catch (error) {
+        console.error(`Failed to update ${trade.playerName}:`, error);
+        errorCount++;
       }
+    }
 
-      toast.success(`Successfully processed ${parsedTrades.length} trades!`);
+    setIsProcessing(false);
+    
+    if (errorCount === 0) {
+      toast.success(`Successfully processed ${successCount} trades!`);
       setTradeText("");
       setParsedTrades([]);
-    } catch (error: any) {
-      toast.error(`Failed to process trades: ${error.message}`);
-    } finally {
-      setIsProcessing(false);
+    } else {
+      toast.warning(`Processed ${successCount} trades with ${errorCount} errors`);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900 text-white p-6">
-      <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="bg-slate-800 border border-slate-700 rounded-lg p-6 mb-6">
-          <div className="flex items-center justify-between mb-4">
-            <h1 className="text-3xl font-bold">Bulk Trade Processor</h1>
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+      <header className="border-b border-slate-700 bg-slate-900/50 backdrop-blur-sm sticky top-0 z-10">
+        <div className="container mx-auto px-4 py-4 md:py-6">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div className="flex items-center gap-2 md:gap-4">
+              <img src="/hof-logo.png" alt="Hall of Fame Basketball Association" className="h-12 md:h-16 w-auto" />
+              <div>
+                <h1 className="text-xl md:text-3xl font-bold text-white">Bulk Trade Processor</h1>
+                <p className="text-xs md:text-sm text-slate-400 mt-1">Process multiple player trades at once</p>
+              </div>
+            </div>
             <div className="flex gap-2">
-              <Button asChild variant="outline" size="sm">
-                <Link href="/admin">
-                  <Users className="w-4 h-4 mr-2" />
-                  Team Management
-                </Link>
+              <Button asChild variant="outline" size="sm" className="bg-slate-800 border-slate-700 hover:bg-slate-700">
+                <Link href="/admin">Team Management</Link>
               </Button>
-              <Button asChild variant="outline" size="sm">
-                <Link href="/admin/players">
-                  <Users className="w-4 h-4 mr-2" />
-                  Player Management
-                </Link>
+              <Button asChild variant="outline" size="sm" className="bg-slate-800 border-slate-700 hover:bg-slate-700">
+                <Link href="/admin/players">Player Management</Link>
+              </Button>
+              <Button asChild variant="outline" size="sm" className="bg-slate-800 border-slate-700 hover:bg-slate-700">
+                <Link href="/">Home</Link>
               </Button>
             </div>
           </div>
-          <p className="text-gray-300">
-            Paste trade text below to automatically update player teams in bulk.
-          </p>
         </div>
+      </header>
 
-        {/* Trade Input Card */}
-        <div className="bg-slate-800 border border-slate-700 rounded-lg p-6 mb-6">
-          <div className="space-y-4">
+      <div className="container mx-auto px-4 py-8">
+        <Card className="bg-slate-800/50 border-slate-700 mb-6">
+          <CardHeader>
+            <CardTitle className="text-white">Trade Input</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
             <div>
-              <label className="text-sm font-medium text-gray-200 mb-2 block">
+              <label className="text-sm font-medium text-slate-300 mb-2 block">
                 Paste Trade Text
               </label>
               <Textarea
@@ -221,86 +220,76 @@ export default function Trades() {
 
 Nikola Jokic (98 OVR)
 Aaron Gordon (83 OVR)
-Mark Sears (70 OVR)
 
 Milwaukee Bucks Receive:
 
 Bam Adebayo (89 OVR)
-Jimmy Butler (88 OVR)
-Naz Reid (82 OVR)
-
----
-
-Portland Trail Blazers Receive:
-
-Ja Morant (89 OVR)
-Brandon Miller (82 OVR)
-Isaac Okoro (74 OVR)
-
-Cleveland Cavaliers Receive:
-
-Julius Randle (88 OVR)
-Dejounte Murray (81 OVR)
-Khris Middleton (78 OVR)`}
+Jimmy Butler (88 OVR)`}
                 className="min-h-[300px] font-mono text-sm bg-slate-900 border-slate-600 text-white"
               />
             </div>
 
             <div className="flex gap-2">
-              <Button
-                onClick={parseTrades}
-                disabled={!tradeText.trim()}
-                variant="outline"
-              >
+              <Button onClick={parseTrades} disabled={!tradeText.trim()}>
                 Parse Trades
               </Button>
+              <Button 
+                onClick={() => {
+                  setTradeText("");
+                  setParsedTrades([]);
+                }}
+                variant="outline"
+                disabled={!tradeText.trim() && parsedTrades.length === 0}
+              >
+                Clear
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        {parsedTrades.length > 0 && (
+          <Card className="bg-slate-800/50 border-slate-700">
+            <CardHeader>
+              <CardTitle className="text-white">
+                Parsed Trades ({parsedTrades.length} moves)
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2 mb-4">
+                {parsedTrades.map((trade, idx) => (
+                  <div
+                    key={idx}
+                    className="flex items-center justify-between p-3 bg-slate-900 rounded border border-slate-700"
+                  >
+                    <div className="text-white">
+                      <span className="font-medium">{trade.playerName}</span>
+                      <span className="text-slate-400 text-sm ml-2">({trade.overall} OVR)</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm">
+                      <span className="text-slate-400">{trade.fromTeam}</span>
+                      <span className="text-slate-500">→</span>
+                      <span className="text-green-400">{trade.toTeam}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
               <Button
                 onClick={processTrades}
-                disabled={parsedTrades.length === 0 || isProcessing}
-                className="bg-green-600 hover:bg-green-700"
+                disabled={isProcessing}
+                className="w-full"
               >
                 {isProcessing ? (
                   <>
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                     Processing...
                   </>
                 ) : (
                   `Process ${parsedTrades.length} Trades`
                 )}
               </Button>
-            </div>
-          </div>
-        </div>
-
-        {/* Trade Summary */}
-        {parsedTrades.length > 0 && (
-          <div className="bg-slate-800 border border-slate-700 rounded-lg p-6">
-            <h2 className="text-2xl font-bold mb-4">
-              Trade Summary ({parsedTrades.length} moves)
-            </h2>
-            <div className="space-y-2">
-              {parsedTrades.map((trade, idx) => (
-                <div
-                  key={idx}
-                  className="flex items-center gap-4 p-3 bg-slate-900 rounded-lg border border-slate-700"
-                >
-                  <div className="flex-1">
-                    <div className="font-semibold text-white">{trade.playerName}</div>
-                    <div className="text-sm text-gray-400">
-                      {trade.overall} OVR
-                    </div>
-                  </div>
-                  <div className="text-sm text-gray-400">
-                    {trade.fromTeam}
-                  </div>
-                  <ArrowRight className="w-4 h-4 text-blue-400" />
-                  <div className="text-sm font-medium text-green-400">
-                    {trade.toTeam}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         )}
       </div>
     </div>

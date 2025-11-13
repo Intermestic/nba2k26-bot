@@ -7,7 +7,7 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
 import Admin from "./pages/Admin";
 import Players from "./pages/Players";
-import Trades from "./pages/Trades";
+import Transactions from "./pages/Transactions";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -16,7 +16,7 @@ function Router() {
       <Route path={"/"} component={Home} />
       <Route path={"/admin"} component={Admin} />
       <Route path={"/admin/players"} component={Players} />
-      <Route path={"/admin/trades"} component={Trades} />
+      <Route path={"/admin/transactions"} component={Transactions} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />

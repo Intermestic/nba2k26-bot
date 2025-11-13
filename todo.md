@@ -302,3 +302,14 @@
 - [x] Add "Go Home" button to Players management page (/admin/players)
 - [x] Test navigation from all pages (Home button working on Players page)
 - [ ] Save checkpoint
+
+## Create Minimal Bulk Transactions Page
+
+- [x] Rename from "Bulk Trades" to "Bulk Transactions"
+- [x] Create super minimal UI with basic HTML/CSS (no fancy components)
+- [x] Support trade transactions (player moves between teams)
+- [x] Support free agent signings (players joining teams)
+- [x] Update all navigation links to use new name
+- [ ] Fix persistent UI rendering issue (content exists in DOM but invisible)
+- [x] Backend functionality complete and working
+- [ ] Save checkpoint with working features
