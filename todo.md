@@ -354,3 +354,14 @@
 - [x] Test roster card download with Jazz team (14 players, all photos visible!)
 - [ ] Test Bulk Transactions with simplified format
 - [ ] Save checkpoint with roster card fix
+
+## New Roster Card Layout (5+ Players)
+
+- [x] Update RosterCard component to detect when 5+ players are selected
+- [x] Sort players by overall rating (highest first)
+- [x] Create top row layout: Player 1 | Team Logo | Player 2
+- [x] Make top 2 player cards larger than bottom rows
+- [x] Create rows of 3 players for remaining players
+- [x] Add team logo badge overlay on each player photo
+- [x] Test with Jazz team (14 players) - PERFECT! Top 2 + logo + rows of 3
+- [ ] Save checkpoint with new layout

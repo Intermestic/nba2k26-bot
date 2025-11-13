@@ -1,93 +1,48 @@
-import { useState, useRef, useEffect } from "react";
-import { X, Download, Share2 } from "lucide-react";
-import { Button } from "./ui/button";
-import { toast } from "sonner";
+import { useState, useRef } from 'react';
 import html2canvas from 'html2canvas';
+import { Button } from '@/components/ui/button';
+import { Download, Share2, X } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface Player {
   id: string;
   name: string;
   overall: number;
-  team?: string | null;
+  team: string | null;
   photoUrl?: string | null;
 }
 
 interface RosterCardProps {
   players: Player[];
+  teamName: string;
+  teamLogo?: string;
   onClose: () => void;
 }
 
-// Team logos mapping
-const TEAM_LOGOS: Record<string, string> = {
-  "76ers": "https://cdn.nba.com/logos/nba/1610612755/primary/L/logo.svg",
-  "Bucks": "https://cdn.nba.com/logos/nba/1610612749/primary/L/logo.svg",
-  "Bulls": "https://cdn.nba.com/logos/nba/1610612741/primary/L/logo.svg",
-  "Cavaliers": "https://cdn.nba.com/logos/nba/1610612739/primary/L/logo.svg",
-  "Celtics": "https://cdn.nba.com/logos/nba/1610612738/primary/L/logo.svg",
-  "Clippers": "https://cdn.nba.com/logos/nba/1610612746/primary/L/logo.svg",
-  "Grizzlies": "https://cdn.nba.com/logos/nba/1610612763/primary/L/logo.svg",
-  "Hawks": "https://cdn.nba.com/logos/nba/1610612737/primary/L/logo.svg",
-  "Heat": "https://cdn.nba.com/logos/nba/1610612748/primary/L/logo.svg",
-  "Hornets": "https://cdn.nba.com/logos/nba/1610612766/primary/L/logo.svg",
-  "Jazz": "https://cdn.nba.com/logos/nba/1610612762/primary/L/logo.svg",
-  "Kings": "https://cdn.nba.com/logos/nba/1610612758/primary/L/logo.svg",
-  "Knicks": "https://cdn.nba.com/logos/nba/1610612752/primary/L/logo.svg",
-  "Lakers": "https://cdn.nba.com/logos/nba/1610612747/primary/L/logo.svg",
-  "Magic": "https://cdn.nba.com/logos/nba/1610612753/primary/L/logo.svg",
-  "Mavericks": "https://cdn.nba.com/logos/nba/1610612742/primary/L/logo.svg",
-  "Nets": "https://cdn.nba.com/logos/nba/1610612751/primary/L/logo.svg",
-  "Nuggets": "https://cdn.nba.com/logos/nba/1610612743/primary/L/logo.svg",
-  "Pacers": "https://cdn.nba.com/logos/nba/1610612754/primary/L/logo.svg",
-  "Pelicans": "https://cdn.nba.com/logos/nba/1610612740/primary/L/logo.svg",
-  "Pistons": "https://cdn.nba.com/logos/nba/1610612765/primary/L/logo.svg",
-  "Raptors": "https://cdn.nba.com/logos/nba/1610612761/primary/L/logo.svg",
-  "Rockets": "https://cdn.nba.com/logos/nba/1610612745/primary/L/logo.svg",
-  "Spurs": "https://cdn.nba.com/logos/nba/1610612759/primary/L/logo.svg",
-  "Suns": "https://cdn.nba.com/logos/nba/1610612756/primary/L/logo.svg",
-  "Thunder": "https://cdn.nba.com/logos/nba/1610612760/primary/L/logo.svg",
-  "Timberwolves": "https://cdn.nba.com/logos/nba/1610612750/primary/L/logo.svg",
-  "Trail Blazers": "https://cdn.nba.com/logos/nba/1610612757/primary/L/logo.svg",
-  "Warriors": "https://cdn.nba.com/logos/nba/1610612744/primary/L/logo.svg",
-  "Wizards": "https://cdn.nba.com/logos/nba/1610612764/primary/L/logo.svg"
-};
-
-export default function RosterCard({ players, onClose }: RosterCardProps) {
+export default function RosterCard({ players, teamName, teamLogo, onClose }: RosterCardProps) {
+  const [isDownloading, setIsDownloading] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
 
-  const [isDownloading, setIsDownloading] = useState(false);
-  const [gridColumns, setGridColumns] = useState(5);
-
-  // Sort players by overall rating (highest to lowest)
+  // Sort players by overall rating (highest first)
   const sortedPlayers = [...players].sort((a, b) => b.overall - a.overall);
+  
+  // Calculate average overall
+  const avgOverall = Math.round(
+    sortedPlayers.reduce((sum, p) => sum + p.overall, 0) / sortedPlayers.length
+  );
 
-
-
-  // Responsive grid columns based on window width
-  useEffect(() => {
-    const updateColumns = () => {
-      const width = window.innerWidth;
-      if (width < 640) setGridColumns(2); // mobile
-      else if (width < 1024) setGridColumns(3); // tablet
-      else setGridColumns(5); // desktop
-    };
-
-    updateColumns();
-    window.addEventListener('resize', updateColumns);
-    return () => window.removeEventListener('resize', updateColumns);
-  }, []);
-
-  const teamName = sortedPlayers[0]?.team || "Mixed";
-  const teamLogo = TEAM_LOGOS[teamName];
-  const totalOverall = sortedPlayers.reduce((sum, p) => sum + p.overall, 0);
-  const avgOverall = Math.round(totalOverall / sortedPlayers.length);
-
-
+  // Determine layout: if 5+ players, use special layout
+  const useSpecialLayout = sortedPlayers.length >= 5;
+  
+  // For special layout: top 2 players, then rows of 3
+  const topPlayers = useSpecialLayout ? sortedPlayers.slice(0, 2) : [];
+  const bottomPlayers = useSpecialLayout ? sortedPlayers.slice(2) : sortedPlayers;
+  
+  // Grid columns for regular layout
+  const gridColumns = sortedPlayers.length <= 4 ? 2 : sortedPlayers.length <= 9 ? 3 : 5;
 
   const handleDownload = async () => {
-    if (!cardRef.current) {
-      toast.error("Card not ready");
-      return;
-    }
+    if (!cardRef.current) return;
     
     setIsDownloading(true);
     try {
@@ -122,21 +77,16 @@ export default function RosterCard({ players, onClose }: RosterCardProps) {
       link.href = dataUrl;
       link.click();
       
-      toast.success("Roster card downloaded!");
+      toast.success('Roster card downloaded!');
     } catch (error) {
       console.error('Download failed:', error);
-      toast.error("Failed to download roster card");
+      toast.error(`Download failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setIsDownloading(false);
     }
   };
 
   const handleShare = async () => {
-    if (!navigator.share) {
-      toast.error("Sharing not supported on this device");
-      return;
-    }
-
     if (!cardRef.current) return;
     
     setIsDownloading(true);
@@ -170,33 +120,31 @@ export default function RosterCard({ players, onClose }: RosterCardProps) {
       const blob = await (await fetch(dataUrl)).blob();
       const file = new File([blob], `${teamName}-roster-card.png`, { type: 'image/png' });
       
-      await navigator.share({
-        files: [file],
-        title: `${teamName} Roster Card`,
-        text: `Check out the ${teamName} roster!`,
-      });
-    } catch (error) {
-      if ((error as Error).name !== 'AbortError') {
-        console.error('Share failed:', error);
-        toast.error("Failed to share roster card");
+      if (navigator.share && navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          files: [file],
+          title: `${teamName} Roster Card`,
+          text: `${teamName} - ${sortedPlayers.length} Players • Avg ${avgOverall} OVR`,
+        });
+        toast.success('Shared successfully!');
+      } else {
+        // Fallback to download if share not supported
+        handleDownload();
       }
+    } catch (error) {
+      console.error('Share failed:', error);
+      toast.error(`Share failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setIsDownloading(false);
     }
   };
 
   return (
-    <div 
-      className="fixed inset-0 bg-black/80 flex flex-col z-50 p-4"
-      onClick={onClose}
-    >
-      <div 
-        className="bg-slate-900 rounded-lg shadow-2xl w-full max-w-6xl mx-auto flex flex-col max-h-[calc(100vh-2rem)]"
-        onClick={(e) => e.stopPropagation()}
-      >
+    <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+      <div className="bg-slate-900 rounded-lg max-w-4xl w-full max-h-[90vh] flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-slate-700">
-          <h2 className="text-2xl font-bold text-white">Roster Card Preview</h2>
+          <h2 className="text-xl font-bold">Roster Card Preview</h2>
           <div className="flex gap-2">
             <Button
               onClick={handleDownload}
@@ -238,139 +186,615 @@ export default function RosterCard({ players, onClose }: RosterCardProps) {
               boxShadow: 'none',
             }}
           >
-            {/* Header Section */}
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                marginBottom: '24px',
-                paddingBottom: '16px',
-                borderBottom: '2px solid #334155',
-                border: 'none',
-                outline: 'none',
-                boxShadow: 'none',
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '16px', border: 'none', outline: 'none', boxShadow: 'none' }}>
-                {teamLogo && (
-                  <img
-                    src={teamLogo}
-                    alt={teamName}
-                    style={{ width: '64px', height: '64px', border: 'none', outline: 'none', boxShadow: 'none' }}
-                  />
-                )}
-                <div style={{ border: 'none', outline: 'none', boxShadow: 'none' }}>
-                  <h3 style={{ fontSize: '32px', fontWeight: 'bold', color: 'white', margin: 0, border: 'none', outline: 'none', boxShadow: 'none' }}>
-                    {teamName}
-                  </h3>
-                  <p style={{ fontSize: '16px', color: '#94a3b8', margin: 0, border: 'none', outline: 'none', boxShadow: 'none' }}>
-                    {sortedPlayers.length} Players • Avg {avgOverall} OVR
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Players Grid */}
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: `repeat(${gridColumns}, 1fr)`,
-                gap: '16px',
-                border: 'none',
-                outline: 'none',
-                boxShadow: 'none',
-              }}
-            >
-              {sortedPlayers.map((player) => (
+            {useSpecialLayout ? (
+              <>
+                {/* Top Row: Player 1 | Team Logo | Player 2 */}
                 <div
-                  key={player.id}
                   style={{
-                    background: '#1e293b',
-                    borderRadius: '8px',
-                    padding: '12px',
-                    textAlign: 'center',
+                    display: 'grid',
+                    gridTemplateColumns: '1fr auto 1fr',
+                    gap: '24px',
+                    alignItems: 'center',
+                    marginBottom: '32px',
                     border: 'none',
                     outline: 'none',
                     boxShadow: 'none',
                   }}
                 >
-                  {/* Player Photo */}
-                  <div
-                    style={{
-                      width: '100%',
-                      aspectRatio: '1',
-                      marginBottom: '8px',
-                      borderRadius: '8px',
-                      overflow: 'hidden',
-                      background: '#0f172a',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      border: 'none',
-                      outline: 'none',
-                      boxShadow: 'none',
-                    }}
-                  >
-                    {player.photoUrl ? (
-                      <img
-                        src={`/api/image-proxy?url=${encodeURIComponent(player.photoUrl)}`}
-                        alt={player.name}
-                        crossOrigin="anonymous"
+                  {/* Player 1 (Highest OVR) */}
+                  {topPlayers[0] && (
+                    <div
+                      style={{
+                        background: '#1e293b',
+                        borderRadius: '12px',
+                        padding: '16px',
+                        textAlign: 'center',
+                        border: 'none',
+                        outline: 'none',
+                        boxShadow: 'none',
+                      }}
+                    >
+                      <div
                         style={{
+                          position: 'relative',
                           width: '100%',
-                          height: '100%',
-                          objectFit: 'cover',
+                          aspectRatio: '3/4',
+                          marginBottom: '12px',
+                          borderRadius: '12px',
+                          overflow: 'hidden',
+                          background: '#0f172a',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          border: 'none',
+                          outline: 'none',
+                          boxShadow: 'none',
+                        }}
+                      >
+                        {topPlayers[0].photoUrl ? (
+                          <img
+                            src={`/api/image-proxy?url=${encodeURIComponent(topPlayers[0].photoUrl)}`}
+                            alt={topPlayers[0].name}
+                            crossOrigin="anonymous"
+                            style={{
+                              width: '100%',
+                              height: '100%',
+                              objectFit: 'cover',
+                              border: 'none',
+                              outline: 'none',
+                              boxShadow: 'none',
+                            }}
+                          />
+                        ) : (
+                          <div style={{ fontSize: '48px', fontWeight: 'bold', color: '#475569', border: 'none', outline: 'none', boxShadow: 'none' }}>
+                            {topPlayers[0].name.split(' ').map(n => n[0]).join('')}
+                          </div>
+                        )}
+                        {/* Team Logo Badge */}
+                        {teamLogo && (
+                          <div
+                            style={{
+                              position: 'absolute',
+                              bottom: '8px',
+                              left: '8px',
+                              width: '40px',
+                              height: '40px',
+                              background: 'white',
+                              borderRadius: '50%',
+                              padding: '4px',
+                              border: 'none',
+                              outline: 'none',
+                              boxShadow: 'none',
+                            }}
+                          >
+                            <img
+                              src={teamLogo}
+                              alt={teamName}
+                              style={{
+                                width: '100%',
+                                height: '100%',
+                                objectFit: 'contain',
+                                border: 'none',
+                                outline: 'none',
+                                boxShadow: 'none',
+                              }}
+                            />
+                          </div>
+                        )}
+                        {/* Overall Rating Badge */}
+                        <div
+                          style={{
+                            position: 'absolute',
+                            top: '8px',
+                            right: '8px',
+                            background: '#3b82f6',
+                            color: 'white',
+                            padding: '4px 12px',
+                            borderRadius: '6px',
+                            fontSize: '18px',
+                            fontWeight: 'bold',
+                            border: 'none',
+                            outline: 'none',
+                            boxShadow: 'none',
+                          }}
+                        >
+                          {topPlayers[0].overall}
+                        </div>
+                      </div>
+                      <div
+                        style={{
+                          fontSize: '20px',
+                          fontWeight: '600',
+                          color: 'white',
+                          marginBottom: '4px',
+                          border: 'none',
+                          outline: 'none',
+                          boxShadow: 'none',
+                        }}
+                      >
+                        {topPlayers[0].name}
+                      </div>
+                      <div
+                        style={{
+                          fontSize: '14px',
+                          color: '#94a3b8',
+                          border: 'none',
+                          outline: 'none',
+                          boxShadow: 'none',
+                        }}
+                      >
+                        {teamName}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Team Logo Center */}
+                  {teamLogo && (
+                    <div
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        gap: '12px',
+                        border: 'none',
+                        outline: 'none',
+                        boxShadow: 'none',
+                      }}
+                    >
+                      <img
+                        src={teamLogo}
+                        alt={teamName}
+                        style={{
+                          width: '120px',
+                          height: '120px',
                           border: 'none',
                           outline: 'none',
                           boxShadow: 'none',
                         }}
                       />
-                    ) : (
-                      <div style={{ fontSize: '32px', fontWeight: 'bold', color: '#475569', border: 'none', outline: 'none', boxShadow: 'none' }}>
-                        {player.name.split(' ').map(n => n[0]).join('')}
+                      <div
+                        style={{
+                          textAlign: 'center',
+                          border: 'none',
+                          outline: 'none',
+                          boxShadow: 'none',
+                        }}
+                      >
+                        <div
+                          style={{
+                            fontSize: '24px',
+                            fontWeight: 'bold',
+                            color: 'white',
+                            marginBottom: '4px',
+                            border: 'none',
+                            outline: 'none',
+                            boxShadow: 'none',
+                          }}
+                        >
+                          {teamName}
+                        </div>
+                        <div
+                          style={{
+                            fontSize: '14px',
+                            color: '#94a3b8',
+                            border: 'none',
+                            outline: 'none',
+                            boxShadow: 'none',
+                          }}
+                        >
+                          {sortedPlayers.length} Players • Avg {avgOverall} OVR
+                        </div>
                       </div>
-                    )}
-                  </div>
-
-                  {/* Player Info */}
-                  <div style={{ border: 'none', outline: 'none', boxShadow: 'none' }}>
-                    <div
-                      style={{
-                        fontSize: '14px',
-                        fontWeight: '600',
-                        color: 'white',
-                        marginBottom: '4px',
-                        whiteSpace: 'nowrap',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        border: 'none',
-                        outline: 'none',
-                        boxShadow: 'none',
-                      }}
-                    >
-                      {player.name}
                     </div>
+                  )}
+
+                  {/* Player 2 (Second Highest OVR) */}
+                  {topPlayers[1] && (
                     <div
                       style={{
-                        display: 'inline-block',
-                        background: '#3b82f6',
-                        color: 'white',
-                        padding: '2px 8px',
-                        borderRadius: '4px',
-                        fontSize: '12px',
-                        fontWeight: 'bold',
+                        background: '#1e293b',
+                        borderRadius: '12px',
+                        padding: '16px',
+                        textAlign: 'center',
                         border: 'none',
                         outline: 'none',
                         boxShadow: 'none',
                       }}
                     >
-                      {player.overall}
+                      <div
+                        style={{
+                          position: 'relative',
+                          width: '100%',
+                          aspectRatio: '3/4',
+                          marginBottom: '12px',
+                          borderRadius: '12px',
+                          overflow: 'hidden',
+                          background: '#0f172a',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          border: 'none',
+                          outline: 'none',
+                          boxShadow: 'none',
+                        }}
+                      >
+                        {topPlayers[1].photoUrl ? (
+                          <img
+                            src={`/api/image-proxy?url=${encodeURIComponent(topPlayers[1].photoUrl)}`}
+                            alt={topPlayers[1].name}
+                            crossOrigin="anonymous"
+                            style={{
+                              width: '100%',
+                              height: '100%',
+                              objectFit: 'cover',
+                              border: 'none',
+                              outline: 'none',
+                              boxShadow: 'none',
+                            }}
+                          />
+                        ) : (
+                          <div style={{ fontSize: '48px', fontWeight: 'bold', color: '#475569', border: 'none', outline: 'none', boxShadow: 'none' }}>
+                            {topPlayers[1].name.split(' ').map(n => n[0]).join('')}
+                          </div>
+                        )}
+                        {/* Team Logo Badge */}
+                        {teamLogo && (
+                          <div
+                            style={{
+                              position: 'absolute',
+                              bottom: '8px',
+                              left: '8px',
+                              width: '40px',
+                              height: '40px',
+                              background: 'white',
+                              borderRadius: '50%',
+                              padding: '4px',
+                              border: 'none',
+                              outline: 'none',
+                              boxShadow: 'none',
+                            }}
+                          >
+                            <img
+                              src={teamLogo}
+                              alt={teamName}
+                              style={{
+                                width: '100%',
+                                height: '100%',
+                                objectFit: 'contain',
+                                border: 'none',
+                                outline: 'none',
+                                boxShadow: 'none',
+                              }}
+                            />
+                          </div>
+                        )}
+                        {/* Overall Rating Badge */}
+                        <div
+                          style={{
+                            position: 'absolute',
+                            top: '8px',
+                            right: '8px',
+                            background: '#3b82f6',
+                            color: 'white',
+                            padding: '4px 12px',
+                            borderRadius: '6px',
+                            fontSize: '18px',
+                            fontWeight: 'bold',
+                            border: 'none',
+                            outline: 'none',
+                            boxShadow: 'none',
+                          }}
+                        >
+                          {topPlayers[1].overall}
+                        </div>
+                      </div>
+                      <div
+                        style={{
+                          fontSize: '20px',
+                          fontWeight: '600',
+                          color: 'white',
+                          marginBottom: '4px',
+                          border: 'none',
+                          outline: 'none',
+                          boxShadow: 'none',
+                        }}
+                      >
+                        {topPlayers[1].name}
+                      </div>
+                      <div
+                        style={{
+                          fontSize: '14px',
+                          color: '#94a3b8',
+                          border: 'none',
+                          outline: 'none',
+                          boxShadow: 'none',
+                        }}
+                      >
+                        {teamName}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Bottom Rows: Remaining Players in Rows of 3 */}
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(3, 1fr)',
+                    gap: '16px',
+                    border: 'none',
+                    outline: 'none',
+                    boxShadow: 'none',
+                  }}
+                >
+                  {bottomPlayers.map((player) => (
+                    <div
+                      key={player.id}
+                      style={{
+                        background: '#1e293b',
+                        borderRadius: '8px',
+                        padding: '12px',
+                        textAlign: 'center',
+                        border: 'none',
+                        outline: 'none',
+                        boxShadow: 'none',
+                      }}
+                    >
+                      <div
+                        style={{
+                          position: 'relative',
+                          width: '100%',
+                          aspectRatio: '3/4',
+                          marginBottom: '8px',
+                          borderRadius: '8px',
+                          overflow: 'hidden',
+                          background: '#0f172a',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          border: 'none',
+                          outline: 'none',
+                          boxShadow: 'none',
+                        }}
+                      >
+                        {player.photoUrl ? (
+                          <img
+                            src={`/api/image-proxy?url=${encodeURIComponent(player.photoUrl)}`}
+                            alt={player.name}
+                            crossOrigin="anonymous"
+                            style={{
+                              width: '100%',
+                              height: '100%',
+                              objectFit: 'cover',
+                              border: 'none',
+                              outline: 'none',
+                              boxShadow: 'none',
+                            }}
+                          />
+                        ) : (
+                          <div style={{ fontSize: '32px', fontWeight: 'bold', color: '#475569', border: 'none', outline: 'none', boxShadow: 'none' }}>
+                            {player.name.split(' ').map(n => n[0]).join('')}
+                          </div>
+                        )}
+                        {/* Team Logo Badge */}
+                        {teamLogo && (
+                          <div
+                            style={{
+                              position: 'absolute',
+                              bottom: '6px',
+                              left: '6px',
+                              width: '32px',
+                              height: '32px',
+                              background: 'white',
+                              borderRadius: '50%',
+                              padding: '3px',
+                              border: 'none',
+                              outline: 'none',
+                              boxShadow: 'none',
+                            }}
+                          >
+                            <img
+                              src={teamLogo}
+                              alt={teamName}
+                              style={{
+                                width: '100%',
+                                height: '100%',
+                                objectFit: 'contain',
+                                border: 'none',
+                                outline: 'none',
+                                boxShadow: 'none',
+                              }}
+                            />
+                          </div>
+                        )}
+                        {/* Overall Rating Badge */}
+                        <div
+                          style={{
+                            position: 'absolute',
+                            top: '6px',
+                            right: '6px',
+                            background: '#3b82f6',
+                            color: 'white',
+                            padding: '3px 10px',
+                            borderRadius: '6px',
+                            fontSize: '14px',
+                            fontWeight: 'bold',
+                            border: 'none',
+                            outline: 'none',
+                            boxShadow: 'none',
+                          }}
+                        >
+                          {player.overall}
+                        </div>
+                      </div>
+                      <div
+                        style={{
+                          fontSize: '14px',
+                          fontWeight: '600',
+                          color: 'white',
+                          marginBottom: '2px',
+                          whiteSpace: 'nowrap',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          border: 'none',
+                          outline: 'none',
+                          boxShadow: 'none',
+                        }}
+                      >
+                        {player.name}
+                      </div>
+                      <div
+                        style={{
+                          fontSize: '12px',
+                          color: '#94a3b8',
+                          border: 'none',
+                          outline: 'none',
+                          boxShadow: 'none',
+                        }}
+                      >
+                        {teamName}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <>
+                {/* Header Section for Regular Layout */}
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    marginBottom: '24px',
+                    paddingBottom: '16px',
+                    borderBottom: '2px solid #334155',
+                    border: 'none',
+                    outline: 'none',
+                    boxShadow: 'none',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '16px', border: 'none', outline: 'none', boxShadow: 'none' }}>
+                    {teamLogo && (
+                      <img
+                        src={teamLogo}
+                        alt={teamName}
+                        style={{ width: '64px', height: '64px', border: 'none', outline: 'none', boxShadow: 'none' }}
+                      />
+                    )}
+                    <div style={{ border: 'none', outline: 'none', boxShadow: 'none' }}>
+                      <h3 style={{ fontSize: '32px', fontWeight: 'bold', color: 'white', margin: 0, border: 'none', outline: 'none', boxShadow: 'none' }}>
+                        {teamName}
+                      </h3>
+                      <p style={{ fontSize: '16px', color: '#94a3b8', margin: 0, border: 'none', outline: 'none', boxShadow: 'none' }}>
+                        {sortedPlayers.length} Players • Avg {avgOverall} OVR
+                      </p>
                     </div>
                   </div>
                 </div>
-              ))}
-            </div>
+
+                {/* Players Grid for Regular Layout */}
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: `repeat(${gridColumns}, 1fr)`,
+                    gap: '16px',
+                    border: 'none',
+                    outline: 'none',
+                    boxShadow: 'none',
+                  }}
+                >
+                  {sortedPlayers.map((player) => (
+                    <div
+                      key={player.id}
+                      style={{
+                        background: '#1e293b',
+                        borderRadius: '8px',
+                        padding: '12px',
+                        textAlign: 'center',
+                        border: 'none',
+                        outline: 'none',
+                        boxShadow: 'none',
+                      }}
+                    >
+                      {/* Player Photo */}
+                      <div
+                        style={{
+                          width: '100%',
+                          aspectRatio: '1',
+                          marginBottom: '8px',
+                          borderRadius: '8px',
+                          overflow: 'hidden',
+                          background: '#0f172a',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          border: 'none',
+                          outline: 'none',
+                          boxShadow: 'none',
+                        }}
+                      >
+                        {player.photoUrl ? (
+                          <img
+                            src={`/api/image-proxy?url=${encodeURIComponent(player.photoUrl)}`}
+                            alt={player.name}
+                            crossOrigin="anonymous"
+                            style={{
+                              width: '100%',
+                              height: '100%',
+                              objectFit: 'cover',
+                              border: 'none',
+                              outline: 'none',
+                              boxShadow: 'none',
+                            }}
+                          />
+                        ) : (
+                          <div style={{ fontSize: '32px', fontWeight: 'bold', color: '#475569', border: 'none', outline: 'none', boxShadow: 'none' }}>
+                            {player.name.split(' ').map(n => n[0]).join('')}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Player Info */}
+                      <div style={{ border: 'none', outline: 'none', boxShadow: 'none' }}>
+                        <div
+                          style={{
+                            fontSize: '14px',
+                            fontWeight: '600',
+                            color: 'white',
+                            marginBottom: '4px',
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            border: 'none',
+                            outline: 'none',
+                            boxShadow: 'none',
+                          }}
+                        >
+                          {player.name}
+                        </div>
+                        <div
+                          style={{
+                            display: 'inline-block',
+                            background: '#3b82f6',
+                            color: 'white',
+                            padding: '4px 12px',
+                            borderRadius: '6px',
+                            fontSize: '14px',
+                            fontWeight: 'bold',
+                            border: 'none',
+                            outline: 'none',
+                            boxShadow: 'none',
+                          }}
+                        >
+                          {player.overall}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>

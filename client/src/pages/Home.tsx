@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { PlayerAvatar } from "@/components/PlayerAvatar";
 import { FreeAgentBadge } from "@/components/FreeAgentBadge";
 import { TeamLogoBadge } from "@/components/TeamLogoBadge";
+import { getTeamLogo } from "@/lib/teamLogos";
 import { TeamRosterSummary } from "@/components/TeamRosterSummary";
 import { TeamSummariesTable } from "@/components/TeamSummariesTable";
 import RosterCard from "@/components/RosterCard";
@@ -446,6 +447,8 @@ export default function Home() {
       {showRosterCard && (
         <RosterCard
           players={selectedPlayersList}
+          teamName={selectedTeam || 'Selected Players'}
+          teamLogo={selectedTeam ? getTeamLogo(selectedTeam) || undefined : undefined}
           onClose={() => setShowRosterCard(false)}
         />
       )}
