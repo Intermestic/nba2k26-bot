@@ -188,6 +188,11 @@ export default function Players() {
                   Bulk Trades
                 </Link>
               </Button>
+              <Button asChild variant="outline" className="bg-blue-900 border-blue-700 hover:bg-blue-800">
+                <Link href="/">
+                  Home
+                </Link>
+              </Button>
             </div>
           </CardHeader>
           <CardContent>

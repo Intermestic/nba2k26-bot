@@ -295,3 +295,10 @@
 - [ ] Fix Trades.tsx UI rendering issue (deferred - backend works, UI can be fixed later)
 - [x] Delete Test Player from database
 - [ ] Save recovery checkpoint with fixes
+
+## Add Go Home Button to All Secondary Pages
+
+- [x] Add "Go Home" button to Admin page (/admin) - already existed
+- [x] Add "Go Home" button to Players management page (/admin/players)
+- [x] Test navigation from all pages (Home button working on Players page)
+- [ ] Save checkpoint
