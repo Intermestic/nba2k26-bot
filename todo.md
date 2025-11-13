@@ -337,3 +337,20 @@
 - [x] Test CSV export button (visible and clickable)
 - [ ] CSV export returns empty file due to History page rendering issue
 - [ ] Save checkpoint with CSV export feature implementation
+
+## Simplified Bulk Transaction Format
+
+- [x] Update parseTrades function to support simplified format
+- [x] Parse "Player to Team" format (e.g., "Alexander-Walker to Thunder")
+- [x] Support both detailed trade format and simplified format in same input
+- [x] Update placeholder and format instructions
+- [ ] Test with example: Alexander-Walker to Thunder, Keon Ellis to Pistons, etc.
+- [ ] Save checkpoint
+
+## URGENT: Fix Critical Bugs
+
+- [x] Roster card download function not working - FIXED with onclone to convert OKLCH to hex
+- [ ] Bulk Transactions UI invisible (textarea and buttons not rendering)
+- [x] Test roster card download with Jazz team (14 players, all photos visible!)
+- [ ] Test Bulk Transactions with simplified format
+- [ ] Save checkpoint with roster card fix

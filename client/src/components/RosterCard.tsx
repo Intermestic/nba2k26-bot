@@ -100,6 +100,20 @@ export default function RosterCard({ players, onClose }: RosterCardProps) {
         useCORS: true,
         allowTaint: false,
         logging: false,
+        onclone: (clonedDoc) => {
+          // Convert OKLCH colors to hex in cloned document
+          const elements = clonedDoc.querySelectorAll('*');
+          elements.forEach((el: Element) => {
+            const htmlEl = el as HTMLElement;
+            const style = window.getComputedStyle(el);
+            if (style.backgroundColor && style.backgroundColor.includes('oklch')) {
+              htmlEl.style.backgroundColor = '#0f172a';
+            }
+            if (style.color && style.color.includes('oklch')) {
+              htmlEl.style.color = '#ffffff';
+            }
+          });
+        },
       });
       const dataUrl = canvas.toDataURL('image/png');
       
@@ -136,6 +150,20 @@ export default function RosterCard({ players, onClose }: RosterCardProps) {
         useCORS: true,
         allowTaint: false,
         logging: false,
+        onclone: (clonedDoc) => {
+          // Convert OKLCH colors to hex in cloned document
+          const elements = clonedDoc.querySelectorAll('*');
+          elements.forEach((el: Element) => {
+            const htmlEl = el as HTMLElement;
+            const style = window.getComputedStyle(el);
+            if (style.backgroundColor && style.backgroundColor.includes('oklch')) {
+              htmlEl.style.backgroundColor = '#0f172a';
+            }
+            if (style.color && style.color.includes('oklch')) {
+              htmlEl.style.color = '#ffffff';
+            }
+          });
+        },
       });
       const dataUrl = canvas.toDataURL('image/png');
       

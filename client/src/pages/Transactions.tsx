@@ -46,15 +46,37 @@ export default function Transactions() {
     let count = 0;
 
     for (const line of lines) {
+      // Check for simplified format: "Player to Team"
+      const simpleMatch = line.match(/^(.+?)\s+to\s+(.+)$/i);
+      if (simpleMatch) {
+        const playerName = simpleMatch[1].trim();
+        const teamName = normalize(simpleMatch[2].trim());
+        const player = players.find(p => p.name.toLowerCase() === playerName.toLowerCase());
+        
+        if (player) {
+          try {
+            await updateTeam.mutateAsync({ playerId: player.id, team: teamName });
+            count++;
+          } catch (e) {
+            console.error(`Failed to move ${playerName}:`, e);
+          }
+        } else {
+          console.warn(`Player not found: ${playerName}`);
+        }
+        continue;
+      }
+
+      // Check for detailed format: "Team Receive:"
       if (line.endsWith("Receive:")) {
         currentTeam = normalize(line.replace("Receive:", "").trim());
         continue;
       }
       if (line === "---") continue;
 
-      const match = line.match(/^(.+?)\s*\((\d+)\s*OVR\)$/i);
-      if (match && currentTeam) {
-        const playerName = match[1].trim();
+      // Check for detailed format: "Player Name (XX OVR)"
+      const detailedMatch = line.match(/^(.+?)\s*\((\d+)\s*OVR\)$/i);
+      if (detailedMatch && currentTeam) {
+        const playerName = detailedMatch[1].trim();
         const player = players.find(p => p.name.toLowerCase() === playerName.toLowerCase());
         
         if (player) {
@@ -62,8 +84,10 @@ export default function Transactions() {
             await updateTeam.mutateAsync({ playerId: player.id, team: currentTeam });
             count++;
           } catch (e) {
-            console.error(e);
+            console.error(`Failed to move ${playerName}:`, e);
           }
+        } else {
+          console.warn(`Player not found: ${playerName}`);
         }
       }
     }
@@ -138,7 +162,7 @@ export default function Transactions() {
           <textarea
             value={text}
             onChange={(e) => setText(e.target.value)}
-            placeholder="Brooklyn Nets Receive:\n\nNikola Jokic (98 OVR)\nAaron Gordon (83 OVR)\n\n---\n\nMilwaukee Bucks Receive:\n\nBam Adebayo (89 OVR)"
+            placeholder="Simplified:\nAlexander-Walker to Thunder\nKeon Ellis to Pistons\n\nOr Detailed:\nBrooklyn Nets Receive:\nNikola Jokic (98 OVR)\nAaron Gordon (83 OVR)"
             style={textareaStyle}
           />
           <div style={{marginTop:"15px"}}>
@@ -153,9 +177,14 @@ export default function Transactions() {
         </div>
 
         <div style={{background:"#1e293b",padding:"15px",borderRadius:"8px",fontSize:"14px",color:"#94a3b8"}}>
-          <strong>Format:</strong>
+          <strong>Supported Formats:</strong>
           <pre style={{marginTop:"10px",fontSize:"12px"}}>
-{`Team Name Receive:
+{`Simplified Format:
+Player Name to Team Name
+Another Player to Another Team
+
+Detailed Trade Format:
+Team Name Receive:
 
 Player Name (XX OVR)
 Another Player (XX OVR)
