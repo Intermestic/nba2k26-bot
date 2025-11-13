@@ -365,3 +365,12 @@
 - [x] Add team logo badge overlay on each player photo
 - [x] Test with Jazz team (14 players) - PERFECT! Top 2 + logo + rows of 3
 - [ ] Save checkpoint with new layout
+
+## Fix Roster Card Mobile Formatting
+
+- [x] Remove team logo badges from player photos (not loading properly)
+- [x] Fix text overflow - names are cut off (e.g., "Karl-Anthony Towns" split across lines, "Jalen S..." truncated)
+- [x] Fix mobile card width - right side of card is cut off (changed to width: 100%, maxWidth: 800px)
+- [x] Ensure proper text wrapping and ellipsis for long names (added overflow: hidden, textOverflow: ellipsis, whiteSpace: nowrap)
+- [x] Test with Wizards team (14 players with long names) - ALL NAMES VISIBLE!
+- [ ] Save checkpoint with mobile fixes

@@ -250,37 +250,7 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                             {topPlayers[0].name.split(' ').map(n => n[0]).join('')}
                           </div>
                         )}
-                        {/* Team Logo Badge */}
-                        {teamLogo && (
-                          <div
-                            style={{
-                              position: 'absolute',
-                              bottom: '8px',
-                              left: '8px',
-                              width: '40px',
-                              height: '40px',
-                              background: 'white',
-                              borderRadius: '50%',
-                              padding: '4px',
-                              border: 'none',
-                              outline: 'none',
-                              boxShadow: 'none',
-                            }}
-                          >
-                            <img
-                              src={teamLogo}
-                              alt={teamName}
-                              style={{
-                                width: '100%',
-                                height: '100%',
-                                objectFit: 'contain',
-                                border: 'none',
-                                outline: 'none',
-                                boxShadow: 'none',
-                              }}
-                            />
-                          </div>
-                        )}
+
                         {/* Overall Rating Badge */}
                         <div
                           style={{
@@ -303,10 +273,13 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                       </div>
                       <div
                         style={{
-                          fontSize: '20px',
-                          fontWeight: '600',
-                          color: 'white',
-                          marginBottom: '4px',
+                        fontSize: '18px',
+                        fontWeight: '600',
+                        color: 'white',
+                        marginBottom: '4px',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
                           border: 'none',
                           outline: 'none',
                           boxShadow: 'none',
@@ -345,7 +318,8 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                         src={teamLogo}
                         alt={teamName}
                         style={{
-                          width: '120px',
+                          width: '100%',
+                  maxWidth: '800px',
                           height: '120px',
                           border: 'none',
                           outline: 'none',
@@ -437,37 +411,7 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                             {topPlayers[1].name.split(' ').map(n => n[0]).join('')}
                           </div>
                         )}
-                        {/* Team Logo Badge */}
-                        {teamLogo && (
-                          <div
-                            style={{
-                              position: 'absolute',
-                              bottom: '8px',
-                              left: '8px',
-                              width: '40px',
-                              height: '40px',
-                              background: 'white',
-                              borderRadius: '50%',
-                              padding: '4px',
-                              border: 'none',
-                              outline: 'none',
-                              boxShadow: 'none',
-                            }}
-                          >
-                            <img
-                              src={teamLogo}
-                              alt={teamName}
-                              style={{
-                                width: '100%',
-                                height: '100%',
-                                objectFit: 'contain',
-                                border: 'none',
-                                outline: 'none',
-                                boxShadow: 'none',
-                              }}
-                            />
-                          </div>
-                        )}
+
                         {/* Overall Rating Badge */}
                         <div
                           style={{
@@ -576,37 +520,7 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                             {player.name.split(' ').map(n => n[0]).join('')}
                           </div>
                         )}
-                        {/* Team Logo Badge */}
-                        {teamLogo && (
-                          <div
-                            style={{
-                              position: 'absolute',
-                              bottom: '6px',
-                              left: '6px',
-                              width: '32px',
-                              height: '32px',
-                              background: 'white',
-                              borderRadius: '50%',
-                              padding: '3px',
-                              border: 'none',
-                              outline: 'none',
-                              boxShadow: 'none',
-                            }}
-                          >
-                            <img
-                              src={teamLogo}
-                              alt={teamName}
-                              style={{
-                                width: '100%',
-                                height: '100%',
-                                objectFit: 'contain',
-                                border: 'none',
-                                outline: 'none',
-                                boxShadow: 'none',
-                              }}
-                            />
-                          </div>
-                        )}
+
                         {/* Overall Rating Badge */}
                         <div
                           style={{
