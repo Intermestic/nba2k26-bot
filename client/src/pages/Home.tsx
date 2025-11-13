@@ -13,7 +13,7 @@ import { FreeAgentBadge } from "@/components/FreeAgentBadge";
 import { TeamLogoBadge } from "@/components/TeamLogoBadge";
 import { TeamRosterSummary } from "@/components/TeamRosterSummary";
 import { TeamSummariesTable } from "@/components/TeamSummariesTable";
-import { RosterCard } from "@/components/RosterCard";
+import RosterCard from "@/components/RosterCard";
 
 interface Player {
   id: string;

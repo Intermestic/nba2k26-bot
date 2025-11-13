@@ -265,3 +265,9 @@
 - [x] Add share button alongside screenshot button
 - [x] Test share functionality on mobile
 - [x] Save checkpoint
+
+## Roster Card Fixes
+
+- [x] Sort roster card players by overall rating (highest to lowest)
+- [x] Fix roster card images to use image proxy to avoid CORS errors
+- [ ] Convert OKLCH colors to RGB/HEX for html2canvas compatibility

@@ -2,8 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { X, Download, Share2 } from "lucide-react";
 import { Button } from "./ui/button";
 import { toast } from "sonner";
-// @ts-ignore - dom-to-image-more doesn't have types
-import { toPng } from "dom-to-image-more";
+import html2canvas from 'html2canvas';
 
 interface Player {
   id: string;
@@ -52,10 +51,16 @@ const TEAM_LOGOS: Record<string, string> = {
   "Wizards": "https://cdn.nba.com/logos/nba/1610612764/primary/L/logo.svg"
 };
 
-export function RosterCard({ players, onClose }: RosterCardProps) {
+export default function RosterCard({ players, onClose }: RosterCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
+
   const [isDownloading, setIsDownloading] = useState(false);
   const [gridColumns, setGridColumns] = useState(5);
+
+  // Sort players by overall rating (highest to lowest)
+  const sortedPlayers = [...players].sort((a, b) => b.overall - a.overall);
+
+
 
   // Responsive grid columns based on window width
   useEffect(() => {
@@ -71,20 +76,32 @@ export function RosterCard({ players, onClose }: RosterCardProps) {
     return () => window.removeEventListener('resize', updateColumns);
   }, []);
 
-  const teamName = players[0]?.team || "Mixed";
+  const teamName = sortedPlayers[0]?.team || "Mixed";
   const teamLogo = TEAM_LOGOS[teamName];
-  const totalOverall = players.reduce((sum, p) => sum + p.overall, 0);
-  const avgOverall = Math.round(totalOverall / players.length);
+  const totalOverall = sortedPlayers.reduce((sum, p) => sum + p.overall, 0);
+  const avgOverall = Math.round(totalOverall / sortedPlayers.length);
+
+
 
   const handleDownload = async () => {
-    if (!cardRef.current) return;
+    if (!cardRef.current) {
+      toast.error("Card not ready");
+      return;
+    }
     
     setIsDownloading(true);
     try {
-      const dataUrl = await toPng(cardRef.current, {
-        quality: 1.0,
-        pixelRatio: 2,
+      // Small delay to ensure DOM is fully rendered
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      const canvas = await html2canvas(cardRef.current, {
+        backgroundColor: '#0f172a',
+        scale: 2,
+        useCORS: true,
+        allowTaint: false,
+        logging: false,
       });
+      const dataUrl = canvas.toDataURL('image/png');
       
       const link = document.createElement('a');
       link.download = `${teamName}-roster-card.png`;
@@ -110,10 +127,17 @@ export function RosterCard({ players, onClose }: RosterCardProps) {
     
     setIsDownloading(true);
     try {
-      const dataUrl = await toPng(cardRef.current, {
-        quality: 1.0,
-        pixelRatio: 2,
+      // Small delay to ensure DOM is fully rendered
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      const canvas = await html2canvas(cardRef.current, {
+        backgroundColor: '#0f172a',
+        scale: 2,
+        useCORS: true,
+        allowTaint: false,
+        logging: false,
       });
+      const dataUrl = canvas.toDataURL('image/png');
       
       const blob = await (await fetch(dataUrl)).blob();
       const file = new File([blob], `${teamName}-roster-card.png`, { type: 'image/png' });
@@ -213,7 +237,7 @@ export function RosterCard({ players, onClose }: RosterCardProps) {
                     {teamName}
                   </h3>
                   <p style={{ fontSize: '16px', color: '#94a3b8', margin: 0, border: 'none', outline: 'none', boxShadow: 'none' }}>
-                    {players.length} Players • Avg {avgOverall} OVR
+                    {sortedPlayers.length} Players • Avg {avgOverall} OVR
                   </p>
                 </div>
               </div>
@@ -230,7 +254,7 @@ export function RosterCard({ players, onClose }: RosterCardProps) {
                 boxShadow: 'none',
               }}
             >
-              {players.map((player) => (
+              {sortedPlayers.map((player) => (
                 <div
                   key={player.id}
                   style={{
@@ -262,8 +286,9 @@ export function RosterCard({ players, onClose }: RosterCardProps) {
                   >
                     {player.photoUrl ? (
                       <img
-                        src={player.photoUrl}
+                        src={`/api/image-proxy?url=${encodeURIComponent(player.photoUrl)}`}
                         alt={player.name}
+                        crossOrigin="anonymous"
                         style={{
                           width: '100%',
                           height: '100%',

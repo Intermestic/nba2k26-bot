@@ -8,6 +8,7 @@ import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
 import { publicApiRouter } from "./publicApi";
+import imageProxyRouter from "./imageProxy";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -38,6 +39,8 @@ async function startServer() {
   registerOAuthRoutes(app);
   // Public REST API (no auth required)
   app.use("/api/public", publicApiRouter);
+  // Image proxy for CORS-free image access
+  app.use("/api", imageProxyRouter);
   // tRPC API
   app.use(
     "/api/trpc",
