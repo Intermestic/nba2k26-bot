@@ -313,3 +313,17 @@
 - [ ] Fix persistent UI rendering issue (content exists in DOM but invisible)
 - [x] Backend functionality complete and working
 - [ ] Save checkpoint with working features
+
+## Transaction History Log
+
+- [x] Create database schema for transaction_history table
+- [x] Add fields: id, player_id, player_name, from_team, to_team, admin_id, admin_name, timestamp, transaction_type
+- [x] Update player.updateTeam mutation to log all team changes
+- [x] Create tRPC endpoint to fetch transaction history
+- [x] Create Transaction History page at /admin/history
+- [x] Display transactions in reverse chronological order
+- [x] Add filtering by player, team, or date range
+- [x] Add navigation link to Transaction History from admin pages
+- [x] Test transaction logging (LeBron James Spurs → Lakers recorded successfully)
+- [ ] Fix Transaction History page UI rendering issue (same as Bulk Transactions)
+- [ ] Save checkpoint

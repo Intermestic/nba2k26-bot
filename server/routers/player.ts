@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { eq, like, and, gte } from "drizzle-orm";
-import { players } from "../../drizzle/schema";
+import { players, transactionHistory } from "../../drizzle/schema";
 import { getDb } from "../db";
 import { protectedProcedure, publicProcedure, router } from "../_core/trpc";
 import { ENV } from "../_core/env";
@@ -162,6 +162,18 @@ export const playerRouter = router({
       const db = await getDb();
       if (!db) throw new Error("Database not available");
 
+      // Get current player data before update
+      const [player] = await db
+        .select()
+        .from(players)
+        .where(eq(players.id, input.playerId))
+        .limit(1);
+
+      if (!player) {
+        throw new Error("Player not found");
+      }
+
+      // Update player team
       await db
         .update(players)
         .set({
@@ -169,6 +181,17 @@ export const playerRouter = router({
           updatedAt: new Date(),
         })
         .where(eq(players.id, input.playerId));
+
+      // Log transaction
+      await db.insert(transactionHistory).values({
+        playerId: player.id,
+        playerName: player.name,
+        fromTeam: player.team || null,
+        toTeam: input.team,
+        adminId: ctx.user?.id || null,
+        adminName: ctx.user?.name || "Unknown",
+        transactionType: player.team ? "trade" : "signing",
+      });
 
       return { success: true };
     }),
@@ -188,5 +211,48 @@ export const playerRouter = router({
       await db.delete(players).where(eq(players.id, input.id));
 
       return { success: true };
+    }),
+
+  // Protected: Get transaction history (admin only)
+  getTransactionHistory: protectedProcedure
+    .input(
+      z.object({
+        limit: z.number().min(1).max(1000).default(100),
+        playerId: z.string().optional(),
+        team: z.string().optional(),
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      // Check if user is admin
+      if (ctx.user?.role !== "admin") {
+        throw new Error("Unauthorized: Admin access required");
+      }
+
+      const db = await getDb();
+      if (!db) throw new Error("Database not available");
+
+      // Build where conditions
+      const conditions = [];
+      if (input.playerId) {
+        conditions.push(eq(transactionHistory.playerId, input.playerId));
+      }
+      if (input.team) {
+        // Match either fromTeam or toTeam
+        conditions.push(
+          and(
+            like(transactionHistory.fromTeam, `%${input.team}%`),
+            like(transactionHistory.toTeam, `%${input.team}%`)
+          )
+        );
+      }
+
+      const transactions = await db
+        .select()
+        .from(transactionHistory)
+        .where(conditions.length > 0 ? and(...conditions) : undefined)
+        .orderBy(transactionHistory.createdAt)
+        .limit(input.limit);
+
+      return transactions.reverse(); // Most recent first
     }),
 });

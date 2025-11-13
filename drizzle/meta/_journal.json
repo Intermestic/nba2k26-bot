@@ -43,6 +43,13 @@
       "when": 1762962538705,
       "tag": "0005_modern_skreet",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1763059506336,
+      "tag": "0006_unusual_tarot",
+      "breakpoints": true
     }
   ]
 }

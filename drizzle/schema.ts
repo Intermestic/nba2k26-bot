@@ -45,3 +45,21 @@ export const players = mysqlTable("players", {
 
 export type Player = typeof players.$inferSelect;
 export type InsertPlayer = typeof players.$inferInsert;
+
+/**
+ * Transaction history table to track all player movements
+ */
+export const transactionHistory = mysqlTable("transaction_history", {
+  id: int("id").autoincrement().primaryKey(),
+  playerId: varchar("playerId", { length: 64 }).notNull(), // Reference to players.id
+  playerName: varchar("playerName", { length: 255 }).notNull(), // Denormalized for history
+  fromTeam: varchar("fromTeam", { length: 100 }), // Previous team (null for new players)
+  toTeam: varchar("toTeam", { length: 100 }).notNull(), // New team
+  adminId: int("adminId"), // Reference to users.id who made the change
+  adminName: varchar("adminName", { length: 255 }), // Denormalized for history
+  transactionType: mysqlEnum("transactionType", ["trade", "signing", "release", "update"]).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type TransactionHistory = typeof transactionHistory.$inferSelect;
+export type InsertTransactionHistory = typeof transactionHistory.$inferInsert;
