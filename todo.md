@@ -327,3 +327,13 @@
 - [x] Test transaction logging (LeBron James Spurs → Lakers recorded successfully)
 - [ ] Fix Transaction History page UI rendering issue (same as Bulk Transactions)
 - [ ] Save checkpoint
+
+## CSV Export for Transaction History
+
+- [x] Add CSV export function to History page
+- [x] Export filtered transactions (respects search term)
+- [x] Include all fields: player name, from team, to team, admin name, transaction type, timestamp
+- [x] Add Export CSV button to History page header
+- [x] Test CSV export button (visible and clickable)
+- [ ] CSV export returns empty file due to History page rendering issue
+- [ ] Save checkpoint with CSV export feature implementation

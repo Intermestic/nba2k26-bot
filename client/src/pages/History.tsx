@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Link, useLocation } from "wouter";
-import { Home, Users, Search, ArrowRight } from "lucide-react";
+import { Home, Users, Search, ArrowRight, Download } from "lucide-react";
 
 export default function History() {
   const { user, isAuthenticated } = useAuth();
@@ -52,6 +52,43 @@ export default function History() {
     );
   });
 
+  const exportToCSV = () => {
+    if (!filteredTransactions || filteredTransactions.length === 0) {
+      alert("No transactions to export");
+      return;
+    }
+
+    // CSV headers
+    const headers = ["Player Name", "From Team", "To Team", "Transaction Type", "Admin", "Date"];
+    
+    // CSV rows
+    const rows = filteredTransactions.map(t => [
+      t.playerName,
+      t.fromTeam || "Free Agent",
+      t.toTeam,
+      t.transactionType,
+      t.adminName || "Unknown",
+      new Date(t.createdAt).toLocaleString()
+    ]);
+
+    // Combine headers and rows
+    const csvContent = [
+      headers.join(","),
+      ...rows.map(row => row.map(cell => `"${cell}"`).join(","))
+    ].join("\n");
+
+    // Create download link
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", `transaction-history-${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       {/* Header */}
@@ -81,18 +118,28 @@ export default function History() {
       </header>
 
       <div className="container mx-auto px-4 py-8">
-        {/* Search */}
+        {/* Search and Export */}
         <Card className="bg-slate-800/50 border-slate-700 mb-6">
           <CardContent className="p-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
-              <Input
-                type="text"
-                placeholder="Search by player, team, or admin..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 bg-slate-900 border-slate-600 text-white"
-              />
+            <div className="flex gap-4">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
+                <Input
+                  type="text"
+                  placeholder="Search by player, team, or admin..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10 bg-slate-900 border-slate-600 text-white"
+                />
+              </div>
+              <Button
+                onClick={exportToCSV}
+                variant="outline"
+                className="bg-green-900 border-green-700 hover:bg-green-800 text-white"
+              >
+                <Download className="w-4 h-4 mr-2" />
+                Export CSV
+              </Button>
             </div>
           </CardContent>
         </Card>
