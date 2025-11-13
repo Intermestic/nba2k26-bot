@@ -5,8 +5,7 @@ import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
-import { Download, Search, Filter, Shield, Camera, Share2 } from "lucide-react";
-import html2canvas from "html2canvas";
+import { Download, Search, Filter, Shield, Check } from "lucide-react";
 import { Link } from "wouter";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PlayerAvatar } from "@/components/PlayerAvatar";
@@ -14,6 +13,7 @@ import { FreeAgentBadge } from "@/components/FreeAgentBadge";
 import { TeamLogoBadge } from "@/components/TeamLogoBadge";
 import { TeamRosterSummary } from "@/components/TeamRosterSummary";
 import { TeamSummariesTable } from "@/components/TeamSummariesTable";
+import { RosterCard } from "@/components/RosterCard";
 
 interface Player {
   id: string;
@@ -35,8 +35,8 @@ export default function Home() {
   const [minRating, setMinRating] = useState("0");
   const [selectedTeam, setSelectedTeam] = useState("all");
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [isCapturing, setIsCapturing] = useState(false);
-  const rosterRef = useRef<HTMLDivElement>(null);
+  const [selectedPlayers, setSelectedPlayers] = useState<Set<string>>(new Set());
+  const [showRosterCard, setShowRosterCard] = useState(false);
 
   // Normalize name for fuzzy search (remove special chars, lowercase)
   const normalizeName = (name: string) => {
@@ -135,67 +135,28 @@ export default function Home() {
     return teamSummaries.find(t => t.team === selectedTeam);
   }, [selectedTeam, teamSummaries, freeAgentCount]);
 
-  // Screenshot functionality
-  const captureRoster = async (): Promise<Blob | null> => {
-    if (!rosterRef.current) return null;
-    
-    try {
-      const canvas = await html2canvas(rosterRef.current, {
-        backgroundColor: '#0f172a',
-        scale: 2,
-        logging: false,
-        useCORS: true,
-      });
-      
-      return new Promise((resolve) => {
-        canvas.toBlob((blob) => resolve(blob), 'image/png');
-      });
-    } catch (error) {
-      console.error('Screenshot failed:', error);
-      return null;
-    }
-  };
-
-  const handleScreenshot = async () => {
-    setIsCapturing(true);
-    const blob = await captureRoster();
-    setIsCapturing(false);
-    
-    if (!blob) return;
-    
-    const link = document.createElement('a');
-    link.download = `${selectedTeam}-roster.png`;
-    link.href = URL.createObjectURL(blob);
-    link.click();
-    URL.revokeObjectURL(link.href);
-  };
-
-  const handleShare = async () => {
-    if (!navigator.share) {
-      // Fallback to download if share API not available
-      handleScreenshot();
-      return;
-    }
-    
-    setIsCapturing(true);
-    const blob = await captureRoster();
-    setIsCapturing(false);
-    
-    if (!blob) return;
-    
-    try {
-      const file = new File([blob], `${selectedTeam}-roster.png`, { type: 'image/png' });
-      await navigator.share({
-        files: [file],
-        title: `${selectedTeam} Roster`,
-        text: `Check out the ${selectedTeam} roster!`,
-      });
-    } catch (error) {
-      if ((error as Error).name !== 'AbortError') {
-        console.error('Share failed:', error);
+  // Selection handlers
+  const togglePlayer = (playerId: string) => {
+    setSelectedPlayers(prev => {
+      const next = new Set(prev);
+      if (next.has(playerId)) {
+        next.delete(playerId);
+      } else {
+        next.add(playerId);
       }
-    }
+      return next;
+    });
   };
+
+  const selectAll = () => {
+    setSelectedPlayers(new Set(filteredPlayers.map(p => p.id)));
+  };
+
+  const clearSelection = () => {
+    setSelectedPlayers(new Set());
+  };
+
+  const selectedPlayersList = players.filter(p => selectedPlayers.has(p.id));
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
@@ -367,35 +328,37 @@ export default function Home() {
         {/* Team Roster Summary (shown when filtering by team) */}
         {selectedTeamSummary && (
           <div className="mb-6">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
-              <TeamRosterSummary
-                team={selectedTeamSummary.team}
-                playerCount={selectedTeamSummary.playerCount}
-                totalOverall={selectedTeamSummary.totalOverall}
-                isFreeAgent={selectedTeamSummary.isFreeAgent}
-              />
-              <div className="flex gap-2 w-full sm:w-auto">
-                <Button
-                  onClick={handleShare}
-                  disabled={isCapturing}
-                  variant="outline"
-                  size="sm"
-                  className="bg-blue-900 border-blue-700 hover:bg-blue-800 flex-1 sm:flex-none"
-                >
-                  <Share2 className="w-4 h-4 mr-2" />
-                  {isCapturing ? "Capturing..." : "Share"}
-                </Button>
-                <Button
-                  onClick={handleScreenshot}
-                  disabled={isCapturing}
-                  variant="outline"
-                  size="sm"
-                  className="bg-slate-800 border-slate-700 hover:bg-slate-700 flex-1 sm:flex-none"
-                >
-                  <Camera className="w-4 h-4 mr-2" />
-                  {isCapturing ? "Capturing..." : "Download"}
-                </Button>
-              </div>
+            <TeamRosterSummary
+              team={selectedTeamSummary.team}
+              playerCount={selectedTeamSummary.playerCount}
+              totalOverall={selectedTeamSummary.totalOverall}
+              isFreeAgent={selectedTeamSummary.isFreeAgent}
+            />
+          </div>
+        )}
+
+        {/* Selection Controls */}
+        {selectedPlayers.size > 0 && (
+          <div className="mb-4 flex items-center justify-between bg-slate-800/50 border border-slate-700 rounded-lg p-4">
+            <div className="text-white">
+              <span className="font-bold">{selectedPlayers.size}</span> player{selectedPlayers.size !== 1 ? 's' : ''} selected
+            </div>
+            <div className="flex gap-2">
+              <Button
+                onClick={clearSelection}
+                variant="outline"
+                size="sm"
+                className="border-slate-600"
+              >
+                Clear
+              </Button>
+              <Button
+                onClick={() => setShowRosterCard(true)}
+                className="bg-blue-600 hover:bg-blue-700"
+                size="sm"
+              >
+                Generate Roster Card
+              </Button>
             </div>
           </div>
         )}
@@ -404,22 +367,19 @@ export default function Home() {
         {loading ? (
           <div className="text-center py-12 text-slate-400">Loading players...</div>
         ) : (
-          <div ref={rosterRef}>
-            {/* Screenshot Header (only visible in screenshots when team is selected) */}
-            {selectedTeam !== "all" && (
-              <div className="bg-slate-800/90 rounded-lg p-6 mb-6 flex items-center gap-4">
-                {selectedTeam !== "Free Agents" && (
-                  <TeamLogoBadge team={selectedTeam} size="xl" className="!w-16 !h-16" />
-                )}
-                <div>
-                  <h2 className="text-3xl font-bold text-white">{selectedTeam}</h2>
-                  <p className="text-slate-400 mt-1">
-                    {selectedTeamSummary?.playerCount} Players
-                    {!selectedTeamSummary?.isFreeAgent && ` • Total Overall: ${selectedTeamSummary?.totalOverall}`}
-                  </p>
-                </div>
-              </div>
-            )}
+          <div>
+            {/* Select All Button */}
+            <div className="mb-4 flex justify-end">
+              <Button
+                onClick={selectAll}
+                variant="outline"
+                size="sm"
+                className="border-slate-600"
+              >
+                <Check className="w-4 h-4 mr-2" />
+                Select All ({filteredPlayers.length})
+              </Button>
+            </div>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
             {filteredPlayers.map((player) => (
               <Card
@@ -428,6 +388,15 @@ export default function Home() {
               >
                 <CardContent className="p-0">
                   <div className="aspect-square bg-gradient-to-br from-slate-700 to-slate-800 relative overflow-hidden flex items-center justify-center">
+                    {/* Checkbox */}
+                    <button
+                      onClick={() => togglePlayer(player.id)}
+                      className="absolute top-2 left-2 z-10 w-6 h-6 rounded border-2 border-white bg-black/50 flex items-center justify-center hover:bg-black/70 transition-colors"
+                    >
+                      {selectedPlayers.has(player.id) && (
+                        <Check className="w-4 h-4 text-white" />
+                      )}
+                    </button>
                     <PlayerAvatar 
                       name={player.name}
                       photoUrl={player.photoUrl}
@@ -472,6 +441,14 @@ export default function Home() {
           <div className="text-center py-12 text-slate-400">No players found matching your criteria.</div>
         )}
       </div>
+
+      {/* Roster Card Modal */}
+      {showRosterCard && (
+        <RosterCard
+          players={selectedPlayersList}
+          onClose={() => setShowRosterCard(false)}
+        />
+      )}
 
       {/* Footer */}
       <footer className="border-t border-slate-700 bg-slate-900/50 mt-12">
