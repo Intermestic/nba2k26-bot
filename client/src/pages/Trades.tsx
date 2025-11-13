@@ -14,6 +14,52 @@ interface TradeMove {
   toTeam: string;
 }
 
+// Map full team names to database shortened names
+const TEAM_NAME_MAP: Record<string, string> = {
+  "Atlanta Hawks": "Hawks",
+  "Boston Celtics": "Celtics",
+  "Brooklyn Nets": "Nets",
+  "Charlotte Hornets": "Hornets",
+  "Chicago Bulls": "Bulls",
+  "Cleveland Cavaliers": "Cavaliers",
+  "Dallas Mavericks": "Mavericks",
+  "Denver Nuggets": "Nuggets",
+  "Detroit Pistons": "Pistons",
+  "Golden State Warriors": "Warriors",
+  "Houston Rockets": "Rockets",
+  "Indiana Pacers": "Pacers",
+  "LA Clippers": "Clippers",
+  "Los Angeles Clippers": "Clippers",
+  "Los Angeles Lakers": "Lakers",
+  "LA Lakers": "Lakers",
+  "Memphis Grizzlies": "Grizzlies",
+  "Miami Heat": "Heat",
+  "Milwaukee Bucks": "Bucks",
+  "Minnesota Timberwolves": "Timberwolves",
+  "New Orleans Pelicans": "Pelicans",
+  "New York Knicks": "Knicks",
+  "Oklahoma City Thunder": "Thunder",
+  "Orlando Magic": "Magic",
+  "Philadelphia 76ers": "Sixers",
+  "Philadelphia Sixers": "Sixers",
+  "Phoenix Suns": "Suns",
+  "Portland Trail Blazers": "Trail Blazers",
+  "Sacramento Kings": "Kings",
+  "San Antonio Spurs": "Spurs",
+  "Toronto Raptors": "Raptors",
+  "Utah Jazz": "Jazz",
+  "Washington Wizards": "Wizards",
+};
+
+function normalizeTeamName(teamName: string): string {
+  // Try exact match first
+  if (TEAM_NAME_MAP[teamName]) {
+    return TEAM_NAME_MAP[teamName];
+  }
+  // Return as-is if no mapping found
+  return teamName;
+}
+
 export default function Trades() {
   const { user, isAuthenticated } = useAuth();
   const [tradeText, setTradeText] = useState("");
@@ -61,7 +107,8 @@ export default function Trades() {
     for (const line of lines) {
       // Check if line is "Team Receive:"
       if (line.endsWith("Receive:")) {
-        currentTeam = line.replace("Receive:", "").trim();
+        const rawTeamName = line.replace("Receive:", "").trim();
+        currentTeam = normalizeTeamName(rawTeamName);
         continue;
       }
 
@@ -86,7 +133,7 @@ export default function Trades() {
             playerName: player.name,
             overall: player.overall,
             fromTeam: player.team || "Unknown",
-            toTeam: currentTeam,
+            toTeam: normalizeTeamName(currentTeam),
           });
         } else {
           toast.warning(`Player not found: ${playerName}`);

@@ -285,3 +285,13 @@
 - [x] Test Add Player feature (working)
 - [ ] Fix Bulk Trade Processor UI rendering issue
 - [ ] Save checkpoint
+
+## URGENT: Fix Bulk Trade Processor Bug
+
+- [x] Investigate why bulk trade processor removed all players from teams (duplicate team names created)
+- [x] Restore correct team assignments by merging duplicate teams
+- [x] Verify trade processor only updates traded players, not all players
+- [x] Add team name normalization to Trades.tsx (map full names to shortened names)
+- [ ] Fix Trades.tsx UI rendering issue (deferred - backend works, UI can be fixed later)
+- [x] Delete Test Player from database
+- [ ] Save recovery checkpoint with fixes
