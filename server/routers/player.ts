@@ -123,6 +123,7 @@ export const playerRouter = router({
         id: z.string(),
         name: z.string(),
         overall: z.number().min(0).max(99),
+        team: z.string().optional(),
         photoUrl: z.string().nullable().optional(),
         playerPageUrl: z.string().nullable().optional(),
         nbaId: z.string().nullable().optional(),

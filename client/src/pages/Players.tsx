@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Edit, Loader2, Trash2, Users } from "lucide-react";
+import { Edit, Loader2, Trash2, Users, Plus } from "lucide-react";
 import { Link } from "wouter";
 
 export default function Players() {
@@ -18,6 +18,14 @@ export default function Players() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [playerToDelete, setPlayerToDelete] = useState<any>(null);
   const [deleteCode, setDeleteCode] = useState("");
+  const [addDialogOpen, setAddDialogOpen] = useState(false);
+  const [newPlayer, setNewPlayer] = useState({
+    name: "",
+    overall: "70",
+    team: "Free Agents",
+    photoUrl: "",
+    playerPageUrl: "",
+  });
 
   // Normalize name for fuzzy search (same as Home page)
   const normalizeName = (name: string) => {
@@ -59,6 +67,25 @@ export default function Players() {
     },
     onError: (error) => {
       toast.error(`Failed to update player: ${error.message}`);
+    },
+  });
+
+  // Create player mutation (admin only)
+  const createMutation = trpc.player.create.useMutation({
+    onSuccess: () => {
+      toast.success("Player added successfully!");
+      setAddDialogOpen(false);
+      setNewPlayer({
+        name: "",
+        overall: "70",
+        team: "Free Agents",
+        photoUrl: "",
+        playerPageUrl: "",
+      });
+      refetch();
+    },
+    onError: (error) => {
+      toast.error(`Failed to add player: ${error.message}`);
     },
   });
 
@@ -155,6 +182,12 @@ export default function Players() {
                   Team Management
                 </Link>
               </Button>
+              <Button asChild variant="outline" className="bg-blue-900 border-blue-700 hover:bg-blue-800">
+                <Link href="/admin/trades">
+                  <Users className="w-4 h-4 mr-2" />
+                  Bulk Trades
+                </Link>
+              </Button>
             </div>
           </CardHeader>
           <CardContent>
@@ -166,6 +199,10 @@ export default function Players() {
                 className="flex-1"
               />
               <Button onClick={() => refetch()}>Refresh</Button>
+              <Button onClick={() => setAddDialogOpen(true)} className="bg-green-600 hover:bg-green-700">
+                <Plus className="w-4 h-4 mr-2" />
+                Add Player
+              </Button>
             </div>
           </CardContent>
         </Card>
@@ -373,6 +410,112 @@ export default function Players() {
                 </div>
               </div>
             )}
+          </DialogContent>
+        </Dialog>
+
+        {/* Add Player Dialog */}
+        <Dialog open={addDialogOpen} onOpenChange={setAddDialogOpen}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>Add New Player</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="newName">Name *</Label>
+                <Input
+                  id="newName"
+                  value={newPlayer.name}
+                  onChange={(e) =>
+                    setNewPlayer({ ...newPlayer, name: e.target.value })
+                  }
+                  placeholder="Player name"
+                />
+              </div>
+              <div>
+                <Label htmlFor="newOverall">Overall Rating *</Label>
+                <Input
+                  id="newOverall"
+                  type="number"
+                  min="0"
+                  max="99"
+                  value={newPlayer.overall}
+                  onChange={(e) =>
+                    setNewPlayer({ ...newPlayer, overall: e.target.value })
+                  }
+                />
+              </div>
+              <div>
+                <Label htmlFor="newTeam">Team *</Label>
+                <Input
+                  id="newTeam"
+                  value={newPlayer.team}
+                  onChange={(e) =>
+                    setNewPlayer({ ...newPlayer, team: e.target.value })
+                  }
+                  placeholder="Team name or 'Free Agents'"
+                />
+              </div>
+              <div>
+                <Label htmlFor="newPhotoUrl">Photo URL (optional)</Label>
+                <Input
+                  id="newPhotoUrl"
+                  value={newPlayer.photoUrl}
+                  onChange={(e) =>
+                    setNewPlayer({ ...newPlayer, photoUrl: e.target.value })
+                  }
+                  placeholder="https://..."
+                />
+              </div>
+              <div>
+                <Label htmlFor="newPlayerPageUrl">2kratings URL (optional)</Label>
+                <Input
+                  id="newPlayerPageUrl"
+                  value={newPlayer.playerPageUrl}
+                  onChange={(e) =>
+                    setNewPlayer({ ...newPlayer, playerPageUrl: e.target.value })
+                  }
+                  placeholder="https://www.2kratings.com/..."
+                />
+              </div>
+              <div className="flex justify-end gap-2">
+                <Button
+                  variant="outline"
+                  onClick={() => setAddDialogOpen(false)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={() => {
+                    if (!newPlayer.name || !newPlayer.overall) {
+                      toast.error("Name and Overall Rating are required");
+                      return;
+                    }
+                    const id = `player-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+                    createMutation.mutate({
+                      id,
+                      name: newPlayer.name,
+                      overall: parseInt(newPlayer.overall),
+                      team: newPlayer.team || "Free Agents",
+                      photoUrl: newPlayer.photoUrl || null,
+                      playerPageUrl: newPlayer.playerPageUrl || null,
+                      nbaId: null,
+                      source: "manual",
+                    });
+                  }}
+                  disabled={createMutation.isPending}
+                  className="bg-green-600 hover:bg-green-700"
+                >
+                  {createMutation.isPending ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Adding...
+                    </>
+                  ) : (
+                    "Add Player"
+                  )}
+                </Button>
+              </div>
+            </div>
           </DialogContent>
         </Dialog>
       </div>

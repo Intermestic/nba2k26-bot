@@ -271,3 +271,17 @@
 - [x] Sort roster card players by overall rating (highest to lowest)
 - [x] Fix roster card images to use image proxy to avoid CORS errors
 - [ ] Convert OKLCH colors to RGB/HEX for html2canvas compatibility
+
+## Admin Add Player & Bulk Trade Processor
+
+- [x] Add "Add Player" button and form in admin panel
+- [x] Create tRPC mutation for adding new players
+- [x] Implement form validation (name, overall, team required)
+- [ ] Add Bulk Trade Processor page at /admin/trades (UI rendering issue - backend complete)
+- [x] Parse trade text format (Team Receive: Player (OVR))
+- [x] Extract player names and destination teams from trade text
+- [x] Update player teams in batch via tRPC mutation
+- [x] Display trade summary before confirming
+- [x] Test Add Player feature (working)
+- [ ] Fix Bulk Trade Processor UI rendering issue
+- [ ] Save checkpoint
