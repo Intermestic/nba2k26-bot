@@ -374,3 +374,15 @@
 - [x] Ensure proper text wrapping and ellipsis for long names (added overflow: hidden, textOverflow: ellipsis, whiteSpace: nowrap)
 - [x] Test with Wizards team (14 players with long names) - ALL NAMES VISIBLE!
 - [ ] Save checkpoint with mobile fixes
+
+## URGENT: Fix Roster Card Name Truncation in Downloaded PNG
+
+- [x] Names still being cut off in downloaded PNG despite CSS fixes
+- [x] Ellipsis/overflow CSS doesn't work in html2canvas
+- [x] Examples: "Mikal Bridges", "Jalen S...", "Ben Sim...", "Matisse Thybulle", "Eugene O..." all truncated
+- [x] Removed whiteSpace: nowrap to allow text wrapping
+- [x] Reduced font size (top: 17px, bottom: 13px) and added lineHeight
+- [x] Added minHeight and flexbox centering for consistent spacing
+- [x] Test with Wizards team (has longest names) - ALL NAMES FULLY VISIBLE!
+- [x] Verify all 14 names are fully visible in downloaded PNG - PERFECT!
+- [ ] Save checkpoint with fix

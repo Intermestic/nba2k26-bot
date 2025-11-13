@@ -273,13 +273,16 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                       </div>
                       <div
                         style={{
-                        fontSize: '18px',
+                        fontSize: '17px',
                         fontWeight: '600',
                         color: 'white',
                         marginBottom: '4px',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap',
+                        lineHeight: '1.3',
+                        minHeight: '44px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        textAlign: 'center',
                           border: 'none',
                           outline: 'none',
                           boxShadow: 'none',
@@ -434,10 +437,16 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                       </div>
                       <div
                         style={{
-                          fontSize: '20px',
+                          fontSize: '17px',
                           fontWeight: '600',
                           color: 'white',
                           marginBottom: '4px',
+                          lineHeight: '1.3',
+                          minHeight: '44px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          textAlign: 'center',
                           border: 'none',
                           outline: 'none',
                           boxShadow: 'none',
@@ -543,13 +552,15 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                       </div>
                       <div
                         style={{
-                          fontSize: '14px',
+                          fontSize: '13px',
                           fontWeight: '600',
                           color: 'white',
                           marginBottom: '2px',
-                          whiteSpace: 'nowrap',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
+                          lineHeight: '1.2',
+                          minHeight: '30px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
                           border: 'none',
                           outline: 'none',
                           boxShadow: 'none',
