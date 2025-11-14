@@ -72,6 +72,9 @@ export function generateDiscordEmbed(summaries: TeamSummary[], websiteUrl: strin
       title: "🏀 NBA 2K26 Team Cap Status",
       description: description,
       color: overCapTeams > 0 ? 0xef4444 : atCapTeams > 0 ? 0xeab308 : 0x10b981,
+      thumbnail: {
+        url: "https://cdn.nba.com/logos/leagues/logo-nba.svg"
+      },
       footer: {
         text: `Last updated: ${new Date().toLocaleString()}`
       },
@@ -165,4 +168,65 @@ export async function autoUpdateDiscord() {
   } catch (error) {
     console.error('[Discord] Auto-update failed:', error);
   }
+}
+
+
+export async function postTeamToDiscord(webhookUrl: string, teamName: string, websiteUrl: string) {
+  const db = await getDb();
+  if (!db) throw new Error('Database connection failed');
+  
+  // Get all players for the specific team
+  const teamPlayers = await db
+    .select()
+    .from(players)
+    .where(eq(players.team, teamName));
+  
+  if (teamPlayers.length === 0) {
+    throw new Error(`Team "${teamName}" not found or has no players`);
+  }
+  
+  const totalOverall = teamPlayers.reduce((sum: number, p: any) => sum + p.overall, 0);
+  const overCap = totalOverall - OVERALL_CAP_LIMIT;
+  const status = overCap > 0 
+    ? `🔴 ${totalOverall} (+${overCap})`
+    : overCap === 0
+    ? `🟡 ${totalOverall}`
+    : `🟢 ${totalOverall}`;
+  
+  // Sort players by overall rating
+  const sortedPlayers = teamPlayers.sort((a: any, b: any) => b.overall - a.overall);
+  
+  // Build player list
+  const playerLines = sortedPlayers.map((p: any, idx: number) => 
+    `${idx + 1}. **${p.name}** - ${p.overall} OVR`
+  );
+  
+  const teamUrl = `${websiteUrl}?team=${encodeURIComponent(teamName)}`;
+  const description = `**${teamName}** (${teamPlayers.length}/14 players)\n${status}\n\n${playerLines.join('\n')}\n\n[View Team →](<${teamUrl}>)`;
+  
+  const embed = {
+    embeds: [{
+      title: `🏀 ${teamName} Cap Status`,
+      description: description,
+      color: overCap > 0 ? 0xef4444 : overCap === 0 ? 0xeab308 : 0x10b981,
+      footer: {
+        text: `Cap Limit: ${OVERALL_CAP_LIMIT} Total Overall`
+      },
+      timestamp: new Date().toISOString()
+    }]
+  };
+  
+  const response = await fetch(webhookUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(embed)
+  });
+  
+  if (!response.ok) {
+    throw new Error(`Discord webhook failed: ${response.status} ${response.statusText}`);
+  }
+  
+  return { success: true, teamName, playerCount: teamPlayers.length, totalOverall };
 }

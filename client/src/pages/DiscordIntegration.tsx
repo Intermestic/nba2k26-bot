@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { Link } from "wouter";
 import { ArrowLeft, Send, RefreshCw, ExternalLink } from "lucide-react";
@@ -16,6 +17,7 @@ export default function DiscordIntegration() {
   const [messageId, setMessageId] = useState("");
   const [websiteUrl, setWebsiteUrl] = useState(window.location.origin);
   const [autoUpdateEnabled, setAutoUpdateEnabled] = useState(false);
+  const [selectedTeam, setSelectedTeam] = useState("");
 
   // Load existing config
   const { data: config, refetch: refetchConfig } = trpc.discord.getConfig.useQuery();
@@ -57,6 +59,19 @@ export default function DiscordIntegration() {
     },
   });
 
+  const postTeamMutation = trpc.discord.postTeamCapStatus.useMutation({
+    onSuccess: (data) => {
+      toast.success(`Posted ${data.teamName} to Discord! ${data.playerCount} players, ${data.totalOverall} total overall.`);
+    },
+    onError: (error) => {
+      toast.error(`Failed to post team: ${error.message}`);
+    },
+  });
+
+  // Get all teams for dropdown
+  const { data: players } = trpc.player.list.useQuery({});
+  const teams = Array.from(new Set(players?.filter((p: any) => p.team).map((p: any) => p.team!))).sort();
+
   const handlePost = async () => {
     if (!webhookUrl) {
       toast.error("Please enter a Discord webhook URL");
@@ -77,6 +92,19 @@ export default function DiscordIntegration() {
     }
 
     updateMutation.mutate({ webhookUrl, messageId, websiteUrl });
+  };
+
+  const handlePostTeam = async () => {
+    if (!webhookUrl) {
+      toast.error("Please enter a Discord webhook URL");
+      return;
+    }
+    if (!selectedTeam) {
+      toast.error("Please select a team");
+      return;
+    }
+
+    postTeamMutation.mutate({ webhookUrl, teamName: selectedTeam, websiteUrl });
   };
 
   if (user?.role !== "admin") {
@@ -249,6 +277,58 @@ export default function DiscordIntegration() {
                 "Save Configuration"
               )}
             </Button>
+          </CardContent>
+        </Card>
+
+        {/* Team Query */}
+        <Card className="bg-slate-800/50 border-slate-700 mb-6">
+          <CardHeader>
+            <CardTitle className="text-white">Post Individual Team</CardTitle>
+            <CardDescription>Post a specific team's cap status with player list</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="teamSelect" className="text-slate-300">
+                Select Team
+              </Label>
+              <Select value={selectedTeam} onValueChange={setSelectedTeam}>
+                <SelectTrigger className="bg-slate-900/50 border-slate-700 text-white">
+                  <SelectValue placeholder="Choose a team..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {teams?.map((team) => (
+                    <SelectItem key={team} value={team}>
+                      {team}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <Button
+              onClick={handlePostTeam}
+              disabled={postTeamMutation.isPending || !webhookUrl || !selectedTeam}
+              className="w-full gap-2"
+              variant="secondary"
+            >
+              {postTeamMutation.isPending ? (
+                <>
+                  <RefreshCw className="w-4 h-4 animate-spin" />
+                  Posting Team...
+                </>
+              ) : (
+                <>
+                  <Send className="w-4 h-4" />
+                  Post {selectedTeam || "Team"} to Discord
+                </>
+              )}
+            </Button>
+
+            <div className="p-4 bg-purple-900/20 border border-purple-700/50 rounded-lg">
+              <p className="text-sm text-purple-200">
+                <strong>Info:</strong> This posts a detailed breakdown of a single team including all players and their overall ratings.
+              </p>
+            </div>
           </CardContent>
         </Card>
 

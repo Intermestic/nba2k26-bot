@@ -471,5 +471,23 @@
 
 - [x] Fix Trail Blazers link rendering (space in team name causing URL encoding issue)
 - [x] Remove "At Cap" and "Under Cap" indicators, only show over cap count
-- [ ] Test Discord embed with fixes
+- [x] Test Discord embed with fixes
+- [x] Save checkpoint
+
+## Discord Enhancements
+
+- [ ] Create team logo URL mapping for all NBA teams
+- [ ] Add thumbnail to Discord embed showing NBA logo or team logo
+- [ ] Create individual team query endpoint (POST to webhook with specific team)
+- [ ] Add UI button to post individual team cap status to Discord
+- [ ] Test team logo display in Discord
+- [ ] Test individual team query functionality
+- [ ] Save checkpoint
+
+## Discord Enhancements
+
+- [x] Add NBA logo thumbnail to Discord embed
+- [x] Create individual team query endpoint
+- [x] Add team selector UI for posting specific teams
+- [ ] Test team logo and individual team posting
 - [ ] Save checkpoint

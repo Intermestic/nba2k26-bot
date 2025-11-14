@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { protectedProcedure, router } from "../_core/trpc";
-import { postToDiscord, updateDiscordMessage } from "../discord";
+import { postToDiscord, updateDiscordMessage, postTeamToDiscord } from "../discord";
 import { getDb } from "../db";
 import { discordConfig } from "../../drizzle/schema";
 import { eq } from "drizzle-orm";
@@ -59,6 +59,29 @@ export const discordRouter = router({
     const configs = await db.select().from(discordConfig).limit(1);
     return configs[0] || null;
   }),
+
+  // Post individual team cap status
+  postTeamCapStatus: protectedProcedure
+    .input(
+      z.object({
+        webhookUrl: z.string().url(),
+        teamName: z.string(),
+        websiteUrl: z.string().url(),
+      })
+    )
+    .mutation(async ({ input, ctx }): Promise<{ success: boolean; teamName: string; playerCount: number; totalOverall: number }> => {
+      // Only admins can post to Discord
+      if (ctx.user?.role !== "admin") {
+        throw new Error("Unauthorized: Admin access required");
+      }
+
+      const result = await postTeamToDiscord(
+        input.webhookUrl,
+        input.teamName,
+        input.websiteUrl
+      );
+      return result;
+    }),
 
   // Save Discord configuration
   saveConfig: protectedProcedure
