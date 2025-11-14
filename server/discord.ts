@@ -94,7 +94,7 @@ export function generateDiscordEmbed(summaries: TeamSummary[], websiteUrl: strin
     return `${summary.team} (${summary.playerCount}/14) - ${status}`;
   });
   
-  const description = `**Cap Limit:** ${OVERALL_CAP_LIMIT} Total Overall\n🔴 Over Cap: ${overCapTeams} teams\n\n${teamLines.join('\n')}\n\n**View rosters:** ${websiteUrl}`;
+  const description = `**Cap Limit:** ${OVERALL_CAP_LIMIT} Total Overall\n🔴 Over Cap: ${overCapTeams} teams\n\n${teamLines.join('\n')}\n\n**View rosters:** tinyurl.com/hof2k`;
   
   return {
     embeds: [{

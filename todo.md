@@ -555,5 +555,10 @@
 - [x] Create edit player modal with delete option on player cards
 - [x] Remove Players.tsx page file
 - [x] Remove Players route from App.tsx
-- [ ] Test consolidated admin functionality
+- [x] Test consolidated admin functionality
+- [x] Save checkpoint
+
+## Update Discord View Rosters Link
+
+- [x] Change "View rosters" link to tinyurl.com/hof2k
 - [ ] Save checkpoint
