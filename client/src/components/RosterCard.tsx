@@ -10,6 +10,7 @@ interface Player {
   overall: number;
   team: string | null;
   photoUrl?: string | null;
+  salaryCap?: number | null;
 }
 
 interface RosterCardProps {
@@ -30,6 +31,12 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
   const avgOverall = Math.round(
     sortedPlayers.reduce((sum, p) => sum + p.overall, 0) / sortedPlayers.length
   );
+
+  // Calculate total salary cap
+  const totalCap = sortedPlayers.reduce((sum, p) => sum + (p.salaryCap || 0), 0);
+  const CAP_LIMIT = 140; // NBA salary cap limit
+  const overCap = totalCap > CAP_LIMIT ? totalCap - CAP_LIMIT : 0;
+  const isFullTeam = sortedPlayers.length === 14;
 
   // Determine layout: if 5+ players, use special layout
   const useSpecialLayout = sortedPlayers.length >= 5;
@@ -357,6 +364,21 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                       >
                         {sortedPlayers.length} Players
                       </div>
+                      {isFullTeam && (
+                        <div
+                          style={{
+                            fontSize: '16px',
+                            color: overCap > 0 ? '#ef4444' : '#10b981',
+                            fontWeight: 'bold',
+                            marginTop: '8px',
+                            border: 'none',
+                            outline: 'none',
+                            boxShadow: 'none',
+                          }}
+                        >
+                          Cap: ${totalCap}M{overCap > 0 && ` (+${overCap}M)`}
+                        </div>
+                      )}
                     </div>
                   </div>
                   )}
@@ -610,6 +632,11 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                       <p style={{ fontSize: '16px', color: '#94a3b8', margin: 0, border: 'none', outline: 'none', boxShadow: 'none' }}>
                         {sortedPlayers.length} Players
                       </p>
+                      {isFullTeam && (
+                        <p style={{ fontSize: '14px', color: overCap > 0 ? '#ef4444' : '#10b981', fontWeight: 'bold', margin: '4px 0 0 0', border: 'none', outline: 'none', boxShadow: 'none' }}>
+                          Cap: ${totalCap}M{overCap > 0 && ` (+${overCap}M)`}
+                        </p>
+                      )}
                     </div>
                   </div>
                 </div>

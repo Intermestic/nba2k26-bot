@@ -8,6 +8,7 @@ interface TeamSummary {
   team: string;
   playerCount: number;
   totalOverall: number;
+  totalCap: number;
 }
 
 interface TeamSummariesTableProps {
@@ -16,6 +17,7 @@ interface TeamSummariesTableProps {
 }
 
 const OVERALL_CAP_LIMIT = 1098;
+const SALARY_CAP_LIMIT = 140;
 
 export function TeamSummariesTable({ summaries, onTeamClick }: TeamSummariesTableProps) {
   const [sortBy, setSortBy] = useState<"team" | "players" | "overall">("team");
@@ -111,6 +113,9 @@ export function TeamSummariesTable({ summaries, onTeamClick }: TeamSummariesTabl
                   </TableCell>
                   <TableCell className={`text-center font-semibold ${getCapStatusColor(summary.totalOverall)}`}>
                     {summary.totalOverall}
+                    {summary.totalCap > SALARY_CAP_LIMIT && (
+                      <span className="text-red-500 ml-1">({`+${summary.totalCap - SALARY_CAP_LIMIT}`})</span>
+                    )}
                   </TableCell>
                 </TableRow>
               ))}

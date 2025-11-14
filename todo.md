@@ -415,3 +415,18 @@
 - [x] Show success/error feedback after assignment
 - [ ] Test with multiple selected players
 - [ ] Save checkpoint
+
+## Fix CSV Export to Include Team Affiliations
+
+- [x] Update CSV export functionality to include team column
+- [x] Generate CSV file with all player data and team affiliations
+- [x] Deliver CSV file to user
+
+## Salary Cap Display Enhancements
+
+- [x] Add total salary cap display to roster card when all 14 team players are selected
+- [x] Show amount over cap on roster card if team exceeds cap limit
+- [x] Add over-cap indicator (+X) to homepage team table for teams over cap
+- [x] Test roster card with full team selection
+- [x] Test homepage team table with over-cap teams
+- [x] Save checkpoint
