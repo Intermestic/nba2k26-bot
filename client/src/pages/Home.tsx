@@ -15,6 +15,7 @@ import { getTeamLogo } from "@/lib/teamLogos";
 import { TeamRosterSummary } from "@/components/TeamRosterSummary";
 import { TeamSummariesTable } from "@/components/TeamSummariesTable";
 import RosterCard from "@/components/RosterCard";
+import { TeamAssignmentDialog } from "@/components/TeamAssignmentDialog";
 
 interface Player {
   id: string;
@@ -38,6 +39,7 @@ export default function Home() {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedPlayers, setSelectedPlayers] = useState<Set<string>>(new Set());
   const [showRosterCard, setShowRosterCard] = useState(false);
+  const [showTeamAssignment, setShowTeamAssignment] = useState(false);
 
   // Normalize name for fuzzy search (remove special chars, lowercase)
   const normalizeName = (name: string) => {
@@ -360,6 +362,15 @@ export default function Home() {
               >
                 Generate Roster Card
               </Button>
+              {user?.role === 'admin' && (
+                <Button
+                  onClick={() => setShowTeamAssignment(true)}
+                  className="bg-green-600 hover:bg-green-700"
+                  size="sm"
+                >
+                  Assign Team
+                </Button>
+              )}
             </div>
           </div>
         )}
@@ -452,6 +463,18 @@ export default function Home() {
           onClose={() => setShowRosterCard(false)}
         />
       )}
+
+      {/* Team Assignment Dialog */}
+      <TeamAssignmentDialog
+        open={showTeamAssignment}
+        onClose={() => setShowTeamAssignment(false)}
+        selectedPlayerIds={Array.from(selectedPlayers)}
+        players={players}
+        onSuccess={() => {
+          setSelectedPlayers(new Set());
+          // Refetch players to show updated teams
+        }}
+      />
 
       {/* Footer */}
       <footer className="border-t border-slate-700 bg-slate-900/50 mt-12">

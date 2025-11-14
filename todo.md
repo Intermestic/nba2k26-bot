@@ -403,5 +403,15 @@
 - [x] Display parsed transactions in a preview table showing what will change
 - [x] Add "Process" button that only appears after successful parsing
 - [x] Add confirmation step before processing transactions
-- [ ] Test parse and process workflow
+- [x] Test parse and process workflow
+- [x] Save checkpoint
+
+## Bulk Team Assignment for Admins
+
+- [x] Add "Assign Team" button next to "Generate Roster Card" (admin-only)
+- [x] Create team selection dialog/dropdown
+- [x] Implement bulk team assignment using existing updateTeam mutation
+- [x] Add confirmation dialog before processing assignment
+- [x] Show success/error feedback after assignment
+- [ ] Test with multiple selected players
 - [ ] Save checkpoint
