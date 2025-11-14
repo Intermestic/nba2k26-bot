@@ -430,3 +430,10 @@
 - [x] Test roster card with full team selection
 - [x] Test homepage team table with over-cap teams
 - [x] Save checkpoint
+
+## Fix Over-Cap Calculation
+
+- [x] Change over-cap formula from salary cap to total overall rating
+- [x] Use formula: totalOverall - 1098 for over-cap amount
+- [x] Test with teams like Bucks (1106 → +8)
+- [x] Save checkpoint

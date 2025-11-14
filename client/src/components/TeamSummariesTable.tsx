@@ -113,8 +113,8 @@ export function TeamSummariesTable({ summaries, onTeamClick }: TeamSummariesTabl
                   </TableCell>
                   <TableCell className={`text-center font-semibold ${getCapStatusColor(summary.totalOverall)}`}>
                     {summary.totalOverall}
-                    {summary.totalCap > SALARY_CAP_LIMIT && (
-                      <span className="text-red-500 ml-1">({`+${summary.totalCap - SALARY_CAP_LIMIT}`})</span>
+                    {summary.totalOverall > OVERALL_CAP_LIMIT && (
+                      <span className="text-red-500 ml-1">(+{summary.totalOverall - OVERALL_CAP_LIMIT})</span>
                     )}
                   </TableCell>
                 </TableRow>
