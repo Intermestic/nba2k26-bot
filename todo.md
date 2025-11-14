@@ -665,5 +665,12 @@
 - [x] Update parser to handle single-line format: "Cut X. Sign Y. Bid Z"
 - [x] Support flexible variations (cut/drop/release, sign/add/pickup)
 - [x] Keep support for multi-line format with colons
-- [ ] Test both formats
+- [x] Test both formats
+- [x] Save checkpoint
+
+## Bot Token Input on Discord Page
+
+- [x] Add bot token input field to Discord Integration page
+- [x] Add save button with instructions
+- [x] Show warning about adding to Management Dashboard secrets
 - [ ] Save checkpoint

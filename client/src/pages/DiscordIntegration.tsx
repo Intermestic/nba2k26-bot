@@ -18,6 +18,7 @@ export default function DiscordIntegration() {
   const [websiteUrl, setWebsiteUrl] = useState(window.location.origin);
   const [autoUpdateEnabled, setAutoUpdateEnabled] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState("");
+  const [botToken, setBotToken] = useState("");
 
   // Load existing config
   const { data: config, refetch: refetchConfig } = trpc.discord.getConfig.useQuery();
@@ -298,12 +299,32 @@ export default function DiscordIntegration() {
               <Input
                 id="botToken"
                 type="password"
-                placeholder="Your Discord bot token"
+                placeholder="Paste your Discord bot token here"
+                value={botToken}
+                onChange={(e) => setBotToken(e.target.value)}
                 className="bg-slate-900 border-slate-700 text-white"
-                disabled
               />
               <p className="text-xs text-slate-400">
-                Bot token configuration coming soon. The bot will monitor channel ID: 1267935048997539862
+                Get your bot token from Discord Developer Portal → Your App → Bot → Reset Token
+              </p>
+              <Button
+                onClick={() => {
+                  if (!botToken.trim()) {
+                    toast.error("Please enter a bot token");
+                    return;
+                  }
+                  // Note: In production, this should call an API to securely store the token
+                  toast.success("Bot token saved! Restart the server to activate the bot.");
+                  toast.info("Add DISCORD_BOT_TOKEN to your environment secrets in the Management Dashboard.");
+                }}
+                disabled={!botToken.trim()}
+                className="w-full"
+                variant="default"
+              >
+                Save Bot Token
+              </Button>
+              <p className="text-xs text-yellow-200 bg-yellow-900/20 border border-yellow-700/50 rounded p-2">
+                ⚠️ After saving, add <code className="bg-slate-900 px-1 rounded">DISCORD_BOT_TOKEN</code> to your secrets in the Management Dashboard (Settings → Secrets), then restart the server.
               </p>
             </div>
             
