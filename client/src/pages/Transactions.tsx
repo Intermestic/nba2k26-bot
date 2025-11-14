@@ -18,11 +18,21 @@ const TEAM_MAP: Record<string, string> = {
   "Washington Wizards": "Wizards"
 };
 
+interface ParsedTransaction {
+  playerName: string;
+  playerId: string | null;
+  currentTeam: string;
+  newTeam: string;
+  error?: string;
+}
+
 export default function Transactions() {
   const { user, isAuthenticated } = useAuth();
   const [text, setText] = useState("");
   const [status, setStatus] = useState("");
   const [processing, setProcessing] = useState(false);
+  const [parsedTransactions, setParsedTransactions] = useState<ParsedTransaction[]>([]);
+  const [showPreview, setShowPreview] = useState(false);
 
   const { data: players } = trpc.player.list.useQuery({ limit: 1000 });
   const updateTeam = trpc.player.updateTeam.useMutation();
@@ -36,14 +46,12 @@ export default function Transactions() {
 
   const normalize = (name: string) => TEAM_MAP[name] || name;
 
-  const process = async () => {
+  const parseTransactions = () => {
     if (!players) return;
-    setProcessing(true);
-    setStatus("Processing...");
-
+    
     const lines = text.split("\n").map(l => l.trim()).filter(l => l);
     let currentTeam = "";
-    let count = 0;
+    const parsed: ParsedTransaction[] = [];
 
     for (const line of lines) {
       // Check for simplified format: "Player to Team"
@@ -54,14 +62,20 @@ export default function Transactions() {
         const player = players.find(p => p.name.toLowerCase() === playerName.toLowerCase());
         
         if (player) {
-          try {
-            await updateTeam.mutateAsync({ playerId: player.id, team: teamName });
-            count++;
-          } catch (e) {
-            console.error(`Failed to move ${playerName}:`, e);
-          }
+          parsed.push({
+            playerName: player.name,
+            playerId: player.id,
+            currentTeam: player.team || "Unknown",
+            newTeam: teamName,
+          });
         } else {
-          console.warn(`Player not found: ${playerName}`);
+          parsed.push({
+            playerName,
+            playerId: null,
+            currentTeam: "Unknown",
+            newTeam: teamName,
+            error: "Player not found in database"
+          });
         }
         continue;
       }
@@ -80,21 +94,58 @@ export default function Transactions() {
         const player = players.find(p => p.name.toLowerCase() === playerName.toLowerCase());
         
         if (player) {
-          try {
-            await updateTeam.mutateAsync({ playerId: player.id, team: currentTeam });
-            count++;
-          } catch (e) {
-            console.error(`Failed to move ${playerName}:`, e);
-          }
+          parsed.push({
+            playerName: player.name,
+            playerId: player.id,
+            currentTeam: player.team || "Unknown",
+            newTeam: currentTeam,
+          });
         } else {
-          console.warn(`Player not found: ${playerName}`);
+          parsed.push({
+            playerName,
+            playerId: null,
+            currentTeam: "Unknown",
+            newTeam: currentTeam,
+            error: "Player not found in database"
+          });
         }
       }
     }
 
-    setStatus(`Done! Processed ${count} transactions.`);
+    setParsedTransactions(parsed);
+    setShowPreview(true);
+    setStatus(parsed.length > 0 ? `Parsed ${parsed.length} transactions` : "No transactions found");
+  };
+
+  const processTransactions = async () => {
+    setProcessing(true);
+    setStatus("Processing...");
+
+    let count = 0;
+    const errors: string[] = [];
+
+    for (const transaction of parsedTransactions) {
+      if (!transaction.playerId || transaction.error) {
+        errors.push(`Skipped: ${transaction.playerName} - ${transaction.error}`);
+        continue;
+      }
+
+      try {
+        await updateTeam.mutateAsync({ 
+          playerId: transaction.playerId, 
+          team: transaction.newTeam 
+        });
+        count++;
+      } catch (e) {
+        errors.push(`Failed to move ${transaction.playerName}: ${e}`);
+      }
+    }
+
+    setStatus(`Done! Processed ${count} transactions.${errors.length > 0 ? ` ${errors.length} errors.` : ''}`);
     setProcessing(false);
     setText("");
+    setShowPreview(false);
+    setParsedTransactions([]);
   };
 
   const containerStyle: React.CSSProperties = {
@@ -105,7 +156,7 @@ export default function Transactions() {
   };
 
   const maxWidthStyle: React.CSSProperties = {
-    maxWidth: "800px",
+    maxWidth: "1000px",
     margin: "0 auto"
   };
 
@@ -143,6 +194,14 @@ export default function Transactions() {
     background: "#475569"
   };
 
+  const processButtonStyle: React.CSSProperties = {
+    ...buttonStyle,
+    background: "#10b981"
+  };
+
+  const validCount = parsedTransactions.filter(t => !t.error).length;
+  const errorCount = parsedTransactions.filter(t => t.error).length;
+
   return (
     <div style={containerStyle}>
       <div style={maxWidthStyle}>
@@ -166,15 +225,84 @@ export default function Transactions() {
             style={textareaStyle}
           />
           <div style={{marginTop:"15px"}}>
-            <button onClick={process} disabled={!text.trim() || processing} style={buttonStyle}>
-              {processing ? "Processing..." : "Process Transactions"}
+            <button 
+              onClick={parseTransactions} 
+              disabled={!text.trim() || processing} 
+              style={buttonStyle}
+            >
+              Parse Transactions
             </button>
-            <button onClick={() => { setText(""); setStatus(""); }} style={clearButtonStyle}>
+            <button 
+              onClick={() => { 
+                setText(""); 
+                setStatus(""); 
+                setShowPreview(false); 
+                setParsedTransactions([]);
+              }} 
+              style={clearButtonStyle}
+            >
               Clear
             </button>
           </div>
           {status && <div style={{marginTop:"15px",padding:"10px",background:"#0f172a",borderRadius:"4px"}}>{status}</div>}
         </div>
+
+        {showPreview && parsedTransactions.length > 0 && (
+          <div style={{background:"#1e293b",padding:"20px",borderRadius:"8px",marginBottom:"20px"}}>
+            <h2 style={{fontSize:"20px",marginBottom:"15px"}}>Preview ({validCount} valid, {errorCount} errors)</h2>
+            <div style={{overflowX:"auto"}}>
+              <table style={{width:"100%",borderCollapse:"collapse"}}>
+                <thead>
+                  <tr style={{borderBottom:"2px solid #334155"}}>
+                    <th style={{textAlign:"left",padding:"10px",color:"#94a3b8"}}>Player</th>
+                    <th style={{textAlign:"left",padding:"10px",color:"#94a3b8"}}>Current Team</th>
+                    <th style={{textAlign:"center",padding:"10px",color:"#94a3b8"}}>→</th>
+                    <th style={{textAlign:"left",padding:"10px",color:"#94a3b8"}}>New Team</th>
+                    <th style={{textAlign:"left",padding:"10px",color:"#94a3b8"}}>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {parsedTransactions.map((transaction, index) => (
+                    <tr 
+                      key={index} 
+                      style={{
+                        borderBottom:"1px solid #334155",
+                        background: transaction.error ? "#7f1d1d" : "transparent"
+                      }}
+                    >
+                      <td style={{padding:"10px"}}>{transaction.playerName}</td>
+                      <td style={{padding:"10px"}}>{transaction.currentTeam}</td>
+                      <td style={{padding:"10px",textAlign:"center"}}>→</td>
+                      <td style={{padding:"10px"}}>{transaction.newTeam}</td>
+                      <td style={{padding:"10px",color: transaction.error ? "#fca5a5" : "#86efac"}}>
+                        {transaction.error || "✓ Ready"}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div style={{marginTop:"20px"}}>
+              <button 
+                onClick={processTransactions} 
+                disabled={processing || validCount === 0} 
+                style={processButtonStyle}
+              >
+                {processing ? "Processing..." : `Process ${validCount} Transactions`}
+              </button>
+              <button 
+                onClick={() => {
+                  setShowPreview(false);
+                  setParsedTransactions([]);
+                  setStatus("");
+                }} 
+                style={clearButtonStyle}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
 
         <div style={{background:"#1e293b",padding:"15px",borderRadius:"8px",fontSize:"14px",color:"#94a3b8"}}>
           <strong>Supported Formats:</strong>

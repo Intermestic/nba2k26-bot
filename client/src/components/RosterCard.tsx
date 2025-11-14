@@ -255,7 +255,7 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                         <div
                           style={{
                             position: 'absolute',
-                            top: '8px',
+                            bottom: '8px',
                             right: '8px',
                             background: '#3b82f6',
                             color: 'white',
@@ -306,63 +306,59 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
 
                   {/* Team Logo Center */}
                   {teamLogo && (
-                    <div
-                      style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        gap: '12px',
-                        border: 'none',
-                        outline: 'none',
-                        boxShadow: 'none',
-                      }}
-                    >
+                  <div
+                    style={{
+                      width: '200px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      border: 'none',
+                      outline: 'none',
+                      boxShadow: 'none',
+                    }}
+                  >
+                    <div style={{ textAlign: 'center' }}>
                       <img
-                        src={teamLogo}
-                        alt={teamName}
+                        src={`/api/image-proxy?url=${encodeURIComponent(teamLogo)}`}
+                        alt={`${teamName} logo`}
+                        crossOrigin="anonymous"
                         style={{
-                          width: '100%',
-                  maxWidth: '800px',
-                          height: '120px',
+                          width: '150px',
+                          height: '150px',
+                          objectFit: 'contain',
+                          marginBottom: '12px',
                           border: 'none',
                           outline: 'none',
                           boxShadow: 'none',
                         }}
                       />
-                      <div
+                      <h2
                         style={{
-                          textAlign: 'center',
+                          fontSize: '32px',
+                          fontWeight: 'bold',
+                          color: 'white',
+                          margin: 0,
+                          marginBottom: '8px',
                           border: 'none',
                           outline: 'none',
                           boxShadow: 'none',
                         }}
                       >
-                        <div
-                          style={{
-                            fontSize: '24px',
-                            fontWeight: 'bold',
-                            color: 'white',
-                            marginBottom: '4px',
-                            border: 'none',
-                            outline: 'none',
-                            boxShadow: 'none',
-                          }}
-                        >
-                          {teamName}
-                        </div>
-                        <div
-                          style={{
-                            fontSize: '14px',
-                            color: '#94a3b8',
-                            border: 'none',
-                            outline: 'none',
-                            boxShadow: 'none',
-                          }}
-                        >
-                          {sortedPlayers.length} Players • Avg {avgOverall} OVR
-                        </div>
+                        {teamName}
+                      </h2>
+                      <div
+                        style={{
+                          fontSize: '18px',
+                          color: '#94a3b8',
+                          border: 'none',
+                          outline: 'none',
+                          boxShadow: 'none',
+                        }}
+                      >
+                        {sortedPlayers.length} Players
                       </div>
                     </div>
+                  </div>
                   )}
 
                   {/* Player 2 (Second Highest OVR) */}
@@ -419,7 +415,7 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                         <div
                           style={{
                             position: 'absolute',
-                            top: '8px',
+                            bottom: '8px',
                             right: '8px',
                             background: '#3b82f6',
                             color: 'white',
@@ -534,7 +530,7 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                         <div
                           style={{
                             position: 'absolute',
-                            top: '6px',
+                            bottom: '6px',
                             right: '6px',
                             background: '#3b82f6',
                             color: 'white',
@@ -612,7 +608,7 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                         {teamName}
                       </h3>
                       <p style={{ fontSize: '16px', color: '#94a3b8', margin: 0, border: 'none', outline: 'none', boxShadow: 'none' }}>
-                        {sortedPlayers.length} Players • Avg {avgOverall} OVR
+                        {sortedPlayers.length} Players
                       </p>
                     </div>
                   </div>

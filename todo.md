@@ -386,3 +386,22 @@
 - [x] Test with Wizards team (has longest names) - ALL NAMES FULLY VISIBLE!
 - [x] Verify all 14 names are fully visible in downloaded PNG - PERFECT!
 - [ ] Save checkpoint with fix
+
+## Fix Roster Card Layout Issues
+
+- [ ] Fix JSX syntax errors in RosterCard component (malformed div tags)
+- [ ] KEEP team logo in center and make it load properly (use image proxy)
+- [ ] Remove "Avg 78 OVR" text (keep player count)
+- [ ] Player overall badges already moved to bottom-right
+- [ ] Test with Wizards team
+- [ ] Save checkpoint with fixes
+
+## Bulk Transactions Parse/Preview Feature
+
+- [x] Add "Parse" button to bulk transactions page
+- [x] Implement transaction parsing logic to preview results
+- [x] Display parsed transactions in a preview table showing what will change
+- [x] Add "Process" button that only appears after successful parsing
+- [x] Add confirmation step before processing transactions
+- [ ] Test parse and process workflow
+- [ ] Save checkpoint
