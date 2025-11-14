@@ -541,5 +541,19 @@
 - [x] Add team select dropdown to admin team management page
 - [x] Filter players by selected team
 - [x] Add "All Teams" option to show all players
-- [ ] Test team filtering functionality
+- [x] Test team filtering functionality
+- [x] Save checkpoint
+
+## Consolidate Admin Pages
+
+- [x] Add "Add Player" button to team management page
+- [x] Add player creation form/modal to team management page
+- [x] Add inline edit functionality to team management table
+- [x] Add delete player option in team management
+- [x] Remove Player Management link from navigation
+- [x] Add "Edit Player" button to player cards (for admins only)
+- [x] Create edit player modal with delete option on player cards
+- [x] Remove Players.tsx page file
+- [x] Remove Players route from App.tsx
+- [ ] Test consolidated admin functionality
 - [ ] Save checkpoint

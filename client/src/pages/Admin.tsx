@@ -5,10 +5,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { Search, Shield } from "lucide-react";
+import { Search, Shield, Plus, Pencil, Trash2 } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
 
 interface Player {
   id: string;
@@ -23,6 +25,17 @@ export default function Admin() {
   const [, setLocation] = useLocation();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTeam, setSelectedTeam] = useState<string>("all");
+  const [showAddPlayer, setShowAddPlayer] = useState(false);
+  const [editingPlayer, setEditingPlayer] = useState<Player | null>(null);
+  const [playerForm, setPlayerForm] = useState({
+    id: "",
+    name: "",
+    overall: 75,
+    team: "",
+    photoUrl: "",
+    playerPageUrl: "",
+    badgeCount: null as number | null,
+  });
 
   // Redirect if not admin
   if (isAuthenticated && user?.role !== "admin") {
@@ -75,6 +88,106 @@ export default function Admin() {
     updateTeam.mutate({ playerId, team: newTeam });
   };
 
+  // Create player mutation
+  const createPlayer = trpc.player.create.useMutation({
+    onSuccess: () => {
+      toast.success("Player created successfully");
+      utils.player.list.invalidate();
+      setShowAddPlayer(false);
+      resetForm();
+    },
+    onError: (error: any) => {
+      toast.error(`Failed to create player: ${error.message}`);
+    },
+  });
+
+  // Update player mutation
+  const updatePlayer = trpc.player.update.useMutation({
+    onSuccess: () => {
+      toast.success("Player updated successfully");
+      utils.player.list.invalidate();
+      setEditingPlayer(null);
+      resetForm();
+    },
+    onError: (error: any) => {
+      toast.error(`Failed to update player: ${error.message}`);
+    },
+  });
+
+  // Delete player mutation
+  const deletePlayer = trpc.player.delete.useMutation({
+    onSuccess: () => {
+      toast.success("Player deleted successfully");
+      utils.player.list.invalidate();
+      setEditingPlayer(null);
+      resetForm();
+    },
+    onError: (error: any) => {
+      toast.error(`Failed to delete player: ${error.message}`);
+    },
+  });
+
+  const resetForm = () => {
+    setPlayerForm({
+      id: "",
+      name: "",
+      overall: 75,
+      team: "",
+      photoUrl: "",
+      playerPageUrl: "",
+      badgeCount: null,
+    });
+  };
+
+  const handleAddPlayer = () => {
+    setShowAddPlayer(true);
+    resetForm();
+  };
+
+  const handleEditPlayer = (player: Player) => {
+    setEditingPlayer(player);
+    setPlayerForm({
+      id: player.id,
+      name: player.name,
+      overall: player.overall,
+      team: player.team || "",
+      photoUrl: player.photoUrl || "",
+      playerPageUrl: "",
+      badgeCount: null,
+    });
+  };
+
+  const handleSavePlayer = () => {
+    if (editingPlayer) {
+      updatePlayer.mutate({
+        id: playerForm.id,
+        name: playerForm.name,
+        overall: playerForm.overall,
+        photoUrl: playerForm.photoUrl || null,
+        playerPageUrl: playerForm.playerPageUrl || null,
+        badgeCount: playerForm.badgeCount,
+      });
+    } else {
+      createPlayer.mutate({
+        id: playerForm.id || `player-${Date.now()}`,
+        name: playerForm.name,
+        overall: playerForm.overall,
+        team: playerForm.team,
+        photoUrl: playerForm.photoUrl || null,
+        playerPageUrl: playerForm.playerPageUrl || null,
+        nbaId: null,
+        source: "manual",
+        badgeCount: playerForm.badgeCount,
+      });
+    }
+  };
+
+  const handleDeletePlayer = () => {
+    if (editingPlayer && confirm(`Are you sure you want to delete ${editingPlayer.name}?`)) {
+      deletePlayer.mutate({ id: editingPlayer.id });
+    }
+  };
+
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
@@ -107,11 +220,6 @@ export default function Admin() {
             </div>
             <div className="flex gap-2">
               <Button asChild variant="outline" size="sm" className="bg-slate-800 border-slate-700 hover:bg-slate-700">
-                <Link href="/admin/players">
-                  Player Management
-                </Link>
-              </Button>
-              <Button asChild variant="outline" size="sm" className="bg-slate-800 border-slate-700 hover:bg-slate-700">
                 <Link href="/admin/transactions">
                   Bulk Transactions
                 </Link>
@@ -119,6 +227,11 @@ export default function Admin() {
               <Button asChild variant="outline" size="sm" className="bg-slate-800 border-slate-700 hover:bg-slate-700">
                 <Link href="/admin/history">
                   History
+                </Link>
+              </Button>
+              <Button asChild variant="outline" size="sm" className="bg-slate-800 border-slate-700 hover:bg-slate-700">
+                <Link href="/admin/discord">
+                  Discord
                 </Link>
               </Button>
               <Button asChild variant="outline" size="sm" className="bg-slate-800 border-slate-700 hover:bg-slate-700">
@@ -163,9 +276,15 @@ export default function Admin() {
         {/* Players Table */}
         <Card className="bg-slate-800/50 border-slate-700">
           <CardHeader>
-            <CardTitle className="text-white">
-              All Players ({sortedPlayers.length})
-            </CardTitle>
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-white">
+                All Players ({sortedPlayers.length})
+              </CardTitle>
+              <Button onClick={handleAddPlayer} size="sm" className="bg-blue-600 hover:bg-blue-700">
+                <Plus className="w-4 h-4 mr-2" />
+                Add Player
+              </Button>
+            </div>
           </CardHeader>
           <CardContent>
             {isLoading ? (
@@ -178,6 +297,7 @@ export default function Admin() {
                       <TableHead className="text-slate-300">Player Name</TableHead>
                       <TableHead className="text-slate-300 text-center hidden sm:table-cell">Overall</TableHead>
                       <TableHead className="text-slate-300">Team</TableHead>
+                      <TableHead className="text-slate-300 text-right">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -200,7 +320,7 @@ export default function Admin() {
                             value={player.team || ""}
                             onValueChange={(value) => handleTeamChange(player.id, value)}
                           >
-                            <SelectTrigger className="w-full sm:w-[200px] bg-slate-800 border-slate-700 text-white text-sm">
+                            <SelectTrigger className="w-full sm:w-[180px] bg-slate-800 border-slate-700 text-white text-sm">
                               <SelectValue placeholder="Select team" />
                             </SelectTrigger>
                             <SelectContent className="bg-slate-800 border-slate-700 max-h-[300px]">
@@ -212,6 +332,18 @@ export default function Admin() {
                             </SelectContent>
                           </Select>
                         </TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex gap-2 justify-end">
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => handleEditPlayer(player)}
+                              className="text-blue-400 hover:text-blue-300 hover:bg-slate-700"
+                            >
+                              <Pencil className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -221,6 +353,105 @@ export default function Admin() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Add/Edit Player Dialog */}
+      <Dialog open={showAddPlayer || editingPlayer !== null} onOpenChange={(open) => {
+        if (!open) {
+          setShowAddPlayer(false);
+          setEditingPlayer(null);
+          resetForm();
+        }
+      }}>
+        <DialogContent className="bg-slate-800 border-slate-700 text-white">
+          <DialogHeader>
+            <DialogTitle>{editingPlayer ? "Edit Player" : "Add New Player"}</DialogTitle>
+            <DialogDescription className="text-slate-400">
+              {editingPlayer ? "Update player information" : "Create a new player entry"}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div>
+              <Label htmlFor="name" className="text-slate-300">Player Name *</Label>
+              <Input
+                id="name"
+                value={playerForm.name}
+                onChange={(e) => setPlayerForm({ ...playerForm, name: e.target.value })}
+                className="bg-slate-900 border-slate-700 text-white"
+                placeholder="LeBron James"
+              />
+            </div>
+            <div>
+              <Label htmlFor="overall" className="text-slate-300">Overall Rating *</Label>
+              <Input
+                id="overall"
+                type="number"
+                min="0"
+                max="99"
+                value={playerForm.overall}
+                onChange={(e) => setPlayerForm({ ...playerForm, overall: parseInt(e.target.value) || 0 })}
+                className="bg-slate-900 border-slate-700 text-white"
+              />
+            </div>
+            {!editingPlayer && (
+              <div>
+                <Label htmlFor="team" className="text-slate-300">Team</Label>
+                <Select value={playerForm.team} onValueChange={(value) => setPlayerForm({ ...playerForm, team: value })}>
+                  <SelectTrigger className="bg-slate-900 border-slate-700 text-white">
+                    <SelectValue placeholder="Select team" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-slate-800 border-slate-700 max-h-[300px]">
+                    {teams.map((team) => (
+                      <SelectItem key={team} value={team as string}>
+                        {team}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+            <div>
+              <Label htmlFor="photoUrl" className="text-slate-300">Photo URL</Label>
+              <Input
+                id="photoUrl"
+                value={playerForm.photoUrl}
+                onChange={(e) => setPlayerForm({ ...playerForm, photoUrl: e.target.value })}
+                className="bg-slate-900 border-slate-700 text-white"
+                placeholder="https://..."
+              />
+            </div>
+          </div>
+          <DialogFooter className="flex gap-2">
+            {editingPlayer && (
+              <Button
+                variant="destructive"
+                onClick={handleDeletePlayer}
+                className="mr-auto"
+              >
+                <Trash2 className="w-4 h-4 mr-2" />
+                Delete
+              </Button>
+            )}
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowAddPlayer(false);
+                setEditingPlayer(null);
+                resetForm();
+              }}
+              className="bg-slate-700 border-slate-600 hover:bg-slate-600"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleSavePlayer}
+              disabled={!playerForm.name || playerForm.overall < 0 || playerForm.overall > 99}
+              className="bg-blue-600 hover:bg-blue-700"
+            >
+              {editingPlayer ? "Update" : "Create"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

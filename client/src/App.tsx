@@ -6,7 +6,6 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
 import Admin from "./pages/Admin";
-import Players from "./pages/Players";
 import Transactions from "./pages/Transactions";
 import History from "./pages/History";
 import DiscordIntegration from "./pages/DiscordIntegration";
@@ -17,7 +16,6 @@ function Router() {
     <Switch>
       <Route path={"/"} component={Home} />
       <Route path={"/admin"} component={Admin} />
-      <Route path={"/admin/players"} component={Players} />
       <Route path={"/admin/transactions"} component={Transactions} />
       <Route path={"/admin/history"} component={History} />
       <Route path={"/admin/discord"} component={DiscordIntegration} />

@@ -16,6 +16,10 @@ import { TeamRosterSummary } from "@/components/TeamRosterSummary";
 import { TeamSummariesTable } from "@/components/TeamSummariesTable";
 import RosterCard from "@/components/RosterCard";
 import { TeamAssignmentDialog } from "@/components/TeamAssignmentDialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Pencil, Trash2 } from "lucide-react";
+import { toast } from "sonner";
 
 interface Player {
   id: string;
@@ -40,6 +44,13 @@ export default function Home() {
   const [selectedPlayers, setSelectedPlayers] = useState<Set<string>>(new Set());
   const [showRosterCard, setShowRosterCard] = useState(false);
   const [showTeamAssignment, setShowTeamAssignment] = useState(false);
+  const [editingPlayer, setEditingPlayer] = useState<Player | null>(null);
+  const [playerForm, setPlayerForm] = useState({
+    id: "",
+    name: "",
+    overall: 75,
+    photoUrl: "",
+  });
 
   // Normalize name for fuzzy search (remove special chars, lowercase)
   const normalizeName = (name: string) => {
@@ -154,6 +165,57 @@ export default function Home() {
 
   const selectAll = () => {
     setSelectedPlayers(new Set(filteredPlayers.map(p => p.id)));
+  };
+
+  // Player edit/delete mutations
+  const utils = trpc.useUtils();
+  const updatePlayer = trpc.player.update.useMutation({
+    onSuccess: () => {
+      toast.success("Player updated successfully");
+      utils.player.list.invalidate();
+      setEditingPlayer(null);
+    },
+    onError: (error: any) => {
+      toast.error(`Failed to update player: ${error.message}`);
+    },
+  });
+
+  const deletePlayer = trpc.player.delete.useMutation({
+    onSuccess: () => {
+      toast.success("Player deleted successfully");
+      utils.player.list.invalidate();
+      setEditingPlayer(null);
+    },
+    onError: (error: any) => {
+      toast.error(`Failed to delete player: ${error.message}`);
+    },
+  });
+
+  const handleEditPlayer = (player: Player) => {
+    setEditingPlayer(player);
+    setPlayerForm({
+      id: player.id,
+      name: player.name,
+      overall: player.overall,
+      photoUrl: player.photoUrl || "",
+    });
+  };
+
+  const handleSavePlayer = () => {
+    updatePlayer.mutate({
+      id: playerForm.id,
+      name: playerForm.name,
+      overall: playerForm.overall,
+      photoUrl: playerForm.photoUrl || null,
+      playerPageUrl: null,
+      badgeCount: null,
+    });
+  };
+
+  const handleDeletePlayer = () => {
+    if (editingPlayer && confirm(`Are you sure you want to delete ${editingPlayer.name}?`)) {
+      deletePlayer.mutate({ id: editingPlayer.id });
+    }
   };
 
   const clearSelection = () => {
@@ -432,16 +494,27 @@ export default function Home() {
                     {player.team && player.team !== "Free Agents" && (
                       <p className="text-xs text-slate-400 mt-1">{player.team}</p>
                     )}
-                    {player.playerPageUrl && (
-                      <a
-                        href={player.playerPageUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-xs text-blue-400 hover:text-blue-300 mt-1 inline-block"
-                      >
-                        View Details →
-                      </a>
-                    )}
+                    <div className="flex gap-2 mt-2">
+                      {player.playerPageUrl && (
+                        <a
+                          href={player.playerPageUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-xs text-blue-400 hover:text-blue-300 inline-block"
+                        >
+                          View Details →
+                        </a>
+                      )}
+                      {user?.role === "admin" && (
+                        <button
+                          onClick={() => handleEditPlayer(player)}
+                          className="text-xs text-green-400 hover:text-green-300 inline-flex items-center gap-1"
+                        >
+                          <Pencil className="w-3 h-3" />
+                          Edit
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -476,6 +549,77 @@ export default function Home() {
           // Refetch players to show updated teams
         }}
       />
+
+      {/* Edit Player Dialog */}
+      <Dialog open={editingPlayer !== null} onOpenChange={(open) => {
+        if (!open) setEditingPlayer(null);
+      }}>
+        <DialogContent className="bg-slate-800 border-slate-700 text-white">
+          <DialogHeader>
+            <DialogTitle>Edit Player</DialogTitle>
+            <DialogDescription className="text-slate-400">
+              Update player information
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div>
+              <Label htmlFor="edit-name" className="text-slate-300">Player Name *</Label>
+              <Input
+                id="edit-name"
+                value={playerForm.name}
+                onChange={(e) => setPlayerForm({ ...playerForm, name: e.target.value })}
+                className="bg-slate-900 border-slate-700 text-white"
+              />
+            </div>
+            <div>
+              <Label htmlFor="edit-overall" className="text-slate-300">Overall Rating *</Label>
+              <Input
+                id="edit-overall"
+                type="number"
+                min="0"
+                max="99"
+                value={playerForm.overall}
+                onChange={(e) => setPlayerForm({ ...playerForm, overall: parseInt(e.target.value) || 0 })}
+                className="bg-slate-900 border-slate-700 text-white"
+              />
+            </div>
+            <div>
+              <Label htmlFor="edit-photoUrl" className="text-slate-300">Photo URL</Label>
+              <Input
+                id="edit-photoUrl"
+                value={playerForm.photoUrl}
+                onChange={(e) => setPlayerForm({ ...playerForm, photoUrl: e.target.value })}
+                className="bg-slate-900 border-slate-700 text-white"
+                placeholder="https://..."
+              />
+            </div>
+          </div>
+          <DialogFooter className="flex gap-2">
+            <Button
+              variant="destructive"
+              onClick={handleDeletePlayer}
+              className="mr-auto"
+            >
+              <Trash2 className="w-4 h-4 mr-2" />
+              Delete
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => setEditingPlayer(null)}
+              className="bg-slate-700 border-slate-600 hover:bg-slate-600"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleSavePlayer}
+              disabled={!playerForm.name || playerForm.overall < 0 || playerForm.overall > 99}
+              className="bg-blue-600 hover:bg-blue-700"
+            >
+              Update
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Footer */}
       <footer className="border-t border-slate-700 bg-slate-900/50 mt-12">
