@@ -674,3 +674,14 @@
 - [x] Add save button with instructions
 - [x] Show warning about adding to Management Dashboard secrets
 - [ ] Save checkpoint
+
+## Bot Status Indicator
+
+- [x] Create tRPC endpoint to check Discord bot connection status
+- [x] Add status indicator UI to Discord Integration page
+- [x] Show online/offline badge with color coding
+- [x] Display bot username when connected
+- [x] Add refresh button to manually check status
+- [x] Auto-refresh status every 5 seconds
+- [ ] Test status indicator
+- [ ] Save checkpoint

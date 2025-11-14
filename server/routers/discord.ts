@@ -4,6 +4,7 @@ import { postToDiscord, updateDiscordMessage, postTeamToDiscord } from "../disco
 import { getDb } from "../db";
 import { discordConfig } from "../../drizzle/schema";
 import { eq } from "drizzle-orm";
+import { getDiscordBotStatus } from "../discord-bot";
 
 export const discordRouter = router({
   // Post new embed to Discord
@@ -127,4 +128,14 @@ export const discordRouter = router({
 
       return { success: true };
     }),
+
+  // Get Discord bot status
+  getBotStatus: protectedProcedure.query(async ({ ctx }) => {
+    // Only admins can check bot status
+    if (ctx.user?.role !== "admin") {
+      throw new Error("Unauthorized: Admin access required");
+    }
+
+    return getDiscordBotStatus();
+  }),
 });

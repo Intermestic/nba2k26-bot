@@ -22,6 +22,11 @@ export default function DiscordIntegration() {
 
   // Load existing config
   const { data: config, refetch: refetchConfig } = trpc.discord.getConfig.useQuery();
+  
+  // Load bot status
+  const { data: botStatus, refetch: refetchBotStatus } = trpc.discord.getBotStatus.useQuery(undefined, {
+    refetchInterval: 5000, // Refresh every 5 seconds
+  });
 
   useEffect(() => {
     if (config) {
@@ -288,8 +293,44 @@ export default function DiscordIntegration() {
             <CardDescription>Auto-monitor Discord channel for free agent signings</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="p-4 bg-green-900/20 border border-green-700/50 rounded-lg">
-              <p className="text-sm text-green-200">
+            {/* Bot Status Indicator */}
+            <div className={`p-4 rounded-lg border ${
+              botStatus?.online 
+                ? 'bg-green-900/20 border-green-700/50' 
+                : 'bg-red-900/20 border-red-700/50'
+            }`}>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className={`w-3 h-3 rounded-full ${
+                    botStatus?.online ? 'bg-green-500' : 'bg-red-500'
+                  } animate-pulse`} />
+                  <div>
+                    <p className={`text-sm font-semibold ${
+                      botStatus?.online ? 'text-green-200' : 'text-red-200'
+                    }`}>
+                      {botStatus?.online ? 'Bot Online' : 'Bot Offline'}
+                    </p>
+                    {botStatus?.online && botStatus.username && (
+                      <p className="text-xs text-slate-400">Connected as {botStatus.username}</p>
+                    )}
+                    {!botStatus?.online && (
+                      <p className="text-xs text-slate-400">Add DISCORD_BOT_TOKEN to secrets and restart server</p>
+                    )}
+                  </div>
+                </div>
+                <Button
+                  onClick={() => refetchBotStatus()}
+                  variant="ghost"
+                  size="sm"
+                  className="text-slate-400 hover:text-white"
+                >
+                  <RefreshCw className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+            
+            <div className="p-4 bg-blue-900/20 border border-blue-700/50 rounded-lg">
+              <p className="text-sm text-blue-200">
                 <strong>How it works:</strong> The bot monitors your FA channel and detects player signings. When it finds transactions, it posts a confirmation message with buttons. Click "Confirm" to auto-update rosters.
               </p>
             </div>

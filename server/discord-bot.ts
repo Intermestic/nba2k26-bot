@@ -397,3 +397,24 @@ export async function stopDiscordBot() {
     console.log('[Discord Bot] Stopped');
   }
 }
+
+/**
+ * Get Discord bot status
+ */
+export function getDiscordBotStatus() {
+  if (!client) {
+    return {
+      online: false,
+      username: null,
+      channelId: FA_CHANNEL_ID,
+      guildId: GUILD_ID
+    };
+  }
+  
+  return {
+    online: client.isReady(),
+    username: client.user?.tag || null,
+    channelId: FA_CHANNEL_ID,
+    guildId: GUILD_ID
+  };
+}
