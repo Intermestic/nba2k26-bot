@@ -117,6 +117,10 @@ export default function Transactions() {
     const lines = text.split("\n").map(l => l.trim()).filter(l => l);
     let currentTeam = "";
     const parsed: ParsedTransaction[] = [];
+    
+    // Track trade format (Team send: ... Team send: ...)
+    const tradeTeams: { team: string; players: string[] }[] = [];
+    let currentTradeTeam: { team: string; players: string[] } | null = null;
 
     for (const line of lines) {
       // Check for simplified format: "Player to Team"
@@ -153,6 +157,22 @@ export default function Transactions() {
         continue;
       }
 
+      // Check for trade format: "Team send:"
+      if (line.match(/send:\s*$/i)) {
+        const teamName = line.replace(/send:\s*$/i, "").trim();
+        const teamResult = normalizeTeam(teamName);
+        if (teamResult.error) {
+          setStatus(`Error: ${teamResult.error}`);
+          return;
+        }
+        // Save previous trade team if exists
+        if (currentTradeTeam && currentTradeTeam.players.length > 0) {
+          tradeTeams.push(currentTradeTeam);
+        }
+        currentTradeTeam = { team: teamResult.team, players: [] };
+        continue;
+      }
+      
       // Check for detailed format: "Team Receive:"
       if (line.endsWith("Receive:")) {
         const teamResult = normalizeTeam(line.replace("Receive:", "").trim());
@@ -165,6 +185,14 @@ export default function Transactions() {
       }
       if (line === "---") continue;
 
+      // Check for trade format player: "Player Name (XX) YY badges"
+      const tradeMatch = line.match(/^(.+?)\s*\((\d+)\)\s*\d+\s*badges?$/i);
+      if (tradeMatch && currentTradeTeam) {
+        const playerName = tradeMatch[1].trim();
+        currentTradeTeam.players.push(playerName);
+        continue;
+      }
+      
       // Check for detailed format: "Player Name (XX OVR)"
       const detailedMatch = line.match(/^(.+?)\s*\((\d+)\s*OVR\)$/i);
       if (detailedMatch && currentTeam) {
@@ -184,6 +212,58 @@ export default function Transactions() {
             playerId: null,
             currentTeam: "Unknown",
             newTeam: currentTeam,
+            error: `Player not found: "${playerName}"`
+          });
+        }
+      }
+    }
+    
+    // Process trade format if we have trade teams
+    if (currentTradeTeam && currentTradeTeam.players.length > 0) {
+      tradeTeams.push(currentTradeTeam);
+    }
+    
+    if (tradeTeams.length === 2) {
+      // Two-team trade: Team A sends to Team B, Team B sends to Team A
+      const [teamA, teamB] = tradeTeams;
+      
+      // Team A's players go to Team B
+      for (const playerName of teamA.players) {
+        const player = findPlayer(playerName);
+        if (player) {
+          parsed.push({
+            playerName: player.name,
+            playerId: player.id,
+            currentTeam: player.team || "Unknown",
+            newTeam: teamB.team,
+          });
+        } else {
+          parsed.push({
+            playerName,
+            playerId: null,
+            currentTeam: "Unknown",
+            newTeam: teamB.team,
+            error: `Player not found: "${playerName}"`
+          });
+        }
+      }
+      
+      // Team B's players go to Team A
+      for (const playerName of teamB.players) {
+        const player = findPlayer(playerName);
+        if (player) {
+          parsed.push({
+            playerName: player.name,
+            playerId: player.id,
+            currentTeam: player.team || "Unknown",
+            newTeam: teamA.team,
+          });
+        } else {
+          parsed.push({
+            playerName,
+            playerId: null,
+            currentTeam: "Unknown",
+            newTeam: teamA.team,
             error: `Player not found: "${playerName}"`
           });
         }

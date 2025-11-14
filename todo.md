@@ -568,5 +568,15 @@
 - [x] Restore clickable team name links (lost when simplified to plain text)
 - [x] Make tinyurl.com/hof2k a clickable hyperlink (using <https://> format)
 - [x] Add @everyone mention to notification post
-- [ ] Test Discord post
+- [x] Add @everyone to bulk transaction notifications
+- [x] Test Discord post
+- [x] Save checkpoint
+
+## Add Trade Format Parsing
+
+- [x] Parse "Team send:" format in bulk transactions
+- [x] Extract players from each team's send list (with badge count)
+- [x] Swap teams (Team A send → Team B receive)
+- [x] Handle multiple players per team
+- [ ] Test trade format parsing
 - [ ] Save checkpoint
