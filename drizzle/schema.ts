@@ -81,3 +81,34 @@ export const discordConfig = mysqlTable("discord_config", {
 
 export type DiscordConfig = typeof discordConfig.$inferSelect;
 export type InsertDiscordConfig = typeof discordConfig.$inferInsert;
+/**
+ * Team FA coins table - tracks remaining FA coins for each team
+ */
+export const teamCoins = mysqlTable("team_coins", {
+  id: int("id").autoincrement().primaryKey(),
+  team: varchar("team", { length: 100 }).notNull().unique(), // Team name
+  coinsRemaining: int("coinsRemaining").notNull().default(100), // Remaining FA coins
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type TeamCoins = typeof teamCoins.$inferSelect;
+export type InsertTeamCoins = typeof teamCoins.$inferInsert;
+
+/**
+ * FA transaction history - logs all bot-processed FA transactions
+ */
+export const faTransactions = mysqlTable("fa_transactions", {
+  id: int("id").autoincrement().primaryKey(),
+  team: varchar("team", { length: 100 }).notNull(), // Team that made the transaction
+  dropPlayer: varchar("dropPlayer", { length: 255 }).notNull(), // Player that was dropped
+  signPlayer: varchar("signPlayer", { length: 255 }).notNull(), // Player that was signed
+  signPlayerOvr: int("signPlayerOvr"), // Overall rating of signed player
+  bidAmount: int("bidAmount").notNull(), // Coins bid for the player
+  adminUser: varchar("adminUser", { length: 255 }), // Discord user who approved
+  coinsRemaining: int("coinsRemaining").notNull(), // Team's remaining coins after transaction
+  processedAt: timestamp("processedAt").defaultNow().notNull(),
+});
+
+export type FaTransaction = typeof faTransactions.$inferSelect;
+export type InsertFaTransaction = typeof faTransactions.$inferInsert;

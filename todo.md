@@ -622,5 +622,20 @@
 - [x] Implement roster lookup to detect team from dropped player
 - [x] Create swap transaction (drop player → Free Agent, add signed player to team)
 - [x] Update confirmation message to show detected team
-- [ ] Test with real FA channel messages
+- [x] Test with real FA channel messages
+- [x] Save checkpoint
+
+## FA Coin Tracking System
+
+- [x] Create team_coins table (team name, coins remaining, default 100)
+- [x] Create fa_transactions table (timestamp, team, drop player, sign player, bid amount, admin, coins remaining)
+- [x] Parse bid amount from FA messages ("Bid: X coins", default to 1)
+- [x] Parse player OVR from FA messages ("Sign: Player Name, OVR")
+- [x] Implement 70 OVR exception (over cap + 70 OVR = 0 coins)
+- [x] Deduct coins when transaction is confirmed
+- [x] Show remaining coins in confirmation message
+- [x] Post coin verification message after transactions processed
+- [x] Initialize Nuggets and Hawks with 115 coins (auto on first transaction)
+- [x] Add warning for unknown teams (dropped player not found)
+- [ ] Test FA coin system
 - [ ] Save checkpoint
