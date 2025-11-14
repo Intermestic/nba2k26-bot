@@ -22,6 +22,7 @@ export default function Admin() {
   const { user, isAuthenticated } = useAuth();
   const [, setLocation] = useLocation();
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedTeam, setSelectedTeam] = useState<string>("all");
 
   // Redirect if not admin
   if (isAuthenticated && user?.role !== "admin") {
@@ -47,12 +48,16 @@ export default function Admin() {
     return sorted;
   }, [players]);
 
-  // Sort players alphabetically and filter by search
+  // Sort players alphabetically and filter by search and team
   const sortedPlayers = useMemo(() => {
     return players
-      .filter(p => p.name.toLowerCase().includes(searchTerm.toLowerCase()))
+      .filter(p => {
+        const matchesSearch = p.name.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesTeam = selectedTeam === "all" || p.team === selectedTeam;
+        return matchesSearch && matchesTeam;
+      })
       .sort((a, b) => a.name.localeCompare(b.name));
-  }, [players, searchTerm]);
+  }, [players, searchTerm, selectedTeam]);
 
   // Mutation to update player team
   const utils = trpc.useUtils();
@@ -127,9 +132,9 @@ export default function Admin() {
       </header>
 
       <div className="container mx-auto px-4 py-8">
-        {/* Search */}
-        <div className="mb-6">
-          <div className="relative max-w-md">
+        {/* Filters */}
+        <div className="mb-6 flex flex-col sm:flex-row gap-4">
+          <div className="relative flex-1 max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
             <Input
               placeholder="Search players..."
@@ -137,6 +142,21 @@ export default function Admin() {
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10 bg-slate-800 border-slate-700 text-white placeholder:text-slate-400"
             />
+          </div>
+          <div className="w-full sm:w-[250px]">
+            <Select value={selectedTeam} onValueChange={setSelectedTeam}>
+              <SelectTrigger className="bg-slate-800 border-slate-700 text-white">
+                <SelectValue placeholder="Filter by team" />
+              </SelectTrigger>
+              <SelectContent className="bg-slate-800 border-slate-700 max-h-[300px]">
+                <SelectItem value="all">All Teams</SelectItem>
+                {teams.map((team) => (
+                  <SelectItem key={team} value={team as string}>
+                    {team}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </div>
 

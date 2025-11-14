@@ -533,5 +533,13 @@
 - [x] Use plain text team names only
 - [x] Remove basketball emojis
 - [x] Add clickable title link to website
-- [ ] Test Discord embed
+- [x] Test Discord embed
+- [x] Save checkpoint
+
+## Admin Team Select Dropdown
+
+- [x] Add team select dropdown to admin team management page
+- [x] Filter players by selected team
+- [x] Add "All Teams" option to show all players
+- [ ] Test team filtering functionality
 - [ ] Save checkpoint
