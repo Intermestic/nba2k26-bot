@@ -4,6 +4,7 @@ import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, router } from "./_core/trpc";
 import { playerRouter } from "./routers/player";
 import { discordRouter } from "./routers/discord";
+import { coinsRouter } from "./routers/coins";
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -24,6 +25,9 @@ export const appRouter = router({
   
   // Discord webhook integration
   discord: discordRouter,
+  
+  // FA coin management
+  coins: coinsRouter,
 });
 
 export type AppRouter = typeof appRouter;

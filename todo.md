@@ -643,4 +643,19 @@
 ## Bot Message ID Threshold
 
 - [x] Add message ID threshold check (only process messages after 1439020316058714263)
+- [x] Save checkpoint
+
+## Coin Balance Dashboard
+
+- [x] Create coin balance dashboard page (admin only)
+- [x] Display all 28 teams' current coin balances
+- [x] Show transaction history for each team
+- [x] Add manual coin adjustment controls
+- [x] Add TRPC endpoints for coin data and adjustments
+- [x] Add navigation link to admin page
+
+## 70 OVR Signing Restriction
+
+- [x] Enforce 70 OVR restriction in bot (block signing players > 70 OVR when coins = 0)
+- [ ] Test restriction enforcement
 - [ ] Save checkpoint

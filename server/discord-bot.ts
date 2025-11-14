@@ -170,6 +170,14 @@ async function processTransactions(transactions: ParsedTransaction[], adminUser:
         continue;
       }
       
+      // Enforce 70 OVR restriction: teams with 0 coins cannot sign players > 70 OVR
+      if (teamCoinsData.coinsRemaining === 0 && signedPlayer.overall > 70) {
+        failed++;
+        details.push(`❌ ${team}: Cannot sign ${signedPlayer.name} (${signedPlayer.overall} OVR) - teams with 0 coins can only sign 70 OVR or lower`);
+        console.log(`[Discord Bot] ${team}: 70 OVR restriction violated`);
+        continue;
+      }
+      
       // Deduct coins
       const newCoinsRemaining = teamCoinsData.coinsRemaining - bidAmount;
       await db
