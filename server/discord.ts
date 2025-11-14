@@ -46,10 +46,44 @@ export async function getTeamSummaries(): Promise<TeamSummary[]> {
     });
 }
 
+// Team logo mapping
+const teamLogos: Record<string, string> = {
+  "Hawks": "https://cdn.nba.com/logos/nba/1610612737/primary/L/logo.svg",
+  "Celtics": "https://cdn.nba.com/logos/nba/1610612738/primary/L/logo.svg",
+  "Nets": "https://cdn.nba.com/logos/nba/1610612751/primary/L/logo.svg",
+  "Hornets": "https://cdn.nba.com/logos/nba/1610612766/primary/L/logo.svg",
+  "Bulls": "https://cdn.nba.com/logos/nba/1610612741/primary/L/logo.svg",
+  "Cavaliers": "https://cdn.nba.com/logos/nba/1610612739/primary/L/logo.svg",
+  "Mavericks": "https://cdn.nba.com/logos/nba/1610612742/primary/L/logo.svg",
+  "Nuggets": "https://cdn.nba.com/logos/nba/1610612743/primary/L/logo.svg",
+  "Pistons": "https://cdn.nba.com/logos/nba/1610612765/primary/L/logo.svg",
+  "Warriors": "https://cdn.nba.com/logos/nba/1610612744/primary/L/logo.svg",
+  "Rockets": "https://cdn.nba.com/logos/nba/1610612745/primary/L/logo.svg",
+  "Pacers": "https://cdn.nba.com/logos/nba/1610612754/primary/L/logo.svg",
+  "Clippers": "https://cdn.nba.com/logos/nba/1610612746/primary/L/logo.svg",
+  "Lakers": "https://cdn.nba.com/logos/nba/1610612747/primary/L/logo.svg",
+  "Grizzlies": "https://cdn.nba.com/logos/nba/1610612763/primary/L/logo.svg",
+  "Heat": "https://cdn.nba.com/logos/nba/1610612748/primary/L/logo.svg",
+  "Bucks": "https://cdn.nba.com/logos/nba/1610612749/primary/L/logo.svg",
+  "Timberwolves": "https://cdn.nba.com/logos/nba/1610612750/primary/L/logo.svg",
+  "Pelicans": "https://cdn.nba.com/logos/nba/1610612740/primary/L/logo.svg",
+  "Knicks": "https://cdn.nba.com/logos/nba/1610612752/primary/L/logo.svg",
+  "Thunder": "https://cdn.nba.com/logos/nba/1610612760/primary/L/logo.svg",
+  "Magic": "https://cdn.nba.com/logos/nba/1610612753/primary/L/logo.svg",
+  "Sixers": "https://cdn.nba.com/logos/nba/1610612755/primary/L/logo.svg",
+  "Suns": "https://cdn.nba.com/logos/nba/1610612756/primary/L/logo.svg",
+  "Trail Blazers": "https://cdn.nba.com/logos/nba/1610612757/primary/L/logo.svg",
+  "Kings": "https://cdn.nba.com/logos/nba/1610612758/primary/L/logo.svg",
+  "Spurs": "https://cdn.nba.com/logos/nba/1610612759/primary/L/logo.svg",
+  "Raptors": "https://cdn.nba.com/logos/nba/1610612761/primary/L/logo.svg",
+  "Jazz": "https://cdn.nba.com/logos/nba/1610612762/primary/L/logo.svg",
+  "Wizards": "https://cdn.nba.com/logos/nba/1610612764/primary/L/logo.svg"
+};
+
 export function generateDiscordEmbed(summaries: TeamSummary[], websiteUrl: string) {
   const overCapTeams = summaries.filter(s => s.totalOverall > OVERALL_CAP_LIMIT).length;
   
-  // Build team list as description (Discord has 25 field limit, we have 28 teams)
+  // Build team list with clickable team names and team logos
   const teamLines = summaries.map(summary => {
     const overCap = summary.totalOverall - OVERALL_CAP_LIMIT;
     const status = overCap > 0 
@@ -57,11 +91,14 @@ export function generateDiscordEmbed(summaries: TeamSummary[], websiteUrl: strin
       : `${summary.totalOverall}`;
     
     const teamUrl = `${websiteUrl}?team=${encodeURIComponent(summary.team)}`;
-    // Use plain URL format without markdown to avoid parsing issues
-    return `**${summary.team}** (${summary.playerCount}/14) - ${status} - <${teamUrl}>`;
+    const teamLogo = teamLogos[summary.team] || '';
+    const logoEmoji = teamLogo ? '🏀 ' : '';
+    
+    // Format: [Team Name](url) (count/14) - status
+    return `${logoEmoji}[**${summary.team}**](${teamUrl}) (${summary.playerCount}/14) - ${status}`;
   });
   
-  const description = `**Cap Limit:** ${OVERALL_CAP_LIMIT} Total Overall\n🔴 Over: ${overCapTeams}\n\n${teamLines.join('\n')}`;
+  const description = `**Cap Limit:** ${OVERALL_CAP_LIMIT} Total Overall\n🔴 Over Cap: ${overCapTeams} teams\n\n${teamLines.join('\n')}`;
   
   return {
     embeds: [{
@@ -126,8 +163,12 @@ export async function updateDiscordMessage(webhookUrl: string, messageId: string
   return { success: true, teamCount: summaries.length };
 }
 
+// Track teams affected by recent transactions for notifications
+let recentlyAffectedTeams = new Set<string>();
+let notificationTimeout: NodeJS.Timeout | null = null;
+
 // Auto-update Discord message if enabled
-export async function autoUpdateDiscord() {
+export async function autoUpdateDiscord(affectedTeams?: string[]) {
   try {
     const db = await getDb();
     if (!db) return;
@@ -140,6 +181,29 @@ export async function autoUpdateDiscord() {
     // Check if auto-update is enabled and we have necessary config
     if (!config.autoUpdateEnabled || !config.webhookUrl || !config.messageId) {
       return;
+    }
+
+    // Track affected teams for notification
+    if (affectedTeams && affectedTeams.length > 0) {
+      affectedTeams.forEach(team => recentlyAffectedTeams.add(team));
+      
+      // Clear existing timeout
+      if (notificationTimeout) {
+        clearTimeout(notificationTimeout);
+      }
+      
+      // Set timeout to send notification after 2 seconds (to batch multiple updates)
+      notificationTimeout = setTimeout(async () => {
+        if (recentlyAffectedTeams.size >= 2) {
+          try {
+            await sendBulkUpdateNotification(config.webhookUrl, Array.from(recentlyAffectedTeams));
+          } catch (err) {
+            console.error('[Discord] Notification failed:', err);
+          }
+        }
+        recentlyAffectedTeams.clear();
+        notificationTimeout = null;
+      }, 2000);
     }
 
     // Rate limiting: don't update if last update was less than 1 minute ago
@@ -164,6 +228,28 @@ export async function autoUpdateDiscord() {
   } catch (error) {
     console.error('[Discord] Auto-update failed:', error);
   }
+}
+
+// Send notification when 2+ teams are updated
+async function sendBulkUpdateNotification(webhookUrl: string, teams: string[]) {
+  const teamList = teams.map(t => `**${t}**`).join(', ');
+  const message = {
+    content: `🚨 **Bulk Transaction Alert** 🚨\n\n${teams.length} teams updated: ${teamList}\n\nCap status has been updated automatically.`
+  };
+  
+  const response = await fetch(webhookUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(message)
+  });
+  
+  if (!response.ok) {
+    throw new Error(`Discord notification failed: ${response.status} ${response.statusText}`);
+  }
+  
+  console.log(`[Discord] Sent bulk update notification for ${teams.length} teams`);
 }
 
 

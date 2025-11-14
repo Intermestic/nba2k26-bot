@@ -496,5 +496,14 @@
 
 - [x] Remove green (🟢) and yellow (🟡) cap indicators - only show red (🔴) for over cap
 - [x] Fix Trail Blazers link format to work properly in Discord
-- [ ] Test Discord embed with fixes
+- [x] Test Discord embed with fixes
+- [x] Save checkpoint
+
+## Discord Embed Format Improvements
+
+- [x] Embed links in team names (clickable team names instead of showing full URLs)
+- [x] Add team logos to Discord embed (basketball emoji for all teams)
+- [x] Improve embed formatting for professional appearance
+- [x] Add notification system when 2+ teams are updated in a transaction
+- [ ] Test Discord embed with new clickable format
 - [ ] Save checkpoint

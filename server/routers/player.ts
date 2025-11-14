@@ -194,8 +194,9 @@ export const playerRouter = router({
         transactionType: player.team ? "trade" : "signing",
       });
 
-      // Trigger Discord auto-update (non-blocking)
-      autoUpdateDiscord().catch(err => 
+      // Trigger Discord auto-update with affected teams (non-blocking)
+      const affectedTeams = [player.team, input.team].filter(Boolean) as string[];
+      autoUpdateDiscord(affectedTeams).catch(err => 
         console.error('[Discord] Auto-update failed:', err)
       );
 
