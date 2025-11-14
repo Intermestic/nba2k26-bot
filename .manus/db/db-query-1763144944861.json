@@ -1,0 +1,55 @@
+{
+  "query": "SELECT id, name, team FROM players WHERE name IN ('Donovan Mitchell', 'Jerami Grant', 'Saddiq Bey', 'LaMelo Ball', 'Miles Bridges', 'Benedict Mathurin', 'Jaime Jaquez Jr.', 'Jaime Jaquez Jr', 'Robert Williams III', 'Rob Williams', 'Brandon Miller', 'Adem Bona') ORDER BY name;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT id, name, team FROM players WHERE name IN ('Donovan Mitchell', 'Jerami Grant', 'Saddiq Bey', 'LaMelo Ball', 'Miles Bridges', 'Benedict Mathurin', 'Jaime Jaquez Jr.', 'Jaime Jaquez Jr', 'Robert Williams III', 'Rob Williams', 'Brandon Miller', 'Adem Bona') ORDER BY name;",
+  "rows": [
+    {
+      "id": "P0051",
+      "name": "Adem Bona",
+      "team": "Trail Blazers"
+    },
+    {
+      "id": "P0401",
+      "name": "Brandon Miller",
+      "team": "Hornets Adem Bona to Hornets"
+    },
+    {
+      "id": "P0413",
+      "name": "Donovan Mitchell",
+      "team": "Jazz Jerami Grant to Jazz Saddiq Bey to Jazz"
+    },
+    {
+      "id": "P0305",
+      "name": "Jaime Jaquez Jr",
+      "team": "Blazers Rob Williams to Blazers"
+    },
+    {
+      "id": "P0206",
+      "name": "Jerami Grant",
+      "team": "Trail Blazers"
+    },
+    {
+      "id": "P0022",
+      "name": "LaMelo Ball",
+      "team": "Blazers Miles Bridges to Blazers Benedict Mathurin to Blazers"
+    },
+    {
+      "id": "P0059",
+      "name": "Miles Bridges",
+      "team": "Jazz"
+    },
+    {
+      "id": "P0256",
+      "name": "Robert Williams III",
+      "team": "Hornets"
+    },
+    {
+      "id": "P0044",
+      "name": "Saddiq Bey",
+      "team": "Trail Blazers"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\tteam\nP0051\tAdem Bona\tTrail Blazers\nP0401\tBrandon Miller\tHornets Adem Bona to Hornets\nP0413\tDonovan Mitchell\tJazz Jerami Grant to Jazz Saddiq Bey to Jazz\nP0305\tJaime Jaquez Jr\tBlazers Rob Williams to Blazers\nP0206\tJerami Grant\tTrail Blazers\nP0022\tLaMelo Ball\tBlazers Miles Bridges to Blazers Benedict Mathurin to Blazers\nP0059\tMiles Bridges\tJazz\nP0256\tRobert Williams III\tHornets\nP0044\tSaddiq Bey\tTrail Blazers\n",
+  "stderr": "",
+  "execution_time_ms": 1629
+}

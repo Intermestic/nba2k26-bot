@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
+import * as fuzz from "fuzzball";
 
 const TEAM_MAP: Record<string, string> = {
   "Atlanta Hawks": "Hawks", "Boston Celtics": "Celtics", "Brooklyn Nets": "Nets",
@@ -15,8 +16,25 @@ const TEAM_MAP: Record<string, string> = {
   "Philadelphia 76ers": "Sixers", "Philadelphia Sixers": "Sixers", "Phoenix Suns": "Suns",
   "Portland Trail Blazers": "Trail Blazers", "Sacramento Kings": "Kings",
   "San Antonio Spurs": "Spurs", "Toronto Raptors": "Raptors", "Utah Jazz": "Jazz",
-  "Washington Wizards": "Wizards"
+  "Washington Wizards": "Wizards",
+  // Add short name aliases
+  "Hawks": "Hawks", "Celtics": "Celtics", "Nets": "Nets", "Hornets": "Hornets",
+  "Bulls": "Bulls", "Cavaliers": "Cavaliers", "Mavericks": "Mavericks", "Nuggets": "Nuggets",
+  "Pistons": "Pistons", "Warriors": "Warriors", "Rockets": "Rockets", "Pacers": "Pacers",
+  "Clippers": "Clippers", "Lakers": "Lakers", "Grizzlies": "Grizzlies", "Heat": "Heat",
+  "Bucks": "Bucks", "Timberwolves": "Timberwolves", "Pelicans": "Pelicans", "Knicks": "Knicks",
+  "Thunder": "Thunder", "Magic": "Magic", "Sixers": "Sixers", "Suns": "Suns",
+  "Trail Blazers": "Trail Blazers", "Blazers": "Trail Blazers", "Kings": "Kings",
+  "Spurs": "Spurs", "Raptors": "Raptors", "Jazz": "Jazz", "Wizards": "Wizards"
 };
+
+// Valid NBA teams (28 teams)
+const VALID_TEAMS = [
+  "Hawks", "Celtics", "Nets", "Hornets", "Bulls", "Cavaliers", "Mavericks", "Nuggets",
+  "Pistons", "Warriors", "Rockets", "Pacers", "Clippers", "Lakers", "Grizzlies", "Heat",
+  "Bucks", "Timberwolves", "Pelicans", "Knicks", "Thunder", "Magic", "Sixers", "Suns",
+  "Trail Blazers", "Kings", "Spurs", "Raptors", "Jazz", "Wizards"
+];
 
 interface ParsedTransaction {
   playerName: string;
@@ -44,7 +62,54 @@ export default function Transactions() {
     </div>;
   }
 
-  const normalize = (name: string) => TEAM_MAP[name] || name;
+  // Normalize team name and validate it exists
+  const normalizeTeam = (name: string): { team: string; error?: string } => {
+    const normalized = TEAM_MAP[name];
+    if (normalized && VALID_TEAMS.includes(normalized)) {
+      return { team: normalized };
+    }
+    
+    // Try fuzzy matching against valid teams
+    const matches = fuzz.extract(name, VALID_TEAMS, { scorer: fuzz.token_set_ratio, limit: 1 });
+    if (matches && matches.length > 0 && matches[0][1] >= 70) {
+      return { team: matches[0][0] };
+    }
+    
+    return { team: name, error: `Invalid team: "${name}" - must be one of 28 NBA teams` };
+  };
+  
+  // Fuzzy match player name
+  const findPlayer = (name: string) => {
+    if (!players) return null;
+    
+    // Normalize input: remove Jr/Jr./III/II, trim, lowercase
+    const normalizePlayerName = (n: string) => 
+      n.toLowerCase()
+        .replace(/\s+(jr\.?|sr\.?|iii|ii|iv)$/i, '')
+        .replace(/[^a-z0-9\s]/g, '')
+        .trim();
+    
+    const normalizedInput = normalizePlayerName(name);
+    
+    // Try exact match first
+    const exactMatch = players.find(p => normalizePlayerName(p.name) === normalizedInput);
+    if (exactMatch) return exactMatch;
+    
+    // Try fuzzy matching
+    const playerNames = players.map(p => p.name);
+    const matches = fuzz.extract(name, playerNames, { 
+      scorer: fuzz.token_set_ratio, 
+      limit: 1,
+      cutoff: 75 // 75% similarity threshold
+    });
+    
+    if (matches && matches.length > 0) {
+      const matchedName = matches[0][0];
+      return players.find(p => p.name === matchedName) || null;
+    }
+    
+    return null;
+  };
 
   const parseTransactions = () => {
     if (!players) return;
@@ -58,23 +123,31 @@ export default function Transactions() {
       const simpleMatch = line.match(/^(.+?)\s+to\s+(.+)$/i);
       if (simpleMatch) {
         const playerName = simpleMatch[1].trim();
-        const teamName = normalize(simpleMatch[2].trim());
-        const player = players.find(p => p.name.toLowerCase() === playerName.toLowerCase());
+        const teamResult = normalizeTeam(simpleMatch[2].trim());
+        const player = findPlayer(playerName);
         
-        if (player) {
+        if (teamResult.error) {
+          parsed.push({
+            playerName,
+            playerId: null,
+            currentTeam: "Unknown",
+            newTeam: teamResult.team,
+            error: teamResult.error
+          });
+        } else if (player) {
           parsed.push({
             playerName: player.name,
             playerId: player.id,
             currentTeam: player.team || "Unknown",
-            newTeam: teamName,
+            newTeam: teamResult.team,
           });
         } else {
           parsed.push({
             playerName,
             playerId: null,
             currentTeam: "Unknown",
-            newTeam: teamName,
-            error: "Player not found in database"
+            newTeam: teamResult.team,
+            error: `Player not found: "${playerName}"`
           });
         }
         continue;
@@ -82,7 +155,12 @@ export default function Transactions() {
 
       // Check for detailed format: "Team Receive:"
       if (line.endsWith("Receive:")) {
-        currentTeam = normalize(line.replace("Receive:", "").trim());
+        const teamResult = normalizeTeam(line.replace("Receive:", "").trim());
+        if (teamResult.error) {
+          setStatus(`Error: ${teamResult.error}`);
+          return;
+        }
+        currentTeam = teamResult.team;
         continue;
       }
       if (line === "---") continue;
@@ -91,7 +169,7 @@ export default function Transactions() {
       const detailedMatch = line.match(/^(.+?)\s*\((\d+)\s*OVR\)$/i);
       if (detailedMatch && currentTeam) {
         const playerName = detailedMatch[1].trim();
-        const player = players.find(p => p.name.toLowerCase() === playerName.toLowerCase());
+        const player = findPlayer(playerName);
         
         if (player) {
           parsed.push({
@@ -106,7 +184,7 @@ export default function Transactions() {
             playerId: null,
             currentTeam: "Unknown",
             newTeam: currentTeam,
-            error: "Player not found in database"
+            error: `Player not found: "${playerName}"`
           });
         }
       }

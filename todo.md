@@ -512,5 +512,17 @@
 
 - [x] Fix Trail Blazers link formatting (broken markdown with spaces)
 - [x] Remove basketball emojis (Discord can't show actual logos in description)
-- [ ] Test Discord embed with fixes
+- [x] Test Discord embed with fixes
+- [x] Save checkpoint
+
+## Fix Bulk Transactions
+
+- [x] Add fuzzy player name matching (handle misspellings, Jr/Jr., capitalization)
+- [x] Validate team names against existing 28 NBA teams only
+- [x] Prevent creating new teams from transaction text
+- [x] Fix player assignments: Donovan Mitchell, Jerami Grant, Saddiq Bey → Jazz
+- [x] Fix player assignments: Lamelo Ball, Miles Bridges, Benedict Mathurin, Jaime Jaquez Jr, Rob Williams → Trail Blazers
+- [x] Fix player assignments: Brandon Miller, Adem Bona → Hornets
+- [x] Clean up invalid team names created from bad parsing
+- [ ] Test bulk transaction parsing
 - [ ] Save checkpoint

@@ -1,0 +1,1265 @@
+{
+  "query": "SELECT id, name, team FROM players WHERE team NOT IN ('Hawks', 'Celtics', 'Nets', 'Hornets', 'Bulls', 'Cavaliers', 'Mavericks', 'Nuggets', 'Pistons', 'Warriors', 'Rockets', 'Pacers', 'Clippers', 'Lakers', 'Grizzlies', 'Heat', 'Bucks', 'Timberwolves', 'Pelicans', 'Knicks', 'Thunder', 'Magic', 'Sixers', 'Suns', 'Trail Blazers', 'Kings', 'Spurs', 'Raptors', 'Jazz', 'Wizards') AND team IS NOT NULL ORDER BY team, name;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT id, name, team FROM players WHERE team NOT IN ('Hawks', 'Celtics', 'Nets', 'Hornets', 'Bulls', 'Cavaliers', 'Mavericks', 'Nuggets', 'Pistons', 'Warriors', 'Rockets', 'Pacers', 'Clippers', 'Lakers', 'Grizzlies', 'Heat', 'Bucks', 'Timberwolves', 'Pelicans', 'Knicks', 'Thunder', 'Magic', 'Sixers', 'Suns', 'Trail Blazers', 'Kings', 'Spurs', 'Raptors', 'Jazz', 'Wizards') AND team IS NOT NULL ORDER BY team, name;",
+  "rows": [
+    {
+      "id": "P0305",
+      "name": "Jaime Jaquez Jr",
+      "team": "Blazers Rob Williams to Blazers"
+    },
+    {
+      "id": "P0210",
+      "name": "AJ Green",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0287",
+      "name": "AJ Johnson",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0353",
+      "name": "AJ Lawson",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0239",
+      "name": "Aaron Holiday",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0176",
+      "name": "Adam Flagler",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0513",
+      "name": "Adama Sanogo",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0563",
+      "name": "Adou Thiero",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0076",
+      "name": "Alec Burks",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0013",
+      "name": "Alex Antetokounmpo",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0151",
+      "name": "Alex Ducas",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0626",
+      "name": "Alondes Williams",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0108",
+      "name": "Amir Coffey",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0197",
+      "name": "Anthony Gill",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0608",
+      "name": "Anton Watson",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0489",
+      "name": "Antonio Reeves",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0579",
+      "name": "Armel Traoré",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0146",
+      "name": "Ayo Dosunmu",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0519",
+      "name": "Baylor Scheierman",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0611",
+      "name": "Blake Wesley",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0337",
+      "name": "Bobi Klintman",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0048",
+      "name": "Bojan Bogdanovic",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0251",
+      "name": "Bones Hyland",
+      "team": "Free Agents"
+    },
+    {
+      "id": "player_1763006483076_t0ofa80ap",
+      "name": "Boo Buie III",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0319",
+      "name": "Brandon Boston Jr.",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0334",
+      "name": "Braxton Key",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0031",
+      "name": "Brooks Barnhizer",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0069",
+      "name": "Bruce Brown",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0393",
+      "name": "Bryce McGowens",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0250",
+      "name": "CJ Huntley",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0245",
+      "name": "Caleb Houstan",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0368",
+      "name": "Caleb Love",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0544",
+      "name": "Cam Spencer",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0452",
+      "name": "Cameron Payne",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0087",
+      "name": "Carlton Carrington",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0033",
+      "name": "Charles Bassey",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0150",
+      "name": "Chris Duarte",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0364",
+      "name": "Chris Livingston",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0375",
+      "name": "Chris Manon",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0451",
+      "name": "Chris Paul",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0639",
+      "name": "Chris Youngblood",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0341",
+      "name": "Christian Koloko",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0640",
+      "name": "Cody Zeller",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0294",
+      "name": "Colby Jones",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0092",
+      "name": "Colin Castleton",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0198",
+      "name": "Collin Gillespie",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0299",
+      "name": "Cory Joseph",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0320",
+      "name": "Craig Porter Jr.",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0636",
+      "name": "Cui Yongxi",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0089",
+      "name": "DJ Carton",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0551",
+      "name": "DJ Steward",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0278",
+      "name": "DaQuan Jeffries",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0459",
+      "name": "Daeqwon Plowden",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0437",
+      "name": "Daishen Nix",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0027",
+      "name": "Dalano Banton",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0561",
+      "name": "Dalen Terry",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0038",
+      "name": "Damion Baugh",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0355",
+      "name": "Damion Lee",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0562",
+      "name": "Daniel Theis",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0279",
+      "name": "Daniss Jenkins",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0516",
+      "name": "Dario Saric",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0616",
+      "name": "Dariq Whitehead",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0186",
+      "name": "David Jones Garcia",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0502",
+      "name": "David Roddy",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0296",
+      "name": "Dillon Jones",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0028",
+      "name": "Dominick Barlow",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0571",
+      "name": "Drew Timme",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0540",
+      "name": "Dru Smith",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0499",
+      "name": "Duncan Robinson",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0484",
+      "name": "Duop Reath",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0470",
+      "name": "Dwight Powell",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0220",
+      "name": "EJ Harkless",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0453",
+      "name": "Elfrid Payton",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0429",
+      "name": "Eli Ndiaye",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0182",
+      "name": "Enrique Freeman",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0550",
+      "name": "Erik Stevenson",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0588",
+      "name": "Fred VanVleet",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0591",
+      "name": "Gabe Vincent",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0560",
+      "name": "Garrett Temple",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0380",
+      "name": "Garrison Mathews",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0009",
+      "name": "Grayson Allen",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0514",
+      "name": "Gui Santos",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0266",
+      "name": "Harrison Ingram",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0511",
+      "name": "Hunter Sallis",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0585",
+      "name": "Hunter Tyson",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0295",
+      "name": "Isaac Jones",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0120",
+      "name": "Isaiah Crawford",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0363",
+      "name": "Isaiah Livers",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0415",
+      "name": "Isaiah Mobley",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0549",
+      "name": "Isaiah Stevens",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0632",
+      "name": "Isaiah Wong",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0132",
+      "name": "JD Davison",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0602",
+      "name": "Ja'Kobe Walter",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0598",
+      "name": "Jabari Walker",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0396",
+      "name": "Jack McVeigh",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0504",
+      "name": "Jackson Rowe",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0576",
+      "name": "Jacob Toppin",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0546",
+      "name": "Jaden Springer",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0556",
+      "name": "Jae'Sean Tate",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0638",
+      "name": "Jahmir Young",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0559",
+      "name": "Jahmyl Telfort",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0347",
+      "name": "Jake LaRavia",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0061",
+      "name": "Jalen Bridges",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0122",
+      "name": "Jalen Crutcher",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0243",
+      "name": "Jalen Hood-Schifino",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0391",
+      "name": "Jalen McDaniels",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0458",
+      "name": "Jalen Pickett",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0080",
+      "name": "Jamal Cain",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0054",
+      "name": "Jamaree Bouyea",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0288",
+      "name": "James Johnson",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0078",
+      "name": "Jared Butler",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0491",
+      "name": "Jared Rhoden",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0471",
+      "name": "Jason Preston",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0389",
+      "name": "Javante McCoy",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0537",
+      "name": "Javon Small",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0115",
+      "name": "Javonte Cooke",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0439",
+      "name": "Jaylen Nowell",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0205",
+      "name": "Jazian Gortman",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0147",
+      "name": "Jeff Dowtin",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0211",
+      "name": "Jeff Green",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0163",
+      "name": "Jesse Edwards",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0246",
+      "name": "Jett Howard",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0264",
+      "name": "Joe Ingles",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0342",
+      "name": "John Konchar",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0573",
+      "name": "John Tonje",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0131",
+      "name": "Johnny Davis",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0184",
+      "name": "Johnny Furphy",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0327",
+      "name": "Johnny Juzang",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0103",
+      "name": "Jordan Clarkson",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0202",
+      "name": "Jordan Goodwin",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0394",
+      "name": "Jordan McLaughlin",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0403",
+      "name": "Jordan Miller",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0601",
+      "name": "Jordan Walsh",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0494",
+      "name": "Josh Richardson",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0457",
+      "name": "Julian Phillips",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0553",
+      "name": "Julian Strawther",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0535",
+      "name": "KJ Simpson",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0286",
+      "name": "Keldon Johnson",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0321",
+      "name": "Kenyon Martin Jr.",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0255",
+      "name": "Kevin Knox II",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0324",
+      "name": "Kevin McCullar Jr.",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0224",
+      "name": "Kevon Harris",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0230",
+      "name": "Killian Hayes",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0070",
+      "name": "Kobe Brown",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0074",
+      "name": "Kobe Bufkin",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0512",
+      "name": "Kobe Sanders",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0058",
+      "name": "Koby Brea",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0011",
+      "name": "Kyle Anderson",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0330",
+      "name": "Kylor Kelley",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0447",
+      "name": "Lachlan Olbrich",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0548",
+      "name": "Lamar Stevens",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0524",
+      "name": "Landry Shamet",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0481",
+      "name": "Lester Quinones",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0497",
+      "name": "Liam Robbins",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0260",
+      "name": "Lindy Waters III",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0261",
+      "name": "Lonnie Walker IV",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0190",
+      "name": "Luka Garza",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0332",
+      "name": "Luke Kennard",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0343",
+      "name": "Luke Kornet",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0580",
+      "name": "Luke Travers",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0386",
+      "name": "Mac McClung",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0179",
+      "name": "Malachi Flynn",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0056",
+      "name": "Malaki Branham",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0063",
+      "name": "Malcolm Brogdon",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0359",
+      "name": "Malevy Leons",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0041",
+      "name": "MarJon Beauchamp",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0020",
+      "name": "Marcus Bagley",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0189",
+      "name": "Marcus Garrett",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0518",
+      "name": "Marcus Sasser",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0183",
+      "name": "Markelle Fultz",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0530",
+      "name": "Max Shulga",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0360",
+      "name": "Maxwell Lewis",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0467",
+      "name": "Micah Potter",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0331",
+      "name": "Miles Kelly",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0137",
+      "name": "Mohamed Diawara",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0421",
+      "name": "Monte Morris",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0418",
+      "name": "Moses Moody",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0213",
+      "name": "Mouhamed Gueye",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0099",
+      "name": "Moussa Cisse",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0187",
+      "name": "Myron Gardner",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0128",
+      "name": "N'Faly Dante",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0572",
+      "name": "Nae'Qwan Tomlin",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0377",
+      "name": "Naji Marshall",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0627",
+      "name": "Nate Williams",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0322",
+      "name": "Nick Smith Jr.",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0231",
+      "name": "Nigel Hayes-Davis",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0143",
+      "name": "Nikola Djurisic",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0107",
+      "name": "Noah Clowney",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0475",
+      "name": "Olivier-Maxence Prosper",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0500",
+      "name": "Orlando Robinson",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0263",
+      "name": "Oso Ighodaro",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0140",
+      "name": "Ousmane Dieng",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0148",
+      "name": "PJ Dozier",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0216",
+      "name": "PJ Hall",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0126",
+      "name": "Pacôme Dadiet",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0114",
+      "name": "Pat Connaughton",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0545",
+      "name": "Pat Spencer",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0404",
+      "name": "Patty Mills",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0473",
+      "name": "Payton Pritchard",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0352",
+      "name": "Pelle Larsson",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0613",
+      "name": "Phillip Wheeler",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0273",
+      "name": "Quenton Jackson",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0448",
+      "name": "Quincy Olivari",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0134",
+      "name": "RayJ Dennis",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0505",
+      "name": "Rayan Rupert",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0042",
+      "name": "Reece Beekman",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0262",
+      "name": "Ricky Council IV",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0408",
+      "name": "Riley Minix",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0141",
+      "name": "Rob Dillingham",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0325",
+      "name": "Ron Harper Jr.",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0431",
+      "name": "Ryan Nembhard",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0227",
+      "name": "Sam Hauser",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0318",
+      "name": "Scotty Pippen Jr.",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0125",
+      "name": "Seth Curry",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0370",
+      "name": "Seth Lundy",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0405",
+      "name": "Shake Milton",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0116",
+      "name": "Sharife Cooper",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0100",
+      "name": "Sidy Cissoko",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0180",
+      "name": "Simone Fontecchio",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0349",
+      "name": "Skal Labissiere",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0297",
+      "name": "Spencer Jones",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0586",
+      "name": "Stanley Umude",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0456",
+      "name": "Taelon Peter",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0035",
+      "name": "Tamar Bates",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0017",
+      "name": "Taran Armstrong",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0419",
+      "name": "Taze Moore",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0130",
+      "name": "Terence Davis",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0259",
+      "name": "Terry Rozier III",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0558",
+      "name": "Terry Taylor",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0014",
+      "name": "Thanasis Antetokounmpo",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0317",
+      "name": "Tim Hardaway Jr.",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0541",
+      "name": "Tolu Smith",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0169",
+      "name": "Tosan Evbuomwan",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0605",
+      "name": "Trendon Watford",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0178",
+      "name": "Trentyn Flowers",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0478",
+      "name": "Trevelin Queen",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0006",
+      "name": "Trey Alexander",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0434",
+      "name": "Tristen Newton",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0326",
+      "name": "TyTy Washington Jr.",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0340",
+      "name": "Tyler Kolek",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0167",
+      "name": "Tyson Etienne",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0095",
+      "name": "Ulrich Chomche",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0399",
+      "name": "Vasilije Micic",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0323",
+      "name": "Vince Williams Jr.",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0200",
+      "name": "Vladislav Goldin",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0083",
+      "name": "Vlatko Cancar",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0547",
+      "name": "Xavier Tillman Sr.",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0436",
+      "name": "Yanic Konan Niederhauser",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0329",
+      "name": "Yuki Kawamura",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0112",
+      "name": "Yuri Collins",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0476",
+      "name": "Zyon Pullin",
+      "team": "Free Agents"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\tteam\nP0305\tJaime Jaquez Jr\tBlazers Rob Williams to Blazers\nP0210\tAJ Green\tFree Agents\nP0287\tAJ Johnson\tFree Agents\nP0353\tAJ Lawson\tFree Agents\nP0239\tAaron Holiday\tFree Agents\nP0176\tAdam Flagler\tFree Agents\nP0513\tAdama Sanogo\tFree Agents\nP0563\tAdou Thiero\tFree Agents\nP0076\tAlec Burks\tFree Agents\nP0013\tAlex Antetokounmpo\tFree Agents\nP0151\tAlex Ducas\tFree Agents\nP0626\tAlondes Williams\tFree Agents\nP0108\tAmir Coffey\tFree Agents\nP0197\tAnthony Gill\tFree Agents\nP0608\tAnton Watson\tFree Agents\nP0489\tAntonio Reeves\tFree Agents\nP0579\tArmel Traoré\tFree Agents\nP0146\tAyo Dosunmu\tFree Agents\nP0519\tBaylor Scheierman\tFree Agents\nP0611\tBlake Wesley\tFree Agents\nP0337\tBobi Klintman\tFree Agents\nP0048\tBojan Bogdanovic\tFree Agents\nP0251\tBones Hyland\tFree Agents\nplayer_1763006483076_t0ofa80ap\tBoo Buie III\tFree Agents\nP0319\tBrandon Boston Jr.\tFree Agents\nP0334\tBraxton Key\tFree Agents\nP0031\tBrooks Barnhizer\tFree Agents\nP0069\tBruce Brown\tFree Agents\nP0393\tBryce McGowens\tFree Agents\nP0250\tCJ Huntley\tFree Agents\nP0245\tCaleb Houstan\tFree Agents\nP0368\tCaleb Love\tFree Agents\nP0544\tCam Spencer\tFree Agents\nP0452\tCameron Payne\tFree Agents\nP0087\tCarlton Carrington\tFree Agents\nP0033\tCharles Bassey\tFree Agents\nP0150\tChris Duarte\tFree Agents\nP0364\tChris Livingston\tFree Agents\nP0375\tChris Manon\tFree Agents\nP0451\tChris Paul\tFree Agents\nP0639\tChris Youngblood\tFree Agents\nP0341\tChristian Koloko\tFree Agents\nP0640\tCody Zeller\tFree Agents\nP0294\tColby Jones\tFree Agents\nP0092\tColin Castleton\tFree Agents\nP0198\tCollin Gillespie\tFree Agents\nP0299\tCory Joseph\tFree Agents\nP0320\tCraig Porter Jr.\tFree Agents\nP0636\tCui Yongxi\tFree Agents\nP0089\tDJ Carton\tFree Agents\nP0551\tDJ Steward\tFree Agents\nP0278\tDaQuan Jeffries\tFree Agents\nP0459\tDaeqwon Plowden\tFree Agents\nP0437\tDaishen Nix\tFree Agents\nP0027\tDalano Banton\tFree Agents\nP0561\tDalen Terry\tFree Agents\nP0038\tDamion Baugh\tFree Agents\nP0355\tDamion Lee\tFree Agents\nP0562\tDaniel Theis\tFree Agents\nP0279\tDaniss Jenkins\tFree Agents\nP0516\tDario Saric\tFree Agents\nP0616\tDariq Whitehead\tFree Agents\nP0186\tDavid Jones Garcia\tFree Agents\nP0502\tDavid Roddy\tFree Agents\nP0296\tDillon Jones\tFree Agents\nP0028\tDominick Barlow\tFree Agents\nP0571\tDrew Timme\tFree Agents\nP0540\tDru Smith\tFree Agents\nP0499\tDuncan Robinson\tFree Agents\nP0484\tDuop Reath\tFree Agents\nP0470\tDwight Powell\tFree Agents\nP0220\tEJ Harkless\tFree Agents\nP0453\tElfrid Payton\tFree Agents\nP0429\tEli Ndiaye\tFree Agents\nP0182\tEnrique Freeman\tFree Agents\nP0550\tErik Stevenson\tFree Agents\nP0588\tFred VanVleet\tFree Agents\nP0591\tGabe Vincent\tFree Agents\nP0560\tGarrett Temple\tFree Agents\nP0380\tGarrison Mathews\tFree Agents\nP0009\tGrayson Allen\tFree Agents\nP0514\tGui Santos\tFree Agents\nP0266\tHarrison Ingram\tFree Agents\nP0511\tHunter Sallis\tFree Agents\nP0585\tHunter Tyson\tFree Agents\nP0295\tIsaac Jones\tFree Agents\nP0120\tIsaiah Crawford\tFree Agents\nP0363\tIsaiah Livers\tFree Agents\nP0415\tIsaiah Mobley\tFree Agents\nP0549\tIsaiah Stevens\tFree Agents\nP0632\tIsaiah Wong\tFree Agents\nP0132\tJD Davison\tFree Agents\nP0602\tJa'Kobe Walter\tFree Agents\nP0598\tJabari Walker\tFree Agents\nP0396\tJack McVeigh\tFree Agents\nP0504\tJackson Rowe\tFree Agents\nP0576\tJacob Toppin\tFree Agents\nP0546\tJaden Springer\tFree Agents\nP0556\tJae'Sean Tate\tFree Agents\nP0638\tJahmir Young\tFree Agents\nP0559\tJahmyl Telfort\tFree Agents\nP0347\tJake LaRavia\tFree Agents\nP0061\tJalen Bridges\tFree Agents\nP0122\tJalen Crutcher\tFree Agents\nP0243\tJalen Hood-Schifino\tFree Agents\nP0391\tJalen McDaniels\tFree Agents\nP0458\tJalen Pickett\tFree Agents\nP0080\tJamal Cain\tFree Agents\nP0054\tJamaree Bouyea\tFree Agents\nP0288\tJames Johnson\tFree Agents\nP0078\tJared Butler\tFree Agents\nP0491\tJared Rhoden\tFree Agents\nP0471\tJason Preston\tFree Agents\nP0389\tJavante McCoy\tFree Agents\nP0537\tJavon Small\tFree Agents\nP0115\tJavonte Cooke\tFree Agents\nP0439\tJaylen Nowell\tFree Agents\nP0205\tJazian Gortman\tFree Agents\nP0147\tJeff Dowtin\tFree Agents\nP0211\tJeff Green\tFree Agents\nP0163\tJesse Edwards\tFree Agents\nP0246\tJett Howard\tFree Agents\nP0264\tJoe Ingles\tFree Agents\nP0342\tJohn Konchar\tFree Agents\nP0573\tJohn Tonje\tFree Agents\nP0131\tJohnny Davis\tFree Agents\nP0184\tJohnny Furphy\tFree Agents\nP0327\tJohnny Juzang\tFree Agents\nP0103\tJordan Clarkson\tFree Agents\nP0202\tJordan Goodwin\tFree Agents\nP0394\tJordan McLaughlin\tFree Agents\nP0403\tJordan Miller\tFree Agents\nP0601\tJordan Walsh\tFree Agents\nP0494\tJosh Richardson\tFree Agents\nP0457\tJulian Phillips\tFree Agents\nP0553\tJulian Strawther\tFree Agents\nP0535\tKJ Simpson\tFree Agents\nP0286\tKeldon Johnson\tFree Agents\nP0321\tKenyon Martin Jr.\tFree Agents\nP0255\tKevin Knox II\tFree Agents\nP0324\tKevin McCullar Jr.\tFree Agents\nP0224\tKevon Harris\tFree Agents\nP0230\tKillian Hayes\tFree Agents\nP0070\tKobe Brown\tFree Agents\nP0074\tKobe Bufkin\tFree Agents\nP0512\tKobe Sanders\tFree Agents\nP0058\tKoby Brea\tFree Agents\nP0011\tKyle Anderson\tFree Agents\nP0330\tKylor Kelley\tFree Agents\nP0447\tLachlan Olbrich\tFree Agents\nP0548\tLamar Stevens\tFree Agents\nP0524\tLandry Shamet\tFree Agents\nP0481\tLester Quinones\tFree Agents\nP0497\tLiam Robbins\tFree Agents\nP0260\tLindy Waters III\tFree Agents\nP0261\tLonnie Walker IV\tFree Agents\nP0190\tLuka Garza\tFree Agents\nP0332\tLuke Kennard\tFree Agents\nP0343\tLuke Kornet\tFree Agents\nP0580\tLuke Travers\tFree Agents\nP0386\tMac McClung\tFree Agents\nP0179\tMalachi Flynn\tFree Agents\nP0056\tMalaki Branham\tFree Agents\nP0063\tMalcolm Brogdon\tFree Agents\nP0359\tMalevy Leons\tFree Agents\nP0041\tMarJon Beauchamp\tFree Agents\nP0020\tMarcus Bagley\tFree Agents\nP0189\tMarcus Garrett\tFree Agents\nP0518\tMarcus Sasser\tFree Agents\nP0183\tMarkelle Fultz\tFree Agents\nP0530\tMax Shulga\tFree Agents\nP0360\tMaxwell Lewis\tFree Agents\nP0467\tMicah Potter\tFree Agents\nP0331\tMiles Kelly\tFree Agents\nP0137\tMohamed Diawara\tFree Agents\nP0421\tMonte Morris\tFree Agents\nP0418\tMoses Moody\tFree Agents\nP0213\tMouhamed Gueye\tFree Agents\nP0099\tMoussa Cisse\tFree Agents\nP0187\tMyron Gardner\tFree Agents\nP0128\tN'Faly Dante\tFree Agents\nP0572\tNae'Qwan Tomlin\tFree Agents\nP0377\tNaji Marshall\tFree Agents\nP0627\tNate Williams\tFree Agents\nP0322\tNick Smith Jr.\tFree Agents\nP0231\tNigel Hayes-Davis\tFree Agents\nP0143\tNikola Djurisic\tFree Agents\nP0107\tNoah Clowney\tFree Agents\nP0475\tOlivier-Maxence Prosper\tFree Agents\nP0500\tOrlando Robinson\tFree Agents\nP0263\tOso Ighodaro\tFree Agents\nP0140\tOusmane Dieng\tFree Agents\nP0148\tPJ Dozier\tFree Agents\nP0216\tPJ Hall\tFree Agents\nP0126\tPacôme Dadiet\tFree Agents\nP0114\tPat Connaughton\tFree Agents\nP0545\tPat Spencer\tFree Agents\nP0404\tPatty Mills\tFree Agents\nP0473\tPayton Pritchard\tFree Agents\nP0352\tPelle Larsson\tFree Agents\nP0613\tPhillip Wheeler\tFree Agents\nP0273\tQuenton Jackson\tFree Agents\nP0448\tQuincy Olivari\tFree Agents\nP0134\tRayJ Dennis\tFree Agents\nP0505\tRayan Rupert\tFree Agents\nP0042\tReece Beekman\tFree Agents\nP0262\tRicky Council IV\tFree Agents\nP0408\tRiley Minix\tFree Agents\nP0141\tRob Dillingham\tFree Agents\nP0325\tRon Harper Jr.\tFree Agents\nP0431\tRyan Nembhard\tFree Agents\nP0227\tSam Hauser\tFree Agents\nP0318\tScotty Pippen Jr.\tFree Agents\nP0125\tSeth Curry\tFree Agents\nP0370\tSeth Lundy\tFree Agents\nP0405\tShake Milton\tFree Agents\nP0116\tSharife Cooper\tFree Agents\nP0100\tSidy Cissoko\tFree Agents\nP0180\tSimone Fontecchio\tFree Agents\nP0349\tSkal Labissiere\tFree Agents\nP0297\tSpencer Jones\tFree Agents\nP0586\tStanley Umude\tFree Agents\nP0456\tTaelon Peter\tFree Agents\nP0035\tTamar Bates\tFree Agents\nP0017\tTaran Armstrong\tFree Agents\nP0419\tTaze Moore\tFree Agents\nP0130\tTerence Davis\tFree Agents\nP0259\tTerry Rozier III\tFree Agents\nP0558\tTerry Taylor\tFree Agents\nP0014\tThanasis Antetokounmpo\tFree Agents\nP0317\tTim Hardaway Jr.\tFree Agents\nP0541\tTolu Smith\tFree Agents\nP0169\tTosan Evbuomwan\tFree Agents\nP0605\tTrendon Watford\tFree Agents\nP0178\tTrentyn Flowers\tFree Agents\nP0478\tTrevelin Queen\tFree Agents\nP0006\tTrey Alexander\tFree Agents\nP0434\tTristen Newton\tFree Agents\nP0326\tTyTy Washington Jr.\tFree Agents\nP0340\tTyler Kolek\tFree Agents\nP0167\tTyson Etienne\tFree Agents\nP0095\tUlrich Chomche\tFree Agents\nP0399\tVasilije Micic\tFree Agents\nP0323\tVince Williams Jr.\tFree Agents\nP0200\tVladislav Goldin\tFree Agents\nP0083\tVlatko Cancar\tFree Agents\nP0547\tXavier Tillman Sr.\tFree Agents\nP0436\tYanic Konan Niederhauser\tFree Agents\nP0329\tYuki Kawamura\tFree Agents\nP0112\tYuri Collins\tFree Agents\nP0476\tZyon Pullin\tFree Agents\n",
+  "stderr": "",
+  "execution_time_ms": 1515
+}
