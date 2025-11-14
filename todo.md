@@ -489,5 +489,12 @@
 - [x] Add NBA logo thumbnail to Discord embed
 - [x] Create individual team query endpoint
 - [x] Add team selector UI for posting specific teams
-- [ ] Test team logo and individual team posting
+- [x] Test team logo and individual team posting
+- [x] Save checkpoint
+
+## Discord Embed Final Fixes
+
+- [x] Remove green (🟢) and yellow (🟡) cap indicators - only show red (🔴) for over cap
+- [x] Fix Trail Blazers link format to work properly in Discord
+- [ ] Test Discord embed with fixes
 - [ ] Save checkpoint

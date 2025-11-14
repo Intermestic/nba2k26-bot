@@ -48,21 +48,17 @@ export async function getTeamSummaries(): Promise<TeamSummary[]> {
 
 export function generateDiscordEmbed(summaries: TeamSummary[], websiteUrl: string) {
   const overCapTeams = summaries.filter(s => s.totalOverall > OVERALL_CAP_LIMIT).length;
-  const atCapTeams = summaries.filter(s => s.totalOverall === OVERALL_CAP_LIMIT).length;
-  const underCapTeams = summaries.filter(s => s.totalOverall < OVERALL_CAP_LIMIT).length;
   
   // Build team list as description (Discord has 25 field limit, we have 28 teams)
   const teamLines = summaries.map(summary => {
     const overCap = summary.totalOverall - OVERALL_CAP_LIMIT;
     const status = overCap > 0 
       ? `🔴 ${summary.totalOverall} (+${overCap})`
-      : overCap === 0
-      ? `🟡 ${summary.totalOverall}`
-      : `🟢 ${summary.totalOverall}`;
+      : `${summary.totalOverall}`;
     
     const teamUrl = `${websiteUrl}?team=${encodeURIComponent(summary.team)}`;
-    // Use angle bracket format for URLs to avoid markdown parsing issues with spaces
-    return `**${summary.team}** (${summary.playerCount}/14) - ${status} [→](<${teamUrl}>)`;
+    // Use plain URL format without markdown to avoid parsing issues
+    return `**${summary.team}** (${summary.playerCount}/14) - ${status} - <${teamUrl}>`;
   });
   
   const description = `**Cap Limit:** ${OVERALL_CAP_LIMIT} Total Overall\n🔴 Over: ${overCapTeams}\n\n${teamLines.join('\n')}`;
@@ -71,7 +67,7 @@ export function generateDiscordEmbed(summaries: TeamSummary[], websiteUrl: strin
     embeds: [{
       title: "🏀 NBA 2K26 Team Cap Status",
       description: description,
-      color: overCapTeams > 0 ? 0xef4444 : atCapTeams > 0 ? 0xeab308 : 0x10b981,
+      color: overCapTeams > 0 ? 0xef4444 : 0x3b82f6, // Red if over cap, blue otherwise
       thumbnail: {
         url: "https://cdn.nba.com/logos/leagues/logo-nba.svg"
       },
