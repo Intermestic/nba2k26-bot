@@ -77,25 +77,31 @@ The Discord embed displays:
 - 🟡 **Yellow**: Team is exactly at the 1098 cap limit
 - 🟢 **Green**: Team is under the 1098 cap limit
 
-## Automation (Optional)
+## Auto-Update Feature
 
-For automatic updates, you can:
+The system includes built-in automatic updates that trigger whenever team assignments change.
 
-1. Set up a cron job or scheduled task to call the update endpoint
-2. Use a Discord bot with scheduled tasks
-3. Integrate with your CI/CD pipeline to update after database changes
+### Enabling Auto-Update
 
-Example using curl:
+1. Go to the Discord integration page (`/admin/discord`)
+2. Configure your webhook URL, message ID, and website URL
+3. Toggle **"Auto-Update"** to ON
+4. Click **"Save Configuration"**
 
-```bash
-curl -X POST https://your-site.manus.space/api/trpc/discord.updateCapStatus \
-  -H "Content-Type: application/json" \
-  -d '{
-    "webhookUrl": "YOUR_WEBHOOK_URL",
-    "messageId": "YOUR_MESSAGE_ID",
-    "websiteUrl": "https://your-site.manus.space"
-  }'
-```
+### How It Works
+
+- Automatically updates Discord message when players are assigned to teams
+- Rate limited to max 1 update per minute (prevents spam)
+- Runs in the background without blocking team assignments
+- Logs errors to server console if update fails
+
+### When Auto-Update Triggers
+
+- Player assigned to a new team via "Assign Team" button
+- Bulk team assignments via bulk transactions
+- Any team change that affects cap status
+
+**Note:** Auto-update requires both a webhook URL and message ID to be configured. The message must have been posted by the same webhook.
 
 ## Troubleshooting
 
@@ -120,6 +126,14 @@ curl -X POST https://your-site.manus.space/api/trpc/discord.updateCapStatus \
 - Confirm you're using the correct message ID
 - The message must have been posted by the same webhook
 - The message can't be older than 14 days (Discord limitation)
+
+### Auto-update not working
+
+- Verify auto-update is enabled in the configuration
+- Check that both webhook URL and message ID are saved
+- Ensure the message ID is correct and the message exists
+- Check server logs for error messages
+- Verify rate limiting isn't blocking updates (max 1 per minute)
 
 ## API Endpoints
 

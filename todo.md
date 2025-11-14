@@ -448,3 +448,14 @@
 - [x] Test Discord embed posting and link functionality
 - [x] Document setup instructions
 - [x] Save checkpoint
+
+## Discord Auto-Update System
+
+- [x] Create database table for Discord configuration (webhook URL, message ID, enabled status)
+- [x] Add admin UI to save Discord configuration
+- [x] Implement auto-update trigger when team assignments change
+- [x] Add toggle to enable/disable auto-updates
+- [x] Add rate limiting to prevent spam (max 1 update per minute)
+- [x] Test auto-update when assigning players to teams
+- [x] Document auto-update feature
+- [x] Save checkpoint

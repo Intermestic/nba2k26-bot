@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { Link } from "wouter";
 import { ArrowLeft, Send, RefreshCw, ExternalLink } from "lucide-react";
@@ -14,6 +15,29 @@ export default function DiscordIntegration() {
   const [webhookUrl, setWebhookUrl] = useState("");
   const [messageId, setMessageId] = useState("");
   const [websiteUrl, setWebsiteUrl] = useState(window.location.origin);
+  const [autoUpdateEnabled, setAutoUpdateEnabled] = useState(false);
+
+  // Load existing config
+  const { data: config, refetch: refetchConfig } = trpc.discord.getConfig.useQuery();
+
+  useEffect(() => {
+    if (config) {
+      setWebhookUrl(config.webhookUrl || "");
+      setMessageId(config.messageId || "");
+      setWebsiteUrl(config.websiteUrl || window.location.origin);
+      setAutoUpdateEnabled(config.autoUpdateEnabled === 1);
+    }
+  }, [config]);
+
+  const saveConfigMutation = trpc.discord.saveConfig.useMutation({
+    onSuccess: () => {
+      toast.success("Configuration saved!");
+      refetchConfig();
+    },
+    onError: (error) => {
+      toast.error(`Failed to save: ${error.message}`);
+    },
+  });
 
   const postMutation = trpc.discord.postCapStatus.useMutation({
     onSuccess: (data) => {
@@ -184,6 +208,47 @@ export default function DiscordIntegration() {
                 new one
               </p>
             </div>
+
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <Label htmlFor="autoUpdate" className="text-slate-300">
+                    Auto-Update
+                  </Label>
+                  <p className="text-xs text-slate-400">
+                    Automatically update Discord when team assignments change
+                  </p>
+                </div>
+                <Switch
+                  id="autoUpdate"
+                  checked={autoUpdateEnabled}
+                  onCheckedChange={setAutoUpdateEnabled}
+                />
+              </div>
+              {autoUpdateEnabled && (
+                <div className="p-3 bg-green-900/20 border border-green-700/50 rounded-lg">
+                  <p className="text-xs text-green-200">
+                    ✓ Auto-update is enabled. Discord will refresh automatically when players are assigned to teams (max once per minute).
+                  </p>
+                </div>
+              )}
+            </div>
+
+            <Button
+              onClick={() => saveConfigMutation.mutate({ webhookUrl, messageId, websiteUrl, autoUpdateEnabled })}
+              disabled={saveConfigMutation.isPending || !webhookUrl}
+              className="w-full"
+              variant="default"
+            >
+              {saveConfigMutation.isPending ? (
+                <>
+                  <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                "Save Configuration"
+              )}
+            </Button>
           </CardContent>
         </Card>
 

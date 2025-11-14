@@ -4,6 +4,7 @@ import { players, transactionHistory } from "../../drizzle/schema";
 import { getDb } from "../db";
 import { protectedProcedure, publicProcedure, router } from "../_core/trpc";
 import { ENV } from "../_core/env";
+import { autoUpdateDiscord } from "../discord";
 
 export const playerRouter = router({
   // Debug: Check owner status
@@ -192,6 +193,11 @@ export const playerRouter = router({
         adminName: ctx.user?.name || "Unknown",
         transactionType: player.team ? "trade" : "signing",
       });
+
+      // Trigger Discord auto-update (non-blocking)
+      autoUpdateDiscord().catch(err => 
+        console.error('[Discord] Auto-update failed:', err)
+      );
 
       return { success: true };
     }),

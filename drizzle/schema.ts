@@ -63,3 +63,20 @@ export const transactionHistory = mysqlTable("transaction_history", {
 
 export type TransactionHistory = typeof transactionHistory.$inferSelect;
 export type InsertTransactionHistory = typeof transactionHistory.$inferInsert;
+
+/**
+ * Discord integration configuration table
+ */
+export const discordConfig = mysqlTable("discord_config", {
+  id: int("id").autoincrement().primaryKey(),
+  webhookUrl: text("webhookUrl").notNull(), // Discord webhook URL
+  messageId: varchar("messageId", { length: 64 }), // Discord message ID to update
+  websiteUrl: text("websiteUrl").notNull(), // Website URL for team links
+  autoUpdateEnabled: int("autoUpdateEnabled").default(0).notNull(), // 0 = disabled, 1 = enabled
+  lastUpdated: timestamp("lastUpdated"), // Last time Discord was updated
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type DiscordConfig = typeof discordConfig.$inferSelect;
+export type InsertDiscordConfig = typeof discordConfig.$inferInsert;

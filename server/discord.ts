@@ -1,6 +1,6 @@
 import { getDb } from "./db";
-import { players } from "../drizzle/schema";
-import { ne, and, isNotNull } from "drizzle-orm";
+import { players, discordConfig } from "../drizzle/schema";
+import { ne, and, isNotNull, eq } from "drizzle-orm";
 
 const OVERALL_CAP_LIMIT = 1098;
 
@@ -127,4 +127,44 @@ export async function updateDiscordMessage(webhookUrl: string, messageId: string
   }
   
   return { success: true, teamCount: summaries.length };
+}
+
+// Auto-update Discord message if enabled
+export async function autoUpdateDiscord() {
+  try {
+    const db = await getDb();
+    if (!db) return;
+
+    const configs = await db.select().from(discordConfig).limit(1);
+    if (configs.length === 0) return;
+
+    const config = configs[0];
+    
+    // Check if auto-update is enabled and we have necessary config
+    if (!config.autoUpdateEnabled || !config.webhookUrl || !config.messageId) {
+      return;
+    }
+
+    // Rate limiting: don't update if last update was less than 1 minute ago
+    if (config.lastUpdated) {
+      const timeSinceLastUpdate = Date.now() - config.lastUpdated.getTime();
+      if (timeSinceLastUpdate < 60000) { // 60 seconds
+        console.log('[Discord] Skipping auto-update due to rate limit');
+        return;
+      }
+    }
+
+    // Update Discord message
+    await updateDiscordMessage(config.webhookUrl, config.messageId, config.websiteUrl);
+    
+    // Update lastUpdated timestamp
+    await db
+      .update(discordConfig)
+      .set({ lastUpdated: new Date() })
+      .where(eq(discordConfig.id, config.id));
+
+    console.log('[Discord] Auto-update successful');
+  } catch (error) {
+    console.error('[Discord] Auto-update failed:', error);
+  }
 }
