@@ -524,5 +524,14 @@
 - [x] Fix player assignments: Lamelo Ball, Miles Bridges, Benedict Mathurin, Jaime Jaquez Jr, Rob Williams → Trail Blazers
 - [x] Fix player assignments: Brandon Miller, Adem Bona → Hornets
 - [x] Clean up invalid team names created from bad parsing
-- [ ] Test bulk transaction parsing
+- [x] Test bulk transaction parsing
+- [x] Save checkpoint
+
+## Fix Discord Link Syntax Errors
+
+- [x] Remove markdown link formatting (causing syntax errors with special characters)
+- [x] Use plain text team names only
+- [x] Remove basketball emojis
+- [x] Add clickable title link to website
+- [ ] Test Discord embed
 - [ ] Save checkpoint

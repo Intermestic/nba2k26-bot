@@ -83,27 +83,25 @@ const teamLogos: Record<string, string> = {
 export function generateDiscordEmbed(summaries: TeamSummary[], websiteUrl: string) {
   const overCapTeams = summaries.filter(s => s.totalOverall > OVERALL_CAP_LIMIT).length;
   
-  // Build team list with clickable team names
+  // Build team list with plain text (no markdown to avoid syntax errors)
   const teamLines = summaries.map(summary => {
     const overCap = summary.totalOverall - OVERALL_CAP_LIMIT;
     const status = overCap > 0 
       ? `🔴 ${summary.totalOverall} (+${overCap})`
       : `${summary.totalOverall}`;
     
-    const teamUrl = `${websiteUrl}?team=${encodeURIComponent(summary.team)}`;
-    
-    // Format: [Team Name](url) (count/14) - status
-    // Use angle brackets for URL to avoid markdown parsing issues with spaces
-    return `[**${summary.team}**](<${teamUrl}>) (${summary.playerCount}/14) - ${status}`;
+    // Simple format: Team (count/14) - status
+    return `${summary.team} (${summary.playerCount}/14) - ${status}`;
   });
   
-  const description = `**Cap Limit:** ${OVERALL_CAP_LIMIT} Total Overall\n🔴 Over Cap: ${overCapTeams} teams\n\n${teamLines.join('\n')}`;
+  const description = `**Cap Limit:** ${OVERALL_CAP_LIMIT} Total Overall\n🔴 Over Cap: ${overCapTeams} teams\n\n${teamLines.join('\n')}\n\n**View rosters:** ${websiteUrl}`;
   
   return {
     embeds: [{
       title: "🏀 NBA 2K26 Team Cap Status",
       description: description,
       color: overCapTeams > 0 ? 0xef4444 : 0x3b82f6, // Red if over cap, blue otherwise
+      url: websiteUrl, // Makes the title clickable
       thumbnail: {
         url: "https://cdn.nba.com/logos/leagues/logo-nba.svg"
       },
