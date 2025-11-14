@@ -83,7 +83,7 @@ const teamLogos: Record<string, string> = {
 export function generateDiscordEmbed(summaries: TeamSummary[], websiteUrl: string) {
   const overCapTeams = summaries.filter(s => s.totalOverall > OVERALL_CAP_LIMIT).length;
   
-  // Build team list with clickable team names and team logos
+  // Build team list with clickable team names
   const teamLines = summaries.map(summary => {
     const overCap = summary.totalOverall - OVERALL_CAP_LIMIT;
     const status = overCap > 0 
@@ -91,11 +91,10 @@ export function generateDiscordEmbed(summaries: TeamSummary[], websiteUrl: strin
       : `${summary.totalOverall}`;
     
     const teamUrl = `${websiteUrl}?team=${encodeURIComponent(summary.team)}`;
-    const teamLogo = teamLogos[summary.team] || '';
-    const logoEmoji = teamLogo ? '🏀 ' : '';
     
     // Format: [Team Name](url) (count/14) - status
-    return `${logoEmoji}[**${summary.team}**](${teamUrl}) (${summary.playerCount}/14) - ${status}`;
+    // Use angle brackets for URL to avoid markdown parsing issues with spaces
+    return `[**${summary.team}**](<${teamUrl}>) (${summary.playerCount}/14) - ${status}`;
   });
   
   const description = `**Cap Limit:** ${OVERALL_CAP_LIMIT} Total Overall\n🔴 Over Cap: ${overCapTeams} teams\n\n${teamLines.join('\n')}`;

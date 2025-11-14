@@ -505,5 +505,12 @@
 - [x] Add team logos to Discord embed (basketball emoji for all teams)
 - [x] Improve embed formatting for professional appearance
 - [x] Add notification system when 2+ teams are updated in a transaction
-- [ ] Test Discord embed with new clickable format
+- [x] Test Discord embed with new clickable format
+- [x] Save checkpoint
+
+## Fix Discord Embed Issues
+
+- [x] Fix Trail Blazers link formatting (broken markdown with spaces)
+- [x] Remove basketball emojis (Discord can't show actual logos in description)
+- [ ] Test Discord embed with fixes
 - [ ] Save checkpoint
