@@ -587,5 +587,14 @@
 - [x] Add lastNotificationMessageId field to database schema
 - [x] Add auto-deletion of previous notification message before posting new one
 - [x] Save new notification message ID to database
-- [ ] Test Discord message deletion
+- [x] Test Discord message deletion
+- [x] Save checkpoint
+
+## Convert Discord Embed to Use Fields
+
+- [x] Replace description-based team list with embed fields
+- [x] Add clickable team name links in field values
+- [x] Handle 28 teams within Discord's 25 field limit (3 extra in description)
+- [x] Keep cap summary in description
+- [ ] Test Discord embed fields
 - [ ] Save checkpoint

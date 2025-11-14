@@ -83,26 +83,41 @@ const teamLogos: Record<string, string> = {
 export function generateDiscordEmbed(summaries: TeamSummary[], websiteUrl: string) {
   const overCapTeams = summaries.filter(s => s.totalOverall > OVERALL_CAP_LIMIT).length;
   
-  // Build team list with clickable team names using Discord markdown
-  const teamLines = summaries.map(summary => {
+  // Build embed fields for teams (Discord supports 25 fields max)
+  // We'll use fields for better link formatting
+  const fields = summaries.slice(0, 25).map(summary => {
     const overCap = summary.totalOverall - OVERALL_CAP_LIMIT;
     const status = overCap > 0 
       ? `🔴 ${summary.totalOverall} (+${overCap})`
       : `${summary.totalOverall}`;
     
-    // Use angle brackets to prevent Discord from breaking the URL
     const teamUrl = `${websiteUrl}?team=${encodeURIComponent(summary.team)}`;
     
-    // Format: [Team](<url>) with angle brackets to handle special characters
-    return `[${summary.team}](<${teamUrl}>) (${summary.playerCount}/14) - ${status}`;
+    return {
+      name: summary.team,
+      value: `[View Roster](${teamUrl})\n(${summary.playerCount}/14) - ${status}`,
+      inline: true
+    };
   });
   
-  const description = `**Cap Limit:** ${OVERALL_CAP_LIMIT} Total Overall\n🔴 Over Cap: ${overCapTeams} teams\n\n${teamLines.join('\n')}\n\n**View rosters:** <https://tinyurl.com/hof2k>`;
+  // Add remaining teams to description if more than 25
+  let extraTeams = '';
+  if (summaries.length > 25) {
+    const remaining = summaries.slice(25).map(s => {
+      const overCap = s.totalOverall - OVERALL_CAP_LIMIT;
+      const status = overCap > 0 ? `🔴 ${s.totalOverall} (+${overCap})` : `${s.totalOverall}`;
+      return `**${s.team}** (${s.playerCount}/14) - ${status}`;
+    }).join('\n');
+    extraTeams = `\n\n${remaining}`;
+  }
+  
+  const description = `**Cap Limit:** ${OVERALL_CAP_LIMIT} Total Overall\n🔴 Over Cap: ${overCapTeams} teams${extraTeams}\n\n**View all rosters:** <https://tinyurl.com/hof2k>`;
   
   return {
     embeds: [{
       title: "🏀 NBA 2K26 Team Cap Status",
       description: description,
+      fields: fields,
       color: overCapTeams > 0 ? 0xef4444 : 0x3b82f6, // Red if over cap, blue otherwise
       url: websiteUrl, // Makes the title clickable
       thumbnail: {
