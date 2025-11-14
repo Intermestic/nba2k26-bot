@@ -2,6 +2,7 @@ import express from "express";
 import { createServer } from "http";
 import path from "path";
 import { fileURLToPath } from "url";
+import { startDiscordBot } from "./discord-bot.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -28,6 +29,19 @@ async function startServer() {
   server.listen(port, () => {
     console.log(`Server running on http://localhost:${port}/`);
   });
+  
+  // Start Discord bot if token is provided
+  const botToken = process.env.DISCORD_BOT_TOKEN;
+  if (botToken) {
+    try {
+      await startDiscordBot(botToken);
+      console.log('[Discord Bot] Started successfully');
+    } catch (error) {
+      console.error('[Discord Bot] Failed to start:', error);
+    }
+  } else {
+    console.log('[Discord Bot] Token not provided, skipping bot startup');
+  }
 }
 
 startServer().catch(console.error);

@@ -596,5 +596,21 @@
 - [x] Add clickable team name links in field values
 - [x] Handle 28 teams within Discord's 25 field limit (3 extra in description)
 - [x] Keep cap summary in description
-- [ ] Test Discord embed fields
+- [x] Test Discord embed fields
+- [x] Save checkpoint
+
+## Discord FA Transaction Scraper Bot
+
+- [x] Install discord.js library
+- [x] Create Discord bot service file
+- [ ] Add bot token to secrets
+- [x] Implement message monitoring for FA channel
+- [x] Parse player movement messages (3 formats supported)
+- [x] Create transaction confirmation system with buttons
+- [x] Implement admin approval workflow (button click)
+- [x] Auto-process approved transactions via database update
+- [x] Add bot configuration UI in admin panel (Discord Integration page)
+- [x] Request bot token from user
+- [x] Integrate bot startup with server
+- [ ] Test bot functionality (requires bot invite to server)
 - [ ] Save checkpoint

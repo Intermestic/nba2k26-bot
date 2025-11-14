@@ -280,7 +280,47 @@ export default function DiscordIntegration() {
           </CardContent>
         </Card>
 
-        {/* Team Query */}
+        {/* FA Bot Configuration */}
+        <Card className="bg-slate-800/50 border-slate-700 mb-6">
+          <CardHeader>
+            <CardTitle className="text-white">FA Transaction Bot</CardTitle>
+            <CardDescription>Auto-monitor Discord channel for free agent signings</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="p-4 bg-green-900/20 border border-green-700/50 rounded-lg">
+              <p className="text-sm text-green-200">
+                <strong>How it works:</strong> The bot monitors your FA channel and detects player signings. When it finds transactions, it posts a confirmation message with buttons. Click "Confirm" to auto-update rosters.
+              </p>
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="botToken" className="text-white">Discord Bot Token</Label>
+              <Input
+                id="botToken"
+                type="password"
+                placeholder="Your Discord bot token"
+                className="bg-slate-900 border-slate-700 text-white"
+                disabled
+              />
+              <p className="text-xs text-slate-400">
+                Bot token configuration coming soon. The bot will monitor channel ID: 1267935048997539862
+              </p>
+            </div>
+            
+            <div className="p-4 bg-yellow-900/20 border border-yellow-700/50 rounded-lg">
+              <p className="text-sm text-yellow-200">
+                <strong>Supported formats:</strong>
+              </p>
+              <ul className="text-xs text-yellow-200 mt-2 space-y-1 ml-4 list-disc">
+                <li>"Player Name signs with Team"</li>
+                <li>"Player Name to Team"</li>
+                <li>"Team signs Player Name"</li>
+              </ul>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Post Single Team */}
         <Card className="bg-slate-800/50 border-slate-700 mb-6">
           <CardHeader>
             <CardTitle className="text-white">Post Individual Team</CardTitle>
