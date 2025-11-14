@@ -1,14 +1,16 @@
 import { Client, GatewayIntentBits, Message, ActionRowBuilder, ButtonBuilder, ButtonStyle, ButtonInteraction } from 'discord.js';
 import { getDb } from './db';
 import { players } from '../drizzle/schema';
-import { eq } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
+import { extract } from 'fuzzball';
 
 const FA_CHANNEL_ID = '1267935048997539862';
 const GUILD_ID = '860782751656837140';
 
 interface ParsedTransaction {
-  playerName: string;
-  team: string;
+  dropPlayer: string;
+  signPlayer: string;
+  detectedTeam?: string;
 }
 
 let client: Client | null = null;
@@ -16,39 +18,18 @@ let pendingTransactions: ParsedTransaction[] = [];
 
 /**
  * Parse FA transaction message
- * Expected formats:
- * - "Player Name signs with Team"
- * - "Player Name to Team"
- * - "Team signs Player Name"
+ * Expected format: "Cut Player A. Sign Player B"
  */
 function parseTransaction(message: string): ParsedTransaction | null {
   // Remove extra whitespace and normalize
   const text = message.trim();
   
-  // Pattern 1: "Player signs with Team"
-  const signsWith = text.match(/^(.+?)\s+signs?\s+with\s+(.+)$/i);
-  if (signsWith) {
+  // Pattern: "Cut X. Sign Y" or "Drop X. Add Y"
+  const cutSign = text.match(/(?:cut|drop)\s+(.+?)\.\s*(?:sign|add)\s+(.+?)(?:\.|$)/i);
+  if (cutSign) {
     return {
-      playerName: signsWith[1].trim(),
-      team: signsWith[2].trim()
-    };
-  }
-  
-  // Pattern 2: "Player to Team"
-  const toTeam = text.match(/^(.+?)\s+to\s+(.+)$/i);
-  if (toTeam) {
-    return {
-      playerName: toTeam[1].trim(),
-      team: toTeam[2].trim()
-    };
-  }
-  
-  // Pattern 3: "Team signs Player"
-  const teamSigns = text.match(/^(.+?)\s+signs?\s+(.+)$/i);
-  if (teamSigns) {
-    return {
-      playerName: teamSigns[2].trim(),
-      team: teamSigns[1].trim()
+      dropPlayer: cutSign[1].trim(),
+      signPlayer: cutSign[2].trim()
     };
   }
   
@@ -56,65 +37,92 @@ function parseTransaction(message: string): ParsedTransaction | null {
 }
 
 /**
- * Normalize team name to match database
+ * Find player by fuzzy name matching
  */
-function normalizeTeamName(team: string): string {
-  const teamMap: Record<string, string> = {
-    'lakers': 'Lakers',
-    'warriors': 'Warriors',
-    'celtics': 'Celtics',
-    'heat': 'Heat',
-    'nets': 'Nets',
-    'blazers': 'Trail Blazers',
-    'trail blazers': 'Trail Blazers',
-    'trailblazers': 'Trail Blazers',
-    // Add more mappings as needed
-  };
+async function findPlayerByName(name: string): Promise<{ id: string; name: string; team: string } | null> {
+  const db = await getDb();
+  if (!db) return null;
   
-  const normalized = team.toLowerCase().trim();
-  return teamMap[normalized] || team;
+  // Get all players
+  const allPlayers = await db.select().from(players);
+  
+  // Fuzzy match player names
+  const matches = extract(name, allPlayers.map(p => p.name), { limit: 1, cutoff: 70 });
+  
+  if (matches.length > 0) {
+    const matchedName = matches[0][0];
+    const player = allPlayers.find(p => p.name === matchedName);
+    if (player && player.team) {
+      return {
+        id: player.id,
+        name: player.name,
+        team: player.team
+      };
+    }
+  }
+  
+  return null;
 }
 
 /**
- * Process approved transactions
+ * Process approved transactions with roster-based team detection
  */
-async function processTransactions(transactions: ParsedTransaction[]): Promise<{ success: number; failed: number }> {
+async function processTransactions(transactions: ParsedTransaction[]): Promise<{ success: number; failed: number; details: string[] }> {
   const db = await getDb();
   if (!db) throw new Error('Database connection failed');
   
   let success = 0;
   let failed = 0;
+  const details: string[] = [];
   
   for (const transaction of transactions) {
     try {
-      const normalizedTeam = normalizeTeamName(transaction.team);
+      // Find dropped player to detect team
+      const droppedPlayer = await findPlayerByName(transaction.dropPlayer);
       
-      // Find player by name (case-insensitive)
-      const playerList = await db
-        .select()
-        .from(players)
-        .where(eq(players.name, transaction.playerName));
-      
-      if (playerList.length > 0) {
-        // Update player team
-        await db
-          .update(players)
-          .set({ team: normalizedTeam })
-          .where(eq(players.id, playerList[0].id));
-        
-        success++;
-        console.log(`[Discord Bot] Updated ${transaction.playerName} to ${normalizedTeam}`);
-      } else {
+      if (!droppedPlayer) {
         failed++;
-        console.log(`[Discord Bot] Player not found: ${transaction.playerName}`);
+        details.push(`❌ ${transaction.dropPlayer} not found in database`);
+        console.log(`[Discord Bot] Dropped player not found: ${transaction.dropPlayer}`);
+        continue;
       }
+      
+      const team = droppedPlayer.team;
+      
+      // Find signed player
+      const signedPlayer = await findPlayerByName(transaction.signPlayer);
+      
+      if (!signedPlayer) {
+        failed++;
+        details.push(`❌ ${transaction.signPlayer} not found in database`);
+        console.log(`[Discord Bot] Signed player not found: ${transaction.signPlayer}`);
+        continue;
+      }
+      
+      // Update both players
+      // Remove dropped player from team (set to "Free Agent" or delete)
+      await db
+        .update(players)
+        .set({ team: 'Free Agent' })
+        .where(eq(players.id, droppedPlayer.id));
+      
+      // Add signed player to team
+      await db
+        .update(players)
+        .set({ team: team })
+        .where(eq(players.id, signedPlayer.id));
+      
+      success++;
+      details.push(`✅ ${team}: Dropped ${droppedPlayer.name}, Signed ${signedPlayer.name}`);
+      console.log(`[Discord Bot] ${team}: Dropped ${droppedPlayer.name}, Signed ${signedPlayer.name}`);
     } catch (error) {
       failed++;
+      details.push(`❌ Error processing transaction`);
       console.error(`[Discord Bot] Failed to process transaction:`, error);
     }
   }
   
-  return { success, failed };
+  return { success, failed, details };
 }
 
 /**
@@ -128,10 +136,16 @@ async function handleFAMessage(message: Message) {
   const transaction = parseTransaction(message.content);
   if (!transaction) return;
   
+  // Detect team from dropped player's current roster
+  const droppedPlayer = await findPlayerByName(transaction.dropPlayer);
+  if (droppedPlayer) {
+    transaction.detectedTeam = droppedPlayer.team;
+  }
+  
   // Add to pending transactions
   pendingTransactions.push(transaction);
   
-  console.log(`[Discord Bot] Detected transaction: ${transaction.playerName} to ${transaction.team}`);
+  console.log(`[Discord Bot] Detected transaction: ${transaction.dropPlayer} out, ${transaction.signPlayer} in (Team: ${transaction.detectedTeam || 'Unknown'})`);
   
   // Send confirmation request after a short delay (batch multiple transactions)
   setTimeout(async () => {
@@ -140,9 +154,12 @@ async function handleFAMessage(message: Message) {
     const transactionsToProcess = [...pendingTransactions];
     pendingTransactions = [];
     
-    // Create confirmation message
+    // Create confirmation message with detected teams
     const transactionList = transactionsToProcess
-      .map((t, i) => `${i + 1}. ${t.playerName} → ${t.team}`)
+      .map((t, i) => {
+        const teamInfo = t.detectedTeam ? `[${t.detectedTeam}]` : '[Team Unknown]';
+        return `${i + 1}. ${teamInfo} Drop: ${t.dropPlayer}, Sign: ${t.signPlayer}`;
+      })
       .join('\n');
     
     const confirmButton = new ButtonBuilder()
@@ -180,8 +197,9 @@ async function handleFAMessage(message: Message) {
         
         const result = await processTransactions(transactionsToProcess);
         
+        const detailsText = result.details.join('\n');
         await interaction.editReply({
-          content: `✅ **Transactions Processed**\n\n✅ Success: ${result.success}\n❌ Failed: ${result.failed}\n\nRosters have been updated automatically.`
+          content: `✅ **Transactions Processed**\n\n${detailsText}\n\n**Summary:** ✅ ${result.success} successful, ❌ ${result.failed} failed`
         });
         
         collector.stop();

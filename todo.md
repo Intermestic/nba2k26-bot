@@ -612,5 +612,15 @@
 - [x] Add bot configuration UI in admin panel (Discord Integration page)
 - [x] Request bot token from user
 - [x] Integrate bot startup with server
-- [ ] Test bot functionality (requires bot invite to server)
+- [x] Test bot functionality (requires bot invite to server)
+- [x] Save checkpoint
+
+## Roster-Based Team Detection for FA Bot
+
+- [x] Add fuzzy player name matching to bot (handle spelling variations, 70% cutoff)
+- [x] Parse "Cut X. Sign Y" format from FA messages
+- [x] Implement roster lookup to detect team from dropped player
+- [x] Create swap transaction (drop player → Free Agent, add signed player to team)
+- [x] Update confirmation message to show detected team
+- [ ] Test with real FA channel messages
 - [ ] Save checkpoint
