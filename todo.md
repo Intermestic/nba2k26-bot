@@ -657,5 +657,13 @@
 ## 70 OVR Signing Restriction
 
 - [x] Enforce 70 OVR restriction in bot (block signing players > 70 OVR when coins = 0)
-- [ ] Test restriction enforcement
+- [x] Test restriction enforcement
+- [x] Save checkpoint
+
+## Single-Line FA Format Parser
+
+- [x] Update parser to handle single-line format: "Cut X. Sign Y. Bid Z"
+- [x] Support flexible variations (cut/drop/release, sign/add/pickup)
+- [x] Keep support for multi-line format with colons
+- [ ] Test both formats
 - [ ] Save checkpoint

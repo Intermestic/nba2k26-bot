@@ -21,22 +21,45 @@ let pendingTransactions: ParsedTransaction[] = [];
 
 /**
  * Parse FA transaction message
- * Expected format: "Cut: Player A\nSign: Player B, OVR\nBid: X coins"
+ * Flexible format: handles variations of cut/drop/release and sign/add/pickup
+ * Examples:
+ * - "Cut: Player A\nSign: Player B, OVR\nBid: X"
+ * - "Drop Player A. Add Player B. Bid X"
+ * - "Cutting Player A, signing Player B, 5 coins"
  */
 function parseTransaction(message: string): ParsedTransaction | null {
   // Remove extra whitespace and normalize
   const text = message.trim();
   
-  // Pattern: "Cut: X" and "Sign: Y, OVR" and optional "Bid: Z coins"
-  const cutMatch = text.match(/cut:\s*(.+?)(?=\n|sign:|bid:|$)/i);
-  const signMatch = text.match(/sign:\s*(.+?)(?:,\s*(\d+))?(?=\n|bid:|$)/i);
-  const bidMatch = text.match(/bid:\s*(\d+)/i);
+  // Flexible patterns for cut/drop
+  const cutPattern = /(?:cut|drop|cutting|dropping|release|releasing)[:\s]+([^.\n]+?)(?:[.,]|\n|$)/i;
+  const cutMatch = text.match(cutPattern);
+  
+  // Flexible patterns for sign/add
+  const signPattern = /(?:sign|add|signing|adding|pick\s*up|pickup)[:\s]+([^.\n]+?)(?:[.,]|\n|$)/i;
+  const signMatch = text.match(signPattern);
+  
+  // Extract OVR if present (look for number after player name or in parentheses)
+  let signPlayerOvr: number | undefined;
+  if (signMatch) {
+    const ovrMatch = text.match(/(?:sign|add)[^.\n]*?(?:,\s*(\d+)|\((\d+)\))/i);
+    if (ovrMatch) {
+      signPlayerOvr = parseInt(ovrMatch[1] || ovrMatch[2]);
+    }
+  }
+  
+  // Flexible pattern for bid
+  const bidPattern = /(?:bid|bidding)[:\s]*(\d+)|(?:^|\s)(\d+)\s*coins?/i;
+  const bidMatch = text.match(bidPattern);
   
   if (cutMatch && signMatch) {
-    const dropPlayer = cutMatch[1].trim();
-    const signPlayer = signMatch[1].trim();
-    const signPlayerOvr = signMatch[2] ? parseInt(signMatch[2]) : undefined;
-    const bidAmount = bidMatch ? parseInt(bidMatch[1]) : 1; // Default to 1 if not specified
+    const dropPlayer = cutMatch[1].trim().replace(/[,.:;]$/, ''); // Remove trailing punctuation
+    let signPlayer = signMatch[1].trim().replace(/[,.:;]$/, '');
+    
+    // Remove OVR from player name if it was captured
+    signPlayer = signPlayer.replace(/,?\s*\d+$/, '').replace(/\(\d+\)/, '').trim();
+    
+    const bidAmount = bidMatch ? parseInt(bidMatch[1] || bidMatch[2]) : 1; // Default to 1 if not specified
     
     return {
       dropPlayer,
