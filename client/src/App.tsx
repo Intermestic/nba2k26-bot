@@ -9,6 +9,7 @@ import Admin from "./pages/Admin";
 import Players from "./pages/Players";
 import Transactions from "./pages/Transactions";
 import History from "./pages/History";
+import DiscordIntegration from "./pages/DiscordIntegration";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -19,6 +20,7 @@ function Router() {
       <Route path={"/admin/players"} component={Players} />
       <Route path={"/admin/transactions"} component={Transactions} />
       <Route path={"/admin/history"} component={History} />
+      <Route path={"/admin/discord"} component={DiscordIntegration} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />

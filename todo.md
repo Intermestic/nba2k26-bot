@@ -437,3 +437,14 @@
 - [x] Use formula: totalOverall - 1098 for over-cap amount
 - [x] Test with teams like Bucks (1106 → +8)
 - [x] Save checkpoint
+
+## Discord Webhook Integration
+
+- [x] Create Discord webhook endpoint for posting team cap status
+- [x] Build embed generator with color-coded cap status (green/yellow/red)
+- [x] Add clickable team links that filter to specific team on website
+- [x] Create admin UI for configuring Discord webhook URL
+- [x] Add manual refresh button for admins
+- [x] Test Discord embed posting and link functionality
+- [x] Document setup instructions
+- [x] Save checkpoint

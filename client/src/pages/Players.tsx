@@ -194,6 +194,11 @@ export default function Players() {
                 </Link>
               </Button>
               <Button asChild variant="outline" className="bg-blue-900 border-blue-700 hover:bg-blue-800">
+                <Link href="/admin/discord">
+                  Discord
+                </Link>
+              </Button>
+              <Button asChild variant="outline" className="bg-blue-900 border-blue-700 hover:bg-blue-800">
                 <Link href="/">
                   Home
                 </Link>
