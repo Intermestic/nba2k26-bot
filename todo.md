@@ -464,5 +464,12 @@
 
 - [x] Debug Discord embed payload to find invalid formatting
 - [x] Fix embed size or field limits causing 400 Bad Request (changed from fields to description format)
-- [ ] Test Discord webhook posting
+- [x] Test Discord webhook posting
+- [x] Save checkpoint
+
+## Fix Discord Embed Formatting
+
+- [x] Fix Trail Blazers link rendering (space in team name causing URL encoding issue)
+- [x] Remove "At Cap" and "Under Cap" indicators, only show over cap count
+- [ ] Test Discord embed with fixes
 - [ ] Save checkpoint

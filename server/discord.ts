@@ -61,10 +61,11 @@ export function generateDiscordEmbed(summaries: TeamSummary[], websiteUrl: strin
       : `🟢 ${summary.totalOverall}`;
     
     const teamUrl = `${websiteUrl}?team=${encodeURIComponent(summary.team)}`;
-    return `**[${summary.team}](${teamUrl})** (${summary.playerCount}/14) - ${status}`;
+    // Use angle bracket format for URLs to avoid markdown parsing issues with spaces
+    return `**${summary.team}** (${summary.playerCount}/14) - ${status} [→](<${teamUrl}>)`;
   });
   
-  const description = `**Cap Limit:** ${OVERALL_CAP_LIMIT} Total Overall\n🔴 Over: ${overCapTeams} | 🟡 At Cap: ${atCapTeams} | 🟢 Under: ${underCapTeams}\n\n${teamLines.join('\n')}`;
+  const description = `**Cap Limit:** ${OVERALL_CAP_LIMIT} Total Overall\n🔴 Over: ${overCapTeams}\n\n${teamLines.join('\n')}`;
   
   return {
     embeds: [{
