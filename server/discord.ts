@@ -47,7 +47,12 @@ export async function getTeamSummaries(): Promise<TeamSummary[]> {
 }
 
 export function generateDiscordEmbed(summaries: TeamSummary[], websiteUrl: string) {
-  const fields = summaries.map(summary => {
+  const overCapTeams = summaries.filter(s => s.totalOverall > OVERALL_CAP_LIMIT).length;
+  const atCapTeams = summaries.filter(s => s.totalOverall === OVERALL_CAP_LIMIT).length;
+  const underCapTeams = summaries.filter(s => s.totalOverall < OVERALL_CAP_LIMIT).length;
+  
+  // Build team list as description (Discord has 25 field limit, we have 28 teams)
+  const teamLines = summaries.map(summary => {
     const overCap = summary.totalOverall - OVERALL_CAP_LIMIT;
     const status = overCap > 0 
       ? `🔴 ${summary.totalOverall} (+${overCap})`
@@ -56,24 +61,16 @@ export function generateDiscordEmbed(summaries: TeamSummary[], websiteUrl: strin
       : `🟢 ${summary.totalOverall}`;
     
     const teamUrl = `${websiteUrl}?team=${encodeURIComponent(summary.team)}`;
-    
-    return {
-      name: `${summary.team} (${summary.playerCount}/14)`,
-      value: `${status}\n[View Team →](${teamUrl})`,
-      inline: true
-    };
+    return `**[${summary.team}](${teamUrl})** (${summary.playerCount}/14) - ${status}`;
   });
   
-  const overCapTeams = summaries.filter(s => s.totalOverall > OVERALL_CAP_LIMIT).length;
-  const atCapTeams = summaries.filter(s => s.totalOverall === OVERALL_CAP_LIMIT).length;
-  const underCapTeams = summaries.filter(s => s.totalOverall < OVERALL_CAP_LIMIT).length;
+  const description = `**Cap Limit:** ${OVERALL_CAP_LIMIT} Total Overall\n🔴 Over: ${overCapTeams} | 🟡 At Cap: ${atCapTeams} | 🟢 Under: ${underCapTeams}\n\n${teamLines.join('\n')}`;
   
   return {
     embeds: [{
       title: "🏀 NBA 2K26 Team Cap Status",
-      description: `**Cap Limit:** ${OVERALL_CAP_LIMIT} Total Overall\n\n🔴 Over Cap: ${overCapTeams} | 🟡 At Cap: ${atCapTeams} | 🟢 Under Cap: ${underCapTeams}`,
+      description: description,
       color: overCapTeams > 0 ? 0xef4444 : atCapTeams > 0 ? 0xeab308 : 0x10b981,
-      fields: fields,
       footer: {
         text: `Last updated: ${new Date().toLocaleString()}`
       },

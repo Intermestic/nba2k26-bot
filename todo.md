@@ -459,3 +459,10 @@
 - [x] Test auto-update when assigning players to teams
 - [x] Document auto-update feature
 - [x] Save checkpoint
+
+## Fix Discord Webhook 400 Error
+
+- [x] Debug Discord embed payload to find invalid formatting
+- [x] Fix embed size or field limits causing 400 Bad Request (changed from fields to description format)
+- [ ] Test Discord webhook posting
+- [ ] Save checkpoint
