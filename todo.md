@@ -637,5 +637,10 @@
 - [x] Post coin verification message after transactions processed
 - [x] Initialize Nuggets and Hawks with 115 coins (auto on first transaction)
 - [x] Add warning for unknown teams (dropped player not found)
-- [ ] Test FA coin system
+- [x] Test FA coin system
+- [x] Save checkpoint
+
+## Bot Message ID Threshold
+
+- [x] Add message ID threshold check (only process messages after 1439020316058714263)
 - [ ] Save checkpoint

@@ -6,6 +6,7 @@ import { extract } from 'fuzzball';
 
 const FA_CHANNEL_ID = '1267935048997539862';
 const GUILD_ID = '860782751656837140';
+const MIN_MESSAGE_ID = '1439020316058714263'; // Only process messages after this ID
 
 interface ParsedTransaction {
   dropPlayer: string;
@@ -218,6 +219,12 @@ async function processTransactions(transactions: ParsedTransaction[], adminUser:
 async function handleFAMessage(message: Message) {
   // Ignore bot messages
   if (message.author.bot) return;
+  
+  // Only process messages after the specified threshold
+  if (message.id <= MIN_MESSAGE_ID) {
+    console.log(`[Discord Bot] Ignoring old message (ID: ${message.id})`);
+    return;
+  }
   
   // Parse the message
   const transaction = parseTransaction(message.content);
