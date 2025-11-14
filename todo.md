@@ -578,5 +578,14 @@
 - [x] Extract players from each team's send list (with badge count)
 - [x] Swap teams (Team A send → Team B receive)
 - [x] Handle multiple players per team
-- [ ] Test trade format parsing
+- [x] Test trade format parsing
+- [x] Save checkpoint
+
+## Fix Discord Trail Blazers Link and Message Deletion
+
+- [x] Fix Trail Blazers link formatting (using angle brackets in markdown)
+- [x] Add lastNotificationMessageId field to database schema
+- [x] Add auto-deletion of previous notification message before posting new one
+- [x] Save new notification message ID to database
+- [ ] Test Discord message deletion
 - [ ] Save checkpoint

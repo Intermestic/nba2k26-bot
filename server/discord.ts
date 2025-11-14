@@ -90,10 +90,11 @@ export function generateDiscordEmbed(summaries: TeamSummary[], websiteUrl: strin
       ? `🔴 ${summary.totalOverall} (+${overCap})`
       : `${summary.totalOverall}`;
     
+    // Use angle brackets to prevent Discord from breaking the URL
     const teamUrl = `${websiteUrl}?team=${encodeURIComponent(summary.team)}`;
     
-    // Format: [Team](url) (count/14) - status
-    return `[${summary.team}](${teamUrl}) (${summary.playerCount}/14) - ${status}`;
+    // Format: [Team](<url>) with angle brackets to handle special characters
+    return `[${summary.team}](<${teamUrl}>) (${summary.playerCount}/14) - ${status}`;
   });
   
   const description = `**Cap Limit:** ${OVERALL_CAP_LIMIT} Total Overall\n🔴 Over Cap: ${overCapTeams} teams\n\n${teamLines.join('\n')}\n\n**View rosters:** <https://tinyurl.com/hof2k>`;
@@ -235,8 +236,32 @@ export async function autoUpdateDiscord(affectedTeams?: string[]) {
   }
 }
 
+// Delete a Discord message
+async function deleteDiscordMessage(webhookUrl: string, messageId: string) {
+  const match = webhookUrl.match(/discord\.com\/api\/webhooks\/(\d+)\/([^/]+)/);
+  if (!match) return;
+  
+  const [, webhookId, webhookToken] = match;
+  const deleteUrl = `https://discord.com/api/webhooks/${webhookId}/${webhookToken}/messages/${messageId}`;
+  
+  try {
+    await fetch(deleteUrl, { method: 'DELETE' });
+  } catch (err) {
+    console.error('[Discord] Failed to delete message:', err);
+  }
+}
+
 // Send notification when 2+ teams are updated
 async function sendBulkUpdateNotification(webhookUrl: string, teams: string[]) {
+  const db = await getDb();
+  if (!db) return;
+  
+  // Delete previous notification if exists
+  const configs = await db.select().from(discordConfig).limit(1);
+  if (configs.length > 0 && configs[0].lastNotificationMessageId) {
+    await deleteDiscordMessage(webhookUrl, configs[0].lastNotificationMessageId);
+  }
+  
   const teamList = teams.map(t => `**${t}**`).join(', ');
   const message = {
     content: `@everyone \n\n🚨 **Bulk Transaction Alert** 🚨\n\n${teams.length} teams updated: ${teamList}\n\nCap status has been updated automatically.`
@@ -252,6 +277,15 @@ async function sendBulkUpdateNotification(webhookUrl: string, teams: string[]) {
   
   if (!response.ok) {
     throw new Error(`Discord notification failed: ${response.status} ${response.statusText}`);
+  }
+  
+  // Save the new notification message ID
+  const responseData = await response.json();
+  if (responseData.id && configs.length > 0) {
+    await db
+      .update(discordConfig)
+      .set({ lastNotificationMessageId: responseData.id })
+      .where(eq(discordConfig.id, configs[0].id));
   }
   
   console.log(`[Discord] Sent bulk update notification for ${teams.length} teams`);

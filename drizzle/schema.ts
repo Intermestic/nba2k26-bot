@@ -71,6 +71,7 @@ export const discordConfig = mysqlTable("discord_config", {
   id: int("id").autoincrement().primaryKey(),
   webhookUrl: text("webhookUrl").notNull(), // Discord webhook URL
   messageId: varchar("messageId", { length: 64 }), // Discord message ID to update
+  lastNotificationMessageId: varchar("lastNotificationMessageId", { length: 64 }), // Last notification message ID (for deletion)
   websiteUrl: text("websiteUrl").notNull(), // Website URL for team links
   autoUpdateEnabled: int("autoUpdateEnabled").default(0).notNull(), // 0 = disabled, 1 = enabled
   lastUpdated: timestamp("lastUpdated"), // Last time Discord was updated
