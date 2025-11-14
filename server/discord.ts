@@ -83,18 +83,20 @@ const teamLogos: Record<string, string> = {
 export function generateDiscordEmbed(summaries: TeamSummary[], websiteUrl: string) {
   const overCapTeams = summaries.filter(s => s.totalOverall > OVERALL_CAP_LIMIT).length;
   
-  // Build team list with plain text (no markdown to avoid syntax errors)
+  // Build team list with clickable team names using Discord markdown
   const teamLines = summaries.map(summary => {
     const overCap = summary.totalOverall - OVERALL_CAP_LIMIT;
     const status = overCap > 0 
       ? `🔴 ${summary.totalOverall} (+${overCap})`
       : `${summary.totalOverall}`;
     
-    // Simple format: Team (count/14) - status
-    return `${summary.team} (${summary.playerCount}/14) - ${status}`;
+    const teamUrl = `${websiteUrl}?team=${encodeURIComponent(summary.team)}`;
+    
+    // Format: [Team](url) (count/14) - status
+    return `[${summary.team}](${teamUrl}) (${summary.playerCount}/14) - ${status}`;
   });
   
-  const description = `**Cap Limit:** ${OVERALL_CAP_LIMIT} Total Overall\n🔴 Over Cap: ${overCapTeams} teams\n\n${teamLines.join('\n')}\n\n**View rosters:** tinyurl.com/hof2k`;
+  const description = `**Cap Limit:** ${OVERALL_CAP_LIMIT} Total Overall\n🔴 Over Cap: ${overCapTeams} teams\n\n${teamLines.join('\n')}\n\n**View rosters:** <https://tinyurl.com/hof2k>`;
   
   return {
     embeds: [{
@@ -117,12 +119,18 @@ export async function postToDiscord(webhookUrl: string, websiteUrl: string) {
   const summaries = await getTeamSummaries();
   const embed = generateDiscordEmbed(summaries, websiteUrl);
   
+  // Add @everyone mention to content
+  const payload = {
+    content: "@everyone",
+    ...embed
+  };
+  
   const response = await fetch(webhookUrl, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(embed)
+    body: JSON.stringify(payload)
   });
   
   if (!response.ok) {
@@ -231,7 +239,7 @@ export async function autoUpdateDiscord(affectedTeams?: string[]) {
 async function sendBulkUpdateNotification(webhookUrl: string, teams: string[]) {
   const teamList = teams.map(t => `**${t}**`).join(', ');
   const message = {
-    content: `🚨 **Bulk Transaction Alert** 🚨\n\n${teams.length} teams updated: ${teamList}\n\nCap status has been updated automatically.`
+    content: `@everyone \n\n🚨 **Bulk Transaction Alert** 🚨\n\n${teams.length} teams updated: ${teamList}\n\nCap status has been updated automatically.`
   };
   
   const response = await fetch(webhookUrl, {

@@ -561,4 +561,12 @@
 ## Update Discord View Rosters Link
 
 - [x] Change "View rosters" link to tinyurl.com/hof2k
+- [x] Save checkpoint
+
+## Fix Discord Post Issues
+
+- [x] Restore clickable team name links (lost when simplified to plain text)
+- [x] Make tinyurl.com/hof2k a clickable hyperlink (using <https://> format)
+- [x] Add @everyone mention to notification post
+- [ ] Test Discord post
 - [ ] Save checkpoint
