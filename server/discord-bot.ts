@@ -404,7 +404,8 @@ async function handleBidMessage(message: Message) {
   console.log(`[FA Bids] Matched player: ${player.name} (${player.overall} OVR)`);
   
   // Check if player is actually a free agent
-  if (player.team && player.team !== 'Free Agent') {
+  const isFreeAgent = !player.team || player.team === 'Free Agent' || player.team === 'Free Agents';
+  if (!isFreeAgent) {
     console.log(`[FA Bids] ❌ ${player.name} is not a free agent (currently on ${player.team})`);
     await message.reply(`❌ **Invalid Bid**: ${player.name} is not a free agent. They are currently on the ${player.team}.`);
     return;

@@ -800,4 +800,12 @@
 - [x] Store last message ID in bidWindows.statusMessageId for persistence
 - [x] Update postStatusUpdate to fetch/delete previous message from DB
 - [x] Test with server restarts (WORKING - deletes old, posts new)
+- [x] Save checkpoint
+
+## BUG: Fix FA Bid Validation Logic
+
+- [x] Update isPlayerFreeAgent check to exclude "Free Agents" team from rejection
+- [x] Players on "Free Agents" roster should be ALLOWED to receive bids
+- [x] Only reject bids for players on actual NBA team rosters (28 teams)
+- [x] Test with Grayson Allen bid (ready for user testing)
 - [ ] Save checkpoint
