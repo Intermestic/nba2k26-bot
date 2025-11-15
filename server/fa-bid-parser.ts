@@ -88,15 +88,41 @@ export async function findPlayerByFuzzyName(
   const db = await getDb();
   if (!db) return null;
   
-  // Common name aliases for players with special characters
+  // Common name aliases for players with special characters and common misspellings
   const nameAliases: Record<string, string[]> = {
-    'Vít Krejčí': ['vit krejci', 'vit kreji', 'krejci', 'kreji'],
-    'Nikola Jokić': ['jokic', 'nikola jokic'],
-    'Luka Dončić': ['luka doncic', 'doncic'],
-    'Nikola Vučević': ['vucevic', 'nikola vucevic'],
-    'Dario Šarić': ['saric', 'dario saric'],
+    // Special characters
+    'Vít Krejčí': ['vit krejci', 'vit kreji', 'krejci', 'kreji', 'vit krejči', 'vit krejčí'],
+    'Nikola Jokić': ['jokic', 'nikola jokic', 'jokitch'],
+    'Luka Dončić': ['luka doncic', 'doncic', 'dončić'],
+    'Nikola Vučević': ['vucevic', 'nikola vucevic', 'vucevich'],
+    'Dario Šarić': ['saric', 'dario saric', 'sharic'],
     'Bogdan Bogdanović': ['bogdanovic', 'bogdan bogdanovic'],
     'Bojan Bogdanović': ['bojan bogdanovic'],
+    'Giannis Antetokounmpo': ['giannis', 'antetokounmpo', 'greek freak', 'gianni'],
+    'Alperen Şengün': ['sengun', 'alperen sengun', 'shengun'],
+    'Ömer Yurtseven': ['omer yurtseven', 'yurtseven'],
+    'Džanan Musa': ['dzanan musa', 'musa'],
+    
+    // Common misspellings
+    'Johnny Furphy': ['johnny murphy', 'furfy', 'furphy'],
+    'Day\'Ron Sharpe': ['dayron sharpe', 'day ron sharpe', 'sharp'],
+    'Rocco Zikarsky': ['rocco zikarsky', 'zikarsky', 'zikarsky'],
+    'Ja Morant': ['ja', 'ja morant', 'morant'],
+    'Shai Gilgeous-Alexander': ['sga', 'shai', 'gilgeous alexander', 'gilgeous-alexander'],
+    'Karl-Anthony Towns': ['kat', 'towns', 'karl anthony towns'],
+    'DeAndre Jordan': ['deandre', 'de andre jordan'],
+    'DeMar DeRozan': ['demar', 'derozan', 'de rozan'],
+    'DeMarcus Cousins': ['demarcus', 'cousins', 'boogie'],
+    'JaVale McGee': ['javale', 'mcgee', 'ja vale'],
+    'Kentavious Caldwell-Pope': ['kcp', 'caldwell pope', 'kentavious'],
+    'Marcus Morris Sr.': ['marcus morris', 'morris sr'],
+    'Otto Porter Jr.': ['otto porter', 'porter jr'],
+    'Lonnie Walker IV': ['lonnie walker', 'walker iv'],
+    'Wendell Carter Jr.': ['wendell carter', 'carter jr'],
+    'Gary Trent Jr.': ['gary trent', 'trent jr'],
+    'Dennis Smith Jr.': ['dennis smith', 'smith jr'],
+    'Kelly Oubre Jr.': ['kelly oubre', 'oubre jr'],
+    'Larry Nance Jr.': ['larry nance', 'nance jr'],
   };
   
   // Nickname mappings
@@ -192,6 +218,48 @@ export async function findPlayerByFuzzyName(
         }
       }
     }
+  }
+  
+  // Strategy 2.5: Phonetic matching (sound-alike names)
+  try {
+    const { DoubleMetaphone } = await import('natural');
+    const metaphone = new DoubleMetaphone();
+    const searchPhonetic = metaphone.process(searchName);
+    
+    // Check if any player name sounds similar
+    const phoneticMatches: Array<{ player: typeof allPlayers[0]; score: number }> = [];
+    
+    for (const player of allPlayers) {
+      const playerPhonetic = metaphone.process(player.name.toLowerCase());
+      
+      // Compare primary and secondary phonetic codes
+      if (searchPhonetic[0] === playerPhonetic[0] || 
+          searchPhonetic[0] === playerPhonetic[1] ||
+          searchPhonetic[1] === playerPhonetic[0] ||
+          searchPhonetic[1] === playerPhonetic[1]) {
+        // Calculate similarity score based on string distance
+        const fuzzyScore = extract(searchName, [player.name.toLowerCase()], { limit: 1 })[0]?.[1] || 0;
+        phoneticMatches.push({ player, score: fuzzyScore });
+      }
+    }
+    
+    // Sort by fuzzy score and take best match
+    if (phoneticMatches.length > 0) {
+      phoneticMatches.sort((a, b) => b.score - a.score);
+      const bestMatch = phoneticMatches[0];
+      
+      if (bestMatch.score >= 50) { // Lower threshold for phonetic matches
+        console.log(`[Player Matcher] Found via phonetic match: "${name}" → "${bestMatch.player.name}" (${bestMatch.score}% fuzzy, phonetic match)`);
+        return {
+          id: bestMatch.player.id,
+          name: bestMatch.player.name,
+          team: bestMatch.player.team || 'Free Agent',
+          overall: bestMatch.player.overall
+        };
+      }
+    }
+  } catch (error) {
+    console.log(`[Player Matcher] Phonetic matching failed:`, error);
   }
   
   // Strategy 3: First name matching for common first names (Johnny, etc.)

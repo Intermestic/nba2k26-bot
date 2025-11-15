@@ -173,3 +173,21 @@ export const capViolations = mysqlTable("cap_violations", {
 
 export type CapViolation = typeof capViolations.$inferSelect;
 export type InsertCapViolation = typeof capViolations.$inferInsert;
+
+/**
+ * Player Name Aliases table - stores custom aliases for player name matching
+ */
+export const playerAliases = mysqlTable("player_aliases", {
+  id: int("id").autoincrement().primaryKey(),
+  playerId: varchar("playerId", { length: 64 }).notNull(), // Reference to players.id
+  playerName: varchar("playerName", { length: 255 }).notNull(), // Canonical player name (denormalized)
+  alias: varchar("alias", { length: 255 }).notNull(), // Alias/misspelling that should match this player
+  matchCount: int("matchCount").default(0).notNull(), // How many times this alias has been matched
+  addedBy: int("addedBy"), // Reference to users.id who added this alias
+  addedByName: varchar("addedByName", { length: 255 }), // Denormalized admin name
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type PlayerAlias = typeof playerAliases.$inferSelect;
+export type InsertPlayerAlias = typeof playerAliases.$inferInsert;

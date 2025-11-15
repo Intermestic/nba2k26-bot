@@ -292,3 +292,25 @@ Implement intelligent fuzzy matching that checks team roster first, handles miss
 - [x] TypeScript compilation successful (no errors)
 - [x] Dev server running without errors
 - [ ] Save checkpoint
+
+
+## CURRENT TASK: Enhanced Player Name Matching
+
+### Goal
+1. Expand name alias dictionary with common misspellings
+2. Add phonetic matching (Metaphone/Soundex) for sound-alike names
+3. Create admin UI for managing player aliases
+
+### Tasks
+- [x] Expand nameAliases with more common misspellings (Johnny Murphy→Furphy, special characters, Jr./Sr. variants)
+- [x] Install phonetic matching library (natural)
+- [x] Add phonetic matching as Strategy 2.5 in findPlayerByFuzzyName (DoubleMetaphone algorithm)
+- [x] Create player aliases database table (playerAliases)
+- [x] Create admin page at /admin/player-aliases
+- [x] Add view current aliases functionality (table with search)
+- [x] Add add/edit/delete alias functionality (dialog + mutations)
+- [x] Show match success rates/statistics (top 5 aliases, avg match rate)
+- [x] Create playerAliases TRPC router with getAll/add/delete/incrementMatchCount
+- [x] TypeScript compilation successful (no errors)
+- [x] Dev server running without errors
+- [ ] Save checkpoint

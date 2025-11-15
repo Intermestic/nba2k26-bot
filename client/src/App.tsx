@@ -12,6 +12,7 @@ import DiscordIntegration from "./pages/DiscordIntegration";
 import CoinDashboard from "./pages/CoinDashboard";
 import CapCompliance from "./pages/CapCompliance";
 import FAHistory from "./pages/FAHistory";
+import PlayerAliases from "./pages/admin/PlayerAliases";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -25,6 +26,7 @@ function Router() {
       <Route path={"/admin/coins"} component={CoinDashboard} />
       <Route path={"/admin/cap-compliance"} component={CapCompliance} />
       <Route path={"/admin/fa-history"} component={FAHistory} />
+      <Route path={"/admin/player-aliases"} component={PlayerAliases} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />
