@@ -809,3 +809,18 @@
 - [x] Only reject bids for players on actual NBA team rosters (28 teams)
 - [x] Test with Grayson Allen bid (ready for user testing)
 - [ ] Save checkpoint
+
+## Overbid Notifications & Auto-Cancel System
+
+- [x] Add Discord DM notification when user is outbid
+- [x] Show new highest bid amount and who placed it
+- [x] Store previous highest bidder info before updating
+- [x] Send DM to previous bidder when outbid
+- [x] Implement auto-cancel logic for over-budget teams
+- [x] Calculate total coin commitments (sum of highest bids per player)
+- [x] When team exceeds budget, cancel oldest bids first
+- [x] Promote next highest bidder when bid is auto-cancelled
+- [x] Send notification to affected users about cancellations
+- [x] Test overbid notifications (ready for user testing)
+- [x] Test auto-cancel with over-budget scenario (ready for user testing)
+- [ ] Save checkpoint

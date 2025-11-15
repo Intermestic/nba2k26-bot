@@ -212,9 +212,9 @@ export async function recordBid(
   bidAmount: number,
   windowId: string,
   messageId: string
-): Promise<boolean> {
+): Promise<{ success: boolean; previousHighestBidder?: { discordId: string; name: string; amount: number } }> {
   const db = await getDb();
-  if (!db) return false;
+  if (!db) return { success: false };
   
   try {
     // Check if this user already has a bid on this player in this window
@@ -258,10 +258,38 @@ export async function recordBid(
       console.log(`[FA Bids] New bid: ${bidderName} (${team}) bid $${bidAmount} on ${playerName}`);
     }
     
-    return true;
+    // Check if this bid is now the highest for this player
+    const allBidsForPlayer = await db
+      .select()
+      .from(faBids)
+      .where(
+        and(
+          eq(faBids.playerName, playerName),
+          eq(faBids.windowId, windowId)
+        )
+      )
+      .orderBy(sql`${faBids.bidAmount} DESC`);
+    
+    // Find previous highest bidder (not the current bidder)
+    let previousHighestBidder: { discordId: string; name: string; amount: number } | undefined;
+    
+    if (allBidsForPlayer.length > 1) {
+      // Find highest bid that's not from current bidder
+      const otherBids = allBidsForPlayer.filter(b => b.bidderDiscordId !== bidderDiscordId);
+      if (otherBids.length > 0 && bidAmount > otherBids[0].bidAmount) {
+        // Current bid is higher than previous highest
+        previousHighestBidder = {
+          discordId: otherBids[0].bidderDiscordId,
+          name: otherBids[0].bidderName || 'Unknown',
+          amount: otherBids[0].bidAmount
+        };
+      }
+    }
+    
+    return { success: true, previousHighestBidder };
   } catch (error) {
     console.error('[FA Bids] Failed to record bid:', error);
-    return false;
+    return { success: false };
   }
 }
 

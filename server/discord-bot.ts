@@ -439,7 +439,7 @@ async function handleBidMessage(message: Message) {
   }
   
   // Record the bid
-  await recordBid(
+  const bidResult = await recordBid(
     player.name,
     player.id,
     message.author.id,
@@ -450,8 +450,70 @@ async function handleBidMessage(message: Message) {
     message.id
   );
   
+  if (!bidResult.success) {
+    console.error(`[FA Bids] Failed to record bid`);
+    return;
+  }
+  
   console.log(`[FA Bids] ✅ Bid recorded: ${message.author.username} (${team}) bid $${parsedBid.bidAmount} on ${player.name}`);
   await message.react('✅');
+  
+  // Send DM notification to previous highest bidder if they were outbid
+  if (bidResult.previousHighestBidder && client) {
+    try {
+      const previousBidder = await client.users.fetch(bidResult.previousHighestBidder.discordId);
+      await previousBidder.send(
+        `🚨 **You've been outbid!**\n\n` +
+        `**Player**: ${player.name}\n` +
+        `**Your bid**: $${bidResult.previousHighestBidder.amount}\n` +
+        `**New highest bid**: $${parsedBid.bidAmount}\n` +
+        `**Placed by**: ${message.author.username} (${team})\n\n` +
+        `Place a higher bid to regain the lead!`
+      );
+      console.log(`[FA Bids] 📨 Sent overbid notification to ${bidResult.previousHighestBidder.name}`);
+    } catch (error) {
+      console.error(`[FA Bids] Failed to send DM to ${bidResult.previousHighestBidder.name}:`, error);
+    }
+  }
+  
+  // Check if team is now over budget and auto-cancel oldest bids
+  const { autoCancelOverBudgetBids, getNextHighestBidder } = await import('./fa-auto-cancel');
+  const cancelledBids = await autoCancelOverBudgetBids(team, window.windowId);
+  
+  if (cancelledBids.length > 0 && client) {
+    // Send notifications to affected users
+    for (const cancelled of cancelledBids) {
+      try {
+        const user = await client.users.fetch(cancelled.bidderDiscordId);
+        
+        // Check if there's a next highest bidder
+        const nextBidder = await getNextHighestBidder(
+          cancelled.playerName,
+          window.windowId,
+          cancelled.bidderDiscordId
+        );
+        
+        let notificationMessage = 
+          `⚠️ **Your bid was auto-cancelled**\n\n` +
+          `**Player**: ${cancelled.playerName}\n` +
+          `**Your bid**: $${cancelled.bidAmount}\n` +
+          `**Reason**: ${team} exceeded coin budget\n\n`;
+        
+        if (nextBidder) {
+          notificationMessage += 
+            `**New leader**: ${nextBidder.name} with $${nextBidder.amount}\n\n` +
+            `Place a new bid if you want to compete!`;
+        } else {
+          notificationMessage += `This player now has no active bids. Place a new bid to claim them!`;
+        }
+        
+        await user.send(notificationMessage);
+        console.log(`[FA Auto-Cancel] 📨 Sent cancellation notice to ${cancelled.bidderName}`);
+      } catch (error) {
+        console.error(`[FA Auto-Cancel] Failed to send DM to ${cancelled.bidderName}:`, error);
+      }
+    }
+  }
 }
 
 /**
