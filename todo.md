@@ -271,3 +271,24 @@ Create one-time database script to normalize all team names to canonical format
 - [x] Verify all team names are canonical (0 changes needed - all already normalized)
 - [x] Script ready for future use if non-canonical names appear
 - [ ] Save checkpoint
+
+
+## CURRENT TASK: Smart Player Name Fuzzy Matching
+
+### Goal
+Implement intelligent fuzzy matching that checks team roster first, handles misspellings, and filters out already-signed players
+
+### Examples
+- "vit kreji" (Jazz roster) → "Vít Krejčí" (check Jazz roster first)
+- "Johnny Murphy" → "Johnny Furphy" (check all Johnnys, exclude Davis who's signed, Juzang doesn't match, Furphy is close)
+
+### Tasks
+- [x] Find current player validation in Discord bot (fa-bid-parser.ts)
+- [x] Add team-aware fuzzy matching (check roster first before league-wide)
+- [x] Filter out players already on teams when matching sign targets (filterFreeAgents parameter)
+- [x] Add common name aliases (Krejci for Krejčí, Jokic for Jokić, etc.)
+- [x] Improve first name + last name substring matching (Strategy 3)
+- [x] Reordered drop player validation to happen before sign player matching
+- [x] TypeScript compilation successful (no errors)
+- [x] Dev server running without errors
+- [ ] Save checkpoint

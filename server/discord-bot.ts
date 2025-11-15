@@ -416,50 +416,13 @@ async function handleBidMessage(message: Message) {
     return;
   }
   
-  // Find player by fuzzy matching
-  const player = await findPlayerByFuzzyName(parsedBid.playerName);
-  
-  if (!player) {
-    console.log(`[FA Bids] Player not found: ${parsedBid.playerName}`);
-    
-    // Get suggestions for similar player names
-    const { getDb } = await import('./db');
-    const { players: playersTable } = await import('../drizzle/schema');
-    const db = await getDb();
-    if (db) {
-      const allPlayers = await db.select({ name: playersTable.name }).from(playersTable);
-      const { extract } = await import('fuzzball');
-      const suggestions = extract(parsedBid.playerName, allPlayers.map(p => p.name), { limit: 3 });
-      
-      const suggestionText = suggestions.length > 0
-        ? `\n\n**Did you mean?**\n${suggestions.map(s => `• ${s[0]} (${s[1]}% match)`).join('\n')}`
-        : '';
-      
-      await message.reply(
-        `❌ **Player Not Found**: "${parsedBid.playerName}" does not exist in the database.${suggestionText}\n\n` +
-        `💡 **Tip**: Check spelling or use common nicknames (e.g., "LeBron", "Steph", "KD").`
-      );
-    }
-    return;
-  }
-  
-  console.log(`[FA Bids] Matched player: ${player.name} (${player.overall} OVR)`);
-  
-  // Check if player is actually a free agent
-  const isFreeAgent = !player.team || player.team === 'Free Agent' || player.team === 'Free Agents';
-  if (!isFreeAgent) {
-    console.log(`[FA Bids] ❌ ${player.name} is not a free agent (currently on ${player.team})`);
-    await message.reply(`❌ **Invalid Bid**: ${player.name} is not a free agent. They are currently on the ${player.team}.`);
-    return;
-  }
-  
-  // Determine team from drop player or message context
+  // Determine team from drop player first (needed for team-aware matching)
   let team = 'Unknown';
   let dropPlayerValidated: { id: string; name: string; team: string; overall: number } | null = null;
   
   if (parsedBid.dropPlayer) {
-    // Validate drop player exists
-    dropPlayerValidated = await findPlayerByFuzzyName(parsedBid.dropPlayer);
+    // Validate drop player exists (no team context yet, no FA filter)
+    dropPlayerValidated = await findPlayerByFuzzyName(parsedBid.dropPlayer, undefined, false);
     
     if (!dropPlayerValidated) {
       console.log(`[FA Bids] Drop player not found: ${parsedBid.dropPlayer}`);
@@ -519,6 +482,43 @@ async function handleBidMessage(message: Message) {
       `💡 **Format**: "Cut [Player Name] Sign [Player Name] Bid [Amount]"\n` +
       `**Example**: "Cut Chris Paul Sign Rocco Zikarsky Bid 104"`
     );
+    return;
+  }
+  
+  // Now find sign player by fuzzy matching (filter for free agents only, use team context)
+  const player = await findPlayerByFuzzyName(parsedBid.playerName, team, true);
+  
+  if (!player) {
+    console.log(`[FA Bids] Player not found: ${parsedBid.playerName}`);
+    
+    // Get suggestions for similar player names
+    const { getDb } = await import('./db');
+    const { players: playersTable } = await import('../drizzle/schema');
+    const db = await getDb();
+    if (db) {
+      const allPlayers = await db.select({ name: playersTable.name }).from(playersTable);
+      const { extract } = await import('fuzzball');
+      const suggestions = extract(parsedBid.playerName, allPlayers.map(p => p.name), { limit: 3 });
+      
+      const suggestionText = suggestions.length > 0
+        ? `\n\n**Did you mean?**\n${suggestions.map(s => `• ${s[0]} (${s[1]}% match)`).join('\n')}`
+        : '';
+      
+      await message.reply(
+        `❌ **Player Not Found**: "${parsedBid.playerName}" does not exist in the database.${suggestionText}\n\n` +
+        `💡 **Tip**: Check spelling or use common nicknames (e.g., "LeBron", "Steph", "KD").`
+      );
+    }
+    return;
+  }
+  
+  console.log(`[FA Bids] Matched player: ${player.name} (${player.overall} OVR)`);
+  
+  // Check if player is actually a free agent
+  const isFreeAgent = !player.team || player.team === 'Free Agent' || player.team === 'Free Agents';
+  if (!isFreeAgent) {
+    console.log(`[FA Bids] ❌ ${player.name} is not a free agent (currently on ${player.team})`);
+    await message.reply(`❌ **Invalid Bid**: ${player.name} is not a free agent. They are currently on the ${player.team}.`);
     return;
   }
   

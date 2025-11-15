@@ -75,11 +75,29 @@ export function parseBidMessage(message: string): ParsedBid | null {
 }
 
 /**
- * Find player by fuzzy name matching with nickname support
+ * Find player by fuzzy name matching with nickname support and team-aware matching
+ * @param name - Player name to search for
+ * @param teamContext - Optional team context to prioritize roster matches
+ * @param filterFreeAgents - If true, only return free agents (for sign targets)
  */
-export async function findPlayerByFuzzyName(name: string): Promise<{ id: string; name: string; team: string; overall: number } | null> {
+export async function findPlayerByFuzzyName(
+  name: string, 
+  teamContext?: string,
+  filterFreeAgents?: boolean
+): Promise<{ id: string; name: string; team: string; overall: number } | null> {
   const db = await getDb();
   if (!db) return null;
+  
+  // Common name aliases for players with special characters
+  const nameAliases: Record<string, string[]> = {
+    'Vít Krejčí': ['vit krejci', 'vit kreji', 'krejci', 'kreji'],
+    'Nikola Jokić': ['jokic', 'nikola jokic'],
+    'Luka Dončić': ['luka doncic', 'doncic'],
+    'Nikola Vučević': ['vucevic', 'nikola vucevic'],
+    'Dario Šarić': ['saric', 'dario saric'],
+    'Bogdan Bogdanović': ['bogdanovic', 'bogdan bogdanovic'],
+    'Bojan Bogdanović': ['bojan bogdanovic'],
+  };
   
   // Nickname mappings
   const nicknames: Record<string, string> = {
@@ -126,22 +144,103 @@ export async function findPlayerByFuzzyName(name: string): Promise<{ id: string;
   };
   
   // Check nickname first
-  const lowerName = name.toLowerCase().trim();
-  if (nicknames[lowerName]) {
-    name = nicknames[lowerName];
+  let searchName = name.toLowerCase().trim();
+  if (nicknames[searchName]) {
+    searchName = nicknames[searchName].toLowerCase();
   }
   
   // Get all players
-  const allPlayers = await db.select().from(players);
+  let allPlayers = await db.select().from(players);
   
-  // Fuzzy match
-  const matches = extract(name, allPlayers.map(p => p.name));
+  // Filter for free agents if requested (for sign targets)
+  if (filterFreeAgents) {
+    allPlayers = allPlayers.filter(p => !p.team || p.team === 'Free Agent' || p.team === 'Free Agents');
+  }
+  
+  // Strategy 1: Check name aliases first (exact match on aliases)
+  for (const [canonicalName, aliases] of Object.entries(nameAliases)) {
+    if (aliases.some(alias => alias === searchName)) {
+      const player = allPlayers.find(p => p.name === canonicalName);
+      if (player) {
+        console.log(`[Player Matcher] Found via alias: "${name}" → "${canonicalName}"`);
+        return {
+          id: player.id,
+          name: player.name,
+          team: player.team || 'Free Agent',
+          overall: player.overall
+        };
+      }
+    }
+  }
+  
+  // Strategy 2: If team context provided, search team roster first with lower threshold
+  if (teamContext) {
+    const teamPlayers = allPlayers.filter(p => p.team === teamContext);
+    if (teamPlayers.length > 0) {
+      const teamMatches = extract(searchName, teamPlayers.map(p => p.name), { limit: 1 });
+      if (teamMatches.length > 0 && teamMatches[0][1] >= 60) {
+        const matchedName = teamMatches[0][0];
+        const player = teamPlayers.find(p => p.name === matchedName);
+        if (player) {
+          console.log(`[Player Matcher] Found on ${teamContext} roster: "${name}" → "${player.name}" (${teamMatches[0][1]}% match)`);
+          return {
+            id: player.id,
+            name: player.name,
+            team: player.team || 'Free Agent',
+            overall: player.overall
+          };
+        }
+      }
+    }
+  }
+  
+  // Strategy 3: First name matching for common first names (Johnny, etc.)
+  const firstNameMatch = searchName.match(/^(\w+)/);
+  if (firstNameMatch) {
+    const firstName = firstNameMatch[1];
+    const firstNamePlayers = allPlayers.filter(p => 
+      p.name.toLowerCase().startsWith(firstName)
+    );
+    
+    if (firstNamePlayers.length > 0 && firstNamePlayers.length <= 5) {
+      // If few matches, do fuzzy match on last name
+      const lastNameMatch = searchName.match(/\s+(\S+)$/);
+      if (lastNameMatch) {
+        const lastName = lastNameMatch[1];
+        const lastNameMatches = extract(
+          lastName, 
+          firstNamePlayers.map(p => p.name.split(' ').slice(-1)[0].toLowerCase()),
+          { limit: 1 }
+        );
+        
+        if (lastNameMatches.length > 0 && lastNameMatches[0][1] >= 60) {
+          const matchedLastName = lastNameMatches[0][0];
+          const player = firstNamePlayers.find(p => 
+            p.name.split(' ').slice(-1)[0].toLowerCase() === matchedLastName
+          );
+          if (player) {
+            console.log(`[Player Matcher] Found via first+last name: "${name}" → "${player.name}" (${lastNameMatches[0][1]}% match on last name)`);
+            return {
+              id: player.id,
+              name: player.name,
+              team: player.team || 'Free Agent',
+              overall: player.overall
+            };
+          }
+        }
+      }
+    }
+  }
+  
+  // Strategy 4: League-wide fuzzy match
+  const matches = extract(searchName, allPlayers.map(p => p.name), { limit: 1 });
   
   if (matches.length > 0 && matches[0][1] >= 70) {
     const matchedName = matches[0][0];
     const player = allPlayers.find(p => p.name === matchedName);
     
     if (player) {
+      console.log(`[Player Matcher] Found via fuzzy match: "${name}" → "${player.name}" (${matches[0][1]}% match)`);
       return {
         id: player.id,
         name: player.name,
