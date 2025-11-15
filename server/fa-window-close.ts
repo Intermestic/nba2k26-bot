@@ -621,3 +621,148 @@ export async function regenerateWindowSummary(client: Client, windowId: string):
     };
   }
 }
+
+/**
+ * Generate preview of batch processing without executing
+ * Returns validation results and summary of changes
+ */
+export async function generateBatchPreview(message: any): Promise<{
+  success: boolean;
+  message?: string;
+  errors?: string[];
+  warnings?: string[];
+  bidCount?: number;
+  cuts?: string[];
+  signs?: string[];
+  totalCoins?: number;
+}> {
+  try {
+    // Parse bids from the summary message embed
+    if (!message.embeds || message.embeds.length === 0) {
+      return {
+        success: false,
+        message: 'No embed found in message'
+      };
+    }
+    
+    const bidsToProcess = parseSummaryMessage(message.embeds[0]);
+    
+    if (bidsToProcess.length === 0) {
+      return {
+        success: false,
+        message: 'No bids found in summary message'
+      };
+    }
+    
+    const { getDb } = await import('./db');
+    const { players, teamCoins } = await import('../drizzle/schema');
+    const { eq } = await import('drizzle-orm');
+    const { findPlayerByFuzzyName } = await import('./fa-bid-parser');
+    const { isTeamOverCap } = await import('./cap-violation-alerts');
+    
+    const db = await getDb();
+    if (!db) {
+      return {
+        success: false,
+        message: 'Database connection failed'
+      };
+    }
+    
+    // Pre-processing validation
+    const warnings: string[] = [];
+    const errors: string[] = [];
+    const cuts: string[] = [];
+    const signs: string[] = [];
+    let totalCoins = 0;
+    
+    // Check each team's roster size and coin balance
+    const teamStats = new Map<string, { rosterSize: number; coins: number; totalOverall: number }>();
+    
+    for (const bid of bidsToProcess) {
+      if (!teamStats.has(bid.team)) {
+        // Get team roster
+        const roster = await db.select().from(players).where(eq(players.team, bid.team));
+        const coins = await db.select().from(teamCoins).where(eq(teamCoins.team, bid.team));
+        const totalOverall = roster.reduce((sum, p) => sum + p.overall, 0);
+        
+        teamStats.set(bid.team, {
+          rosterSize: roster.length,
+          coins: coins[0]?.coinsRemaining || 100,
+          totalOverall
+        });
+      }
+      
+      const stats = teamStats.get(bid.team)!;
+      
+      // Check roster size
+      const rosterSizeAfter = bid.dropPlayer ? stats.rosterSize : stats.rosterSize + 1;
+      if (rosterSizeAfter > 14) {
+        errors.push(`${bid.team} would exceed 14 players after signing ${bid.playerName} (no drop specified)`);
+      }
+      
+      // Check coin balance
+      if (stats.coins < bid.bidAmount) {
+        errors.push(`${bid.team} has insufficient coins ($${stats.coins} < $${bid.bidAmount} for ${bid.playerName})`);
+      }
+      
+      // Check over-cap restriction
+      const isOverCap = await isTeamOverCap(bid.team);
+      if (isOverCap) {
+        const signPlayer = await findPlayerByFuzzyName(bid.playerName);
+        if (signPlayer && signPlayer.overall > 70) {
+          errors.push(`${bid.team} is over cap and cannot sign ${bid.playerName} (${signPlayer.overall} OVR > 70)`);
+        }
+      }
+      
+      // Build preview lists
+      if (bid.dropPlayer) {
+        cuts.push(`${bid.dropPlayer} (${bid.team})`);
+      }
+      signs.push(`${bid.playerName} → ${bid.team} ($${bid.bidAmount})`);
+      totalCoins += bid.bidAmount;
+      
+      // Update stats for next check
+      stats.rosterSize = rosterSizeAfter;
+      stats.coins -= bid.bidAmount;
+    }
+    
+    // Check for duplicate player signings
+    const playerCounts = new Map<string, number>();
+    for (const bid of bidsToProcess) {
+      const count = playerCounts.get(bid.playerName.toLowerCase()) || 0;
+      playerCounts.set(bid.playerName.toLowerCase(), count + 1);
+    }
+    
+    Array.from(playerCounts.entries()).forEach(([player, count]) => {
+      if (count > 1) {
+        errors.push(`Duplicate signing detected: ${player} has ${count} bids`);
+      }
+    });
+    
+    // Return validation errors if any
+    if (errors.length > 0) {
+      return {
+        success: false,
+        message: 'Validation failed',
+        errors,
+        warnings
+      };
+    }
+    
+    return {
+      success: true,
+      bidCount: bidsToProcess.length,
+      cuts,
+      signs,
+      totalCoins,
+      warnings
+    };
+    
+  } catch (error) {
+    console.error('[Batch Preview] Error:', error);
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : 'Unknown error'
+    };
+  }
+}

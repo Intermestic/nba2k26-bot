@@ -929,66 +929,123 @@ export async function startDiscordBot(token: string) {
       
       // Check if this is a window close summary message (from bot with "Bidding Window Closed" title)
       if (message.author.bot && message.embeds.length > 0 && message.embeds[0].title?.includes('Bidding Window Closed')) {
-        console.log('[Discord Bot] Detected window close summary, starting batch processing...');
-        const { processBidsFromSummary } = await import('./fa-window-close');
+        console.log('[Discord Bot] Detected window close summary, showing preview...');
+        const { generateBatchPreview } = await import('./fa-window-close');
         const { EmbedBuilder } = await import('discord.js');
         
-        const result = await processBidsFromSummary(message, user.tag || user.username || 'Unknown');
+        // Generate preview
+        const preview = await generateBatchPreview(message);
         
-        if (result.success && 'results' in result && result.results) {
-          // Post completion summary
-          const successList = result.results
-            .filter(r => r.success)
-            .map(r => `✅ ${r.playerName} → **${r.team}** ($${r.bidAmount})`)
-            .join('\n') || 'None';
-          
-          const failList = result.results
-            .filter(r => !r.success)
-            .map(r => `❌ ${r.playerName} → **${r.team}** - ${r.error || 'Unknown error'}`)
-            .join('\n') || 'None';
-          
-          const totalCoins = result.results
-            .filter(r => r.success)
-            .reduce((sum, r) => sum + r.bidAmount, 0);
-          
-          const embed = new EmbedBuilder()
-            .setColor(0x00ff00)
-            .setTitle('✅ Batch Processing Complete')
-            .setDescription(`Processed ${result.successCount} successful transactions`);
-          
-          if (successList) {
-            embed.addFields({ name: 'Successful Transactions', value: successList });
-          }
-          
-          if (failList) {
-            embed.addFields({ name: 'Failed Transactions', value: failList });
-          }
-          
-          embed.setFooter({ text: `Total coins spent: $${totalCoins} | Processed by ${user.tag}` });
-          
-          await message.reply({ embeds: [embed] });
-        } else if ('errors' in result && result.errors) {
-          // Validation failed - show errors
-          const errorList = result.errors.join('\n');
-          const warningList = 'warnings' in result && result.warnings ? result.warnings.join('\n') : '';
+        if (!preview.success) {
+          // Show validation errors
+          const errorList = preview.errors?.join('\n') || 'Unknown error';
+          const warningList = preview.warnings?.join('\n') || '';
           
           const embed = new EmbedBuilder()
             .setColor(0xff0000)
             .setTitle('❌ Validation Failed')
-            .setDescription(`Cannot process batch: ${result.message}`);
+            .setDescription(`Cannot process batch: ${preview.message}`);
           
           if (errorList) {
-            embed.addFields({ name: 'Errors', value: errorList });
+            embed.addFields({ name: 'Errors', value: errorList.substring(0, 1024) });
           }
           
           if (warningList) {
-            embed.addFields({ name: 'Warnings', value: warningList });
+            embed.addFields({ name: 'Warnings', value: warningList.substring(0, 1024) });
           }
           
           await message.reply({ embeds: [embed] });
-        } else {
-          await message.reply(`❌ Batch processing failed: ${result.message}`);
+          return;
         }
+        
+        // Show preview with confirmation
+        const previewEmbed = new EmbedBuilder()
+          .setColor(0xffaa00)
+          .setTitle('⚠️ Batch Processing Preview')
+          .setDescription(`**${preview.bidCount} transactions ready to process**\n\nReact with ✅ within 30 seconds to confirm and execute.`);
+        
+        if (preview.cuts && preview.cuts.length > 0) {
+          const cutsList = preview.cuts.slice(0, 10).join('\n');
+          const remaining = preview.cuts.length - 10;
+          previewEmbed.addFields({ 
+            name: `Players to be Cut (${preview.cuts.length})`, 
+            value: cutsList + (remaining > 0 ? `\n... and ${remaining} more` : ''),
+            inline: false
+          });
+        }
+        
+        if (preview.signs && preview.signs.length > 0) {
+          const signsList = preview.signs.slice(0, 10).join('\n');
+          const remaining = preview.signs.length - 10;
+          previewEmbed.addFields({ 
+            name: `Players to be Signed (${preview.signs.length})`, 
+            value: signsList + (remaining > 0 ? `\n... and ${remaining} more` : ''),
+            inline: false
+          });
+        }
+        
+        previewEmbed.setFooter({ text: `Total coins: $${preview.totalCoins} | Requested by ${user.tag}` });
+        
+        const previewMessage = await message.reply({ embeds: [previewEmbed] });
+        await previewMessage.react('✅');
+        
+        // Wait for confirmation
+        const filter = (r: any, u: any) => r.emoji.name === '✅' && u.id === user.id;
+        const collector = previewMessage.createReactionCollector({ filter, time: 30000, max: 1 });
+        
+        collector.on('collect', async () => {
+          console.log('[Discord Bot] Batch processing confirmed, executing...');
+          await previewMessage.edit({ embeds: [previewEmbed.setDescription('🔄 Processing transactions...')] });
+          
+          const { processBidsFromSummary } = await import('./fa-window-close');
+          const result = await processBidsFromSummary(message, user.tag || user.username || 'Unknown');
+          
+          if (result.success && 'results' in result && result.results) {
+            const successList = result.results
+              .filter(r => r.success)
+              .map(r => `✅ ${r.playerName} → **${r.team}** ($${r.bidAmount})`)
+              .join('\n') || 'None';
+            
+            const failList = result.results
+              .filter(r => !r.success)
+              .map(r => `❌ ${r.playerName} → **${r.team}** - ${r.error || 'Unknown error'}`)
+              .join('\n') || 'None';
+            
+            const totalCoins = result.results
+              .filter(r => r.success)
+              .reduce((sum, r) => sum + r.bidAmount, 0);
+            
+            const embed = new EmbedBuilder()
+              .setColor(0x00ff00)
+              .setTitle('✅ Batch Processing Complete')
+              .setDescription(`Processed ${result.successCount} successful transactions`);
+            
+            if (successList !== 'None') {
+              embed.addFields({ name: 'Successful Transactions', value: successList.substring(0, 1024) });
+            }
+            
+            if (failList !== 'None') {
+              embed.addFields({ name: 'Failed Transactions', value: failList.substring(0, 1024) });
+            }
+            
+            embed.setFooter({ text: `Total coins spent: $${totalCoins} | Processed by ${user.tag}` });
+            
+            await previewMessage.edit({ embeds: [embed] });
+          } else {
+            await previewMessage.edit({ content: `❌ Batch processing failed: ${result.message}`, embeds: [] });
+          }
+        });
+        
+        collector.on('end', async (collected) => {
+          if (collected.size === 0) {
+            console.log('[Discord Bot] Batch processing timed out');
+            await previewMessage.edit({ 
+              embeds: [previewEmbed.setColor(0x808080).setDescription('⏱️ Confirmation timed out. Batch processing cancelled.')]
+            });
+          }
+        });
+        
+        return;
       } else {
         // Regular FA transaction
         await handleFAMessage(message);

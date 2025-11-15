@@ -114,3 +114,28 @@ Processing order is wrong:
 - [x] Adjusted validation to account for pending cuts
 - [x] Roster size calculation: if dropPlayer exists, size stays same (drop 1, add 1)
 - [x] Cuts execute atomically before signs in processing loop
+
+
+## CURRENT TASK: Add Batch Preview Confirmation
+
+### Goal
+Add two-step confirmation for batch processing: preview → confirm → execute
+
+### Flow
+1. User reacts with ⚡ on summary message
+2. Bot posts preview embed showing:
+   - Total transactions count
+   - List of all cuts and signs
+   - Total coins to be spent
+   - Any validation warnings
+3. Bot adds ✅ reaction to preview message
+4. User has 30 seconds to react with ✅ to confirm
+5. If confirmed: execute batch processing
+6. If timeout: cancel and delete preview
+
+### Implementation
+- [x] Create preview embed builder function (generateBatchPreview)
+- [x] Modify ⚡ reaction handler to post preview instead of executing
+- [x] Add ✅ reaction collector with 30s timeout
+- [x] Move actual processing to confirmation handler
+- [x] Add cancellation on timeout
