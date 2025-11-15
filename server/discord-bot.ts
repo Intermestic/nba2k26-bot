@@ -480,6 +480,18 @@ async function handleBidMessage(message: Message) {
   
   console.log(`[FA Bids] ✅ Bid recorded: ${message.author.username} (${team}) bid $${parsedBid.bidAmount} on ${player.name}`);
   
+  // Send outbid notification if someone was outbid
+  if (bidResult.previousHighestBidder) {
+    const { checkAndNotifyOutbid } = await import('./outbid-notifications');
+    await checkAndNotifyOutbid(
+      client!,
+      player.name,
+      message.author.id,
+      parsedBid.bidAmount,
+      window.windowId
+    );
+  }
+  
   // Get all bids for this player to show current status
   const { getActiveBids } = await import('./fa-bid-parser');
   const activeBids = await getActiveBids(window.windowId);

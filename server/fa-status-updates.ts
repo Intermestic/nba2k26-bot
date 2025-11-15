@@ -9,7 +9,7 @@ let lastStatusMessage: Message | null = null;
 /**
  * Format status update message with all active bids
  */
-async function formatStatusMessage(bids: Array<{ playerName: string; team: string; bidAmount: number; bidderName: string }>, windowId: string): Promise<string> {
+async function formatStatusMessage(bids: Array<{ playerName: string; team: string; bidAmount: number; bidderName: string }>, windowId: string, windowEndTime: Date): Promise<string> {
   if (bids.length === 0) {
     return `📊 **FA Bid Status Update**\n\n🏀 **Bidding Window:** ${windowId}\n\n_No active bids at this time._`;
   }
@@ -58,9 +58,27 @@ async function formatStatusMessage(bids: Array<{ playerName: string; team: strin
     commitment.total += bid.bidAmount;
   }
   
+  // Calculate time remaining
+  const now = new Date();
+  const timeRemaining = windowEndTime.getTime() - now.getTime();
+  const hoursRemaining = Math.floor(timeRemaining / (1000 * 60 * 60));
+  const minutesRemaining = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+  
+  let countdownText = '';
+  if (timeRemaining > 0) {
+    if (hoursRemaining > 0) {
+      countdownText = `${hoursRemaining}h ${minutesRemaining}m`;
+    } else {
+      countdownText = `${minutesRemaining}m`;
+    }
+  } else {
+    countdownText = 'Window closed';
+  }
+  
   let message = `📊 **FA Bid Status Update**\n\n`;
   message += `🏀 **Bidding Window:** ${windowId}\n`;
-  message += `⏰ **Last Updated:** ${new Date().toLocaleString('en-US', { timeZone: 'America/New_York', hour: 'numeric', minute: '2-digit', hour12: true })} EST\n\n`;
+  message += `⏰ **Last Updated:** ${new Date().toLocaleString('en-US', { timeZone: 'America/New_York', hour: 'numeric', minute: '2-digit', hour12: true })} EST\n`;
+  message += `⏳ **Window closes in:** ${countdownText}\n\n`;
   message += `🏆 **Active Bids (${bids.length} players)**\n\n`;
   
   for (const bid of sortedBids) {
@@ -144,7 +162,7 @@ export async function postStatusUpdate(client: Client) {
       }
     }
     
-    const messageContent = await formatStatusMessage(bids, window.windowId);
+    const messageContent = await formatStatusMessage(bids, window.windowId, window.endTime);
     const newMessage = await (channel as TextChannel).send(messageContent);
     lastStatusMessage = newMessage;
     

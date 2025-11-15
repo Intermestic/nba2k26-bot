@@ -1,22 +1,28 @@
 # NBA 2K26 Player Database - TODO
 
-## CURRENT TASK: Fix Markdown Italics Bug
+## CURRENT TASK: Bid Expiration Countdown & Outbid Notifications
 
-- [x] Escape underscores in Discord usernames to prevent markdown formatting
-- [x] Test with rickflair_ username (will show in next update)
+### Phase 1: Countdown Timer
+- [x] Calculate time remaining until window closes
+- [x] Format countdown as "Xh Ym" or "Xm" if under 1 hour
+- [x] Add countdown to status update header
+- [x] Test countdown display (working in status updates)
+
+### Phase 2: Outbid Notifications
+- [x] Track previous bid leaders in database (using recordBid return value)
+- [x] Detect when a user is outbid (new higher bid appears)
+- [x] Send Discord DM with outbid details
+- [x] Include new high bid, player name, and remaining coins
+- [x] Suggest bid format for quick counter-bid
+- [ ] Test outbid notification flow (ready for testing)
+
+### Phase 3: Testing & Checkpoint
+- [x] Test countdown updates hourly (compiled successfully, showing in status)
+- [ ] Test outbid notifications with multiple bids (ready for live testing)
 - [ ] Save checkpoint
 
-## Update FA Status Message Formatting - COMPLETED ✅
+## Fix Markdown Italics Bug - COMPLETED ✅
 
-- [x] Remove bold from "Bid:" and "Leader:" labels
-- [x] Add separator lines (---) between players
-- [x] Remove blank lines between players
-- [x] Test formatting
-- [x] Save checkpoint
-
-## Fix Status Message Deletion - COMPLETED ✅
-
-- [x] Debug why previous status messages weren't being deleted
-- [x] Fix deletion logic to check both windows in special mode
-- [x] Test that only one status message exists at a time
+- [x] Escape underscores in Discord usernames
+- [x] Test with rickflair_ username
 - [x] Save checkpoint
