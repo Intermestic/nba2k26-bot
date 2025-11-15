@@ -615,4 +615,29 @@ adem Bona75/5
 - [x] Simplified parser to ignore ALL numbers and extract only player names
 - [x] Parser now strips out OVR/badges in any format and keeps only names
 - [x] Handles edge cases like "adem Bona75/5" (no space before numbers)
+- [x] Save checkpoint (version 384dd05f)
+
+
+## CURRENT TASK: Add Trade Preview with Corrections
+
+### Goal
+Show parsed player names in trade confirmation and allow user to correct if parser made mistakes
+
+### Implementation
+1. Update trade confirmation embed to list parsed player names
+2. Add "Correct" button alongside "Approve" and "Reject"
+3. When user clicks "Correct", prompt for corrections
+4. Allow format like: "team1: Player A, Player B | team2: Player C, Player D"
+5. Re-parse and show updated confirmation
+
+### Tasks
+- [x] Find trade confirmation embed code in trade-handler.ts
+- [x] Update confirmation to show parsed player names for both teams
+- [x] Add "Correct" button to confirmation message
+- [x] Add button handler for correction button
+- [x] Implement correction prompt (ephemeral message with format)
+- [x] Add message collector to capture user correction
+- [x] Parse correction format: "Team: Player A, Player B"
+- [x] Re-resolve players and update confirmation message
+- [x] TypeScript compilation successful
 - [ ] Save checkpoint

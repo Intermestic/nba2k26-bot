@@ -82,20 +82,32 @@ export async function handleTradeMessage(message: Message) {
     .setLabel('✅ Confirm Trade')
     .setStyle(ButtonStyle.Success);
   
+  const correctButton = new ButtonBuilder()
+    .setCustomId('correct_trade')
+    .setLabel('✏️ Correct')
+    .setStyle(ButtonStyle.Primary);
+  
   const cancelButton = new ButtonBuilder()
     .setCustomId('cancel_trade')
     .setLabel('❌ Cancel')
     .setStyle(ButtonStyle.Danger);
   
   const row = new ActionRowBuilder<ButtonBuilder>()
-    .addComponents(confirmButton, cancelButton);
+    .addComponents(confirmButton, correctButton, cancelButton);
   
   // Check if channel is text-based
   if (!('send' in message.channel)) return;
   
+  // Show parsed player names for verification
+  const team1ParsedNames = parsedTrade.team1Players.join(', ');
+  const team2ParsedNames = parsedTrade.team2Players.join(', ');
+  
   const confirmMessage = await message.channel.send({
     content: 
       `🤝 **Trade Confirmation**\n\n` +
+      `**Parsed from message:**\n` +
+      `${parsedTrade.team1} sends: ${team1ParsedNames}\n` +
+      `${parsedTrade.team2} sends: ${team2ParsedNames}\n\n` +
       `**${resolved.team1} receives:**\n${team1ReceivesList}\n\n` +
       `**${resolved.team2} receives:**\n${team2ReceivesList}\n\n` +
       `Should I process this trade?`,
@@ -121,6 +133,92 @@ export async function handleTradeMessage(message: Message) {
           ? `✅ **Trade Completed**\n\n${result.message}`
           : `❌ **Trade Failed**\n\n${result.message}`,
         components: []
+      });
+    } else if (interaction.customId === 'correct_trade') {
+      await interaction.reply({
+        content: `✏️ **Correct Trade Players**\n\nPlease reply with the corrected player names in this format:\n\`\`\`\n${parsedTrade.team1}: Player A, Player B\n${parsedTrade.team2}: Player C, Player D\n\`\`\`\n\nExample:\n\`\`\`\nKnicks: Trae Young, Jarrett Allen, Caleb Martin\nHornets: Anthony Davis, Max Strus, Adem Bona\n\`\`\``,
+        ephemeral: true
+      });
+      
+      // Create message collector for correction
+      if (!('createMessageCollector' in message.channel)) {
+        await interaction.followUp({ content: '❌ Cannot collect messages in this channel type.', ephemeral: true });
+        return;
+      }
+      
+      const messageCollector = message.channel.createMessageCollector({
+        filter: (m: Message) => m.author.id === interaction.user.id,
+        time: 120000, // 2 minutes
+        max: 1
+      });
+      
+      messageCollector.on('collect', async (correctionMsg: Message) => {        try {
+          // Parse correction format: "Team1: Player A, Player B\nTeam2: Player C, Player D"
+          const lines = correctionMsg.content.trim().split('\n').filter(l => l.trim());
+          
+          if (lines.length < 2) {
+            await correctionMsg.reply('❌ Invalid format. Please use the format shown above.');
+            return;
+          }
+          
+          const correctedTrade: any = { team1: '', team1Players: [], team2: '', team2Players: [] };
+          
+          for (let i = 0; i < Math.min(lines.length, 2); i++) {
+            const parts = lines[i].split(':');
+            if (parts.length < 2) continue;
+            
+            const team = parts[0].trim();
+            const playerNames = parts.slice(1).join(':').split(',').map(p => p.trim()).filter(p => p);
+            
+            if (i === 0) {
+              correctedTrade.team1 = team;
+              correctedTrade.team1Players = playerNames;
+            } else {
+              correctedTrade.team2 = team;
+              correctedTrade.team2Players = playerNames;
+            }
+          }
+          
+          console.log('[Trade Handler] Corrected trade:', correctedTrade);
+          
+          // Resolve corrected players
+          const correctedResolved = await resolveTradePlayer(correctedTrade);
+          
+          if (!correctedResolved.valid) {
+            await correctionMsg.reply(`❌ **Correction Failed**\n\n${correctedResolved.errors.join('\n')}`);
+            return;
+          }
+          
+          // Update confirmation message with corrected info
+          const newTeam1ReceivesList = correctedResolved.team2Players
+            .map(p => `• ${p.name} (${p.overall} OVR)`)
+            .join('\n');
+          
+          const newTeam2ReceivesList = correctedResolved.team1Players
+            .map(p => `• ${p.name} (${p.overall} OVR)`)
+            .join('\n');
+          
+          await confirmMessage.edit({
+            content: 
+              `🤝 **Trade Confirmation (Corrected)**\n\n` +
+              `**Corrected by ${interaction.user.username}:**\n` +
+              `${correctedTrade.team1} sends: ${correctedTrade.team1Players.join(', ')}\n` +
+              `${correctedTrade.team2} sends: ${correctedTrade.team2Players.join(', ')}\n\n` +
+              `**${correctedResolved.team1} receives:**\n${newTeam1ReceivesList}\n\n` +
+              `**${correctedResolved.team2} receives:**\n${newTeam2ReceivesList}\n\n` +
+              `Should I process this trade?`,
+            components: [row]
+          });
+          
+          await correctionMsg.reply('✅ Trade corrected! Please confirm or cancel above.');
+          
+          // Update resolved data for future confirm
+          Object.assign(resolved, correctedResolved);
+          
+        } catch (error) {
+          console.error('[Trade Handler] Correction error:', error);
+          await correctionMsg.reply('❌ Failed to process correction. Please try again.');
+        }
       });
     } else if (interaction.customId === 'cancel_trade') {
       await interaction.update({
