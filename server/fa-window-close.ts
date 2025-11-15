@@ -532,3 +532,76 @@ export async function rollbackBatch(batchId: string, rollbackBy: string) {
     };
   }
 }
+
+/**
+ * Manually regenerate window close summary for a specific window
+ * Useful for reposting summaries with updated format
+ */
+export async function regenerateWindowSummary(client: Client, windowId: string): Promise<{ success: boolean; message?: string; bidCount?: number }> {
+  try {
+    console.log(`[Regenerate Summary] Starting for window ${windowId}`);
+    
+    const bids = await getActiveBids(windowId);
+    
+    if (bids.length === 0) {
+      return {
+        success: false,
+        message: `No active bids found for window ${windowId}`
+      };
+    }
+    
+    const channel = await client.channels.fetch(FA_CHANNEL_ID);
+    if (!channel?.isTextBased()) {
+      return {
+        success: false,
+        message: 'FA channel is not text-based'
+      };
+    }
+    
+    // Sort bids by amount descending
+    const sortedBids = [...bids].sort((a, b) => b.bidAmount - a.bidAmount);
+    
+    // Calculate total coins spent
+    const totalCoins = sortedBids.reduce((sum, bid) => sum + bid.bidAmount, 0);
+    
+    // Create embed
+    const embed = new EmbedBuilder()
+      .setColor(0x00ff00) // Green
+      .setTitle(`🏁 Bidding Window Closed: ${windowId}`)
+      .setDescription(`**Winning Bids Summary (Regenerated)**\n\nThe following ${bids.length} player${bids.length === 1 ? '' : 's'} received bids this window:`)
+      .setTimestamp();
+    
+    // Add fields for each bid (max 25 fields per embed)
+    const maxFields = Math.min(sortedBids.length, 25);
+    for (let i = 0; i < maxFields; i++) {
+      const bid = sortedBids[i];
+      const dropInfo = bid.dropPlayer ? `Cut: ${bid.dropPlayer}\n` : '';
+      embed.addFields({
+        name: `${bid.playerName}`,
+        value: `${dropInfo}Sign: ${bid.playerName}\n→ **${bid.team}** ($${bid.bidAmount})\nWinner: ${bid.bidderName}`,
+        inline: true
+      });
+    }
+    
+    // Add total coins footer
+    embed.setFooter({ text: `Total coins committed: $${totalCoins} | React with ⚡ to process bids` });
+    
+    await (channel as TextChannel).send({ 
+      content: '@everyone',
+      embeds: [embed] 
+    });
+    
+    console.log(`[Regenerate Summary] Posted summary: ${bids.length} winning bids, $${totalCoins} total`);
+    
+    return {
+      success: true,
+      bidCount: bids.length
+    };
+  } catch (error) {
+    console.error('[Regenerate Summary] Failed:', error);
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : 'Unknown error'
+    };
+  }
+}

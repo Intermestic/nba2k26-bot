@@ -1,34 +1,28 @@
 # NBA 2K26 Player Database - TODO
 
-## COMPLETED: Batch FA Bid Processing ✅
+## COMPLETED: Batch Processing Fix ✅
+- [x] Added dropPlayer field to faBids schema
+- [x] Updated window close summary format to show "Cut: X / Sign: Y"
+- [x] Updated batch processor parser to extract both players
+- [x] Implemented automatic roster updates for dropped players
 
-- [x] Parse bids from window close summary message
-- [x] Process all transactions automatically
-- [x] Post completion summary
-- [x] Fixed SQL error for empty bid windows
-- [x] Pre-processing validation (roster size, duplicates, coins, over-cap)
-- [x] Rollback functionality with !rollback command
-- [x] Transaction history dashboard at /admin/fa-history
-- [x] CSV export
+## CURRENT TASK: Manual Window Summary Regeneration
 
-## CURRENT TASK: Fix Batch Processing Message Format
+### Goal
+Regenerate window close summary for 2025-11-15-AM window with all cut/sign information so admin can process via ⚡ reaction
 
-### Issue
-- Window close summary only shows signed player
-- Batch processor needs both cut and sign players
-- Must update message format to include drop information
+### Phase 1: Create Manual Command
+- [x] Add !regenerate-summary command to Discord bot
+- [x] Query all bids from 2025-11-15-AM window (or specify window ID)
+- [x] Include dropPlayer info from database
+- [x] Format as window close summary embed
+- [x] Post to FA channel
 
-### Phase 1: Update Window Close Summary
-- [x] Modify postWindowCloseSummary to include cut player in each field
-- [x] Format: "Cut: X (XX OVR) → Sign: Y (YY OVR) - $Z - Winner"
-- [x] Update embed field structure
+### Phase 2: Test & Execute
+- [x] Command ready to test (dev server running, no errors)
+- [ ] User to execute: !regenerate-summary 2025-11-15-AM
+- [ ] Verify all bids appear with cut/sign format
+- [ ] Confirm ⚡ reaction triggers batch processing
 
-### Phase 2: Update Batch Processor Parser
-- [x] Update parseBatchFromEmbed to extract both cut and sign players
-- [x] Parse new format with arrow separator
-- [x] Handle cases where no cut player exists
-
-### Phase 3: Testing & Checkpoint
-- [x] Test with real FA bid data (dev server running, bids being recorded)
-- [x] Verify batch processing works end-to-end (parser updated, dropPlayer handled)
-- [ ] Save checkpoint
+### Phase 3: Checkpoint
+- [ ] Save checkpoint with manual command

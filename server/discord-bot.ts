@@ -731,6 +731,29 @@ export async function startDiscordBot(token: string) {
         return;
       }
       
+      // Check for regenerate summary command: !regenerate-summary <windowId>
+      if (message.content.trim().toLowerCase().startsWith('!regenerate-summary')) {
+        const parts = message.content.trim().split(/\s+/);
+        const windowId = parts[1] || '2025-11-15-AM'; // Default to today's AM window
+        
+        try {
+          await message.reply(`🔄 Regenerating summary for window ${windowId}...`);
+          const { regenerateWindowSummary } = await import('./fa-window-close');
+          
+          const result = await regenerateWindowSummary(client!, windowId);
+          
+          if (result.success) {
+            await message.reply(`✅ Summary regenerated successfully! Found ${result.bidCount} winning bids. React with ⚡ on the summary message to process.`);
+          } else {
+            await message.reply(`❌ Failed to regenerate summary: ${result.message}`);
+          }
+        } catch (error) {
+          console.error('[Regenerate Summary] Command failed:', error);
+          await message.reply('❌ Failed to regenerate summary. Check logs for details.');
+        }
+        return;
+      }
+      
       // Check for rollback command: !rollback <batchId>
       if (message.content.trim().toLowerCase().startsWith('!rollback ')) {
         const batchId = message.content.trim().substring(10).trim();
