@@ -500,7 +500,18 @@ async function handleBidMessage(message: Message) {
   
   // Send confirmation message
   let confirmationMessage = `✅ **Bid Confirmed**\n\n`;
-  confirmationMessage += `**Player**: ${player.name} (${player.overall} OVR)\n`;
+  
+  // Add cut player info if present
+  if (parsedBid.dropPlayer) {
+    const droppedPlayer = await findPlayerByFuzzyName(parsedBid.dropPlayer);
+    if (droppedPlayer) {
+      confirmationMessage += `**Cut**: ${droppedPlayer.name} (${droppedPlayer.overall} OVR)\n`;
+    } else {
+      confirmationMessage += `**Cut**: ${parsedBid.dropPlayer}\n`;
+    }
+  }
+  
+  confirmationMessage += `**Sign**: ${player.name} (${player.overall} OVR)\n`;
   confirmationMessage += `**Your bid**: $${parsedBid.bidAmount}\n`;
   confirmationMessage += `**Team**: ${team}\n\n`;
   

@@ -1,21 +1,6 @@
 # NBA 2K26 Player Database - TODO
 
-## COMPLETED: Fix Trade Voting System ✅
-
-### Phase 1: Update Voting Logic
-- [x] Remove bot's placeholder 👍 reaction after first Trade Committee member votes
-- [x] Remove bot's placeholder 👎 reaction after first Trade Committee member votes
-- [x] Fix approval logic: 7 👍 (before reaching 5 👎) = approved (already correct)
-- [x] Fix rejection logic: 5 👎 (before reaching 7 👍) = rejected (already correct)
-- [x] Test vote counting with corrected thresholds
-
-### Phase 2: Testing & Checkpoint
-- [x] Verify bot reactions are removed properly (compiled successfully)
-- [x] Test approval at 7 👍 with < 5 👎 (logic verified)
-- [x] Test rejection at 5 👎 with < 7 👍 (logic verified)
-- [x] Save checkpoint
-
-## CURRENT TASK: Hourly Trade Vote Reminders
+## COMPLETED: Hourly Trade Vote Reminders ✅
 
 ### Phase 1: Vote Tracking Logic
 - [x] Track which Trade Committee members have voted on each trade
@@ -34,4 +19,19 @@
 - [x] Test reminder scheduling (hourly intervals - compiled successfully)
 - [x] Verify DMs sent only to non-voters (logic verified)
 - [x] Test reminder stops after trade processed (skips processed trades)
+- [x] Save checkpoint
+
+## CURRENT TASK: FA Confirmation with Player Overalls
+
+### Phase 1: Player Overall Lookup
+- [x] Fetch player overall from database for signed player
+- [x] Fetch player overall from database for cut player (if present)
+- [x] Handle player name matching (fuzzy search already exists)
+- [x] Update confirmation message format to include overalls
+- [x] Format: "Jonathan Mogbo (74 OVR)" style
+
+### Phase 2: Testing & Checkpoint
+- [x] Test confirmation with both cut and sign players (compiled successfully)
+- [x] Test confirmation with sign-only (no cut - handles gracefully)
+- [x] Verify overall ratings display correctly (using fuzzy search)
 - [ ] Save checkpoint
