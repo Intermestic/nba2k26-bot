@@ -318,6 +318,42 @@ export const coinsRouter = router({
       });
 
       return { success: true, message: "Coins refunded" };
-    })
+    }),
+
+  /**
+   * Get all bid windows
+   */
+  getBidWindows: protectedProcedure
+    .query(async ({ ctx }: { ctx: any }) => {
+      if (ctx.user.role !== "admin") {
+        throw new Error("Admin access required");
+      }
+
+      const db = await getDb();
+      if (!db) throw new Error("Database connection failed");
+
+      const { bidWindows } = await import('../../drizzle/schema');
+      const windows = await db.select().from(bidWindows).orderBy(desc(bidWindows.startTime));
+
+      return windows;
+    }),
+
+  /**
+   * Get all bids
+   */
+  getAllBids: protectedProcedure
+    .query(async ({ ctx }: { ctx: any }) => {
+      if (ctx.user.role !== "admin") {
+        throw new Error("Admin access required");
+      }
+
+      const db = await getDb();
+      if (!db) throw new Error("Database connection failed");
+
+      const { faBids } = await import('../../drizzle/schema');
+      const bids = await db.select().from(faBids).orderBy(desc(faBids.createdAt));
+
+      return bids;
+    }),
 
 });

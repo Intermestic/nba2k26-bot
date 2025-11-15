@@ -829,6 +829,38 @@ export async function startDiscordBot(token: string) {
   // Monitor all messages for FA bids and commands
   client.on('messageCreate', async (message) => {
     if (message.channelId === FA_CHANNEL_ID) {
+      // Check for update bid command: !update bid <player> <amount>
+      if (message.content.trim().toLowerCase().startsWith('!update bid')) {
+        const parts = message.content.trim().split(/\s+/);
+        if (parts.length < 4) {
+          await message.reply('❌ Usage: !update bid <player name> <amount>');
+          return;
+        }
+        
+        const bidAmount = parseInt(parts[parts.length - 1]);
+        const playerName = parts.slice(2, -1).join(' ');
+        
+        if (isNaN(bidAmount) || bidAmount < 1) {
+          await message.reply('❌ Invalid bid amount. Must be a positive number.');
+          return;
+        }
+        
+        try {
+          const { updateBidAmount } = await import('./fa-bid-updater');
+          const result = await updateBidAmount(message.author.id, playerName, bidAmount);
+          
+          if (result.success) {
+            await message.reply(`✅ Updated bid for **${result.playerName}** to **$${bidAmount}** (Team: ${result.team})`);
+          } else {
+            await message.reply(`❌ ${result.message}`);
+          }
+        } catch (error) {
+          console.error('[Update Bid] Command failed:', error);
+          await message.reply('❌ Failed to update bid. Check logs for details.');
+        }
+        return;
+      }
+      
       // Check for manual overcap role update command
       if (message.content.trim().toLowerCase() === '!updateovercap') {
         try {

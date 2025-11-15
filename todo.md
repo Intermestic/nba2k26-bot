@@ -716,4 +716,46 @@ Consolidate "Dayron Sharpe" and "Day'Ron Sharpe" bids under the correct name
 - [x] Update existing bids to use correct name (updated 2 bids)
 - [x] Add to fa-bid-parser.ts nameAliases (already exists)
 - [x] Verify all bids now show correct name (4 bids total for Day'Ron Sharpe)
+- [x] Save checkpoint (version d5a0ed3b)
+
+
+## CURRENT TASK: Add Bid Modification + FA Dashboard + Fix Mavs Logo
+
+### Goal
+1. Add Discord command to update bid amount without resubmitting
+2. Create admin dashboard for FA window summary
+3. Fix Mavs team logo
+
+### Tasks
+
+#### Bid Modification Command
+- [x] Add `!update bid <player> <amount>` command to Discord bot
+- [x] Validate team has existing bid for that player
+- [x] Update bid amount in database
+- [x] Send confirmation message
+- [x] Handle edge cases (no existing bid, invalid amount, etc.)
+- [x] Created fa-bid-updater.ts module
+- [x] Uses fuzzy matching for player names
+- [x] Validates user has team assignment
+- [x] Checks for active bidding window
+
+#### FA Window Summary Dashboard
+- [x] Create FAWindowSummary.tsx page
+- [x] Add route to App.tsx (/admin/fa-summary)
+- [x] Show all active windows with status
+- [x] Display bid history for each player
+- [x] Show winner predictions based on current high bids
+- [x] Calculate total coin commitments per team
+- [x] Add filters by window, team
+- [x] Add navigation link in Admin page
+- [x] Added getBidWindows and getAllBids endpoints to coins router
+- [x] Display summary stats (total players, total bids, total commitment)
+
+#### Fix Mavs Logo
+- [x] Check team logos in database or static assets (found in teamLogos.ts)
+- [x] Find/generate Mavs logo (using official NBA.com logo)
+- [x] Update logo reference (added "Mavs" alias to TEAM_LOGOS)
+- [x] Verify logo displays correctly (same as Mavericks logo)
+
+#### Final
 - [ ] Save checkpoint

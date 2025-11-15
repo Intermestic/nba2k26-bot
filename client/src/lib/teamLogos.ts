@@ -12,6 +12,7 @@ export const TEAM_LOGOS: Record<string, string> = {
   "Bulls": "https://cdn.nba.com/logos/nba/1610612741/primary/L/logo.svg",
   "Cavaliers": "https://cdn.nba.com/logos/nba/1610612739/primary/L/logo.svg",
   "Mavericks": "https://cdn.nba.com/logos/nba/1610612742/primary/L/logo.svg",
+  "Mavs": "https://cdn.nba.com/logos/nba/1610612742/primary/L/logo.svg", // Alias for Mavericks
   "Nuggets": "https://cdn.nba.com/logos/nba/1610612743/primary/L/logo.svg",
   "Pistons": "https://cdn.nba.com/logos/nba/1610612765/primary/L/logo.svg",
   "Warriors": "https://cdn.nba.com/logos/nba/1610612744/primary/L/logo.svg",

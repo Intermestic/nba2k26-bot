@@ -15,6 +15,7 @@ import FAHistory from "./pages/FAHistory";
 import PlayerAliases from "./pages/admin/PlayerAliases";
 import TeamAssignments from "./pages/admin/TeamAssignments";
 import MatchLogs from "./pages/MatchLogs";
+import FAWindowSummary from "./pages/FAWindowSummary";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -31,6 +32,7 @@ function Router() {
       <Route path={"/admin/player-aliases"} component={PlayerAliases} />
       <Route path={"/admin/teams"} component={TeamAssignments} />
       <Route path={"/admin/match-logs"} component={MatchLogs} />
+      <Route path={"/admin/fa-summary"} component={FAWindowSummary} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />
