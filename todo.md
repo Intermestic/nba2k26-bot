@@ -780,3 +780,15 @@
 - [x] Remove invalid bids from database (Jaden Ivey)
 - [ ] Test bid validation with real Discord messages
 - [ ] Save checkpoint
+
+## Status Message Improvements
+
+- [x] Delete previous status message before posting new one
+- [x] Show total coins committed per bidder in status message
+- [x] Show remaining coins per bidder in status message
+- [x] Update MIN_MESSAGE_ID to 1438598608533454889
+- [x] Clear old bids from database
+- [x] Re-seed bids from messages after new starting point (15 bids)
+- [x] Test status message updates (working - shows 11 unique players)
+- [ ] Verify Jaden Ivey is FA or rostered
+- [ ] Save checkpoint

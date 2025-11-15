@@ -6,7 +6,7 @@ import { extract } from 'fuzzball';
 
 const FA_CHANNEL_ID = '1095812920056762510';
 const GUILD_ID = '860782751656837140';
-const MIN_MESSAGE_ID = '1438945025479282822'; // Only process bid messages after this status update
+const MIN_MESSAGE_ID = '1438598608533454889'; // Only process bid messages after this status update
 
 interface ParsedTransaction {
   dropPlayer: string;
