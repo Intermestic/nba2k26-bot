@@ -87,18 +87,25 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
         width: format === 'instagram' ? 1080 : undefined,
         height: format === 'instagram' ? 1920 : undefined,
         onclone: (clonedDoc) => {
-          // Convert OKLCH colors to hex in cloned document
-          const elements = clonedDoc.querySelectorAll('*');
-          elements.forEach((el: Element) => {
-            const htmlEl = el as HTMLElement;
-            const style = window.getComputedStyle(el);
-            if (style.backgroundColor && style.backgroundColor.includes('oklch')) {
-              htmlEl.style.backgroundColor = teamColors.secondary;
-            }
-            if (style.color && style.color.includes('oklch')) {
-              htmlEl.style.color = '#ffffff';
-            }
-          });
+          // Override CSS variables with RGB equivalents to avoid OKLCH parsing
+          const root = clonedDoc.documentElement;
+          root.style.setProperty('--background', '#ffffff');
+          root.style.setProperty('--foreground', '#3c3c43');
+          root.style.setProperty('--card', '#ffffff');
+          root.style.setProperty('--card-foreground', '#3c3c43');
+          root.style.setProperty('--popover', '#ffffff');
+          root.style.setProperty('--popover-foreground', '#3c3c43');
+          root.style.setProperty('--secondary', '#f9fafb');
+          root.style.setProperty('--secondary-foreground', '#666666');
+          root.style.setProperty('--muted', '#f3f4f6');
+          root.style.setProperty('--muted-foreground', '#8c8c91');
+          root.style.setProperty('--accent', '#f3f4f6');
+          root.style.setProperty('--accent-foreground', '#242428');
+          root.style.setProperty('--destructive', '#dc2626');
+          root.style.setProperty('--destructive-foreground', '#fafafa');
+          root.style.setProperty('--border', '#e5e7eb');
+          root.style.setProperty('--input', '#e5e7eb');
+          root.style.setProperty('--ring', '#3b82f6');
         },
       });
       
@@ -147,18 +154,25 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
         allowTaint: false,
         logging: false,
         onclone: (clonedDoc) => {
-          // Convert OKLCH colors to hex in cloned document
-          const elements = clonedDoc.querySelectorAll('*');
-          elements.forEach((el: Element) => {
-            const htmlEl = el as HTMLElement;
-            const style = window.getComputedStyle(el);
-            if (style.backgroundColor && style.backgroundColor.includes('oklch')) {
-              htmlEl.style.backgroundColor = '#0f172a';
-            }
-            if (style.color && style.color.includes('oklch')) {
-              htmlEl.style.color = '#ffffff';
-            }
-          });
+          // Override CSS variables with RGB equivalents to avoid OKLCH parsing
+          const root = clonedDoc.documentElement;
+          root.style.setProperty('--background', '#0f172a');
+          root.style.setProperty('--foreground', '#d9d9dc');
+          root.style.setProperty('--card', '#1e293b');
+          root.style.setProperty('--card-foreground', '#d9d9dc');
+          root.style.setProperty('--popover', '#1e293b');
+          root.style.setProperty('--popover-foreground', '#d9d9dc');
+          root.style.setProperty('--secondary', '#1e293b');
+          root.style.setProperty('--secondary-foreground', '#b3b3b8');
+          root.style.setProperty('--muted', '#334155');
+          root.style.setProperty('--muted-foreground', '#b4b4b9');
+          root.style.setProperty('--accent', '#334155');
+          root.style.setProperty('--accent-foreground', '#ebebec');
+          root.style.setProperty('--destructive', '#ef4444');
+          root.style.setProperty('--destructive-foreground', '#fafafa');
+          root.style.setProperty('--border', 'rgba(255, 255, 255, 0.1)');
+          root.style.setProperty('--input', 'rgba(255, 255, 255, 0.15)');
+          root.style.setProperty('--ring', '#60a5fa');
         },
       });
       const dataUrl = canvas.toDataURL('image/png');

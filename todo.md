@@ -32,3 +32,27 @@
 - [x] 70 OVR validation fixed (now allows ≤70 OVR for over-cap teams)
 - [x] Manual processing ready (❗ emoji for user 679275787664359435)
 - [ ] Save checkpoint
+
+
+## CURRENT TASK: Fix html2canvas OKLCH Color Error
+
+### Issue
+**Error:** "Attempting to parse an unsupported color function 'oklch'"
+**Cause:** html2canvas doesn't support OKLCH color format used by Tailwind CSS 4
+**Location:** Download/export functionality on homepage
+
+### Phase 1: Find Usage
+- [x] Locate html2canvas import and usage (RosterCard.tsx)
+- [x] Identify which component/page triggers download (RosterCard download/share)
+- [x] Find OKLCH color definitions in CSS (client/src/index.css)
+
+### Phase 2: Implement Fix
+- [x] Implemented: Override CSS variables in onclone callback
+- [x] Set all --background, --foreground, etc. to RGB/HEX values
+- [x] Applied to both download and share functions
+
+### Phase 3: Test & Checkpoint
+- [x] Code compiled successfully (no TypeScript errors)
+- [x] CSS variables overridden in onclone callback
+- [x] Ready for user testing
+- [ ] Save checkpoint
