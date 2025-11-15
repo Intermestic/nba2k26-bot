@@ -387,3 +387,15 @@ DoubleMetaphone import error breaking player name matching
 - [x] TypeScript compilation successful (no errors)
 - [x] Dev server running without errors
 - [ ] Save checkpoint
+
+
+## CURRENT TASK: Group Navigation into Sections
+
+### Tasks
+- [x] Reorganize menuItems into sections (Overview, Team Management, League Activity, System)
+- [x] Add section headers to sidebar
+- [x] Use SidebarGroup and SidebarGroupLabel components
+- [x] Styled section labels with uppercase, tracking, and muted color
+- [x] TypeScript compilation successful (no errors)
+- [x] Dev server running without errors
+- [ ] Save checkpoint

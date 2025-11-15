@@ -15,6 +15,8 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarGroup,
+  SidebarGroupLabel,
   SidebarProvider,
   SidebarTrigger,
   useSidebar,
@@ -27,14 +29,34 @@ import { useLocation } from "wouter";
 import { DashboardLayoutSkeleton } from './DashboardLayoutSkeleton';
 import { Button } from "./ui/button";
 
-const menuItems = [
-  { icon: LayoutDashboard, label: "Dashboard", path: "/admin" },
-  { icon: Shield, label: "Team Assignments", path: "/admin/teams" },
-  { icon: DollarSign, label: "FA Coins", path: "/admin/coins" },
-  { icon: AlertTriangle, label: "Cap Compliance", path: "/admin/cap-compliance" },
-  { icon: History, label: "FA History", path: "/admin/fa-history" },
-  { icon: FileText, label: "Transactions", path: "/admin/transactions" },
-  { icon: Users, label: "Player Aliases", path: "/admin/player-aliases" },
+const menuSections = [
+  {
+    label: "Overview",
+    items: [
+      { icon: LayoutDashboard, label: "Dashboard", path: "/admin" },
+    ],
+  },
+  {
+    label: "Team Management",
+    items: [
+      { icon: Shield, label: "Team Assignments", path: "/admin/teams" },
+      { icon: DollarSign, label: "FA Coins", path: "/admin/coins" },
+      { icon: AlertTriangle, label: "Cap Compliance", path: "/admin/cap-compliance" },
+    ],
+  },
+  {
+    label: "League Activity",
+    items: [
+      { icon: History, label: "FA History", path: "/admin/fa-history" },
+      { icon: FileText, label: "Transactions", path: "/admin/transactions" },
+    ],
+  },
+  {
+    label: "System",
+    items: [
+      { icon: Users, label: "Player Aliases", path: "/admin/player-aliases" },
+    ],
+  },
 ];
 
 const SIDEBAR_WIDTH_KEY = "sidebar-width";
@@ -126,7 +148,9 @@ function DashboardLayoutContent({
   const isCollapsed = state === "collapsed";
   const [isResizing, setIsResizing] = useState(false);
   const sidebarRef = useRef<HTMLDivElement>(null);
-  const activeMenuItem = menuItems.find(item => item.path === location);
+  const activeMenuItem = menuSections
+    .flatMap(section => section.items)
+    .find(item => item.path === location);
   const isMobile = useIsMobile();
 
   useEffect(() => {
@@ -213,26 +237,33 @@ function DashboardLayoutContent({
           </SidebarHeader>
 
           <SidebarContent className="gap-0">
-            <SidebarMenu className="px-2 py-1">
-              {menuItems.map(item => {
-                const isActive = location === item.path;
-                return (
-                  <SidebarMenuItem key={item.path}>
-                    <SidebarMenuButton
-                      isActive={isActive}
-                      onClick={() => setLocation(item.path)}
-                      tooltip={item.label}
-                      className={`h-10 transition-all font-normal`}
-                    >
-                      <item.icon
-                        className={`h-4 w-4 ${isActive ? "text-primary" : ""}`}
-                      />
-                      <span>{item.label}</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                );
-              })}
-            </SidebarMenu>
+            {menuSections.map((section, sectionIndex) => (
+              <SidebarGroup key={section.label} className={sectionIndex === 0 ? "" : "mt-4"}>
+                <SidebarGroupLabel className="px-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  {section.label}
+                </SidebarGroupLabel>
+                <SidebarMenu className="px-2 py-1">
+                  {section.items.map(item => {
+                    const isActive = location === item.path;
+                    return (
+                      <SidebarMenuItem key={item.path}>
+                        <SidebarMenuButton
+                          isActive={isActive}
+                          onClick={() => setLocation(item.path)}
+                          tooltip={item.label}
+                          className={`h-10 transition-all font-normal`}
+                        >
+                          <item.icon
+                            className={`h-4 w-4 ${isActive ? "text-primary" : ""}`}
+                          />
+                          <span>{item.label}</span>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    );
+                  })}
+                </SidebarMenu>
+              </SidebarGroup>
+            ))}
           </SidebarContent>
 
           <SidebarFooter className="p-3">
