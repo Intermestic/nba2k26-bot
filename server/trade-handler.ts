@@ -11,14 +11,28 @@ import { eq } from 'drizzle-orm';
 export async function handleTradeMessage(message: Message) {
   console.log(`[Trade Handler] Received message in Trade channel (ID: ${message.id})`);
   
-  // Ignore bot messages
-  if (message.author.bot) {
-    console.log(`[Trade Handler] Ignoring bot message`);
+  // Note: We allow bot messages since trades are posted by a bot
+  
+  // Extract text from message content or embeds
+  let messageText = message.content;
+  
+  // If message content is empty, try to extract from embeds
+  if (!messageText || messageText.trim().length === 0) {
+    if (message.embeds && message.embeds.length > 0) {
+      const embed = message.embeds[0];
+      messageText = embed.description || embed.title || '';
+      console.log('[Trade Handler] Extracted text from embed:', messageText);
+    }
+  }
+  
+  if (!messageText || messageText.trim().length === 0) {
+    console.log('[Trade Handler] No text content found in message');
+    await message.reply('❌ Could not find trade text in message.');
     return;
   }
   
   // Parse the trade
-  const parsedTrade = parseTrade(message.content);
+  const parsedTrade = parseTrade(messageText);
   if (!parsedTrade) {
     console.log(`[Trade Handler] Failed to parse trade from message`);
     await message.reply('❌ Could not parse trade. Please check the format and try again.');
@@ -151,6 +165,39 @@ async function processTrade(resolved: {
       }
     } catch (error) {
       console.error('[Trade Handler] Failed to update overcap roles:', error);
+    }
+    
+    // Check if trade involves 90+ OVR player → trigger story generation
+    const allPlayers = [...resolved.team1Players, ...resolved.team2Players];
+    const hasStarPlayer = allPlayers.some(p => p.overall >= 90);
+    
+    if (hasStarPlayer) {
+      try {
+        console.log('[Trade Handler] Trade involves 90+ OVR player, triggering story generation...');
+        
+        const storyPayload = {
+          type: 'trade',
+          team1: resolved.team1,
+          team1Receives: resolved.team2Players.map(p => ({ name: p.name, overall: p.overall })),
+          team2: resolved.team2,
+          team2Receives: resolved.team1Players.map(p => ({ name: p.name, overall: p.overall }))
+        };
+        
+        // Call story generation API
+        const response = await fetch('https://hofsn-news.manus.space/api/generate-story', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(storyPayload)
+        });
+        
+        if (response.ok) {
+          console.log('[Trade Handler] Story generation triggered successfully');
+        } else {
+          console.error('[Trade Handler] Story generation failed:', response.statusText);
+        }
+      } catch (error) {
+        console.error('[Trade Handler] Failed to trigger story generation:', error);
+      }
     }
     
     const team1PlayerNames = resolved.team2Players.map(p => p.name).join(', ');

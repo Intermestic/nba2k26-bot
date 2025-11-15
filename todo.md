@@ -861,3 +861,39 @@
 - [ ] Log trade transactions to database (optional enhancement)
 - [x] Test trade parsing and approval flow (ready for user testing)
 - [ ] Save checkpoint
+
+## BUG: Trade Channel Reaction Not Working
+
+- [x] Check bot logs for reaction events
+- [x] Verify bot is monitoring trade channel
+- [x] Found issue: bot was ignoring bot-posted messages
+- [x] Removed bot message check (trades are posted by bot)
+- [x] Test reaction detection in trade channel
+- [x] Update parser to handle format: "Team send: Player OVR (badges) ..."
+- [x] Extract text from Discord embeds
+- [x] Improve fuzzy matching for nicknames (AD, Giannis, Vando)
+- [ ] Test with real trade message
+- [ ] Save checkpoint
+
+## URGENT: Revert Incorrect Trade & Fix Parser
+
+- [x] Revert trade: Move players back to original teams
+  - Brandon Miller → Hornets
+  - Jose Alvarado → Mavericks  
+  - Anthony Davis, Jaylen Brown, Paul Reed → Lakers
+- [x] Fix parser: "Team send" logic is correct (team loses those players)
+- [x] Add team roster filtering: Only match players on the sending team's roster
+- [x] This fixes both validation AND matching accuracy
+- [x] Add nickname mapping (AD, Vando, Giannis, etc.)
+- [x] Test with corrected logic (trade parsing works!)
+- [ ] Save checkpoint
+
+## Story Generation Integration
+
+- [x] Detect trades with 90+ OVR players
+- [x] Call story generation site API with trade details
+- [x] Pass: team names, player names, OVRs, trade context
+- [x] Handle API response and errors
+- [ ] Create API endpoint on story site (/api/generate-story)
+- [ ] Test with real trade
+- [ ] Save checkpoint

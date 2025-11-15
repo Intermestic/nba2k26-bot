@@ -33,6 +33,7 @@ const NBA_TEAMS = [
  */
 export function parseTrade(message: string): ParsedTrade | null {
   const text = message.trim();
+  console.log('[Trade Parser] Input text:', text);
   
   // Try to find team names in the message
   const teamMatches: Array<{ team: string; index: number }> = [];
@@ -46,8 +47,11 @@ export function parseTrade(message: string): ParsedTrade | null {
   }
   
   if (teamMatches.length < 2) {
+    console.log('[Trade Parser] Not enough teams found:', teamMatches.length);
     return null; // Need at least 2 teams
   }
+  
+  console.log('[Trade Parser] Found teams:', teamMatches);
   
   // Sort by appearance order
   teamMatches.sort((a, b) => a.index - b.index);
@@ -55,15 +59,42 @@ export function parseTrade(message: string): ParsedTrade | null {
   // Take first two unique teams
   const uniqueTeams = Array.from(new Set(teamMatches.map(t => t.team)));
   if (uniqueTeams.length < 2) {
+    console.log('[Trade Parser] Not enough unique teams:', uniqueTeams);
     return null;
   }
   
   const team1 = uniqueTeams[0];
   const team2 = uniqueTeams[1];
+  console.log('[Trade Parser] Team1:', team1, 'Team2:', team2);
   
   // Try different parsing strategies
   
-  // Strategy 1: "Team A receives: ... Team B receives: ..."
+  // Strategy 1: "Team send: Player OVR (badges) ..." format (multi-line)
+  const sendPattern = new RegExp(
+    `${team1}\\s+send[s]?[:\\s]+([^]+?)(?=${team2}\\s+send)`,
+    'is'
+  );
+  const sendMatch = text.match(sendPattern);
+  
+  if (sendMatch) {
+    // Also extract team2's players
+    const team2Pattern = new RegExp(
+      `${team2}\\s+send[s]?[:\\s]+([^]+?)$`,
+      'is'
+    );
+    const team2Match = text.match(team2Pattern);
+    
+    if (team2Match) {
+      return {
+        team1,
+        team1Players: parsePlayerListWithOVR(sendMatch[1]),
+        team2,
+        team2Players: parsePlayerListWithOVR(team2Match[1])
+      };
+    }
+  }
+  
+  // Strategy 2: "Team A receives: ... Team B receives: ..."
   const receivesPattern = new RegExp(
     `${team1}\\s+(?:receives?|gets?)[:\\s]+([^\\n]+?)(?=${team2}|$).*?${team2}\\s+(?:receives?|gets?)[:\\s]+([^\\n]+)`,
     'is'
@@ -110,6 +141,30 @@ export function parseTrade(message: string): ParsedTrade | null {
 }
 
 /**
+ * Parse player list with OVR format: "Player OVR (badges) Player OVR (badges) ..."
+ * Example: "AD 93 (22) Jaylen Brown 91 (21) Paul Reed 72 (8) 256"
+ */
+function parsePlayerListWithOVR(text: string): string[] {
+  // Remove the total OVR number at the end (3-digit number at end of line)
+  let cleaned = text.replace(/\s+\d{3}\s*$/, '').trim();
+  
+  // Pattern: Player Name + OVR + (badges)
+  // Match: "Name(s) Number (Number)"
+  const playerPattern = /([A-Za-z\s]+?)\s+(\d{2})\s+\(\d+\)/g;
+  const players: string[] = [];
+  let match;
+  
+  while ((match = playerPattern.exec(cleaned)) !== null) {
+    const playerName = match[1].trim();
+    if (playerName) {
+      players.push(playerName);
+    }
+  }
+  
+  return players;
+}
+
+/**
  * Parse a string into a list of player names
  * Handles comma-separated lists, "and" separators, etc.
  */
@@ -131,20 +186,152 @@ function parsePlayerList(text: string): string[] {
 /**
  * Find player by fuzzy name matching
  */
-export async function findPlayerByFuzzyName(name: string): Promise<{ id: string; name: string; team: string; overall: number } | null> {
+export async function findPlayerByFuzzyName(name: string, teamFilter?: string): Promise<{ id: string; name: string; team: string; overall: number } | null> {
   const db = await getDb();
   if (!db) return null;
   
   try {
-    // Get all players
-    const allPlayers = await db.select().from(players);
+    // Get all players (optionally filtered by team)
+    let allPlayers = await db.select().from(players);
     
-    // Fuzzy match
+    // Filter by team if specified
+    if (teamFilter) {
+      allPlayers = allPlayers.filter(p => p.team === teamFilter);
+      console.log(`[Player Matcher] Searching for: "${name}" on team "${teamFilter}" (${allPlayers.length} players)`);
+    } else {
+      console.log(`[Player Matcher] Searching for: "${name}" in ${allPlayers.length} players`);
+    }
+    
+    let searchName = name.trim().toLowerCase();
+    
+    // Nickname mapping
+    const NICKNAMES: Record<string, string> = {
+      'ad': 'anthony davis',
+      'vando': 'jarred vanderbilt',
+      'giannis': 'giannis antetokounmpo',
+      'lebron': 'lebron james',
+      'kd': 'kevin durant',
+      'pg': 'paul george',
+      'kawhi': 'kawhi leonard',
+      'dame': 'damian lillard',
+      'steph': 'stephen curry',
+      'cp3': 'chris paul',
+      'pg13': 'paul george',
+      'greek freak': 'giannis antetokounmpo',
+      'king james': 'lebron james',
+      'slim reaper': 'kevin durant',
+      'the beard': 'james harden',
+      'the brow': 'anthony davis'
+    };
+    
+    // Check if search is a known nickname
+    if (NICKNAMES[searchName]) {
+      console.log(`[Player Matcher] Nickname detected: "${searchName}" → "${NICKNAMES[searchName]}"`);
+      searchName = NICKNAMES[searchName];
+    }
+    
+    // Debug: Check if Vanderbilt is in the list
+    if (searchName === 'vando') {
+      const vanderbilt = allPlayers.find(p => p.name.toLowerCase().includes('vanderbilt'));
+      console.log(`[Player Matcher] Vanderbilt in database:`, vanderbilt ? vanderbilt.name : 'NOT FOUND');
+    }
+    
+    // Strategy 1: Exact match (case insensitive)
+    let player = allPlayers.find(p => p.name.toLowerCase() === searchName);
+    if (player) {
+      return {
+        id: player.id,
+        name: player.name,
+        team: player.team || 'Free Agent',
+        overall: player.overall
+      };
+    }
+    
+    // Strategy 2: Check if search is initials (e.g., "AD" for "Anthony Davis")
+    if (searchName.length <= 4 && /^[a-z]+$/.test(searchName)) {
+      player = allPlayers.find(p => {
+        const parts = p.name.split(' ');
+        const initials = parts.map(part => part[0].toLowerCase()).join('');
+        return initials === searchName;
+      });
+      if (player) {
+        return {
+          id: player.id,
+          name: player.name,
+          team: player.team || 'Free Agent',
+          overall: player.overall
+        };
+      }
+    }
+    
+    // Strategy 3: Check if search matches last name (or is contained in it)
+    player = allPlayers.find(p => {
+      const parts = p.name.split(' ');
+      const lastName = parts[parts.length - 1].toLowerCase();
+      const matches = lastName === searchName || lastName.startsWith(searchName) || lastName.includes(searchName);
+      if (searchName === 'vando') {
+        console.log(`[Player Matcher] Checking "${p.name}": lastName="${lastName}", matches=${matches}`);
+      }
+      return matches;
+    });
+    if (player) {
+      console.log(`[Player Matcher] Found via Strategy 3 (last name): "${player.name}"`);
+      return {
+        id: player.id,
+        name: player.name,
+        team: player.team || 'Free Agent',
+        overall: player.overall
+      };
+    }
+    console.log(`[Player Matcher] Strategy 3 failed for "${searchName}"`);
+    
+    // Strategy 3.5: Fuzzy match on last names only (for nicknames like "Vando")
+    if (searchName.length >= 4) {
+      const lastNameMatches = allPlayers.map(p => {
+        const parts = p.name.split(' ');
+        const lastName = parts[parts.length - 1];
+        return { player: p, lastName };
+      });
+      
+      const fuzzyLastNames = extract(searchName, lastNameMatches.map(m => m.lastName));
+      
+      if (fuzzyLastNames.length > 0 && fuzzyLastNames[0][1] >= 60) {
+        const matchedLastName = fuzzyLastNames[0][0];
+        const match = lastNameMatches.find(m => m.lastName === matchedLastName);
+        
+        if (match) {
+          console.log(`[Player Matcher] Found via Strategy 3.5 (fuzzy last name): "${match.player.name}" (score: ${fuzzyLastNames[0][1]})`);
+          return {
+            id: match.player.id,
+            name: match.player.name,
+            team: match.player.team || 'Free Agent',
+            overall: match.player.overall
+          };
+        }
+      }
+    }
+    
+    // Strategy 4: Check if search matches first name (for unique names like "Giannis")
+    player = allPlayers.find(p => {
+      const parts = p.name.split(' ');
+      const firstName = parts[0].toLowerCase();
+      return firstName === searchName || firstName.startsWith(searchName);
+    });
+    if (player) {
+      return {
+        id: player.id,
+        name: player.name,
+        team: player.team || 'Free Agent',
+        overall: player.overall
+      };
+    }
+    
+    // Strategy 5: Fuzzy match (fallback)
     const matches = extract(name, allPlayers.map(p => p.name));
     
-    if (matches.length > 0 && matches[0][1] >= 70) {
+    if (matches.length > 0 && matches[0][1] >= 60) {
       const matchedName = matches[0][0];
-      const player = allPlayers.find(p => p.name === matchedName);
+      player = allPlayers.find(p => p.name === matchedName);
       
       if (player) {
         return {
@@ -178,23 +365,23 @@ export async function resolveTradePlayer(parsedTrade: ParsedTrade): Promise<{
   const team1Players: Array<{ id: string; name: string; overall: number }> = [];
   const team2Players: Array<{ id: string; name: string; overall: number }> = [];
   
-  // Resolve team 1 players
+  // Resolve team 1 players (filter by team1 roster)
   for (const playerName of parsedTrade.team1Players) {
-    const player = await findPlayerByFuzzyName(playerName);
+    const player = await findPlayerByFuzzyName(playerName, parsedTrade.team1);
     if (player) {
       team1Players.push({ id: player.id, name: player.name, overall: player.overall });
     } else {
-      errors.push(`Player not found: ${playerName}`);
+      errors.push(`Player not found on ${parsedTrade.team1}: ${playerName}`);
     }
   }
   
-  // Resolve team 2 players
+  // Resolve team 2 players (filter by team2 roster)
   for (const playerName of parsedTrade.team2Players) {
-    const player = await findPlayerByFuzzyName(playerName);
+    const player = await findPlayerByFuzzyName(playerName, parsedTrade.team2);
     if (player) {
       team2Players.push({ id: player.id, name: player.name, overall: player.overall });
     } else {
-      errors.push(`Player not found: ${playerName}`);
+      errors.push(`Player not found on ${parsedTrade.team2}: ${playerName}`);
     }
   }
   
