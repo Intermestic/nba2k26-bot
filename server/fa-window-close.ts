@@ -128,20 +128,33 @@ function parseSummaryMessage(embed: any): Array<{ playerName: string; dropPlayer
     // Field name is player name (signed player)
     const playerName = field.name;
     
-    // Field value format: "Cut: PlayerName\nSign: PlayerName\n→ **TeamName** ($Amount)\nWinner: Username"
-    // or without cut: "Sign: PlayerName\n→ **TeamName** ($Amount)\nWinner: Username"
-    const cutMatch = field.value.match(/Cut:\s+(.+)/);
-    const teamMatch = field.value.match(/→\s+\*\*(.+?)\*\*\s+\(\$(\d+)\)/);
-    const winnerMatch = field.value.match(/Winner:\s+(.+)/);
+    // Try Format 1: "Cut: PlayerName\nSign: PlayerName\n→ **TeamName** ($Amount)\nWinner: Username"
+    const cutMatch1 = field.value.match(/Cut:\s+(.+?)(?:\n|$)/);
+    const teamMatch1 = field.value.match(/→\s+\*\*(.+?)\*\*\s+\(\$(\d+)\)/);
+    const winnerMatch1 = field.value.match(/Winner:\s+(.+)/);
     
-    if (teamMatch && winnerMatch) {
+    if (teamMatch1 && winnerMatch1) {
       bids.push({
         playerName,
-        dropPlayer: cutMatch ? cutMatch[1].trim() : null,
-        team: teamMatch[1],
-        bidAmount: parseInt(teamMatch[2]),
-        bidderName: winnerMatch[1]
+        dropPlayer: cutMatch1 ? cutMatch1[1].trim() : null,
+        team: teamMatch1[1],
+        bidAmount: parseInt(teamMatch1[2]),
+        bidderName: winnerMatch1[1]
       });
+      continue;
+    }
+    
+    // Try Format 2: "Cut: X / Sign: Y - $Z - Team"
+    const format2Match = field.value.match(/Cut:\s+(.+?)\s+\/\s+Sign:\s+(.+?)\s+-\s+\$(\d+)\s+-\s+(.+)/);
+    if (format2Match) {
+      bids.push({
+        playerName,
+        dropPlayer: format2Match[1].trim(),
+        team: format2Match[4].trim(),
+        bidAmount: parseInt(format2Match[3]),
+        bidderName: 'Unknown' // Manual summaries don't include username
+      });
+      continue;
     }
   }
   

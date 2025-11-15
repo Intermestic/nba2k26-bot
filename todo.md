@@ -78,3 +78,20 @@ Parse all bids from free agency opening to first window close, identify winning 
 
 ### Phase 3: Checkpoint
 - [ ] Save checkpoint
+
+
+## CURRENT TASK: Fix Batch Processor Embed Parser
+
+### Issue
+Batch processor failing with "No bids found in summary message" when trying to process the manual summary
+
+### Root Cause
+Parser expects specific embed field structure but manual summary uses different format:
+- Field name: Player name
+- Field value: "Cut: X / Sign: Y - $Z - Team"
+
+### Fix
+- [x] Update parseSummaryMessage to handle this embed format
+- [x] Extract player, cut, sign, bid, team from field value
+- [x] Added Format 2 parser: "Cut: X / Sign: Y - $Z - Team"
+- [x] Test with manual summary message ID: 1439332525502627880 (ready for user to react with ⚡)
