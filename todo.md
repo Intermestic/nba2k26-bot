@@ -192,3 +192,19 @@ Add two-step confirmation for batch processing: preview → confirm → execute
 - [x] Update dropdown to use validated team list only (imports VALID_TEAMS)
 - [x] Removed Clippers and Thunder (not in league)
 - [x] 28 teams + Free Agents = 29 total
+
+
+## CURRENT TASK: FA Message Validation
+
+### Team Name Validation
+- [x] Check team name against VALID_TEAMS and aliases
+- [x] If invalid, suggest closest match using fuzzy matching
+- [x] Reply with helpful error message before rejecting
+- [x] Show alias examples (76ers → Sixers, Blazers → Trail Blazers)
+
+### Player Name Validation
+- [x] Query database for signed player
+- [x] Query database for dropped player (if specified)
+- [x] If not found, use fuzzy matching to suggest similar names (top 3)
+- [x] Reply with suggestions and tips if validation fails
+- [x] Require drop player to be specified (no more "Unknown" team)

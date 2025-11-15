@@ -421,6 +421,25 @@ async function handleBidMessage(message: Message) {
   
   if (!player) {
     console.log(`[FA Bids] Player not found: ${parsedBid.playerName}`);
+    
+    // Get suggestions for similar player names
+    const { getDb } = await import('./db');
+    const { players: playersTable } = await import('../drizzle/schema');
+    const db = await getDb();
+    if (db) {
+      const allPlayers = await db.select({ name: playersTable.name }).from(playersTable);
+      const { extract } = await import('fuzzball');
+      const suggestions = extract(parsedBid.playerName, allPlayers.map(p => p.name), { limit: 3 });
+      
+      const suggestionText = suggestions.length > 0
+        ? `\n\n**Did you mean?**\n${suggestions.map(s => `• ${s[0]} (${s[1]}% match)`).join('\n')}`
+        : '';
+      
+      await message.reply(
+        `❌ **Player Not Found**: "${parsedBid.playerName}" does not exist in the database.${suggestionText}\n\n` +
+        `💡 **Tip**: Check spelling or use common nicknames (e.g., "LeBron", "Steph", "KD").`
+      );
+    }
     return;
   }
   
@@ -436,11 +455,71 @@ async function handleBidMessage(message: Message) {
   
   // Determine team from drop player or message context
   let team = 'Unknown';
+  let dropPlayerValidated: { id: string; name: string; team: string; overall: number } | null = null;
+  
   if (parsedBid.dropPlayer) {
-    const droppedPlayer = await findPlayerByName(parsedBid.dropPlayer);
-    if (droppedPlayer) {
-      team = droppedPlayer.team || 'Unknown';
+    // Validate drop player exists
+    dropPlayerValidated = await findPlayerByFuzzyName(parsedBid.dropPlayer);
+    
+    if (!dropPlayerValidated) {
+      console.log(`[FA Bids] Drop player not found: ${parsedBid.dropPlayer}`);
+      
+      // Get suggestions for similar player names
+      const { getDb } = await import('./db');
+      const { players: playersTable } = await import('../drizzle/schema');
+      const db = await getDb();
+      if (db) {
+        const allPlayers = await db.select({ name: playersTable.name }).from(playersTable);
+        const { extract } = await import('fuzzball');
+        const suggestions = extract(parsedBid.dropPlayer, allPlayers.map(p => p.name), { limit: 3 });
+        
+        const suggestionText = suggestions.length > 0
+          ? `\n\n**Did you mean?**\n${suggestions.map(s => `• ${s[0]} (${s[1]}% match)`).join('\n')}`
+          : '';
+        
+        await message.reply(
+          `❌ **Drop Player Not Found**: "${parsedBid.dropPlayer}" does not exist in the database.${suggestionText}\n\n` +
+          `💡 **Tip**: Make sure the player you're cutting is spelled correctly.`
+        );
+      }
+      return;
     }
+    
+    team = dropPlayerValidated.team || 'Unknown';
+    
+    // Validate team name using team-validator
+    const { validateTeamName } = await import('./team-validator');
+    const validatedTeam = validateTeamName(team);
+    
+    if (!validatedTeam) {
+      console.log(`[FA Bids] Invalid team detected: ${team}`);
+      
+      // Get suggestions for similar team names
+      const { VALID_TEAMS } = await import('./team-validator');
+      const { extract } = await import('fuzzball');
+      const suggestions = extract(team, VALID_TEAMS as unknown as string[], { limit: 3 });
+      
+      const suggestionText = suggestions.length > 0
+        ? `\n\n**Did you mean?**\n${suggestions.map(s => `• ${s[0]} (${s[1]}% match)`).join('\n')}`
+        : '';
+      
+      await message.reply(
+        `❌ **Invalid Team**: "${team}" is not a valid team name.${suggestionText}\n\n` +
+        `💡 **Tip**: Check the team name spelling. The bot recognizes aliases like "76ers" → "Sixers", "Blazers" → "Trail Blazers".`
+      );
+      return;
+    }
+    
+    // Use validated canonical team name
+    team = validatedTeam;
+  } else {
+    // No drop player specified - cannot determine team
+    await message.reply(
+      `❌ **Missing Drop Player**: You must specify which player to cut.\n\n` +
+      `💡 **Format**: "Cut [Player Name] Sign [Player Name] Bid [Amount]"\n` +
+      `**Example**: "Cut Chris Paul Sign Rocco Zikarsky Bid 104"`
+    );
+    return;
   }
   
   // Check if team is over cap and trying to sign 71+ OVR player
