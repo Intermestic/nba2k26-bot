@@ -1020,7 +1020,170 @@ export async function startDiscordBot(token: string) {
             
             embed.setFooter({ text: `Total coins spent: $${totalCoins} | Processed by ${user.tag}` });
             
-            await previewMessage.edit({ embeds: [embed] });
+            const completionMessage = await previewMessage.edit({ embeds: [embed] });
+            
+            // Add retry button if there are failures
+            if (result.failCount && result.failCount > 0) {
+              await completionMessage.react('🔄');
+              
+              // Set up retry collector
+              const retryCollector = completionMessage.createReactionCollector({
+                filter: (r, u) => r.emoji.name === '🔄' && !u.bot,
+                time: 300000, // 5 minutes
+                max: 1
+              });
+              
+              retryCollector.on('collect', async (r, retryUser) => {
+                console.log(`[Discord Bot] Retry requested by ${retryUser.tag}`);
+                
+                // Extract failed transactions
+                const failedBids = result.results
+                  .filter(res => !res.success)
+                  .map(res => ({
+                    playerName: res.playerName,
+                    team: res.team,
+                    bidAmount: res.bidAmount,
+                    dropPlayer: res.dropPlayer,
+                    bidderName: retryUser.username
+                  }));
+                
+                if (failedBids.length === 0) {
+                  await completionMessage.reply('No failed transactions to retry.');
+                  return;
+                }
+                
+                // Create a mock message object with failed bids as embed
+                const { EmbedBuilder: EmbedBuilder2 } = await import('discord.js');
+                const retryEmbed = new EmbedBuilder2()
+                  .setTitle('🔄 Retry Failed Transactions')
+                  .setDescription(`Retrying ${failedBids.length} failed transaction${failedBids.length === 1 ? '' : 's'}`);
+                
+                // Group by team for display
+                const teamGroups = new Map<string, typeof failedBids>();
+                for (const bid of failedBids) {
+                  if (!teamGroups.has(bid.team)) {
+                    teamGroups.set(bid.team, []);
+                  }
+                  teamGroups.get(bid.team)!.push(bid);
+                }
+                
+                const sortedTeams = Array.from(teamGroups.keys()).sort();
+                for (const team of sortedTeams) {
+                  const bids = teamGroups.get(team)!;
+                  const teamCoins = bids.reduce((sum, b) => sum + b.bidAmount, 0);
+                  const details = bids.map(b => {
+                    if (b.dropPlayer) {
+                      return `Cut: ${b.dropPlayer} / Sign: ${b.playerName} - $${b.bidAmount}`;
+                    } else {
+                      return `Sign: ${b.playerName} - $${b.bidAmount}`;
+                    }
+                  }).join('\n');
+                  
+                  retryEmbed.addFields({
+                    name: `${team} ($${teamCoins})`,
+                    value: details,
+                    inline: false
+                  });
+                }
+                
+                const mockMessage = {
+                  embeds: [retryEmbed]
+                };
+                
+                // Generate preview for retry
+                const { generateBatchPreview } = await import('./fa-window-close');
+                const retryPreview = await generateBatchPreview(mockMessage);
+                
+                if (!retryPreview.success) {
+                  await completionMessage.reply(`❌ Failed to generate retry preview: ${retryPreview.message}`);
+                  return;
+                }
+                
+                // Post retry preview
+                const retryPreviewEmbed = new EmbedBuilder2()
+                  .setColor(0xffaa00)
+                  .setTitle('⚠️ Retry Batch Processing Preview')
+                  .setDescription(`**${retryPreview.bidCount} failed transactions ready to retry**\n\nReact with ✅ within 30 seconds to confirm and execute.`);
+                
+                if (retryPreview.teamSummaries && retryPreview.teamSummaries.length > 0) {
+                  const summaryList = retryPreview.teamSummaries.slice(0, 20).join('\n');
+                  const remaining = retryPreview.teamSummaries.length - 20;
+                  retryPreviewEmbed.addFields({ 
+                    name: `Transactions by Team (${retryPreview.teamSummaries.length} teams)`, 
+                    value: summaryList + (remaining > 0 ? `\n... and ${remaining} more teams` : ''),
+                    inline: false
+                  });
+                }
+                
+                retryPreviewEmbed.setFooter({ text: `Total coins: $${retryPreview.totalCoins} | Requested by ${retryUser.tag}` });
+                
+                const retryPreviewMessage = await completionMessage.reply({ embeds: [retryPreviewEmbed] });
+                await retryPreviewMessage.react('✅');
+                
+                // Set up confirmation collector for retry
+                const retryConfirmCollector = retryPreviewMessage.createReactionCollector({
+                  filter: (r, u) => r.emoji.name === '✅' && !u.bot,
+                  time: 30000,
+                  max: 1
+                });
+                
+                retryConfirmCollector.on('collect', async (r, confirmUser) => {
+                  console.log(`[Discord Bot] Retry confirmed by ${confirmUser.tag}`);
+                  
+                  // Process the retry batch
+                  const { processBidsFromSummary } = await import('./fa-window-close');
+                  const retryResult = await processBidsFromSummary(mockMessage, confirmUser.id);
+                  
+                  if (retryResult.success && retryResult.results) {
+                    const retrySuccessList = retryResult.results
+                      .filter(r => r.success)
+                      .map(r => `✅ ${r.playerName} → **${r.team}** - $${r.bidAmount}`)
+                      .join('\n') || 'None';
+                    
+                    const retryFailList = retryResult.results
+                      .filter(r => !r.success)
+                      .map(r => `❌ ${r.playerName} → **${r.team}** - ${r.error || 'Unknown error'}`)
+                      .join('\n') || 'None';
+                    
+                    const retryTotalCoins = retryResult.results
+                      .filter(r => r.success)
+                      .reduce((sum, r) => sum + r.bidAmount, 0);
+                    
+                    const retryCompletionEmbed = new EmbedBuilder2()
+                      .setColor(0x00ff00)
+                      .setTitle('✅ Retry Complete')
+                      .setDescription(`Processed ${retryResult.successCount} successful transactions`);
+                    
+                    if (retrySuccessList !== 'None') {
+                      retryCompletionEmbed.addFields({ name: 'Successful Transactions', value: retrySuccessList.substring(0, 1024) });
+                    }
+                    
+                    if (retryFailList !== 'None') {
+                      retryCompletionEmbed.addFields({ name: 'Failed Transactions', value: retryFailList.substring(0, 1024) });
+                    }
+                    
+                    retryCompletionEmbed.setFooter({ text: `Total coins spent: $${retryTotalCoins} | Processed by ${confirmUser.tag}` });
+                    
+                    await retryPreviewMessage.edit({ embeds: [retryCompletionEmbed] });
+                    
+                    // Add another retry button if there are still failures
+                    if (retryResult.failCount && retryResult.failCount > 0) {
+                      await retryPreviewMessage.react('🔄');
+                    }
+                  } else {
+                    await retryPreviewMessage.edit({ content: `❌ Retry failed: ${retryResult.message}`, embeds: [] });
+                  }
+                });
+                
+                retryConfirmCollector.on('end', async (collected) => {
+                  if (collected.size === 0) {
+                    await retryPreviewMessage.edit({ 
+                      embeds: [retryPreviewEmbed.setColor(0x808080).setDescription('⏱️ Confirmation timed out. Retry cancelled.')]
+                    });
+                  }
+                });
+              });
+            }
           } else {
             await previewMessage.edit({ content: `❌ Batch processing failed: ${result.message}`, embeds: [] });
           }

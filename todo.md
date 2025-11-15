@@ -161,3 +161,16 @@ Add two-step confirmation for batch processing: preview → confirm → execute
 - [x] Continue processing even if individual transactions fail
 - [x] Report successes and failures separately (already exists)
 - [x] Show detailed error for each failed transaction (already exists)
+
+
+## CURRENT TASK: Retry Failed Transactions
+
+### Implementation
+- [x] After batch completion, check if there are any failed transactions
+- [x] If failures exist, add 🔄 reaction to completion message
+- [x] Create reaction collector for 🔄 emoji (5 min timeout)
+- [x] Extract failed transaction details from results
+- [x] Reconstruct bids array with only failed transactions
+- [x] Generate new preview with failed transactions
+- [x] Allow user to confirm and retry
+- [x] Add recursive retry button if retry also has failures
