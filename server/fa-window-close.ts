@@ -114,3 +114,178 @@ export function scheduleWindowCloseSummaries(client: Client) {
   
   console.log('[Window Close] Summaries scheduled for 11:50 AM/PM EST');
 }
+
+/**
+ * Parse winning bids from window close summary message
+ */
+function parseSummaryMessage(embed: any): Array<{ playerName: string; team: string; bidAmount: number; bidderName: string }> {
+  const bids: Array<{ playerName: string; team: string; bidAmount: number; bidderName: string }> = [];
+  
+  if (!embed.fields) return bids;
+  
+  for (const field of embed.fields) {
+    // Field name is player name
+    const playerName = field.name;
+    
+    // Field value format: "→ **TeamName** ($Amount)\nWinner: Username"
+    const teamMatch = field.value.match(/→\s+\*\*(.+?)\*\*\s+\(\$(\d+)\)/);
+    const winnerMatch = field.value.match(/Winner:\s+(.+)/);
+    
+    if (teamMatch && winnerMatch) {
+      bids.push({
+        playerName,
+        team: teamMatch[1],
+        bidAmount: parseInt(teamMatch[2]),
+        bidderName: winnerMatch[1]
+      });
+    }
+  }
+  
+  return bids;
+}
+
+/**
+ * Process all winning bids from a summary message
+ */
+export async function processBidsFromSummary(message: any, processorId: string) {
+  try {
+    console.log(`[Batch Process] Starting batch processing from summary message by user ${processorId}`);
+    
+    // Parse bids from the summary message embed
+    if (!message.embeds || message.embeds.length === 0) {
+      return {
+        success: false,
+        message: 'No embed found in message'
+      };
+    }
+    
+    const bidsToProcess = parseSummaryMessage(message.embeds[0]);
+    
+    if (bidsToProcess.length === 0) {
+      return {
+        success: false,
+        message: 'No bids found in summary message'
+      };
+    }
+    
+    console.log(`[Batch Process] Found ${bidsToProcess.length} bids to process`);
+    
+    const { getDb } = await import('./db');
+    const { players, faTransactions, teamCoins } = await import('../drizzle/schema');
+    const { eq } = await import('drizzle-orm');
+    const { findPlayerByFuzzyName } = await import('./fa-bid-parser');
+    
+    const db = await getDb();
+    if (!db) {
+      return {
+        success: false,
+        message: 'Database connection failed'
+      };
+    }
+    
+    const results: Array<{
+      playerName: string;
+      team: string;
+      bidAmount: number;
+      dropPlayer?: string;
+      success: boolean;
+      error?: string;
+    }> = [];
+    
+    // Process each bid
+    for (const bid of bidsToProcess) {
+      try {
+        console.log(`[Batch Process] Processing: ${bid.playerName} → ${bid.team} ($${bid.bidAmount})`);
+        
+        // Find the player being signed
+        const signPlayer = await findPlayerByFuzzyName(bid.playerName);
+        if (!signPlayer) {
+          results.push({
+            playerName: bid.playerName,
+            team: bid.team,
+            bidAmount: bid.bidAmount,
+            success: false,
+            error: 'Player not found'
+          });
+          continue;
+        }
+        
+        let dropPlayerName = 'N/A';
+        
+        // Handle cut player - need to parse from bid message or use placeholder
+        // For now, we'll require manual processing if dropPlayer info is needed
+        // In the future, we can store dropPlayer in faBids table
+        
+        // Add signed player to roster
+        await db
+          .update(players)
+          .set({ team: bid.team })
+          .where(eq(players.id, signPlayer.id));
+        console.log(`[Batch Process] Signed ${signPlayer.name} to ${bid.team}`);
+        
+        // Get team's current coins
+        const teamCoinRecord = await db
+          .select()
+          .from(teamCoins)
+          .where(eq(teamCoins.team, bid.team));
+        
+        const currentCoins = teamCoinRecord[0]?.coinsRemaining || 100;
+        const coinsAfter = currentCoins - bid.bidAmount;
+        
+        // Deduct coins
+        await db
+          .update(teamCoins)
+          .set({ coinsRemaining: coinsAfter })
+          .where(eq(teamCoins.team, bid.team));
+        
+        // Create transaction record
+        await db.insert(faTransactions).values({
+          team: bid.team,
+          dropPlayer: dropPlayerName,
+          signPlayer: signPlayer.name,
+          signPlayerOvr: signPlayer.overall,
+          bidAmount: bid.bidAmount,
+          adminUser: processorId,
+          coinsRemaining: coinsAfter
+        });
+        
+        results.push({
+          playerName: bid.playerName,
+          team: bid.team,
+          bidAmount: bid.bidAmount,
+          dropPlayer: dropPlayerName,
+          success: true
+        });
+        
+      } catch (error) {
+        console.error(`[Batch Process] Error processing ${bid.playerName}:`, error);
+        results.push({
+          playerName: bid.playerName,
+          team: bid.team,
+          bidAmount: bid.bidAmount,
+          success: false,
+          error: error instanceof Error ? error.message : 'Unknown error'
+        });
+      }
+    }
+    
+    const successCount = results.filter(r => r.success).length;
+    const failCount = results.filter(r => !r.success).length;
+    
+    console.log(`[Batch Process] Completed: ${successCount} success, ${failCount} failed`);
+    
+    return {
+      success: true,
+      results,
+      successCount,
+      failCount
+    };
+    
+  } catch (error) {
+    console.error('[Batch Process] Fatal error:', error);
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : 'Unknown error'
+    };
+  }
+}

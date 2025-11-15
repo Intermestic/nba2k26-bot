@@ -767,7 +767,54 @@ export async function startDiscordBot(token: string) {
     // Route to appropriate handler based on channel
     if (reaction.message.channelId === FA_CHANNEL_ID) {
       console.log(`[Discord Bot] ⚡ reaction detected in FA channel by ${user.tag}`);
-      await handleFAMessage(message);
+      
+      // Check if this is a window close summary message (from bot with "Bidding Window Closed" title)
+      if (message.author.bot && message.embeds.length > 0 && message.embeds[0].title?.includes('Bidding Window Closed')) {
+        console.log('[Discord Bot] Detected window close summary, starting batch processing...');
+        const { processBidsFromSummary } = await import('./fa-window-close');
+        const { EmbedBuilder } = await import('discord.js');
+        
+        const result = await processBidsFromSummary(message, user.tag || user.username || 'Unknown');
+        
+        if (result.success && 'results' in result && result.results) {
+          // Post completion summary
+          const successList = result.results
+            .filter(r => r.success)
+            .map(r => `✅ ${r.playerName} → **${r.team}** ($${r.bidAmount})`)
+            .join('\n') || 'None';
+          
+          const failList = result.results
+            .filter(r => !r.success)
+            .map(r => `❌ ${r.playerName} → **${r.team}** - ${r.error || 'Unknown error'}`)
+            .join('\n') || 'None';
+          
+          const totalCoins = result.results
+            .filter(r => r.success)
+            .reduce((sum, r) => sum + r.bidAmount, 0);
+          
+          const embed = new EmbedBuilder()
+            .setColor(0x00ff00)
+            .setTitle('✅ Batch Processing Complete')
+            .setDescription(`Processed ${result.successCount} successful transactions`);
+          
+          if (successList) {
+            embed.addFields({ name: 'Successful Transactions', value: successList });
+          }
+          
+          if (failList) {
+            embed.addFields({ name: 'Failed Transactions', value: failList });
+          }
+          
+          embed.setFooter({ text: `Total coins spent: $${totalCoins} | Processed by ${user.tag}` });
+          
+          await message.reply({ embeds: [embed] });
+        } else {
+          await message.reply(`❌ Batch processing failed: ${result.message}`);
+        }
+      } else {
+        // Regular FA transaction
+        await handleFAMessage(message);
+      }
     } else if (reaction.message.channelId === TRADE_CHANNEL_ID) {
       console.log(`[Discord Bot] ⚡ reaction detected in Trade channel by ${user.tag}`);
       await handleTradeMessage(message);

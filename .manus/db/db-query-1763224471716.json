@@ -1,0 +1,15 @@
+{
+  "query": "SELECT team, SUM(overall) as total_overall, COUNT(*) as player_count FROM players WHERE team = 'Hornets' GROUP BY team;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT team, SUM(overall) as total_overall, COUNT(*) as player_count FROM players WHERE team = 'Hornets' GROUP BY team;",
+  "rows": [
+    {
+      "team": "Hornets",
+      "total_overall": "1086",
+      "player_count": "14"
+    }
+  ],
+  "messages": [],
+  "stdout": "team\ttotal_overall\tplayer_count\nHornets\t1086\t14\n",
+  "stderr": "",
+  "execution_time_ms": 1864
+}

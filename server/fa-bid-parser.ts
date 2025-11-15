@@ -342,6 +342,11 @@ export async function getActiveBids(windowId: string): Promise<Array<{ playerNam
     const { faTransactions } = await import('../drizzle/schema');
     const playerNames = Array.from(highestBids.keys());
     
+    // Skip processed check if no players
+    if (playerNames.length === 0) {
+      return [];
+    }
+    
     const processedTransactions = await db
       .select({ signPlayer: faTransactions.signPlayer })
       .from(faTransactions)
