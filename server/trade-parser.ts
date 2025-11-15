@@ -144,40 +144,38 @@ export function parseTrade(message: string): ParsedTrade | null {
 }
 
 /**
- * Parse player list with OVR format: "Player OVR (badges) Player OVR (badges) ..."
- * Example: "AD 93 (22) Jaylen Brown 91 (21) Paul Reed 72 (8) 256"
- * Also handles multi-line format:
- * "81 Kyshawn George (7)
- *  80 Jordan Poole (13)
- *  161/20"
+ * Parse player list - extract player names from lines, ignoring all numbers
+ * Supports formats:
+ * - "Trae young 88/16"
+ * - "jarrett allen 84/13"
+ * - "Caleb Martin 73/4"
+ * - "adem Bona75/5"
  */
 function parsePlayerListWithOVR(text: string): string[] {
-  // Remove the total OVR/badge count at the end (e.g., "161/20" or "256")
-  let cleaned = text.replace(/\s+\d{2,3}(?:\/\d{1,2})?\s*$/, '').trim();
-  
-  // Pattern: OVR + Player Name + (badges)
-  // Match: "Number Name(s) (Number)" (OVR first format)
-  const ovrFirstPattern = /(\d{2})\s+([A-Za-z\s]+?)\s+\(\d+\)/g;
   const players: string[] = [];
-  let match;
   
-  while ((match = ovrFirstPattern.exec(cleaned)) !== null) {
-    const playerName = match[2].trim();
-    if (playerName) {
-      players.push(playerName);
-      console.log('[Trade Parser] Found player (OVR-first):', playerName);
+  // Split by newlines to process each line
+  const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+  
+  for (const line of lines) {
+    // Skip lines that are just numbers (totals like "245/33")
+    if (/^\d+\/\d+$/.test(line)) {
+      continue;
     }
-  }
-  
-  // If no players found, try original pattern (Name OVR (badges))
-  if (players.length === 0) {
-    const nameFirstPattern = /([A-Za-z\s]+?)\s+(\d{2})\s+\(\d+\)/g;
-    while ((match = nameFirstPattern.exec(cleaned)) !== null) {
-      const playerName = match[1].trim();
-      if (playerName) {
-        players.push(playerName);
-        console.log('[Trade Parser] Found player (name-first):', playerName);
-      }
+    
+    // Extract player name by removing all numbers, slashes, and parentheses
+    // This handles: "Trae young 88/16" → "Trae young"
+    //               "adem Bona75/5" → "adem Bona"
+    const playerName = line
+      .replace(/\d+\/\d+/g, '')  // Remove OVR/badges format
+      .replace(/\d+\s*\(\d+\)/g, '')  // Remove OVR (badges) format
+      .replace(/\(\d+\)/g, '')  // Remove standalone (badges)
+      .replace(/\d+/g, '')  // Remove any remaining numbers
+      .trim();
+    
+    if (playerName.length > 0) {
+      players.push(playerName);
+      console.log('[Trade Parser] Found player:', playerName);
     }
   }
   

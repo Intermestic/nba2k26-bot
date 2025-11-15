@@ -586,4 +586,33 @@ Transaction processes are creating new teams instead of validating against 28+1 
 - [x] Verify only 28 teams + Free Agents exist in database (29 total confirmed)
 - [x] Fixed Mavericks → Mavs (was extra 30th team)
 - [x] Test that invalid team names are rejected (validation enforced in all mutations)
+- [x] Save checkpoint (version 21a7533c)
+
+
+## CURRENT TASK: Fix Trade Parser for Specific Format
+
+### Issue
+Trade message not being parsed correctly - confirmation shows empty player lists
+
+### Example Message
+```
+Knicks send
+Trae young 88/16
+jarrett allen 84/13
+Caleb Martin 73/4
+245/33
+
+hornets send:
+Anthony Davis 93/22
+max strus 77/5
+adem Bona75/5
+245/32
+```
+
+### Tasks
+- [x] Read trade-parser.ts to understand current parsing logic
+- [x] Identify why this format fails (parser was too focused on number formats)
+- [x] Simplified parser to ignore ALL numbers and extract only player names
+- [x] Parser now strips out OVR/badges in any format and keeps only names
+- [x] Handles edge cases like "adem Bona75/5" (no space before numbers)
 - [ ] Save checkpoint
