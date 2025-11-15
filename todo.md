@@ -848,3 +848,16 @@
 - [x] Configure team-to-Discord-user mapping (26 teams configured)
 - [x] Test role assignment and removal (ready after mapping configured)
 - [ ] Save checkpoint
+
+## Trade Tracking System
+
+- [x] Add trade channel monitoring (1087524540634116116)
+- [x] Parse trade messages with fuzzy player matching
+- [x] Detect team names in trade messages
+- [x] Create confirmation UI for parsed trades
+- [x] Show all players being swapped between teams
+- [x] Update rosters when trade is approved
+- [x] Trigger overcap role updates after trades
+- [ ] Log trade transactions to database (optional enhancement)
+- [x] Test trade parsing and approval flow (ready for user testing)
+- [ ] Save checkpoint

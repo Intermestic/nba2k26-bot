@@ -1,10 +1,14 @@
-import { Client, GatewayIntentBits, Message, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, Partials, ButtonInteraction } from 'discord.js';
+import type { Message, ButtonInteraction } from 'discord.js';
+import { Client, GatewayIntentBits, Partials } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 import { getDb } from './db';
 import { players, teamCoins, faTransactions } from '../drizzle/schema';
 import { eq, sql } from 'drizzle-orm';
 import { extract } from 'fuzzball';
+import { handleTradeMessage } from './trade-handler';
 
 const FA_CHANNEL_ID = '1095812920056762510';
+const TRADE_CHANNEL_ID = '1087524540634116116';
 const GUILD_ID = '860782751656837140';
 const MIN_MESSAGE_ID = '1438598608533454889'; // Only process bid messages after this status update
 
@@ -620,24 +624,25 @@ export async function startDiscordBot(token: string) {
     }
   });
   
-  // Also handle emoji reactions for manual transaction processing
+  // Handle emoji reactions for manual transaction and trade processing
   client.on('messageReactionAdd', async (reaction, user) => {
     // Ignore bot reactions
     if (user.bot) return;
     
-    // Only process reactions in FA channel
-    if (reaction.message.channelId !== FA_CHANNEL_ID) return;
-    
     // Only process lightning bolt emoji
     if (reaction.emoji.name !== '⚡') return;
-    
-    console.log(`[Discord Bot] ⚡ reaction detected by ${user.tag} on message ${reaction.message.id}`);
     
     // Fetch the full message if it's partial
     const message = reaction.message.partial ? await reaction.message.fetch() : reaction.message;
     
-    // Process the message as transaction
-    await handleFAMessage(message);
+    // Route to appropriate handler based on channel
+    if (reaction.message.channelId === FA_CHANNEL_ID) {
+      console.log(`[Discord Bot] ⚡ reaction detected in FA channel by ${user.tag}`);
+      await handleFAMessage(message);
+    } else if (reaction.message.channelId === TRADE_CHANNEL_ID) {
+      console.log(`[Discord Bot] ⚡ reaction detected in Trade channel by ${user.tag}`);
+      await handleTradeMessage(message);
+    }
   });
   
   await client.login(token);
@@ -652,6 +657,13 @@ export async function stopDiscordBot() {
     client = null;
     console.log('[Discord Bot] Stopped');
   }
+}
+
+/**
+ * Get Discord client instance
+ */
+export function getDiscordClient(): Client | null {
+  return client;
 }
 
 /**
