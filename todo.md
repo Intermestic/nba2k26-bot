@@ -56,3 +56,25 @@
 - [x] CSS variables overridden in onclone callback
 - [x] Ready for user testing
 - [ ] Save checkpoint
+
+
+## CURRENT TASK: Parse Historical FA Bids & Generate Summary
+
+### Goal
+Parse all bids from free agency opening to first window close, identify winning bidders, and generate window close summary for batch processing
+
+### Phase 1: Parse Bid Data
+- [x] Read pasted_content_2.txt
+- [x] Extract all bid messages (Cut/Sign/Bid format)
+- [x] Group bids by player
+- [x] Identify highest bidder for each player
+- [x] Extract: team, bidder, player signed, player dropped, bid amount
+
+### Phase 2: Generate Summary
+- [x] Create window close summary embed format
+- [x] Include all 15 winning bids with cut/sign info
+- [x] Posted to FA channel (Message ID: 1439332525502627880)
+- [x] User can react with ⚡ to process
+
+### Phase 3: Checkpoint
+- [ ] Save checkpoint
