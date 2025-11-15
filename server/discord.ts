@@ -20,7 +20,8 @@ export async function getTeamSummaries(): Promise<TeamSummary[]> {
     .where(
       and(
         isNotNull(players.team),
-        ne(players.team, 'Free Agents')
+        ne(players.team, 'Free Agents'),
+        ne(players.team, 'Free Agent')
       )
     );
   
@@ -92,10 +93,11 @@ export function generateDiscordEmbed(summaries: TeamSummary[], websiteUrl: strin
       : `${summary.totalOverall}`;
     
     const teamUrl = `${websiteUrl}?team=${encodeURIComponent(summary.team)}`;
+    const rosterLink = `[View Roster](${teamUrl})`;
     
     return {
       name: summary.team,
-      value: `[View Roster](${teamUrl})\n(${summary.playerCount}/14) - ${status}`,
+      value: `${rosterLink}\n(${summary.playerCount}/14) - ${status}`,
       inline: true
     };
   });

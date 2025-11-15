@@ -38,3 +38,9 @@
 - [x] Apply validation to trade-handler.ts (trade processing)
 - [x] Test all changes (TypeScript compiled with no errors)
 - [x] Save checkpoint
+
+## Cap Status Message Fix
+
+- [x] Remove Free Agents from cap status embed (filtered from query)
+- [x] Test cap status message (will show in next update)
+- [ ] Save checkpoint
