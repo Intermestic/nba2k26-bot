@@ -730,6 +730,58 @@ export async function startDiscordBot(token: string) {
         return;
       }
       
+      // Check for rollback command: !rollback <batchId>
+      if (message.content.trim().toLowerCase().startsWith('!rollback ')) {
+        const batchId = message.content.trim().substring(10).trim();
+        if (!batchId) {
+          await message.reply('❌ Usage: !rollback <batchId>');
+          return;
+        }
+        
+        try {
+          await message.reply(`🔄 Rolling back batch ${batchId}...`);
+          const { rollbackBatch } = await import('./fa-window-close');
+          const { EmbedBuilder } = await import('discord.js');
+          
+          const result = await rollbackBatch(batchId, message.author.tag || message.author.username || 'Unknown');
+          
+          if (result.success && 'results' in result && result.results) {
+            const successList = result.results
+              .filter(r => r.success)
+              .map(r => `✅ ${r.playerName} (${r.team})`)
+              .join('\n') || 'None';
+            
+            const failList = result.results
+              .filter(r => !r.success)
+              .map(r => `❌ ${r.playerName} (${r.team}) - ${r.error || 'Unknown error'}`)
+              .join('\n') || 'None';
+            
+            const embed = new EmbedBuilder()
+              .setColor(0x00ff00)
+              .setTitle('✅ Rollback Complete')
+              .setDescription(`Rolled back ${result.successCount} transactions`);
+            
+            if (successList !== 'None') {
+              embed.addFields({ name: 'Rolled Back', value: successList });
+            }
+            
+            if (failList !== 'None') {
+              embed.addFields({ name: 'Failed', value: failList });
+            }
+            
+            embed.setFooter({ text: `Batch ID: ${batchId} | Rolled back by ${message.author.tag}` });
+            
+            await message.reply({ embeds: [embed] });
+          } else {
+            await message.reply(`❌ Rollback failed: ${result.message}`);
+          }
+        } catch (error) {
+          console.error('[Rollback] Command failed:', error);
+          await message.reply('❌ Failed to rollback batch. Check logs for details.');
+        }
+        return;
+      }
+      
       await handleBidMessage(message);
     } else if (message.channelId === TRADE_CHANNEL_ID) {
       // Handle new trade embeds for voting
@@ -806,6 +858,25 @@ export async function startDiscordBot(token: string) {
           }
           
           embed.setFooter({ text: `Total coins spent: $${totalCoins} | Processed by ${user.tag}` });
+          
+          await message.reply({ embeds: [embed] });
+        } else if ('errors' in result && result.errors) {
+          // Validation failed - show errors
+          const errorList = result.errors.join('\n');
+          const warningList = 'warnings' in result && result.warnings ? result.warnings.join('\n') : '';
+          
+          const embed = new EmbedBuilder()
+            .setColor(0xff0000)
+            .setTitle('❌ Validation Failed')
+            .setDescription(`Cannot process batch: ${result.message}`);
+          
+          if (errorList) {
+            embed.addFields({ name: 'Errors', value: errorList });
+          }
+          
+          if (warningList) {
+            embed.addFields({ name: 'Warnings', value: warningList });
+          }
           
           await message.reply({ embeds: [embed] });
         } else {

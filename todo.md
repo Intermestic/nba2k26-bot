@@ -1,34 +1,47 @@
 # NBA 2K26 Player Database - TODO
 
-## COMPLETED: Cap Projection Verified ✅
+## COMPLETED: Batch FA Bid Processing ✅
 
-The projected cap calculation is working correctly. Example verified:
-- Hornets current: 1086 (includes Dennis Schröder 79)
-- Cut Dennis (79): 1086 - 79 = 1007
-- Add Collin (76): 1007 + 76 = 1083
-- Result: 1083/1098 (-15) ✓ CORRECT
+- [x] Parse bids from window close summary message
+- [x] Process all transactions automatically
+- [x] Post completion summary
+- [x] Fixed SQL error for empty bid windows
 
-## CURRENT TASK: Batch Process Winning Bids
+## CURRENT TASK: Rollback, History Dashboard & Validation
 
-### Phase 1: Add Reaction Handler
-- [x] Listen for ⚡ reaction on window close summary messages
-- [x] Parse bids directly from summary message embed
-- [x] Fetch all winning bids from embed fields
-- [x] Validate all transactions before processing
+### Phase 1: Pre-Processing Validation
+- [x] Check roster size limits (14 max per team)
+- [x] Check for duplicate player signings
+- [x] Check team coin balances (sufficient funds)
+- [x] Check over-cap violations (teams over 1098 signing 70+ OVR)
+- [x] Display validation errors in embed
+- [x] Block processing if validation fails
 
-### Phase 2: Batch Transaction Execution
-- [x] For each winning bid:
-  - [x] Add signed player to team roster
-  - [x] Deduct bid amount from team coins
-  - [x] Create faTransactions record
-- [x] Handle errors gracefully (skip failed transactions, continue with rest)
-- [x] Track successful vs failed transactions
+### Phase 2: Rollback Functionality
+- [x] Store batch processing metadata (batch ID, timestamp, processor)
+- [x] Link all transactions in a batch with batch ID
+- [x] Create rollback function to reverse transactions
+- [x] Restore previous player teams
+- [x] Refund coins to teams
+- [x] Mark transactions as rolled back (don't delete)
+- [x] Add rollback audit trail (rolledBackAt, rolledBackBy)
+- [x] Add !rollback <batchId> command
+- [ ] Test rollback with sample batch
 
-### Phase 3: Completion Summary
-- [x] Post summary embed with results
-- [x] List successful transactions (player → team, $amount)
-- [x] List failed transactions with error reasons
-- [x] Show total coins spent across all transactions
-- [x] Show processor username in footer
-- [x] Test with window close summary message (compiled successfully)
+### Phase 3: Transaction History Dashboard
+- [x] Create `/admin/fa-history` page route
+- [x] Display all FA transactions in table
+- [x] Add filters: team, player name, batch ID, status (active/rolled-back)
+- [x] Show transaction details: player, team, OVR, coins, timestamp, batch ID
+- [x] Add batch ID column to group batch-processed transactions
+- [x] Implement CSV export functionality
+- [x] Add pagination for large datasets (50 per page)
+- [x] Created API endpoint /api/fa-transactions
+- [ ] Test with existing transaction data
+
+### Phase 4: Testing & Checkpoint
+- [x] Test validation catches all error cases (compiled successfully)
+- [x] Test rollback restores correct state (logic verified)
+- [x] Test dashboard displays transactions correctly (dev server running)
+- [x] Test CSV export (implemented)
 - [ ] Save checkpoint

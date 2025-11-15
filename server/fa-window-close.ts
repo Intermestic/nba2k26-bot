@@ -172,14 +172,85 @@ export async function processBidsFromSummary(message: any, processorId: string) 
     
     const { getDb } = await import('./db');
     const { players, faTransactions, teamCoins } = await import('../drizzle/schema');
-    const { eq } = await import('drizzle-orm');
+    const { eq, sql } = await import('drizzle-orm');
     const { findPlayerByFuzzyName } = await import('./fa-bid-parser');
+    const { isTeamOverCap } = await import('./cap-violation-alerts');
     
     const db = await getDb();
     if (!db) {
       return {
         success: false,
         message: 'Database connection failed'
+      };
+    }
+    
+    // Pre-processing validation
+    const warnings: string[] = [];
+    const errors: string[] = [];
+    
+    // Check each team's roster size and coin balance
+    const teamStats = new Map<string, { rosterSize: number; coins: number; totalOverall: number }>();
+    
+    for (const bid of bidsToProcess) {
+      if (!teamStats.has(bid.team)) {
+        // Get team roster
+        const roster = await db.select().from(players).where(eq(players.team, bid.team));
+        const coins = await db.select().from(teamCoins).where(eq(teamCoins.team, bid.team));
+        const totalOverall = roster.reduce((sum, p) => sum + p.overall, 0);
+        
+        teamStats.set(bid.team, {
+          rosterSize: roster.length,
+          coins: coins[0]?.coinsRemaining || 100,
+          totalOverall
+        });
+      }
+      
+      const stats = teamStats.get(bid.team)!;
+      
+      // Check roster size (will be 14 after signing)
+      if (stats.rosterSize >= 14) {
+        errors.push(`${bid.team} already has 14 players (cannot sign ${bid.playerName})`);
+      }
+      
+      // Check coin balance
+      if (stats.coins < bid.bidAmount) {
+        errors.push(`${bid.team} has insufficient coins ($${stats.coins} < $${bid.bidAmount} for ${bid.playerName})`);
+      }
+      
+      // Check over-cap restriction (teams over 1098 cannot sign 70+ OVR)
+      const isOverCap = await isTeamOverCap(bid.team);
+      if (isOverCap) {
+        const signPlayer = await findPlayerByFuzzyName(bid.playerName);
+        if (signPlayer && signPlayer.overall >= 70) {
+          errors.push(`${bid.team} is over cap and cannot sign ${bid.playerName} (${signPlayer.overall} OVR >= 70)`);
+        }
+      }
+      
+      // Update stats for next check
+      stats.rosterSize += 1;
+      stats.coins -= bid.bidAmount;
+    }
+    
+    // Check for duplicate player signings
+    const playerCounts = new Map<string, number>();
+    for (const bid of bidsToProcess) {
+      const count = playerCounts.get(bid.playerName.toLowerCase()) || 0;
+      playerCounts.set(bid.playerName.toLowerCase(), count + 1);
+    }
+    
+    Array.from(playerCounts.entries()).forEach(([player, count]) => {
+      if (count > 1) {
+        errors.push(`Duplicate signing detected: ${player} has ${count} bids`);
+      }
+    });
+    
+    // Return validation errors if any
+    if (errors.length > 0) {
+      return {
+        success: false,
+        message: 'Validation failed',
+        errors,
+        warnings
       };
     }
     
@@ -191,6 +262,10 @@ export async function processBidsFromSummary(message: any, processorId: string) 
       success: boolean;
       error?: string;
     }> = [];
+    
+    // Generate batch ID for this processing run
+    const batchId = `batch-${Date.now()}-${processorId.replace(/[^a-zA-Z0-9]/g, '')}`;
+    console.log(`[Batch Process] Batch ID: ${batchId}`);
     
     // Process each bid
     for (const bid of bidsToProcess) {
@@ -216,12 +291,15 @@ export async function processBidsFromSummary(message: any, processorId: string) 
         // For now, we'll require manual processing if dropPlayer info is needed
         // In the future, we can store dropPlayer in faBids table
         
+        // Store previous team for rollback
+        const previousTeam = signPlayer.team || 'Free Agent';
+        
         // Add signed player to roster
         await db
           .update(players)
           .set({ team: bid.team })
           .where(eq(players.id, signPlayer.id));
-        console.log(`[Batch Process] Signed ${signPlayer.name} to ${bid.team}`);
+        console.log(`[Batch Process] Signed ${signPlayer.name} to ${bid.team} (from ${previousTeam})`);
         
         // Get team's current coins
         const teamCoinRecord = await db
@@ -246,7 +324,10 @@ export async function processBidsFromSummary(message: any, processorId: string) 
           signPlayerOvr: signPlayer.overall,
           bidAmount: bid.bidAmount,
           adminUser: processorId,
-          coinsRemaining: coinsAfter
+          coinsRemaining: coinsAfter,
+          batchId: batchId,
+          previousTeam: previousTeam,
+          rolledBack: false
         });
         
         results.push({
@@ -283,6 +364,149 @@ export async function processBidsFromSummary(message: any, processorId: string) 
     
   } catch (error) {
     console.error('[Batch Process] Fatal error:', error);
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : 'Unknown error'
+    };
+  }
+}
+
+/**
+ * Rollback a batch of transactions
+ */
+export async function rollbackBatch(batchId: string, rollbackBy: string) {
+  try {
+    console.log(`[Rollback] Starting rollback for batch ${batchId} by ${rollbackBy}`);
+    
+    const { getDb } = await import('./db');
+    const { players, faTransactions, teamCoins } = await import('../drizzle/schema');
+    const { eq, and } = await import('drizzle-orm');
+    
+    const db = await getDb();
+    if (!db) {
+      return {
+        success: false,
+        message: 'Database connection failed'
+      };
+    }
+    
+    // Get all transactions in this batch that haven't been rolled back
+    const transactions = await db
+      .select()
+      .from(faTransactions)
+      .where(
+        and(
+          eq(faTransactions.batchId, batchId),
+          eq(faTransactions.rolledBack, false)
+        )
+      );
+    
+    if (transactions.length === 0) {
+      return {
+        success: false,
+        message: 'No transactions found for this batch or already rolled back'
+      };
+    }
+    
+    console.log(`[Rollback] Found ${transactions.length} transactions to rollback`);
+    
+    const results: Array<{
+      transactionId: number;
+      playerName: string;
+      team: string;
+      success: boolean;
+      error?: string;
+    }> = [];
+    
+    // Rollback each transaction
+    for (const transaction of transactions) {
+      try {
+        console.log(`[Rollback] Rolling back: ${transaction.signPlayer} from ${transaction.team} to ${transaction.previousTeam}`);
+        
+        // Find the player
+        const playerRecords = await db
+          .select()
+          .from(players)
+          .where(eq(players.name, transaction.signPlayer));
+        
+        if (playerRecords.length === 0) {
+          results.push({
+            transactionId: transaction.id,
+            playerName: transaction.signPlayer,
+            team: transaction.team,
+            success: false,
+            error: 'Player not found'
+          });
+          continue;
+        }
+        
+        const player = playerRecords[0];
+        
+        // Restore player to previous team
+        await db
+          .update(players)
+          .set({ team: transaction.previousTeam })
+          .where(eq(players.id, player.id));
+        
+        // Refund coins to team
+        const teamCoinRecord = await db
+          .select()
+          .from(teamCoins)
+          .where(eq(teamCoins.team, transaction.team));
+        
+        const currentCoins = teamCoinRecord[0]?.coinsRemaining || 0;
+        const coinsAfter = currentCoins + transaction.bidAmount;
+        
+        await db
+          .update(teamCoins)
+          .set({ coinsRemaining: coinsAfter })
+          .where(eq(teamCoins.team, transaction.team));
+        
+        // Mark transaction as rolled back
+        await db
+          .update(faTransactions)
+          .set({
+            rolledBack: true,
+            rolledBackAt: new Date(),
+            rolledBackBy: rollbackBy
+          })
+          .where(eq(faTransactions.id, transaction.id));
+        
+        results.push({
+          transactionId: transaction.id,
+          playerName: transaction.signPlayer,
+          team: transaction.team,
+          success: true
+        });
+        
+        console.log(`[Rollback] Successfully rolled back transaction ${transaction.id}`);
+        
+      } catch (error) {
+        console.error(`[Rollback] Error rolling back transaction ${transaction.id}:`, error);
+        results.push({
+          transactionId: transaction.id,
+          playerName: transaction.signPlayer,
+          team: transaction.team,
+          success: false,
+          error: error instanceof Error ? error.message : 'Unknown error'
+        });
+      }
+    }
+    
+    const successCount = results.filter(r => r.success).length;
+    const failCount = results.filter(r => !r.success).length;
+    
+    console.log(`[Rollback] Completed: ${successCount} success, ${failCount} failed`);
+    
+    return {
+      success: true,
+      results,
+      successCount,
+      failCount
+    };
+    
+  } catch (error) {
+    console.error('[Rollback] Error:', error);
     return {
       success: false,
       message: error instanceof Error ? error.message : 'Unknown error'

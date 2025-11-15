@@ -1,4 +1,4 @@
-import { int, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
+import { int, mysqlEnum, mysqlTable, text, timestamp, varchar, boolean } from "drizzle-orm/mysql-core";
 
 /**
  * Core user table backing auth flow.
@@ -108,6 +108,11 @@ export const faTransactions = mysqlTable("fa_transactions", {
   adminUser: varchar("adminUser", { length: 255 }), // Discord user who approved
   coinsRemaining: int("coinsRemaining").notNull(), // Team's remaining coins after transaction
   processedAt: timestamp("processedAt").defaultNow().notNull(),
+  batchId: varchar("batchId", { length: 255 }), // Batch ID for batch-processed transactions
+  rolledBack: boolean("rolledBack").default(false), // Whether this transaction was rolled back
+  rolledBackAt: timestamp("rolledBackAt"), // When this transaction was rolled back
+  rolledBackBy: varchar("rolledBackBy", { length: 255 }), // Who rolled back this transaction
+  previousTeam: varchar("previousTeam", { length: 100 }), // Player's team before transaction (for rollback)
 });
 
 export type FaTransaction = typeof faTransactions.$inferSelect;

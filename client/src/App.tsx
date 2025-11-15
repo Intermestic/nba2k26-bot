@@ -11,6 +11,7 @@ import History from "./pages/History";
 import DiscordIntegration from "./pages/DiscordIntegration";
 import CoinDashboard from "./pages/CoinDashboard";
 import CapCompliance from "./pages/CapCompliance";
+import FAHistory from "./pages/FAHistory";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -23,6 +24,7 @@ function Router() {
       <Route path={"/admin/discord"} component={DiscordIntegration} />
       <Route path={"/admin/coins"} component={CoinDashboard} />
       <Route path={"/admin/cap-compliance"} component={CapCompliance} />
+      <Route path={"/admin/fa-history"} component={FAHistory} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />

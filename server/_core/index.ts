@@ -42,6 +42,9 @@ async function startServer() {
   app.use("/api/public", publicApiRouter);
   // Image proxy for CORS-free image access
   app.use("/api", imageProxyRouter);
+  // FA transactions history API
+  const faTransactionsRouter = (await import('../routes/fa-transactions')).default;
+  app.use("/api/fa-transactions", faTransactionsRouter);
   // tRPC API
   app.use(
     "/api/trpc",
