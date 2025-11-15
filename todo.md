@@ -672,4 +672,48 @@ Log low-confidence player name matches to help fine-tune fuzzy matching sensitiv
 - [x] Add route to App.tsx (/admin/match-logs)
 - [x] Add navigation link in Admin page
 - [x] Display statistics: total matches, success rate, avg confidence, low confidence count
+- [x] Save checkpoint (version 42f2fe27)
+
+
+## CURRENT TASK: Reset FA Bids for Current PM Window
+
+### Goal
+Clear all bids for current PM window and reprocess manually provided bids to establish clean baseline
+
+### Manual Bids to Process
+1. Hawks: Cut Terrance Mann, Sign Dayron Sharpe, Bid 1
+2. Rockets: Cut Hunter Dickinson, Sign Day'Ron Sharpe, Bid 25 (11:58 AM)
+3. Nuggets: Cut Kenrich Williams, Sign Bruce Brown, Bid 1 (11:58 AM)
+4. Nuggets: Cut Leonard Miller, Sign Chris Paul, Bid 1
+5. Nuggets: Cut Kenrich Williams, Sign Bruce Brown, Bid 1 (12:20 PM - duplicate)
+6. Raptors: Cut Dean Wade, Sign Bruce Brown, Bid 6 (1:20 PM)
+7. Rockets: Cut Hunter Dickinson, Sign Day'Ron Sharpe, Bid 25 (3:33 PM - duplicate)
+8. Raptors: Cut Alex Len, Sign Dayron Sharpe, Bid 29 (3:34 PM)
+9. Rockets: Cut Hunter Dickinson, Sign Day'Ron Sharpe, Bid 35 (3:48 PM)
+10. Raptors: Cut Dario Saric, Sign Johnathan Mogbo, Bid 3 (4:25 PM)
+11. Raptors: Cut Dean Wade, Sign Bruce Brown, Bid 6 (4:25 PM - correction)
+12. Hornets: Cut Kyle Lowry, Sign Patrick Williams, Bid 1 (5:17 PM)
+13. Hornets: Cut Caleb Martian, Sign Daniel Theis, Bid 1 (6:35 PM)
+
+### Tasks
+- [ ] Get current PM window ID
+- [ ] Delete all bids for current PM window
+- [ ] Parse manual bids and insert into database
+- [ ] Handle duplicate bids (keep latest timestamp)
+- [ ] Determine high bidders for each player
+- [ ] Generate status message showing current high bids
+- [ ] Save checkpoint
+
+
+## CURRENT TASK: Add Day'Ron Sharpe Alias
+
+### Goal
+Consolidate "Dayron Sharpe" and "Day'Ron Sharpe" bids under the correct name
+
+### Tasks
+- [x] Check player database for correct name (Day'Ron Sharpe)
+- [x] Add player alias: "Dayron Sharpe" → "Day'Ron Sharpe" (already exists in fa-bid-parser.ts line 110)
+- [x] Update existing bids to use correct name (updated 2 bids)
+- [x] Add to fa-bid-parser.ts nameAliases (already exists)
+- [x] Verify all bids now show correct name (4 bids total for Day'Ron Sharpe)
 - [ ] Save checkpoint

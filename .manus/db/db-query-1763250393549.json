@@ -1,0 +1,87 @@
+{
+  "query": "SELECT playerName, team, bidAmount, dropPlayer, createdAt \nFROM fa_bids \nWHERE windowId = '2025-01-15-PM'\nORDER BY playerName, bidAmount DESC, createdAt DESC",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT playerName, team, bidAmount, dropPlayer, createdAt \nFROM fa_bids \nWHERE windowId = '2025-01-15-PM'\nORDER BY playerName, bidAmount DESC, createdAt DESC",
+  "rows": [
+    {
+      "playerName": "Bruce Brown",
+      "team": "Raptors",
+      "bidAmount": "6",
+      "dropPlayer": "Dean Wade",
+      "createdAt": "2025-01-15 16:26:00"
+    },
+    {
+      "playerName": "Bruce Brown",
+      "team": "Raptors",
+      "bidAmount": "6",
+      "dropPlayer": "Dean Wade",
+      "createdAt": "2025-01-15 13:20:00"
+    },
+    {
+      "playerName": "Bruce Brown",
+      "team": "Nuggets",
+      "bidAmount": "1",
+      "dropPlayer": "Kenrich Williams",
+      "createdAt": "2025-01-15 11:58:00"
+    },
+    {
+      "playerName": "Chris Paul",
+      "team": "Nuggets",
+      "bidAmount": "1",
+      "dropPlayer": "Leonard Miller",
+      "createdAt": "2025-01-15 11:59:00"
+    },
+    {
+      "playerName": "Daniel Theis",
+      "team": "Hornets",
+      "bidAmount": "1",
+      "dropPlayer": "Caleb Martin",
+      "createdAt": "2025-01-15 18:35:00"
+    },
+    {
+      "playerName": "Day'Ron Sharpe",
+      "team": "Rockets",
+      "bidAmount": "35",
+      "dropPlayer": "Hunter Dickinson",
+      "createdAt": "2025-01-15 15:48:00"
+    },
+    {
+      "playerName": "Day'Ron Sharpe",
+      "team": "Raptors",
+      "bidAmount": "29",
+      "dropPlayer": "Alex Len",
+      "createdAt": "2025-01-15 15:34:00"
+    },
+    {
+      "playerName": "Day'Ron Sharpe",
+      "team": "Rockets",
+      "bidAmount": "25",
+      "dropPlayer": "Hunter Dickinson",
+      "createdAt": "2025-01-15 11:58:00"
+    },
+    {
+      "playerName": "Day'Ron Sharpe",
+      "team": "Hawks",
+      "bidAmount": "1",
+      "dropPlayer": "Terrance Mann",
+      "createdAt": "2025-01-15 11:49:00"
+    },
+    {
+      "playerName": "Johnathan Mogbo",
+      "team": "Raptors",
+      "bidAmount": "3",
+      "dropPlayer": "Dario Saric",
+      "createdAt": "2025-01-15 16:25:00"
+    },
+    {
+      "playerName": "Patrick Williams",
+      "team": "Hornets",
+      "bidAmount": "1",
+      "dropPlayer": "Kyle Lowry",
+      "createdAt": "2025-01-15 17:17:00"
+    }
+  ],
+  "messages": [],
+  "stdout": "playerName\tteam\tbidAmount\tdropPlayer\tcreatedAt\nBruce Brown\tRaptors\t6\tDean Wade\t2025-01-15 16:26:00\nBruce Brown\tRaptors\t6\tDean Wade\t2025-01-15 13:20:00\nBruce Brown\tNuggets\t1\tKenrich Williams\t2025-01-15 11:58:00\nChris Paul\tNuggets\t1\tLeonard Miller\t2025-01-15 11:59:00\nDaniel Theis\tHornets\t1\tCaleb Martin\t2025-01-15 18:35:00\nDay'Ron Sharpe\tRockets\t35\tHunter Dickinson\t2025-01-15 15:48:00\nDay'Ron Sharpe\tRaptors\t29\tAlex Len\t2025-01-15 15:34:00\nDay'Ron Sharpe\tRockets\t25\tHunter Dickinson\t2025-01-15 11:58:00\nDay'Ron Sharpe\tHawks\t1\tTerrance Mann\t2025-01-15 11:49:00\nJohnathan Mogbo\tRaptors\t3\tDario Saric\t2025-01-15 16:25:00\nPatrick Williams\tHornets\t1\tKyle Lowry\t2025-01-15 17:17:00\n",
+  "stderr": "",
+  "execution_time_ms": 1576
+}
