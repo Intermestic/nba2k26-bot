@@ -65,8 +65,8 @@ async function formatStatusMessage(bids: Array<{ playerName: string; team: strin
   
   for (const bid of sortedBids) {
     message += `**${bid.playerName}**\n`;
-    message += `├ Bid: $${bid.bidAmount}\n`;
-    message += `└ Leader: ${bid.bidderName} (${bid.team})\n\n`;
+    message += `• **Bid:** $${bid.bidAmount}\n`;
+    message += `• **Leader:** ${bid.bidderName} (${bid.team})\n\n`;
   }
   
   message += `---\n\n`;
@@ -81,8 +81,8 @@ async function formatStatusMessage(bids: Array<{ playerName: string; team: strin
   }
   
   message += `\n---\n`;
-  message += `💡 *To place a bid, use format: "Cut [Player]. Sign [Player]. Bid [Amount]"*\n`;
-  message += `⚡ *Admins: React with ⚡ to process winning bids*`;
+  message += `💡 **To place a bid, use format: "Cut [Player]. Sign [Player]. Bid [Amount]"**\n`;
+  message += `⚡ **Admins: React with ⚡ to process winning bids**`;
   
   return message;
 }
