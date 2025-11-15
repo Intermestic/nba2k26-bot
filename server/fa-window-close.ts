@@ -238,7 +238,7 @@ export async function processBidsFromSummary(message: any, processorId: string) 
       // Check over-cap restriction (warning only)
       const isOverCap = await isTeamOverCap(bid.team);
       if (isOverCap) {
-        const signPlayer = await findPlayerByFuzzyName(bid.playerName);
+        const signPlayer = await findPlayerByFuzzyName(bid.playerName, undefined, true, 'fa_batch_validation');
         if (signPlayer && signPlayer.overall > 70) {
           warnings.push(`⚠️ ${bid.team} is over cap and cannot sign ${bid.playerName} (${signPlayer.overall} OVR > 70)`);
         }
@@ -297,7 +297,7 @@ export async function processBidsFromSummary(message: any, processorId: string) 
         }
         
         // Find the player being signed
-        const signPlayer = await findPlayerByFuzzyName(bid.playerName);
+        const signPlayer = await findPlayerByFuzzyName(bid.playerName, undefined, true, 'fa_batch_process');
         if (!signPlayer) {
           results.push({
             playerName: bid.playerName,
@@ -314,7 +314,7 @@ export async function processBidsFromSummary(message: any, processorId: string) 
         let dropPlayerId: string | null = null;
         
         if (bid.dropPlayer) {
-          const dropPlayer = await findPlayerByFuzzyName(bid.dropPlayer);
+          const dropPlayer = await findPlayerByFuzzyName(bid.dropPlayer, validatedTeam, false, 'fa_batch_process');
           if (dropPlayer) {
             dropPlayerName = dropPlayer.name;
             dropPlayerId = dropPlayer.id;

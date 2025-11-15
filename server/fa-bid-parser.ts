@@ -79,11 +79,13 @@ export function parseBidMessage(message: string): ParsedBid | null {
  * @param name - Player name to search for
  * @param teamContext - Optional team context to prioritize roster matches
  * @param filterFreeAgents - If true, only return free agents (for sign targets)
+ * @param context - Context for logging (e.g., 'fa_bid', 'trade')
  */
 export async function findPlayerByFuzzyName(
   name: string, 
   teamContext?: string,
-  filterFreeAgents?: boolean
+  filterFreeAgents?: boolean,
+  context: string = 'fa_bid'
 ): Promise<{ id: string; name: string; team: string; overall: number } | null> {
   const db = await getDb();
   if (!db) return null;

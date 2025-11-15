@@ -242,3 +242,21 @@ export const teamAssignmentHistory = mysqlTable("team_assignment_history", {
 
 export type TeamAssignmentHistory = typeof teamAssignmentHistory.$inferSelect;
 export type InsertTeamAssignmentHistory = typeof teamAssignmentHistory.$inferInsert;
+
+/**
+ * Match logs table to track fuzzy matching confidence scores
+ */
+export const matchLogs = mysqlTable("match_logs", {
+  id: int("id").autoincrement().primaryKey(),
+  inputName: varchar("inputName", { length: 255 }).notNull(), // Original search term
+  matchedName: varchar("matchedName", { length: 255 }), // Matched player name (null if no match)
+  confidenceScore: int("confidenceScore"), // Fuzzy match score (0-100)
+  strategy: varchar("strategy", { length: 50 }), // Which matching strategy was used
+  context: varchar("context", { length: 100 }), // Context: "trade", "fa_bid", "manual_search"
+  teamFilter: varchar("teamFilter", { length: 100 }), // Team filter used (if any)
+  success: boolean("success").notNull(), // Whether a match was found
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type MatchLog = typeof matchLogs.$inferSelect;
+export type InsertMatchLog = typeof matchLogs.$inferInsert;

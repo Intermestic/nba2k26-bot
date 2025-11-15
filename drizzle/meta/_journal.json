@@ -127,6 +127,13 @@
       "when": 1763242476592,
       "tag": "0017_jazzy_red_hulk",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "5",
+      "when": 1763249325828,
+      "tag": "0018_spicy_red_skull",
+      "breakpoints": true
     }
   ]
 }

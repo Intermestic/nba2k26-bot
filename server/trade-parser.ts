@@ -1,5 +1,5 @@
 import { getDb } from './db';
-import { players } from '../drizzle/schema';
+import { players, matchLogs } from '../drizzle/schema';
 import { extract } from 'fuzzball';
 
 /**
@@ -202,9 +202,36 @@ function parsePlayerList(text: string): string[] {
 }
 
 /**
+ * Log a match attempt to the database
+ */
+async function logMatch(inputName: string, matchedName: string | null, confidenceScore: number | null, strategy: string, context: string, teamFilter: string | undefined, success: boolean) {
+  try {
+    const db = await getDb();
+    if (!db) return;
+    
+    await db.insert(matchLogs).values({
+      inputName,
+      matchedName,
+      confidenceScore,
+      strategy,
+      context,
+      teamFilter: teamFilter || null,
+      success
+    });
+    
+    // Log low-confidence matches to console
+    if (success && confidenceScore && confidenceScore < 90) {
+      console.log(`[Match Log] ⚠️ Low confidence (${confidenceScore}%): "${inputName}" → "${matchedName}" [${strategy}]`);
+    }
+  } catch (error) {
+    console.error('[Match Log] Failed to log match:', error);
+  }
+}
+
+/**
  * Find player by fuzzy name matching
  */
-export async function findPlayerByFuzzyName(name: string, teamFilter?: string): Promise<{ id: string; name: string; team: string; overall: number } | null> {
+export async function findPlayerByFuzzyName(name: string, teamFilter?: string, context: string = 'unknown'): Promise<{ id: string; name: string; team: string; overall: number } | null> {
   const db = await getDb();
   if (!db) return null;
   
@@ -257,6 +284,7 @@ export async function findPlayerByFuzzyName(name: string, teamFilter?: string): 
     // Strategy 1: Exact match (case insensitive)
     let player = allPlayers.find(p => p.name.toLowerCase() === searchName);
     if (player) {
+      await logMatch(name, player.name, 100, 'exact_match', context, teamFilter, true);
       return {
         id: player.id,
         name: player.name,
@@ -273,6 +301,7 @@ export async function findPlayerByFuzzyName(name: string, teamFilter?: string): 
         return initials === searchName;
       });
       if (player) {
+        await logMatch(name, player.name, 95, 'initials', context, teamFilter, true);
         return {
           id: player.id,
           name: player.name,
@@ -294,6 +323,7 @@ export async function findPlayerByFuzzyName(name: string, teamFilter?: string): 
     });
     if (player) {
       console.log(`[Player Matcher] Found via Strategy 3 (last name): "${player.name}"`);
+      await logMatch(name, player.name, 90, 'last_name', context, teamFilter, true);
       return {
         id: player.id,
         name: player.name,
@@ -319,6 +349,7 @@ export async function findPlayerByFuzzyName(name: string, teamFilter?: string): 
         
         if (match) {
           console.log(`[Player Matcher] Found via Strategy 3.5 (fuzzy last name): "${match.player.name}" (score: ${fuzzyLastNames[0][1]})`);
+          await logMatch(name, match.player.name, fuzzyLastNames[0][1], 'fuzzy_last_name', context, teamFilter, true);
           return {
             id: match.player.id,
             name: match.player.name,
@@ -336,6 +367,7 @@ export async function findPlayerByFuzzyName(name: string, teamFilter?: string): 
       return firstName === searchName || firstName.startsWith(searchName);
     });
     if (player) {
+      await logMatch(name, player.name, 85, 'first_name', context, teamFilter, true);
       return {
         id: player.id,
         name: player.name,
@@ -352,6 +384,7 @@ export async function findPlayerByFuzzyName(name: string, teamFilter?: string): 
       player = allPlayers.find(p => p.name === matchedName);
       
       if (player) {
+        await logMatch(name, player.name, matches[0][1], 'fuzzy_full_name', context, teamFilter, true);
         return {
           id: player.id,
           name: player.name,
@@ -361,6 +394,8 @@ export async function findPlayerByFuzzyName(name: string, teamFilter?: string): 
       }
     }
     
+    // No match found - log failure
+    await logMatch(name, null, null, 'no_match', context, teamFilter, false);
     return null;
   } catch (error) {
     console.error('[Trade Parser] Error finding player:', error);
@@ -385,7 +420,7 @@ export async function resolveTradePlayer(parsedTrade: ParsedTrade): Promise<{
   
   // Resolve team 1 players (filter by team1 roster)
   for (const playerName of parsedTrade.team1Players) {
-    const player = await findPlayerByFuzzyName(playerName, parsedTrade.team1);
+    const player = await findPlayerByFuzzyName(playerName, parsedTrade.team1, 'trade');
     if (player) {
       team1Players.push({ id: player.id, name: player.name, overall: player.overall });
     } else {
@@ -395,7 +430,7 @@ export async function resolveTradePlayer(parsedTrade: ParsedTrade): Promise<{
   
   // Resolve team 2 players (filter by team2 roster)
   for (const playerName of parsedTrade.team2Players) {
-    const player = await findPlayerByFuzzyName(playerName, parsedTrade.team2);
+    const player = await findPlayerByFuzzyName(playerName, parsedTrade.team2, 'trade');
     if (player) {
       team2Players.push({ id: player.id, name: player.name, overall: player.overall });
     } else {

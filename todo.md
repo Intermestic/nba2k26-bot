@@ -435,7 +435,7 @@ Trade confirmation shows empty player lists because parser fails to extract name
 - [x] Updated trade-handler.ts to check embed.fields first
 - [x] Reconstructs trade text from field name/value pairs
 - [x] TypeScript compilation successful
-- [ ] Save checkpoint
+- [x] Save checkpoint (version f6355959)
 
 
 ## CURRENT TASK: Fix "vit kreji" → "Vít Krejčí" Matching
@@ -640,4 +640,36 @@ Show parsed player names in trade confirmation and allow user to correct if pars
 - [x] Parse correction format: "Team: Player A, Player B"
 - [x] Re-resolve players and update confirmation message
 - [x] TypeScript compilation successful
+- [x] Save checkpoint (version f6355959)
+
+
+## CURRENT TASK: Add Fuzzy Match Confidence Logging
+
+### Goal
+Log low-confidence player name matches to help fine-tune fuzzy matching sensitivity
+
+### Implementation
+1. Add confidence score logging in findPlayerByFuzzyName
+2. Create database table: match_logs (id, input_name, matched_name, confidence_score, context, timestamp)
+3. Log matches with confidence < 90% to database
+4. Add admin page to review low-confidence matches
+5. Show statistics: average confidence, common mismatches, threshold recommendations
+
+### Tasks
+- [x] Read trade-parser.ts findPlayerByFuzzyName function
+- [x] Create match_logs table in schema (9 columns)
+- [x] Run migration to create table (0018_spicy_red_skull.sql)
+- [x] Add logMatch helper function
+- [x] Add logging to all matching strategies (exact, initials, last_name, fuzzy_last_name, first_name, fuzzy_full_name, no_match)
+- [x] Log confidence scores for each match
+- [x] Console warning for matches < 90% confidence
+- [x] Add context parameter to both findPlayerByFuzzyName functions
+- [x] Update all callers to provide context (trade, fa_batch_validation, fa_batch_process)
+- [x] TypeScript compilation successful
+- [x] Create admin page to view match logs (MatchLogs.tsx)
+- [x] Add filters: by confidence range, by date, by context
+- [x] Create matchLogs router with getAll and getStats endpoints
+- [x] Add route to App.tsx (/admin/match-logs)
+- [x] Add navigation link in Admin page
+- [x] Display statistics: total matches, success rate, avg confidence, low confidence count
 - [ ] Save checkpoint
