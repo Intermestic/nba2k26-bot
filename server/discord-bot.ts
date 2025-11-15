@@ -637,6 +637,14 @@ export async function startDiscordBot(token: string) {
     } catch (error) {
       console.error('[Cap Alerts] Failed to initialize:', error);
     }
+    
+    // Schedule window close summaries
+    try {
+      const { scheduleWindowCloseSummaries } = await import('./fa-window-close');
+      scheduleWindowCloseSummaries(client!);
+    } catch (error) {
+      console.error('[Window Close] Failed to schedule summaries:', error);
+    }
   });
   
   // Monitor all messages for FA bids and commands
