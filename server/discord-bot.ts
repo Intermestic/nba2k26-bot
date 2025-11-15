@@ -493,7 +493,8 @@ async function handleBidMessage(message: Message) {
     team,
     parsedBid.bidAmount,
     window.windowId,
-    message.id
+    message.id,
+    parsedBid.dropPlayer
   );
   
   if (!bidResult.success) {

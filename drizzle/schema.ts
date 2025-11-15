@@ -125,6 +125,7 @@ export const faBids = mysqlTable("fa_bids", {
   id: int("id").autoincrement().primaryKey(),
   playerId: varchar("playerId", { length: 64 }), // Reference to players table
   playerName: varchar("playerName", { length: 255 }).notNull(), // Player being bid on
+  dropPlayer: varchar("dropPlayer", { length: 255 }), // Player being dropped (optional)
   bidderDiscordId: varchar("bidderDiscordId", { length: 64 }).notNull(), // Discord user ID of bidder
   bidderName: varchar("bidderName", { length: 255 }), // Discord username
   team: varchar("team", { length: 100 }).notNull(), // Team making the bid

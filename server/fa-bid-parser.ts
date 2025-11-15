@@ -211,7 +211,8 @@ export async function recordBid(
   team: string,
   bidAmount: number,
   windowId: string,
-  messageId: string
+  messageId: string,
+  dropPlayer?: string
 ): Promise<{ success: boolean; previousHighestBidder?: { discordId: string; name: string; amount: number } }> {
   const db = await getDb();
   if (!db) return { success: false };
@@ -237,6 +238,7 @@ export async function recordBid(
         .set({
           bidAmount,
           messageId,
+          dropPlayer: dropPlayer || null,
           updatedAt: new Date()
         })
         .where(eq(faBids.id, existingBid[0].id));
@@ -247,6 +249,7 @@ export async function recordBid(
       await db.insert(faBids).values({
         playerId,
         playerName,
+        dropPlayer: dropPlayer || null,
         bidderDiscordId,
         bidderName,
         team,
@@ -297,7 +300,7 @@ export async function recordBid(
  * Get all active bids for current window (highest bid per player)
  * Special handling: Include previous window (2025-11-14-PM) until noon EST on 2025-11-15
  */
-export async function getActiveBids(windowId: string): Promise<Array<{ playerName: string; team: string; bidAmount: number; bidderName: string }>> {
+export async function getActiveBids(windowId: string): Promise<Array<{ playerName: string; dropPlayer: string | null; team: string; bidAmount: number; bidderName: string }>> {
   const db = await getDb();
   if (!db) return [];
   
@@ -371,6 +374,7 @@ export async function getActiveBids(windowId: string): Promise<Array<{ playerNam
     
     return activeBids.map(bid => ({
       playerName: bid.playerName,
+      dropPlayer: bid.dropPlayer || null,
       team: bid.team,
       bidAmount: bid.bidAmount,
       bidderName: bid.bidderName || 'Unknown'

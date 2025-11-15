@@ -46,9 +46,10 @@ export async function postWindowCloseSummary(client: Client) {
     const maxFields = Math.min(sortedBids.length, 25);
     for (let i = 0; i < maxFields; i++) {
       const bid = sortedBids[i];
+      const dropInfo = bid.dropPlayer ? `Cut: ${bid.dropPlayer}\n` : '';
       embed.addFields({
         name: `${bid.playerName}`,
-        value: `→ **${bid.team}** ($${bid.bidAmount})\nWinner: ${bid.bidderName}`,
+        value: `${dropInfo}Sign: ${bid.playerName}\n→ **${bid.team}** ($${bid.bidAmount})\nWinner: ${bid.bidderName}`,
         inline: true
       });
     }
@@ -118,22 +119,25 @@ export function scheduleWindowCloseSummaries(client: Client) {
 /**
  * Parse winning bids from window close summary message
  */
-function parseSummaryMessage(embed: any): Array<{ playerName: string; team: string; bidAmount: number; bidderName: string }> {
-  const bids: Array<{ playerName: string; team: string; bidAmount: number; bidderName: string }> = [];
+function parseSummaryMessage(embed: any): Array<{ playerName: string; dropPlayer: string | null; team: string; bidAmount: number; bidderName: string }> {
+  const bids: Array<{ playerName: string; dropPlayer: string | null; team: string; bidAmount: number; bidderName: string }> = [];
   
   if (!embed.fields) return bids;
   
   for (const field of embed.fields) {
-    // Field name is player name
+    // Field name is player name (signed player)
     const playerName = field.name;
     
-    // Field value format: "→ **TeamName** ($Amount)\nWinner: Username"
+    // Field value format: "Cut: PlayerName\nSign: PlayerName\n→ **TeamName** ($Amount)\nWinner: Username"
+    // or without cut: "Sign: PlayerName\n→ **TeamName** ($Amount)\nWinner: Username"
+    const cutMatch = field.value.match(/Cut:\s+(.+)/);
     const teamMatch = field.value.match(/→\s+\*\*(.+?)\*\*\s+\(\$(\d+)\)/);
     const winnerMatch = field.value.match(/Winner:\s+(.+)/);
     
     if (teamMatch && winnerMatch) {
       bids.push({
         playerName,
+        dropPlayer: cutMatch ? cutMatch[1].trim() : null,
         team: teamMatch[1],
         bidAmount: parseInt(teamMatch[2]),
         bidderName: winnerMatch[1]
@@ -285,11 +289,26 @@ export async function processBidsFromSummary(message: any, processorId: string) 
           continue;
         }
         
+        // Handle cut player
         let dropPlayerName = 'N/A';
+        let dropPlayerId: string | null = null;
         
-        // Handle cut player - need to parse from bid message or use placeholder
-        // For now, we'll require manual processing if dropPlayer info is needed
-        // In the future, we can store dropPlayer in faBids table
+        if (bid.dropPlayer) {
+          const dropPlayer = await findPlayerByFuzzyName(bid.dropPlayer);
+          if (dropPlayer) {
+            dropPlayerName = dropPlayer.name;
+            dropPlayerId = dropPlayer.id;
+            
+            // Move dropped player to Free Agents
+            await db
+              .update(players)
+              .set({ team: 'Free Agents' })
+              .where(eq(players.id, dropPlayer.id));
+            console.log(`[Batch Process] Dropped ${dropPlayer.name} from ${bid.team}`);
+          } else {
+            console.log(`[Batch Process] Warning: Could not find dropped player ${bid.dropPlayer}`);
+          }
+        }
         
         // Store previous team for rollback
         const previousTeam = signPlayer.team || 'Free Agent';
