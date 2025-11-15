@@ -17,6 +17,7 @@ export default function PlayerAliases() {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
 
   const { data: aliases, refetch: refetchAliases } = trpc.playerAliases.getAll.useQuery();
+  const { data: failedSearches, refetch: refetchFailedSearches } = trpc.playerAliases.getFailedSearches.useQuery();
   const { data: players } = trpc.player.list.useQuery({ limit: 1000 });
   
   const addAliasMutation = trpc.playerAliases.add.useMutation({
@@ -40,6 +41,27 @@ export default function PlayerAliases() {
     },
     onError: (error) => {
       toast.error(`Failed to delete alias: ${error.message}`);
+    },
+  });
+
+  const addFailedSearchAsAliasMutation = trpc.playerAliases.addFailedSearchAsAlias.useMutation({
+    onSuccess: () => {
+      toast.success("Failed search added as alias successfully");
+      refetchAliases();
+      refetchFailedSearches();
+    },
+    onError: (error) => {
+      toast.error(`Failed to add alias: ${error.message}`);
+    },
+  });
+
+  const markResolvedMutation = trpc.playerAliases.markFailedSearchResolved.useMutation({
+    onSuccess: () => {
+      toast.success("Failed search marked as resolved");
+      refetchFailedSearches();
+    },
+    onError: (error) => {
+      toast.error(`Failed to mark as resolved: ${error.message}`);
     },
   });
 
@@ -209,6 +231,105 @@ export default function PlayerAliases() {
                 </div>
               ))}
             </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Failed Searches Section */}
+      {failedSearches && failedSearches.length > 0 && (
+        <Card className="border-orange-200 bg-orange-50">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <span className="text-orange-600">🔍</span>
+              Failed Player Searches
+            </CardTitle>
+            <CardDescription>
+              These player names failed to match. Review and add them as aliases to improve future matching.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Search Term</TableHead>
+                  <TableHead>Attempt Count</TableHead>
+                  <TableHead>Last Attempted</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {failedSearches.map((search: any) => (
+                  <TableRow key={search.id}>
+                    <TableCell>
+                      <code className="bg-orange-100 px-2 py-1 rounded font-medium">
+                        {search.searchTerm}
+                      </code>
+                    </TableCell>
+                    <TableCell>
+                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-200 text-orange-800">
+                        {search.attemptCount} {search.attemptCount === 1 ? 'attempt' : 'attempts'}
+                      </span>
+                    </TableCell>
+                    <TableCell>
+                      {new Date(search.lastAttempted).toLocaleString()}
+                    </TableCell>
+                    <TableCell className="text-right space-x-2">
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button size="sm" variant="default">
+                            <Plus className="mr-1 h-3 w-3" />
+                            Add as Alias
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                          <DialogHeader>
+                            <DialogTitle>Add "{search.searchTerm}" as Alias</DialogTitle>
+                            <DialogDescription>
+                              Select which player this search term should match
+                            </DialogDescription>
+                          </DialogHeader>
+                          <div className="space-y-4">
+                            <div className="space-y-2">
+                              <Label htmlFor={`player-select-${search.id}`}>Player</Label>
+                              <select
+                                id={`player-select-${search.id}`}
+                                className="w-full px-3 py-2 border rounded-md"
+                                onChange={(e) => {
+                                  const player = players?.find((p: any) => p.id === e.target.value);
+                                  if (player) {
+                                    addFailedSearchAsAliasMutation.mutate({
+                                      failedSearchId: search.id,
+                                      playerId: player.id,
+                                      playerName: player.name,
+                                      searchTerm: search.searchTerm,
+                                    });
+                                  }
+                                }}
+                              >
+                                <option value="">Select a player...</option>
+                                {players?.map((player: any) => (
+                                  <option key={player.id} value={player.id}>
+                                    {player.name} ({player.overall} OVR) - {player.team || "Free Agent"}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+                          </div>
+                        </DialogContent>
+                      </Dialog>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => markResolvedMutation.mutate({ id: search.id })}
+                        disabled={markResolvedMutation.isPending}
+                      >
+                        Dismiss
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </CardContent>
         </Card>
       )}

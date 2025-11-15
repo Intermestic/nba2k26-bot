@@ -318,7 +318,53 @@ export async function findPlayerByFuzzyName(
     }
   }
   
+  // Log failed search for auto-learning
+  try {
+    await logFailedSearch(searchName);
+  } catch (error) {
+    console.log(`[Player Matcher] Failed to log failed search:`, error);
+  }
+  
   return null;
+}
+
+/**
+ * Log a failed player search for auto-learning
+ */
+async function logFailedSearch(searchTerm: string): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  
+  const { failedSearches } = await import('../drizzle/schema');
+  const { eq } = await import('drizzle-orm');
+  
+  // Check if this search term already exists
+  const existing = await db
+    .select()
+    .from(failedSearches)
+    .where(eq(failedSearches.searchTerm, searchTerm.toLowerCase()));
+  
+  if (existing.length > 0 && existing[0].resolved === 0) {
+    // Increment attempt count
+    await db
+      .update(failedSearches)
+      .set({ 
+        attemptCount: existing[0].attemptCount + 1,
+        lastAttempted: new Date()
+      })
+      .where(eq(failedSearches.id, existing[0].id));
+    
+    console.log(`[Auto-Learn] Incremented failed search count for "${searchTerm}" (${existing[0].attemptCount + 1} attempts)`);
+  } else if (existing.length === 0) {
+    // Create new failed search record
+    await db.insert(failedSearches).values({
+      searchTerm: searchTerm.toLowerCase(),
+      attemptCount: 1,
+      resolved: 0,
+    });
+    
+    console.log(`[Auto-Learn] Logged new failed search: "${searchTerm}"`);
+  }
 }
 
 /**

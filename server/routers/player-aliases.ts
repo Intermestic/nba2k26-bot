@@ -1,8 +1,8 @@
 import { router, publicProcedure } from "../_core/trpc";
 import { z } from "zod";
 import { getDb } from "../db";
-import { playerAliases } from "../../drizzle/schema";
-import { eq } from "drizzle-orm";
+import { playerAliases, failedSearches } from "../../drizzle/schema";
+import { eq, desc } from "drizzle-orm";
 
 export const playerAliasesRouter = router({
   /**
@@ -96,6 +96,96 @@ export const playerAliasesRouter = router({
           .set({ matchCount: existing[0].matchCount + 1 })
           .where(eq(playerAliases.id, existing[0].id));
       }
+
+      return { success: true };
+    }),
+
+  /**
+   * Get all failed searches (unresolved)
+   */
+  getFailedSearches: publicProcedure.query(async () => {
+    const db = await getDb();
+    if (!db) throw new Error("Database not available");
+
+    const failed = await db
+      .select()
+      .from(failedSearches)
+      .where(eq(failedSearches.resolved, 0))
+      .orderBy(desc(failedSearches.attemptCount), desc(failedSearches.lastAttempted));
+
+    return failed;
+  }),
+
+  /**
+   * Add failed search as alias and mark as resolved
+   */
+  addFailedSearchAsAlias: publicProcedure
+    .input(
+      z.object({
+        failedSearchId: z.number(),
+        playerId: z.string(),
+        playerName: z.string(),
+        searchTerm: z.string(),
+      })
+    )
+    .mutation(async ({ input, ctx }: any) => {
+      const db = await getDb();
+      if (!db) throw new Error("Database not available");
+
+      // Check if alias already exists
+      const existing = await db
+        .select()
+        .from(playerAliases)
+        .where(eq(playerAliases.alias, input.searchTerm.toLowerCase()));
+
+      if (existing.length > 0) {
+        throw new Error(`Alias "${input.searchTerm}" already exists for ${existing[0].playerName}`);
+      }
+
+      // Add as alias
+      await db.insert(playerAliases).values({
+        playerId: input.playerId,
+        playerName: input.playerName,
+        alias: input.searchTerm.toLowerCase(),
+        matchCount: 0,
+        addedBy: ctx.user?.id,
+        addedByName: ctx.user?.name || undefined,
+      });
+
+      // Mark failed search as resolved
+      await db
+        .update(failedSearches)
+        .set({
+          resolved: 1,
+          resolvedBy: ctx.user?.id,
+          resolvedAt: new Date(),
+        })
+        .where(eq(failedSearches.id, input.failedSearchId));
+
+      return { success: true };
+    }),
+
+  /**
+   * Mark failed search as resolved without adding alias
+   */
+  markFailedSearchResolved: publicProcedure
+    .input(
+      z.object({
+        id: z.number(),
+      })
+    )
+    .mutation(async ({ input, ctx }: any) => {
+      const db = await getDb();
+      if (!db) throw new Error("Database not available");
+
+      await db
+        .update(failedSearches)
+        .set({
+          resolved: 1,
+          resolvedBy: ctx.user?.id,
+          resolvedAt: new Date(),
+        })
+        .where(eq(failedSearches.id, input.id));
 
       return { success: true };
     }),

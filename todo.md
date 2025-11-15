@@ -314,3 +314,22 @@ Implement intelligent fuzzy matching that checks team roster first, handles miss
 - [x] TypeScript compilation successful (no errors)
 - [x] Dev server running without errors
 - [ ] Save checkpoint
+
+
+## CURRENT TASK: Auto-Learning from Failed Matches
+
+### Goal
+Log unsuccessful player name searches and provide admin UI to quickly add them as aliases
+
+### Tasks
+- [x] Create failedSearches database table (searchTerm, attemptCount, lastAttempted, resolved)
+- [x] Add logging to findPlayerByFuzzyName when no match found
+- [x] Create TRPC router for failed searches (getAll, markResolved, addAsAlias)
+- [x] Create admin UI section in player-aliases page for failed searches
+- [x] Add "Add as Alias" quick-action button for each failed search
+- [x] Show attempt count and last attempted timestamp
+- [x] Mark failed search as resolved when alias is added
+- [x] TypeScript compilation successful (no errors)
+- [x] Dev server running without errors
+- [x] Failed searches section displays with orange styling
+- [ ] Save checkpoint

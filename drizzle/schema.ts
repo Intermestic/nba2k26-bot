@@ -191,3 +191,20 @@ export const playerAliases = mysqlTable("player_aliases", {
 
 export type PlayerAlias = typeof playerAliases.$inferSelect;
 export type InsertPlayerAlias = typeof playerAliases.$inferInsert;
+
+/**
+ * Failed Player Searches table - logs unsuccessful player name searches for auto-learning
+ */
+export const failedSearches = mysqlTable("failed_searches", {
+  id: int("id").autoincrement().primaryKey(),
+  searchTerm: varchar("searchTerm", { length: 255 }).notNull(), // The search term that failed
+  attemptCount: int("attemptCount").default(1).notNull(), // How many times this search has failed
+  lastAttempted: timestamp("lastAttempted").defaultNow().notNull(), // Last time this search was attempted
+  resolved: int("resolved").default(0).notNull(), // 1 if resolved (alias added), 0 if not
+  resolvedBy: int("resolvedBy"), // Reference to users.id who resolved it
+  resolvedAt: timestamp("resolvedAt"), // When it was resolved
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type FailedSearch = typeof failedSearches.$inferSelect;
+export type InsertFailedSearch = typeof failedSearches.$inferInsert;
