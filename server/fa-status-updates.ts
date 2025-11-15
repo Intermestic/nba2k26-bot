@@ -104,20 +104,37 @@ export async function postStatusUpdate(client: Client) {
     // Get previous status message ID from database
     const { bidWindows } = await import('../drizzle/schema');
     const { getDb } = await import('./db');
-    const { eq } = await import('drizzle-orm');
+    const { eq, or, sql } = await import('drizzle-orm');
     const db = await getDb();
     
     if (db) {
-      const windowRecord = await db.select().from(bidWindows).where(eq(bidWindows.windowId, window.windowId)).limit(1);
+      // Check for special window mode (before noon EST on 2025-11-15)
+      const now = new Date();
+      const noonEST = new Date('2025-11-15T12:00:00-05:00');
+      const isSpecialWindow = now < noonEST;
       
-      // Delete previous status message if it exists
-      if (windowRecord.length > 0 && windowRecord[0].statusMessageId) {
-        try {
-          const previousMessage = await (channel as TextChannel).messages.fetch(windowRecord[0].statusMessageId);
-          await previousMessage.delete();
-          console.log('[FA Status] Deleted previous status message');
-        } catch (error) {
-          console.log('[FA Status] Could not delete previous message (may already be deleted)');
+      // Delete status messages from current window AND previous window if in special mode
+      const windowsToCheck = isSpecialWindow 
+        ? ['2025-11-14-PM', window.windowId]
+        : [window.windowId];
+      
+      const windowRecords = await db
+        .select()
+        .from(bidWindows)
+        .where(
+          sql`${bidWindows.windowId} IN (${sql.join(windowsToCheck.map(w => sql`${w}`), sql`, `)})`
+        );
+      
+      // Delete all previous status messages
+      for (const record of windowRecords) {
+        if (record.statusMessageId) {
+          try {
+            const previousMessage = await (channel as TextChannel).messages.fetch(record.statusMessageId);
+            await previousMessage.delete();
+            console.log(`[FA Status] Deleted previous status message from window ${record.windowId}`);
+          } catch (error) {
+            console.log(`[FA Status] Could not delete message from window ${record.windowId} (may already be deleted)`);
+          }
         }
       }
     }
