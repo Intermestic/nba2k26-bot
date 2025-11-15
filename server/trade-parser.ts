@@ -71,7 +71,7 @@ export function parseTrade(message: string): ParsedTrade | null {
   
   // Strategy 1: "Team send: Player OVR (badges) ..." format (multi-line)
   const sendPattern = new RegExp(
-    `${team1}\\s+send[s]?[:\\s]+([^]+?)(?=${team2}\\s+send)`,
+    `${team1}\\s+send[s]?[:\\s]+([^]+?)(?:for|${team2}\\s+send)`,
     'is'
   );
   const sendMatch = text.match(sendPattern);
@@ -79,12 +79,15 @@ export function parseTrade(message: string): ParsedTrade | null {
   if (sendMatch) {
     // Also extract team2's players
     const team2Pattern = new RegExp(
-      `${team2}\\s+send[s]?[:\\s]+([^]+?)$`,
+      `${team2}\\s+send[s]?[:\\s]+([^]+?)(?:$|\\n\\n)`,
       'is'
     );
     const team2Match = text.match(team2Pattern);
     
     if (team2Match) {
+      console.log('[Trade Parser] Using "Send" format strategy');
+      console.log('[Trade Parser] Team1 raw:', sendMatch[1]);
+      console.log('[Trade Parser] Team2 raw:', team2Match[1]);
       return {
         team1,
         team1Players: parsePlayerListWithOVR(sendMatch[1]),
@@ -143,21 +146,38 @@ export function parseTrade(message: string): ParsedTrade | null {
 /**
  * Parse player list with OVR format: "Player OVR (badges) Player OVR (badges) ..."
  * Example: "AD 93 (22) Jaylen Brown 91 (21) Paul Reed 72 (8) 256"
+ * Also handles multi-line format:
+ * "81 Kyshawn George (7)
+ *  80 Jordan Poole (13)
+ *  161/20"
  */
 function parsePlayerListWithOVR(text: string): string[] {
-  // Remove the total OVR number at the end (3-digit number at end of line)
-  let cleaned = text.replace(/\s+\d{3}\s*$/, '').trim();
+  // Remove the total OVR/badge count at the end (e.g., "161/20" or "256")
+  let cleaned = text.replace(/\s+\d{2,3}(?:\/\d{1,2})?\s*$/, '').trim();
   
-  // Pattern: Player Name + OVR + (badges)
-  // Match: "Name(s) Number (Number)"
-  const playerPattern = /([A-Za-z\s]+?)\s+(\d{2})\s+\(\d+\)/g;
+  // Pattern: OVR + Player Name + (badges)
+  // Match: "Number Name(s) (Number)" (OVR first format)
+  const ovrFirstPattern = /(\d{2})\s+([A-Za-z\s]+?)\s+\(\d+\)/g;
   const players: string[] = [];
   let match;
   
-  while ((match = playerPattern.exec(cleaned)) !== null) {
-    const playerName = match[1].trim();
+  while ((match = ovrFirstPattern.exec(cleaned)) !== null) {
+    const playerName = match[2].trim();
     if (playerName) {
       players.push(playerName);
+      console.log('[Trade Parser] Found player (OVR-first):', playerName);
+    }
+  }
+  
+  // If no players found, try original pattern (Name OVR (badges))
+  if (players.length === 0) {
+    const nameFirstPattern = /([A-Za-z\s]+?)\s+(\d{2})\s+\(\d+\)/g;
+    while ((match = nameFirstPattern.exec(cleaned)) !== null) {
+      const playerName = match[1].trim();
+      if (playerName) {
+        players.push(playerName);
+        console.log('[Trade Parser] Found player (name-first):', playerName);
+      }
     }
   }
   
