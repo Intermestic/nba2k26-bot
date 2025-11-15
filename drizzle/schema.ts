@@ -149,3 +149,21 @@ export const bidWindows = mysqlTable("bid_windows", {
 
 export type BidWindow = typeof bidWindows.$inferSelect;
 export type InsertBidWindow = typeof bidWindows.$inferInsert;
+
+/**
+ * Cap Violations table - tracks cap violation alerts and compliance
+ */
+export const capViolations = mysqlTable("cap_violations", {
+  id: int("id").autoincrement().primaryKey(),
+  team: varchar("team", { length: 100 }).notNull(), // Team that violated cap
+  totalOverall: int("totalOverall").notNull(), // Total OVR when violation occurred
+  overCap: int("overCap").notNull(), // Amount over cap limit
+  playerCount: int("playerCount").notNull(), // Number of players on roster
+  alertSent: int("alertSent").default(1).notNull(), // 1 if alert was sent, 0 if not
+  resolved: int("resolved").default(0).notNull(), // 1 if team is back under cap, 0 if still over
+  resolvedAt: timestamp("resolvedAt"), // When team came back under cap
+  createdAt: timestamp("createdAt").defaultNow().notNull(), // When violation was detected
+});
+
+export type CapViolation = typeof capViolations.$inferSelect;
+export type InsertCapViolation = typeof capViolations.$inferInsert;

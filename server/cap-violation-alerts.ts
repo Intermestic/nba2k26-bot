@@ -1,7 +1,7 @@
 import { Client, EmbedBuilder } from 'discord.js';
 import { getDb } from './db';
-import { players } from '../drizzle/schema';
-import { and, isNotNull, ne, eq } from 'drizzle-orm';
+import { players, capViolations } from '../drizzle/schema';
+import { and, isNotNull, ne, eq, desc } from 'drizzle-orm';
 
 const OVERALL_CAP_LIMIT = 1098;
 
@@ -94,6 +94,84 @@ function getTeamOwnerDiscordId(teamName: string): string | null {
 }
 
 /**
+ * Log cap violation to database
+ */
+async function logCapViolation(teamStatus: TeamCapStatus): Promise<void> {
+  try {
+    const db = await getDb();
+    if (!db) return;
+    
+    // Check if there's an existing unresolved violation for this team
+    const existingViolations = await db
+      .select()
+      .from(capViolations)
+      .where(
+        and(
+          eq(capViolations.team, teamStatus.team),
+          eq(capViolations.resolved, 0)
+        )
+      )
+      .orderBy(desc(capViolations.createdAt))
+      .limit(1);
+    
+    if (existingViolations.length > 0) {
+      // Update existing violation with latest stats
+      await db
+        .update(capViolations)
+        .set({
+          totalOverall: teamStatus.totalOverall,
+          overCap: teamStatus.overCap,
+          playerCount: teamStatus.playerCount
+        })
+        .where(eq(capViolations.id, existingViolations[0].id));
+      
+      console.log(`[Cap Alerts] Updated existing violation for ${teamStatus.team}`);
+    } else {
+      // Create new violation record
+      await db.insert(capViolations).values({
+        team: teamStatus.team,
+        totalOverall: teamStatus.totalOverall,
+        overCap: teamStatus.overCap,
+        playerCount: teamStatus.playerCount,
+        alertSent: 1,
+        resolved: 0
+      });
+      
+      console.log(`[Cap Alerts] Logged new violation for ${teamStatus.team}`);
+    }
+  } catch (error) {
+    console.error(`[Cap Alerts] Error logging violation for ${teamStatus.team}:`, error);
+  }
+}
+
+/**
+ * Mark team violations as resolved
+ */
+async function markViolationsResolved(team: string): Promise<void> {
+  try {
+    const db = await getDb();
+    if (!db) return;
+    
+    await db
+      .update(capViolations)
+      .set({
+        resolved: 1,
+        resolvedAt: new Date()
+      })
+      .where(
+        and(
+          eq(capViolations.team, team),
+          eq(capViolations.resolved, 0)
+        )
+      );
+    
+    console.log(`[Cap Alerts] Marked violations resolved for ${team}`);
+  } catch (error) {
+    console.error(`[Cap Alerts] Error marking violations resolved for ${team}:`, error);
+  }
+}
+
+/**
  * Send cap violation alert to team owner
  */
 async function sendCapViolationAlert(
@@ -140,6 +218,9 @@ async function sendCapViolationAlert(
     await user.send({ embeds: [embed] });
     console.log(`[Cap Alerts] Sent cap violation alert to ${user.tag} for ${teamStatus.team}`);
     
+    // Log violation to database
+    await logCapViolation(teamStatus);
+    
   } catch (error) {
     console.error(`[Cap Alerts] Error sending alert for ${teamStatus.team}:`, error);
   }
@@ -154,6 +235,12 @@ export async function checkCapViolations(client: Client): Promise<void> {
     
     const teamStatuses = await getTeamCapStatuses();
     const violatingTeams = teamStatuses.filter(t => t.overCap > 0);
+    const compliantTeams = teamStatuses.filter(t => t.overCap <= 0);
+    
+    // Mark compliant teams' violations as resolved
+    for (const team of compliantTeams) {
+      await markViolationsResolved(team.team);
+    }
     
     if (violatingTeams.length === 0) {
       console.log('[Cap Alerts] No cap violations found');

@@ -78,6 +78,13 @@
       "when": 1763166617223,
       "tag": "0010_typical_red_shift",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "5",
+      "when": 1763188081691,
+      "tag": "0011_awesome_stingray",
+      "breakpoints": true
     }
   ]
 }

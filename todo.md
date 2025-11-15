@@ -1,14 +1,27 @@
 # NBA 2K26 Player Database - TODO
 
-## CURRENT TASK: Cap Violation Alert System
+## CURRENT TASK: Cap Compliance Dashboard
+
+- [x] Create database schema for cap violation logs
+- [x] Add migration for capViolations table
+- [x] Update cap alert system to log violations to database
+- [x] Create tRPC endpoint for cap violation history
+- [x] Build admin dashboard page at /admin/cap-compliance
+- [x] Show violation timeline with filters
+- [x] Display compliance status and repeat offenders
+- [x] Add export to CSV functionality
+- [x] Test dashboard (compiled successfully, accessible at /admin/cap-compliance)
+- [ ] Save checkpoint
+
+## Cap Violation Alert System - COMPLETED ✅
 
 - [x] Create cap violation monitoring module
 - [x] Track team cap status (checks every 6 hours)
 - [x] Send Discord DM to team owner when over cap
 - [x] Include suggested players to drop in alert message (3 lowest OVR)
 - [x] Integrate with existing bot systems
-- [ ] Test cap violation alerts (will run on next 6-hour cycle)
-- [ ] Save checkpoint
+- [x] Test cap violation alerts (alerts sent successfully)
+- [x] Save checkpoint
 
 ## Cap Status Message Fix - COMPLETED ✅
 
@@ -24,33 +37,4 @@
 - [x] Test rejection message posting (5 👎 votes)
 - [x] Test approval message posting (7 👍 votes)
 - [x] Remove excessive debug logging
-- [x] Save checkpoint
-
-## Trade Voting System - COMPLETED ✅
-
-- [x] Monitor trade channel for new trade embeds
-- [x] Auto-add 👍 and 👎 reactions to new trade embeds
-- [x] Track votes from users with "Trade Committee" role
-- [x] Reject votes from non-Trade Committee members with DM notification
-- [x] Check vote counts on each new reaction
-- [x] Approve trade when 7 👍 reached before 5 👎 (post confirmation)
-- [x] Reject trade when 5 👎 reached before 7 👍 (post rejection)
-- [x] Initial testing completed
-
-## Discord FA Status Message Font - COMPLETED ✅
-
-- [x] Remove italic/oblique styling from FA status messages (changed tree chars to bullets)
-- [x] Use normal font weight for all text (bold labels instead of italic)
-- [x] Test Discord message appearance (next hourly update)
-- [x] Save checkpoint
-
-## Player Edit Form Fixes - COMPLETED ✅
-
-- [x] Add team dropdown to player edit form (Free Agents + 28 teams)
-- [x] Add 2kratings URL field to edit form
-- [x] Add team field to update API mutation
-- [x] Create team validation function to prevent creating invalid teams
-- [x] Apply validation to discord-bot.ts (FA transactions)
-- [x] Apply validation to trade-handler.ts (trade processing)
-- [x] Test all changes (TypeScript compiled with no errors)
 - [x] Save checkpoint
