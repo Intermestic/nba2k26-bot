@@ -11,6 +11,8 @@ interface VoteCount {
   voters: Set<string>; // Track who voted to prevent double voting
   messageId: string;
   processed: boolean;
+  createdAt: Date;
+  lastReminderSent?: Date;
 }
 
 // Track active votes
@@ -151,7 +153,9 @@ export async function handleNewTradeEmbed(message: Message) {
       downvotes: 0,
       voters: new Set(),
       messageId: message.id,
-      processed: false    });
+      processed: false,
+      createdAt: new Date()
+    });
     
     console.log(`[Trade Voting] Reactions added and vote tracking initialized`);
 
@@ -242,6 +246,9 @@ export async function handleReactionAdd(
       return;
     }
     
+    // Add voter to tracking
+    voteData.voters.add(user.id);
+    
     // Count votes
     const { upvotes, downvotes } = await countVotes(reaction);
     
@@ -302,6 +309,117 @@ export async function handleReactionRemove(
 }
 
 /**
+ * Get all Trade Committee members in the guild
+ */
+async function getAllTradeCommitteeMembers(client: Client): Promise<Array<{ id: string; username: string }>> {
+  try {
+    const guild = client.guilds.cache.first();
+    if (!guild) {
+      console.log('[Trade Reminders] No guild found');
+      return [];
+    }
+    
+    await guild.members.fetch();
+    
+    const normalizedTargetRole = TRADE_COMMITTEE_ROLE.toLowerCase().trim();
+    const committeeMembers: Array<{ id: string; username: string }> = [];
+    
+    for (const [memberId, member] of Array.from(guild.members.cache.entries())) {
+      const hasRole = member.roles.cache.some(role => 
+        role.name.toLowerCase().trim() === normalizedTargetRole
+      );
+      
+      if (hasRole) {
+        committeeMembers.push({
+          id: memberId,
+          username: member.user.username
+        });
+      }
+    }
+    
+    return committeeMembers;
+  } catch (error) {
+    console.error('[Trade Reminders] Error fetching Trade Committee members:', error);
+    return [];
+  }
+}
+
+/**
+ * Send reminders to Trade Committee members who haven't voted
+ */
+async function sendVoteReminders(client: Client) {
+  try {
+    const now = new Date();
+    
+    for (const [messageId, voteData] of Array.from(activeVotes.entries())) {
+      // Skip processed trades
+      if (voteData.processed) continue;
+      
+      // Check if at least 1 hour has passed since creation or last reminder
+      const lastCheck = voteData.lastReminderSent || voteData.createdAt;
+      const hoursSinceLastCheck = (now.getTime() - lastCheck.getTime()) / (1000 * 60 * 60);
+      
+      if (hoursSinceLastCheck < 1) continue;
+      
+      // Get all Trade Committee members
+      const allMembers = await getAllTradeCommitteeMembers(client);
+      
+      // Find members who haven't voted yet
+      const nonVoters = allMembers.filter(member => !voteData.voters.has(member.id));
+      
+      if (nonVoters.length === 0) {
+        console.log(`[Trade Reminders] All Trade Committee members have voted on trade ${messageId}`);
+        continue;
+      }
+      
+      // Fetch the trade message
+      const channel = await client.channels.fetch(TRADE_CHANNEL_ID);
+      if (!channel?.isTextBased()) continue;
+      
+      const message = await (channel as any).messages.fetch(messageId);
+      if (!message) continue;
+      
+      // Get current vote counts
+      const { upvotes, downvotes } = await countVotes({ message } as any);
+      
+      // Extract trade details from embed
+      let tradeDetails = 'a pending trade';
+      if (message.embeds.length > 0) {
+        const embed = message.embeds[0];
+        if (embed.title) {
+          tradeDetails = embed.title;
+        }
+      }
+      
+      // Send DM to each non-voter
+      for (const member of nonVoters) {
+        try {
+          const user = await client.users.fetch(member.id);
+          await user.send(
+            `⚠️ **Trade Vote Reminder**\n\n` +
+            `You have not yet voted on ${tradeDetails}.\n\n` +
+            `**Current Status:**\n` +
+            `• 👍 Approve: ${upvotes}/${APPROVAL_THRESHOLD}\n` +
+            `• 👎 Reject: ${downvotes}/${REJECTION_THRESHOLD}\n\n` +
+            `**Vote here:** https://discord.com/channels/${message.guildId}/${TRADE_CHANNEL_ID}/${messageId}\n\n` +
+            `_This is an hourly reminder for all unvoted trades._`
+          );
+          console.log(`[Trade Reminders] Sent reminder to ${member.username} for trade ${messageId}`);
+        } catch (dmError) {
+          console.log(`[Trade Reminders] Could not DM ${member.username}`);
+        }
+      }
+      
+      // Update last reminder time
+      voteData.lastReminderSent = now;
+      console.log(`[Trade Reminders] Sent ${nonVoters.length} reminders for trade ${messageId}`);
+    }
+  } catch (error) {
+    console.error('[Trade Reminders] Error sending reminders:', error);
+  }
+}
+
+/**
  * Initialize trade voting system
  */
 export function initializeTradeVoting(client: Client) {
@@ -310,4 +428,11 @@ export function initializeTradeVoting(client: Client) {
   console.log(`[Trade Voting] Required role: ${TRADE_COMMITTEE_ROLE}`);
   console.log(`[Trade Voting] Approval threshold: ${APPROVAL_THRESHOLD} 👍`);
   console.log(`[Trade Voting] Rejection threshold: ${REJECTION_THRESHOLD} 👎`);
+  
+  // Schedule hourly reminders
+  setInterval(() => {
+    sendVoteReminders(client);
+  }, 60 * 60 * 1000); // Every hour
+  
+  console.log('[Trade Reminders] Hourly vote reminders scheduled');
 }
