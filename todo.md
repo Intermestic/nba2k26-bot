@@ -532,6 +532,24 @@ Reactions were backwards - processed 6 bids when should have only recorded 1
 - [x] Added prompts for corrections (sign: X, drop: Y, team: Z)
 - [x] 60 second timeout with cancel option
 - [x] Server restarted
+- [x] Save checkpoint (version 1f1d6df9)
 - [ ] User to test trade parser
 - [ ] User to test ⚡ validation failure flow
+
+
+## CURRENT TASK: Fix 76ers/Sixers Confusion
+
+### Issue
+Database has both "76ers" and "Sixers" entries causing duplicate teams
+Gafford should be on Sixers roster
+
+### Tasks
+- [x] Check database for players with team = "76ers" (found 1 player)
+- [x] Update all "76ers" entries to "Sixers" in players table
+- [x] Gafford already on Sixers (14 players total, 1092 overall)
+- [x] Verify team validation has 76ers → Sixers alias (already exists)
+- [x] Check team_coins table for "76ers" entries (found 1, updated)
+- [x] Check fa_transactions table for "76ers" entries (found 2, updated)
+- [x] Check fa_bids table for "76ers" entries (found 1, updated)
+- [x] Verified Sixers roster: 14 players, 1092 total overall
 - [ ] Save checkpoint
