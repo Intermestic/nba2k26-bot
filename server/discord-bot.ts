@@ -617,6 +617,14 @@ export async function startDiscordBot(token: string) {
     } catch (error) {
       console.error('[Trade Voting] Failed to initialize:', error);
     }
+    
+    // Initialize cap violation monitoring
+    try {
+      const { initializeCapViolationMonitoring } = await import('./cap-violation-alerts');
+      initializeCapViolationMonitoring(client!);
+    } catch (error) {
+      console.error('[Cap Alerts] Failed to initialize:', error);
+    }
   });
   
   // Monitor all messages for FA bids and commands

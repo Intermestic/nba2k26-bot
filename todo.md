@@ -1,6 +1,22 @@
 # NBA 2K26 Player Database - TODO
 
-## CURRENT TASK: Trade Voting System Bug Fixes - COMPLETED ✅
+## CURRENT TASK: Cap Violation Alert System
+
+- [x] Create cap violation monitoring module
+- [x] Track team cap status (checks every 6 hours)
+- [x] Send Discord DM to team owner when over cap
+- [x] Include suggested players to drop in alert message (3 lowest OVR)
+- [x] Integrate with existing bot systems
+- [ ] Test cap violation alerts (will run on next 6-hour cycle)
+- [ ] Save checkpoint
+
+## Cap Status Message Fix - COMPLETED ✅
+
+- [x] Remove Free Agents from cap status embed (filtered from query)
+- [x] Test cap status message (will show in next update)
+- [x] Save checkpoint
+
+## Trade Voting System Bug Fixes - COMPLETED ✅
 
 - [x] Fix vote threshold logic (5 👎 before 7 👍 = rejected)
 - [x] Add debug logging for role detection
@@ -8,7 +24,7 @@
 - [x] Test rejection message posting (5 👎 votes)
 - [x] Test approval message posting (7 👍 votes)
 - [x] Remove excessive debug logging
-- [ ] Save checkpoint
+- [x] Save checkpoint
 
 ## Trade Voting System - COMPLETED ✅
 
@@ -38,9 +54,3 @@
 - [x] Apply validation to trade-handler.ts (trade processing)
 - [x] Test all changes (TypeScript compiled with no errors)
 - [x] Save checkpoint
-
-## Cap Status Message Fix
-
-- [x] Remove Free Agents from cap status embed (filtered from query)
-- [x] Test cap status message (will show in next update)
-- [ ] Save checkpoint
