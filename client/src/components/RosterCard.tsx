@@ -148,7 +148,7 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
 
   return (
     <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
-      <div className="bg-slate-900 rounded-lg max-w-4xl w-full max-h-[90vh] flex flex-col">
+      <div className="bg-slate-900 rounded-lg max-w-6xl w-full max-h-[90vh] flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-slate-700">
           <h2 className="text-xl font-bold">Roster Card Preview</h2>
@@ -487,11 +487,11 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                   )}
                 </div>
 
-                {/* Bottom Rows: Remaining Players in Rows of 3 */}
+                {/* Bottom Rows: Remaining Players in Rows of 4 */}
                 <div
                   style={{
                     display: 'grid',
-                    gridTemplateColumns: 'repeat(3, 1fr)',
+                    gridTemplateColumns: 'repeat(4, 1fr)',
                     gap: '16px',
                     border: 'none',
                     outline: 'none',
