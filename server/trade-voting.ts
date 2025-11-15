@@ -272,7 +272,8 @@ export async function handleReactionAdd(
         console.log(`[Trade Voting] Could not DM user ${user.tag} about invalid vote`);
       }
       
-      console.log(`[Trade Voting] Rejected vote from ${user.tag} (no Trade Committee role)`);
+      console.log(`[Trade Voting] ⚠️  Rejected vote from ${user.tag} (ID: ${user.id}) - missing ${TRADE_COMMITTEE_ROLE} role`);
+      console.log(`[Trade Voting] User's ${reaction.emoji.name} reaction was removed`);
       return;
     }
     
@@ -285,14 +286,14 @@ export async function handleReactionAdd(
     console.log(`[Trade Voting] Current votes: ${upvotes} 👍, ${downvotes} 👎`);
     
     // Check if vote threshold reached
-    // Approval: 7 👍 before reaching 5 👎
-    // Rejection: 5 👎 before reaching 7 👍
-    if (upvotes >= APPROVAL_THRESHOLD && downvotes < REJECTION_THRESHOLD) {
-      // Trade approved: got 7 upvotes before hitting 5 downvotes
-      await processVoteResult(reaction.message as Message, upvotes, downvotes, true);
-    } else if (downvotes >= REJECTION_THRESHOLD && upvotes < APPROVAL_THRESHOLD) {
-      // Trade rejected: got 5 downvotes before hitting 7 upvotes
+    // Rejection takes priority: if 5 👎 reached, reject immediately
+    // Approval: 7 👍 (only if not already rejected)
+    if (downvotes >= REJECTION_THRESHOLD) {
+      // Trade rejected: got 5 downvotes
       await processVoteResult(reaction.message as Message, upvotes, downvotes, false);
+    } else if (upvotes >= APPROVAL_THRESHOLD) {
+      // Trade approved: got 7 upvotes (and less than 5 downvotes)
+      await processVoteResult(reaction.message as Message, upvotes, downvotes, true);
     }
     
   } catch (error) {

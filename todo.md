@@ -399,3 +399,24 @@ DoubleMetaphone import error breaking player name matching
 - [x] TypeScript compilation successful (no errors)
 - [x] Dev server running without errors
 - [ ] Save checkpoint
+
+
+## CURRENT TASK: Fix Trade Voting Bugs
+
+### Issue 1: Trade Not Rejected at Threshold
+Trade with 5 downvotes not being rejected automatically
+
+### Issue 2: Bot Deleting User's Reaction
+Bot removes both its own reaction AND the user's first reaction - should only remove bot's reaction
+
+### Tasks
+- [x] Find trade voting logic in Discord bot (trade-voting.ts)
+- [x] Check rejection threshold (was requiring upvotes < 7 AND downvotes >= 5)
+- [x] Fix rejection logic to trigger at 5 downvotes regardless of upvotes (rejection takes priority)
+- [x] Find reaction removal code (lines 228-258)
+- [x] Analyzed: Bot reaction removal is correct - only removes bot's reaction
+- [x] Root cause: User's reaction removed because they lack Trade Committee role (line 262)
+- [x] Add better logging to identify which users lack role (shows user ID and emoji)
+- [x] TypeScript compilation successful
+- [x] Dev server running without errors
+- [ ] Save checkpoint
