@@ -1,9 +1,8 @@
 /**
- * Valid NBA teams for the league
+ * Valid NBA teams for the league (canonical names)
  */
 export const VALID_TEAMS = [
   'Free Agents',
-  '76ers',
   'Bucks',
   'Bulls',
   'Cavaliers',
@@ -25,10 +24,11 @@ export const VALID_TEAMS = [
   'Pistons',
   'Raptors',
   'Rockets',
+  'Sixers',
   'Spurs',
   'Suns',
   'Timberwolves',
-  'Trailblazers',
+  'Trail Blazers',
   'Warriors',
   'Wizards',
 ] as const;
@@ -36,24 +36,104 @@ export const VALID_TEAMS = [
 export type ValidTeam = typeof VALID_TEAMS[number];
 
 /**
- * Check if a team name is valid
+ * Team name aliases mapping to canonical names
  */
-export function isValidTeam(team: string | null | undefined): team is ValidTeam {
+const TEAM_ALIASES: Record<string, ValidTeam> = {
+  // 76ers / Sixers
+  '76ers': 'Sixers',
+  'seventy sixers': 'Sixers',
+  
+  // Mavericks
+  'mavericks': 'Mavs',
+  'dallas': 'Mavs',
+  
+  // Trail Blazers
+  'trailblazers': 'Trail Blazers',
+  'blazers': 'Trail Blazers',
+  'portland': 'Trail Blazers',
+  
+  
+  // Timberwolves
+  'wolves': 'Timberwolves',
+  'twolves': 'Timberwolves',
+  't-wolves': 'Timberwolves',
+  
+  // Other common aliases
+  'gsw': 'Warriors',
+  'golden state': 'Warriors',
+  'la lakers': 'Lakers',
+  'philly': 'Sixers',
+  'philadelphia': 'Sixers',
+  'san antonio': 'Spurs',
+  'new york': 'Knicks',
+  'brooklyn': 'Nets',
+  'milwaukee': 'Bucks',
+  'miami': 'Heat',
+  'boston': 'Celtics',
+  'chicago': 'Bulls',
+  'cleveland': 'Cavaliers',
+  'detroit': 'Pistons',
+  'indiana': 'Pacers',
+  'charlotte': 'Hornets',
+  'atlanta': 'Hawks',
+  'orlando': 'Magic',
+  'washington': 'Wizards',
+  'toronto': 'Raptors',
+  'memphis': 'Grizzlies',
+  'houston': 'Rockets',
+  'new orleans': 'Pelicans',
+  'sacramento': 'Kings',
+  'phoenix': 'Suns',
+  'utah': 'Jazz',
+  'denver': 'Nuggets',
+  'minnesota': 'Timberwolves',
+  
+  // Free Agents aliases
+  'fa': 'Free Agents',
+  'free agent': 'Free Agents',
+  'freeagents': 'Free Agents',
+};
+
+/**
+ * Check if a team name is valid (including aliases)
+ */
+export function isValidTeam(team: string | null | undefined): boolean {
   if (!team) return false;
-  return VALID_TEAMS.includes(team as ValidTeam);
+  const normalized = team.trim().toLowerCase();
+  
+  // Check canonical names
+  const isCanonical = VALID_TEAMS.some(t => t.toLowerCase() === normalized);
+  if (isCanonical) return true;
+  
+  // Check aliases
+  return normalized in TEAM_ALIASES;
 }
 
 /**
- * Validate and normalize team name (case-insensitive)
- * Returns the properly cased team name or null if invalid
+ * Validate and normalize team name (case-insensitive, handles aliases)
+ * Returns the canonical team name or null if invalid
  */
 export function validateTeamName(team: string | null | undefined): ValidTeam | null {
   if (!team) return null;
   
-  const normalized = team.trim();
-  const found = VALID_TEAMS.find(
-    validTeam => validTeam.toLowerCase() === normalized.toLowerCase()
-  );
+  const normalized = team.trim().toLowerCase();
   
-  return found || null;
+  // Check canonical names first
+  const canonical = VALID_TEAMS.find(
+    validTeam => validTeam.toLowerCase() === normalized
+  );
+  if (canonical) return canonical;
+  
+  // Check aliases
+  const aliasMatch = TEAM_ALIASES[normalized];
+  if (aliasMatch) return aliasMatch;
+  
+  return null;
+}
+
+/**
+ * Get all valid team names (canonical only, no aliases)
+ */
+export function getAllTeams(): readonly ValidTeam[] {
+  return VALID_TEAMS;
 }

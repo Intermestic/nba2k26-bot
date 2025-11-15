@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { trpc } from "@/lib/trpc";
+import { VALID_TEAMS } from '@/../../server/team-validator';
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -26,14 +27,7 @@ interface TeamAssignmentDialogProps {
   onSuccess: () => void;
 }
 
-const TEAMS = [
-  "Hawks", "Celtics", "Nets", "Hornets", "Bulls", "Cavaliers",
-  "Mavericks", "Nuggets", "Pistons", "Warriors", "Rockets", "Pacers",
-  "Clippers", "Lakers", "Grizzlies", "Heat", "Bucks", "Timberwolves",
-  "Pelicans", "Knicks", "Thunder", "Magic", "Sixers", "Suns",
-  "Trail Blazers", "Kings", "Spurs", "Raptors", "Jazz", "Wizards",
-  "Free Agents"
-];
+const TEAMS = [...VALID_TEAMS];
 
 export function TeamAssignmentDialog({
   open,

@@ -174,3 +174,21 @@ Add two-step confirmation for batch processing: preview → confirm → execute
 - [x] Generate new preview with failed transactions
 - [x] Allow user to confirm and retry
 - [x] Add recursive retry button if retry also has failures
+
+
+## CURRENT TASK: Fix Team Names & Validation
+
+### Issues
+1. "76ers" should map to "Sixers"
+2. "Trail Blazers", "Trailblazers", "Blazers" should all map to same team
+3. Sixers not showing up in 28 teams list
+4. Player edit dropdown should only show 28 teams + Free Agents
+
+### Tasks
+- [x] Find where team validation/normalization happens (team-validator.ts)
+- [x] Add team alias mapping (76ers → Sixers, Trailblazers/Blazers → Trail Blazers, etc.)
+- [x] Fixed Sixers (was "76ers", now "Sixers" with "76ers" as alias)
+- [x] Find player edit dropdown component (TeamAssignmentDialog.tsx)
+- [x] Update dropdown to use validated team list only (imports VALID_TEAMS)
+- [x] Removed Clippers and Thunder (not in league)
+- [x] 28 teams + Free Agents = 29 total
