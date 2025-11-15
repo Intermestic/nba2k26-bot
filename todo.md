@@ -792,3 +792,12 @@
 - [x] Test status message updates (working - shows 11 unique players)
 - [ ] Verify Jaden Ivey is FA or rostered
 - [ ] Save checkpoint
+
+## URGENT: Fix Status Message Bugs
+
+- [x] Fix bot spamming status messages (stop existing intervals before starting new)
+- [x] Update coin commitment to only count highest bids per player
+- [x] Store last message ID in bidWindows.statusMessageId for persistence
+- [x] Update postStatusUpdate to fetch/delete previous message from DB
+- [x] Test with server restarts (WORKING - deletes old, posts new)
+- [ ] Save checkpoint

@@ -17,15 +17,32 @@ async function formatStatusMessage(bids: Array<{ playerName: string; team: strin
   // Sort by bid amount descending
   const sortedBids = [...bids].sort((a, b) => b.bidAmount - a.bidAmount);
   
-  // Calculate coin commitments per bidder
+  // Calculate coin commitments per bidder (only count highest bids per player)
   const { teamCoins } = await import('../drizzle/schema');
   const { getDb } = await import('./db');
   const { eq } = await import('drizzle-orm');
   const db = await getDb();
   
+  // Group bids by player to find highest bidder for each
+  const playerBids = new Map<string, Array<typeof bids[0]>>();
+  for (const bid of bids) {
+    if (!playerBids.has(bid.playerName)) {
+      playerBids.set(bid.playerName, []);
+    }
+    playerBids.get(bid.playerName)!.push(bid);
+  }
+  
+  // Find highest bid for each player
+  const winningBids: Array<typeof bids[0]> = [];
+  for (const [playerName, playerBidList] of Array.from(playerBids.entries())) {
+    const highestBid = playerBidList.reduce((max: any, bid: any) => bid.bidAmount > max.bidAmount ? bid : max);
+    winningBids.push(highestBid);
+  }
+  
   const bidderCommitments = new Map<string, { team: string; total: number; available: number }>();
   
-  for (const bid of bids) {
+  // Only count winning bids toward commitment
+  for (const bid of winningBids) {
     if (!bidderCommitments.has(bid.bidderName)) {
       // Get team's available coins
       let available = 100; // default
@@ -84,18 +101,51 @@ export async function postStatusUpdate(client: Client) {
       return;
     }
     
-    // Delete previous status message
-    if (lastStatusMessage) {
-      try {
-        await lastStatusMessage.delete();
-        console.log('[FA Status] Deleted previous status message');
-      } catch (error) {
-        console.log('[FA Status] Could not delete previous message (may already be deleted)');
+    // Get previous status message ID from database
+    const { bidWindows } = await import('../drizzle/schema');
+    const { getDb } = await import('./db');
+    const { eq } = await import('drizzle-orm');
+    const db = await getDb();
+    
+    if (db) {
+      const windowRecord = await db.select().from(bidWindows).where(eq(bidWindows.windowId, window.windowId)).limit(1);
+      
+      // Delete previous status message if it exists
+      if (windowRecord.length > 0 && windowRecord[0].statusMessageId) {
+        try {
+          const previousMessage = await (channel as TextChannel).messages.fetch(windowRecord[0].statusMessageId);
+          await previousMessage.delete();
+          console.log('[FA Status] Deleted previous status message');
+        } catch (error) {
+          console.log('[FA Status] Could not delete previous message (may already be deleted)');
+        }
       }
     }
     
     const messageContent = await formatStatusMessage(bids, window.windowId);
-    lastStatusMessage = await (channel as TextChannel).send(messageContent);
+    const newMessage = await (channel as TextChannel).send(messageContent);
+    lastStatusMessage = newMessage;
+    
+    // Save new message ID to database
+    if (db) {
+      const windowRecord = await db.select().from(bidWindows).where(eq(bidWindows.windowId, window.windowId)).limit(1);
+      
+      if (windowRecord.length > 0) {
+        // Update existing window
+        await db.update(bidWindows)
+          .set({ statusMessageId: newMessage.id })
+          .where(eq(bidWindows.windowId, window.windowId));
+      } else {
+        // Create new window record
+        await db.insert(bidWindows).values({
+          windowId: window.windowId,
+          startTime: new Date(window.startTime),
+          endTime: new Date(window.endTime),
+          status: window.isLocked ? 'locked' : 'active',
+          statusMessageId: newMessage.id
+        });
+      }
+    }
     
     console.log(`[FA Status] Posted status update: ${bids.length} active bids`);
   } catch (error) {
@@ -107,10 +157,8 @@ export async function postStatusUpdate(client: Client) {
  * Start hourly status updates
  */
 export function startHourlyUpdates(client: Client) {
-  if (updateInterval) {
-    console.log('[FA Status] Hourly updates already running');
-    return;
-  }
+  // Stop any existing updates first
+  stopHourlyUpdates();
   
   // Post initial status message immediately
   postStatusUpdate(client);
