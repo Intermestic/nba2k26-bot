@@ -255,3 +255,19 @@ Root cause: Team name variations (Blazers/Trail Blazers/Trailblazers) causing co
 - [x] Code compiled successfully with no TypeScript errors
 - [x] Dev server running without errors
 - [ ] Save checkpoint
+
+
+## CURRENT TASK: Team Name Normalization Migration
+
+### Goal
+Create one-time database script to normalize all team names to canonical format
+
+### Tasks
+- [x] Create migration script (server/scripts/normalize-team-names.mjs)
+- [x] Identify all tables with team columns (players, team_coins, fa_transactions, fa_bids, cap_violations)
+- [x] Apply validateTeamName() to normalize each team name
+- [x] Log all changes for audit trail
+- [x] Execute migration script successfully
+- [x] Verify all team names are canonical (0 changes needed - all already normalized)
+- [x] Script ready for future use if non-canonical names appear
+- [ ] Save checkpoint
