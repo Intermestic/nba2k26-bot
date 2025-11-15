@@ -295,18 +295,38 @@ export async function recordBid(
 
 /**
  * Get all active bids for current window (highest bid per player)
+ * Special handling: Include previous window (2025-11-14-PM) until noon EST on 2025-11-15
  */
 export async function getActiveBids(windowId: string): Promise<Array<{ playerName: string; team: string; bidAmount: number; bidderName: string }>> {
   const db = await getDb();
   if (!db) return [];
   
   try {
-    // Get all bids for this window
-    const allBids = await db
-      .select()
-      .from(faBids)
-      .where(eq(faBids.windowId, windowId))
-      .orderBy(sql`${faBids.bidAmount} DESC`);
+    // Special window handling: Include previous window's unprocessed bids
+    const now = new Date();
+    const noonEST = new Date('2025-11-15T12:00:00-05:00');
+    const includePreviousWindow = now < noonEST;
+    
+    let allBids;
+    
+    if (includePreviousWindow) {
+      // Include bids from both current window AND previous window (2025-11-14-PM)
+      console.log('[FA Bids] Special window: Including bids from 2025-11-14-PM and current window');
+      allBids = await db
+        .select()
+        .from(faBids)
+        .where(
+          sql`${faBids.windowId} IN ('2025-11-14-PM', ${windowId})`
+        )
+        .orderBy(sql`${faBids.bidAmount} DESC`);
+    } else {
+      // Normal operation: only current window
+      allBids = await db
+        .select()
+        .from(faBids)
+        .where(eq(faBids.windowId, windowId))
+        .orderBy(sql`${faBids.bidAmount} DESC`);
+    }
     
     // Group by player and keep highest bid
     const highestBids = new Map<string, typeof allBids[0]>();

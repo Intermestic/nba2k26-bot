@@ -1,6 +1,14 @@
 # NBA 2K26 Player Database - TODO
 
-## CURRENT TASK: Cap Compliance Dashboard
+## CURRENT TASK: Special FA Window - Include Previous Unprocessed Bids
+
+- [x] Update FA status system to include bids from window 2025-11-14-PM
+- [x] Add time-based logic to merge windows until noon EST 2025-11-15
+- [x] Test bid counting includes all unprocessed bids (will show in next update)
+- [x] Coin commitments calculate correctly (uses same logic)
+- [ ] Save checkpoint
+
+## Cap Compliance Dashboard - COMPLETED ✅
 
 - [x] Create database schema for cap violation logs
 - [x] Add migration for capViolations table
@@ -11,7 +19,7 @@
 - [x] Display compliance status and repeat offenders
 - [x] Add export to CSV functionality
 - [x] Test dashboard (compiled successfully, accessible at /admin/cap-compliance)
-- [ ] Save checkpoint
+- [x] Save checkpoint
 
 ## Cap Violation Alert System - COMPLETED ✅
 
@@ -21,20 +29,4 @@
 - [x] Include suggested players to drop in alert message (3 lowest OVR)
 - [x] Integrate with existing bot systems
 - [x] Test cap violation alerts (alerts sent successfully)
-- [x] Save checkpoint
-
-## Cap Status Message Fix - COMPLETED ✅
-
-- [x] Remove Free Agents from cap status embed (filtered from query)
-- [x] Test cap status message (will show in next update)
-- [x] Save checkpoint
-
-## Trade Voting System Bug Fixes - COMPLETED ✅
-
-- [x] Fix vote threshold logic (5 👎 before 7 👍 = rejected)
-- [x] Add debug logging for role detection
-- [x] Fix role check to be case-insensitive and trim whitespace
-- [x] Test rejection message posting (5 👎 votes)
-- [x] Test approval message posting (7 👍 votes)
-- [x] Remove excessive debug logging
 - [x] Save checkpoint
