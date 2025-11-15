@@ -965,8 +965,8 @@ export async function startDiscordBot(token: string) {
           .setDescription(`**${preview.bidCount} transactions ready to process**\n\nReact with ✅ within 30 seconds to confirm and execute.`);
         
         if (preview.cuts && preview.cuts.length > 0) {
-          const cutsList = preview.cuts.slice(0, 10).join('\n');
-          const remaining = preview.cuts.length - 10;
+          const cutsList = preview.cuts.slice(0, 20).join('\n');
+          const remaining = preview.cuts.length - 20;
           previewEmbed.addFields({ 
             name: `Players to be Cut (${preview.cuts.length})`, 
             value: cutsList + (remaining > 0 ? `\n... and ${remaining} more` : ''),
@@ -975,8 +975,8 @@ export async function startDiscordBot(token: string) {
         }
         
         if (preview.signs && preview.signs.length > 0) {
-          const signsList = preview.signs.slice(0, 10).join('\n');
-          const remaining = preview.signs.length - 10;
+          const signsList = preview.signs.slice(0, 20).join('\n');
+          const remaining = preview.signs.length - 20;
           previewEmbed.addFields({ 
             name: `Players to be Signed (${preview.signs.length})`, 
             value: signsList + (remaining > 0 ? `\n... and ${remaining} more` : ''),

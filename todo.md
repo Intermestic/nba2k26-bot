@@ -139,3 +139,9 @@ Add two-step confirmation for batch processing: preview → confirm → execute
 - [x] Add ✅ reaction collector with 30s timeout
 - [x] Move actual processing to confirmation handler
 - [x] Add cancellation on timeout
+
+
+## CURRENT TASK: Update Preview Display Limit
+
+- [x] Change preview cuts display from 10 to 20
+- [x] Change preview signs display from 10 to 20
