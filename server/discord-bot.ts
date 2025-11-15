@@ -536,7 +536,39 @@ async function handleBidMessage(message: Message) {
   
   confirmationMessage += `**Sign**: ${player.name} (${player.overall} OVR)\n`;
   confirmationMessage += `**Your bid**: $${parsedBid.bidAmount}\n`;
-  confirmationMessage += `**Team**: ${team}\n\n`;
+  confirmationMessage += `**Team**: ${team}\n`;
+  
+  // Calculate and show cap projection
+  const db = await getDb();
+  if (db) {
+    const teamPlayers = await db
+      .select()
+      .from(players)
+      .where(eq(players.team, team));
+    
+    const currentTotal = teamPlayers.reduce((sum, p) => sum + p.overall, 0);
+    let projectedTotal = currentTotal;
+    
+    // Subtract dropped player if present
+    if (parsedBid.dropPlayer) {
+      const droppedPlayer = await findPlayerByFuzzyName(parsedBid.dropPlayer);
+      if (droppedPlayer && droppedPlayer.team === team) {
+        projectedTotal -= droppedPlayer.overall;
+      }
+    }
+    
+    // Add signed player
+    projectedTotal += player.overall;
+    
+    const CAP_LIMIT = 1098;
+    const capDiff = projectedTotal - CAP_LIMIT;
+    const capStatus = capDiff > 0 ? `(+${capDiff})` : capDiff < 0 ? `(${capDiff})` : '(At Cap)';
+    const emoji = capDiff > 0 ? '🔴' : capDiff < 0 ? '🟢' : '🟡';
+    
+    confirmationMessage += `**Projected cap**: ${emoji} ${projectedTotal}/${CAP_LIMIT} ${capStatus}\n\n`;
+  } else {
+    confirmationMessage += '\n';
+  }
   
   if (highestBid && highestBid.bidderName === message.author.username) {
     confirmationMessage += `🏆 **You have the highest bid!**`;

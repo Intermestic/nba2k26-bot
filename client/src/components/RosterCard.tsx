@@ -562,6 +562,7 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                   style={{
                     display: 'grid',
                     gridTemplateColumns: 'repeat(4, 1fr)',
+                    gridAutoRows: '1fr',
                     gap: '16px',
                     border: 'none',
                     outline: 'none',
@@ -579,6 +580,9 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                         border: 'none',
                         outline: 'none',
                         boxShadow: 'none',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        height: '100%',
                       }}
                     >
                       <div
@@ -640,15 +644,20 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                       </div>
                       <div
                         style={{
-                          fontSize: '13px',
+                          fontSize: '14px',
                           fontWeight: '600',
                           color: 'white',
-                          marginBottom: '2px',
-                          lineHeight: '1.2',
-                          minHeight: '30px',
+                          marginBottom: '4px',
+                          lineHeight: '1.3',
+                          minHeight: '36px',
+                          maxHeight: '36px',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
+                          textAlign: 'center',
+                          overflow: 'hidden',
+                          wordBreak: 'break-word',
+                          hyphens: 'auto',
                           border: 'none',
                           outline: 'none',
                           boxShadow: 'none',
