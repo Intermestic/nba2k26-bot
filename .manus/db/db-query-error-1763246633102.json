@@ -1,0 +1,8 @@
+{
+  "query": "UPDATE team_coins SET balance = balance + 35 WHERE team = 'Rockets'; UPDATE team_coins SET balance = balance + 9 WHERE team = 'Raptors'; UPDATE team_coins SET balance = balance + 1 WHERE team IN ('Nuggets', 'Hornets', 'Jazz');",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute UPDATE team_coins SET balance = balance + 35 WHERE team = 'Rockets'; UPDATE team_coins SET balance = balance + 9 WHERE team = 'Raptors'; UPDATE team_coins SET balance = balance + 1 WHERE team IN ('Nuggets', 'Hornets', 'Jazz');",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1054 (42S22) at line 1: Unknown column 'balance' in 'field list'"
+  ]
+}

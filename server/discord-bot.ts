@@ -956,7 +956,7 @@ export async function startDiscordBot(token: string) {
     if (reaction.message.channelId === FA_CHANNEL_ID) {
       console.log(`[Discord Bot] ${reaction.emoji.name} reaction detected in FA channel by ${user.tag}`);
       
-      // Handle ❗ emoji - manual processing for current window (authorized user only)
+      // Handle ❗ emoji - manually record a single bid (authorized user only)
       if (reaction.emoji.name === '❗') {
         // Check if user is authorized
         if (user.id !== '679275787664359435') {
@@ -964,77 +964,77 @@ export async function startDiscordBot(token: string) {
           return;
         }
         
-        console.log('[Discord Bot] Authorized user triggered manual processing for current window');
-        const { getCurrentBiddingWindow } = await import('./fa-bid-parser');
-        const { regenerateWindowSummary } = await import('./fa-window-close');
+        console.log('[Discord Bot] Authorized user triggered manual bid recording');
+        const { parseBidMessage, findPlayerByFuzzyName, recordBid, getCurrentBiddingWindow } = await import('./fa-bid-parser');
+        const { getDb } = await import('./db');
+        const { players: playersTable, teamAssignments } = await import('../drizzle/schema');
+        const { eq } = await import('drizzle-orm');
         
         try {
-          const window = getCurrentBiddingWindow();
-          await message.reply(`🔄 Processing current window: ${window.windowId}...`);
-          
-          // Regenerate summary to get latest bids
-          const summaryResult = await regenerateWindowSummary(client!, window.windowId);
-          
-          if (!summaryResult.success) {
-            await message.reply(`❌ Failed to get bids: ${summaryResult.message}`);
+          // Parse the bid
+          const parsedBid = parseBidMessage(message.content);
+          if (!parsedBid) {
+            await message.reply('❌ Could not parse bid from message.');
             return;
           }
           
-          // Wait a moment for the summary message to be posted
-          await new Promise(resolve => setTimeout(resolve, 1000));
+          // Get team from message author's Discord ID
+          const db = await getDb();
+          if (!db) {
+            await message.reply('❌ Database connection failed.');
+            return;
+          }
           
-          // Fetch the latest message (should be the summary we just posted)
-          const channel = await client!.channels.fetch(FA_CHANNEL_ID);
-          if (channel?.isTextBased()) {
-            const messages = await (channel as any).messages.fetch({ limit: 1 });
-            const summaryMessage = messages.first();
-            
-            if (summaryMessage && summaryMessage.embeds.length > 0) {
-              // Process the summary
-              const { processBidsFromSummary } = await import('./fa-window-close');
-              const { EmbedBuilder } = await import('discord.js');
-              
-              const result = await processBidsFromSummary(summaryMessage, user.tag || user.username || 'Unknown');
-              
-              if (result.success && 'results' in result && result.results) {
-                const successList = result.results
-                  .filter(r => r.success)
-                  .map(r => `✅ ${r.playerName} → **${r.team}** ($${r.bidAmount})`)
-                  .join('\n') || 'None';
-                
-                const failList = result.results
-                  .filter(r => !r.success)
-                  .map(r => `❌ ${r.playerName} → **${r.team}** - ${r.error || 'Unknown error'}`)
-                  .join('\n') || 'None';
-                
-                const totalCoins = result.results
-                  .filter(r => r.success)
-                  .reduce((sum, r) => sum + r.bidAmount, 0);
-                
-                const embed = new EmbedBuilder()
-                  .setColor(0x00ff00)
-                  .setTitle('✅ Manual Processing Complete')
-                  .setDescription(`Processed ${result.successCount} successful transactions from window ${window.windowId}`);
-                
-                if (successList !== 'None') {
-                  embed.addFields({ name: 'Successful Transactions', value: successList.substring(0, 1024) });
-                }
-                
-                if (failList !== 'None') {
-                  embed.addFields({ name: 'Failed Transactions', value: failList.substring(0, 1024) });
-                }
-                
-                embed.setFooter({ text: `Total coins spent: $${totalCoins} | Processed by ${user.tag}` });
-                
-                await message.reply({ embeds: [embed] });
-              } else {
-                await message.reply(`❌ Processing failed: ${result.message}`);
-              }
+          const teamAssignment = await db.select().from(teamAssignments).where(eq(teamAssignments.discordUserId, message.author.id));
+          if (!teamAssignment || teamAssignment.length === 0) {
+            await message.reply('❌ Message author has no team assignment.');
+            return;
+          }
+          
+          const team = teamAssignment[0].team;
+          
+          // Validate players
+          const signPlayer = await findPlayerByFuzzyName(parsedBid.playerName, undefined, true);
+          if (!signPlayer) {
+            await message.reply(`❌ Could not find player to sign: ${parsedBid.playerName}`);
+            return;
+          }
+          
+          let dropPlayer = null;
+          if (parsedBid.dropPlayer) {
+            dropPlayer = await findPlayerByFuzzyName(parsedBid.dropPlayer, team, false);
+            if (!dropPlayer) {
+              await message.reply(`❌ Could not find player to drop: ${parsedBid.dropPlayer}`);
+              return;
             }
           }
+          
+          // Get current window
+          const window = getCurrentBiddingWindow();
+          
+          // Record the bid
+          await recordBid(
+            signPlayer.name,
+            signPlayer.id,
+            message.author.id,
+            message.author.username || message.author.tag,
+            team,
+            parsedBid.bidAmount,
+            window.windowId,
+            message.id,
+            dropPlayer?.name
+          );
+          
+          await message.reply(
+            `✅ **Manual Bid Recorded**\n\n` +
+            `**Team:** ${team}\n` +
+            `**Sign:** ${signPlayer.name} (${signPlayer.overall} OVR)\n` +
+            (dropPlayer ? `**Drop:** ${dropPlayer.name} (${dropPlayer.overall} OVR)\n` : '') +
+            `**Bid:** $${parsedBid.bidAmount}`
+          );
         } catch (error) {
-          console.error('[Discord Bot] Manual processing failed:', error);
-          await message.reply('❌ Manual processing failed. Check logs for details.');
+          console.error('[Discord Bot] Manual bid processing failed:', error);
+          await message.reply('❌ Manual bid processing failed. Check logs for details.');
         }
         return;
       }
@@ -1312,8 +1312,148 @@ export async function startDiscordBot(token: string) {
         
         return;
       } else {
-        // Regular FA transaction
-        await handleFAMessage(message);
+        // Manual single bid processing with ⚡ (authorized user only)
+        if (user.id !== '679275787664359435') {
+          console.log(`[Discord Bot] Unauthorized user ${user.tag} (${user.id}) attempted manual bid processing`);
+          return;
+        }
+        
+        console.log('[Discord Bot] Authorized user triggered manual bid processing (execute transaction)');
+        const { parseBidMessage, findPlayerByFuzzyName } = await import('./fa-bid-parser');
+        const { getDb } = await import('./db');
+        const { players: playersTable, teamAssignments, teamCoins } = await import('../drizzle/schema');
+        const { eq } = await import('drizzle-orm');
+        
+        try {
+          // Parse the bid
+          const parsedBid = parseBidMessage(message.content);
+          if (!parsedBid) {
+            await message.reply('❌ Could not parse bid from message.');
+            return;
+          }
+          
+          // Get team from message author's Discord ID
+          const db = await getDb();
+          if (!db) {
+            await message.reply('❌ Database connection failed.');
+            return;
+          }
+          
+          const teamAssignment = await db.select().from(teamAssignments).where(eq(teamAssignments.discordUserId, message.author.id));
+          if (!teamAssignment || teamAssignment.length === 0) {
+            await message.reply('❌ Message author has no team assignment.');
+            return;
+          }
+          
+          let team = teamAssignment[0].team;
+          
+          // Validate players with interactive fix
+          let signPlayer = await findPlayerByFuzzyName(parsedBid.playerName, undefined, true);
+          let dropPlayer = null;
+          
+          if (parsedBid.dropPlayer) {
+            dropPlayer = await findPlayerByFuzzyName(parsedBid.dropPlayer, team, false);
+          }
+          
+          // If validation fails, ask for corrections
+          if (!signPlayer || (parsedBid.dropPlayer && !dropPlayer)) {
+            const errorMsg = !signPlayer 
+              ? `❌ Could not find player to sign: ${parsedBid.playerName}`
+              : `❌ Could not find player to drop: ${parsedBid.dropPlayer}`;
+            
+            const fixPrompt = await message.reply(
+              `${errorMsg}\n\n` +
+              `🛠️ **How should I fix this?**\n` +
+              `Reply with corrections (e.g., \`sign: Johnny Furphy\` or \`team: Jazz\`)\n` +
+              `Or reply \`cancel\` to abort.`
+            );
+            
+            // Wait for user's correction
+            const filter = (m: Message) => m.author.id === user.id;
+            if (!('awaitMessages' in message.channel)) {
+              await fixPrompt.reply('❌ Cannot await messages in this channel type.');
+              return;
+            }
+            const collected = await message.channel.awaitMessages({ filter, max: 1, time: 60000 });
+            
+            if (!collected.size) {
+              await fixPrompt.reply('⏱️ Timeout - transaction cancelled.');
+              return;
+            }
+            
+            const correction = collected.first()!;
+            if (correction.content.toLowerCase() === 'cancel') {
+              await correction.reply('❌ Transaction cancelled.');
+              return;
+            }
+            
+            // Parse corrections
+            const signMatch = correction.content.match(/sign:\s*(.+?)(?:\n|$)/i);
+            const dropMatch = correction.content.match(/drop:\s*(.+?)(?:\n|$)/i);
+            const teamMatch = correction.content.match(/team:\s*(.+?)(?:\n|$)/i);
+            
+            // Apply corrections
+            if (signMatch) {
+              signPlayer = await findPlayerByFuzzyName(signMatch[1].trim(), undefined, true);
+              if (!signPlayer) {
+                await correction.reply(`❌ Still could not find player: ${signMatch[1]}`);
+                return;
+              }
+            }
+            
+            if (dropMatch) {
+              dropPlayer = await findPlayerByFuzzyName(dropMatch[1].trim(), team, false);
+              if (!dropPlayer) {
+                await correction.reply(`❌ Still could not find player: ${dropMatch[1]}`);
+                return;
+              }
+            }
+            
+            if (teamMatch) {
+              const { validateTeamName } = await import('./team-validator');
+              const correctedTeam = validateTeamName(teamMatch[1].trim());
+              if (correctedTeam) {
+                team = correctedTeam;
+              }
+            }
+            
+            // Re-validate after corrections
+            if (!signPlayer) {
+              await correction.reply('❌ Sign player still not found after corrections.');
+              return;
+            }
+          }
+          
+          // Execute the roster transaction
+          // 1. Drop player if specified
+          if (dropPlayer) {
+            await db.update(playersTable)
+              .set({ team: 'Free Agents' })
+              .where(eq(playersTable.id, dropPlayer.id));
+          }
+          
+          // 2. Sign player
+          await db.update(playersTable)
+            .set({ team })
+            .where(eq(playersTable.id, signPlayer.id));
+          
+          // 3. Deduct coins
+          const { sql } = await import('drizzle-orm');
+          await db.update(teamCoins)
+            .set({ coinsRemaining: sql`coinsRemaining - ${parsedBid.bidAmount}` })
+            .where(eq(teamCoins.team, team));
+          
+          await message.reply(
+            `✅ **Transaction Processed**\n\n` +
+            `**Team:** ${team}\n` +
+            `**Signed:** ${signPlayer.name} (${signPlayer.overall} OVR)\n` +
+            (dropPlayer ? `**Dropped:** ${dropPlayer.name} (${dropPlayer.overall} OVR)\n` : '') +
+            `**Cost:** $${parsedBid.bidAmount}`
+          );
+        } catch (error) {
+          console.error('[Discord Bot] Manual bid processing failed:', error);
+          await message.reply('❌ Manual bid processing failed. Check logs for details.');
+        }
       }
     } else if (reaction.message.channelId === TRADE_CHANNEL_ID) {
       console.log(`[Discord Bot] ⚡ reaction detected in Trade channel by ${user.tag}`);

@@ -91,7 +91,7 @@ export async function findPlayerByFuzzyName(
   // Common name aliases for players with special characters and common misspellings
   const nameAliases: Record<string, string[]> = {
     // Special characters
-    'Vít Krejčí': ['vit krejci', 'vit kreji', 'krejci', 'kreji', 'vit krejči', 'vit krejčí'],
+    'Vit Krejci': ['vit krejci', 'vit kreji', 'krejci', 'kreji'],
     'Nikola Jokić': ['jokic', 'nikola jokic', 'jokitch'],
     'Luka Dončić': ['luka doncic', 'doncic', 'dončić'],
     'Nikola Vučević': ['vucevic', 'nikola vucevic', 'vucevich'],
@@ -186,15 +186,28 @@ export async function findPlayerByFuzzyName(
   // Strategy 1: Check name aliases first (exact match on aliases)
   for (const [canonicalName, aliases] of Object.entries(nameAliases)) {
     if (aliases.some(alias => alias === searchName)) {
-      const player = allPlayers.find(p => p.name === canonicalName);
+      console.log(`[Player Matcher] Alias match found: "${searchName}" → "${canonicalName}"`);
+      console.log(`[Player Matcher] Searching for player with canonical name: "${canonicalName}"`);
+      console.log(`[Player Matcher] Canonical name lowercase: "${canonicalName.toLowerCase()}"`);
+      
+      // Debug: Show all player names that contain "krej"
+      if (canonicalName.toLowerCase().includes('krej')) {
+        const krejPlayers = allPlayers.filter(p => p.name.toLowerCase().includes('krej'));
+        console.log('[Player Matcher] Players with "krej" in name:', krejPlayers.map(p => ({ name: p.name, lowercase: p.name.toLowerCase() })));
+      }
+      
+      const player = allPlayers.find(p => p.name.toLowerCase() === canonicalName.toLowerCase());
       if (player) {
-        console.log(`[Player Matcher] Found via alias: "${name}" → "${canonicalName}"`);
+        console.log(`[Player Matcher] Found via alias: "${name}" → "${canonicalName}" (team: ${player.team})`);
         return {
           id: player.id,
           name: player.name,
           team: player.team || 'Free Agent',
           overall: player.overall
         };
+      } else {
+        console.log(`[Player Matcher] WARNING: Alias matched "${canonicalName}" but player not found in database!`);
+        console.log(`[Player Matcher] Available players count: ${allPlayers.length}, filterFreeAgents: ${filterFreeAgents}`);
       }
     }
   }

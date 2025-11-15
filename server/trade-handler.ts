@@ -67,11 +67,13 @@ export async function handleTradeMessage(message: Message) {
   }
   
   // Create confirmation message
-  const team1List = resolved.team1Players
+  // NOTE: Parser extracts "Team send" format, so team1Players = what team1 sends (team2 receives)
+  // We need to swap for the confirmation message
+  const team1ReceivesList = resolved.team2Players
     .map(p => `• ${p.name} (${p.overall} OVR)`)
     .join('\n');
   
-  const team2List = resolved.team2Players
+  const team2ReceivesList = resolved.team1Players
     .map(p => `• ${p.name} (${p.overall} OVR)`)
     .join('\n');
   
@@ -94,8 +96,8 @@ export async function handleTradeMessage(message: Message) {
   const confirmMessage = await message.channel.send({
     content: 
       `🤝 **Trade Confirmation**\n\n` +
-      `**${resolved.team1} receives:**\n${team1List}\n\n` +
-      `**${resolved.team2} receives:**\n${team2List}\n\n` +
+      `**${resolved.team1} receives:**\n${team1ReceivesList}\n\n` +
+      `**${resolved.team2} receives:**\n${team2ReceivesList}\n\n` +
       `Should I process this trade?`,
     components: [row]
   });

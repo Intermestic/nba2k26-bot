@@ -436,3 +436,102 @@ Trade confirmation shows empty player lists because parser fails to extract name
 - [x] Reconstructs trade text from field name/value pairs
 - [x] TypeScript compilation successful
 - [ ] Save checkpoint
+
+
+## CURRENT TASK: Fix "vit kreji" → "Vít Krejčí" Matching
+
+### Issue
+FA bid parser can't match "vit kreji" to "Vít Krejčí" on Jazz roster, causing "Team Unknown" error
+
+### Tasks
+- [x] Check if Vít Krejčí exists on Jazz roster in database
+- [x] Confirmed "vit kreji" alias already exists in code (line 94 of fa-bid-parser.ts)
+- [x] Added debug logging to see if alias matches but player not found
+- [x] TypeScript compilation successful
+- [x] Server restarted, user tested again - still failing
+- [x] Alias exists in code but player not found in database
+- [x] Query database to find exact spelling of Krejčí's name
+- [x] Found: "Vít Krejčí" (73 OVR, Jazz) exists in database
+- [x] Root cause: Line 190 was doing case-sensitive match (p.name === canonicalName)
+- [x] Fixed: Changed to case-insensitive match (p.name.toLowerCase() === canonicalName.toLowerCase())
+- [x] TypeScript compilation successful
+- [x] User removed special characters from database (Vít Krejčí → Vit Krejci)
+- [x] Updated alias to match: 'Vit Krejci': ['vit krejci', 'vit kreji', 'krejci', 'kreji']
+- [x] Server restarted
+- [ ] User to test
+- [ ] Save checkpoint
+
+
+## CURRENT TASK: Disable Old Batch FA Handler
+
+### Issue
+Old handleFAMessage function (line 273) conflicts with new FA bid system - intercepts messages and shows "Team Unknown" error
+
+### Tasks
+- [x] Find where handleFAMessage is registered in discord-bot.ts
+- [x] Found: Line 1316 in reaction handler for ⚡ emoji
+- [x] Disabled old batch handler (commented out handleFAMessage call)
+- [x] Server restarted
+- [ ] Test with "vit kreji" bid
+- [ ] Save checkpoint
+
+
+## CURRENT TASK: Re-enable Manual Processing Reactions
+
+### Requirements
+- User 679275787664359435 needs two manual processing reactions:
+  1. ❗ - Manually confirm bid is valid and count during active window
+  2. ⚡ - Process winning bids and execute roster transactions
+
+### Tasks
+- [x] Check current ❗ handler implementation
+- [x] ❗ handler already exists and works (lines 960-1039)
+- [x] Re-enable ⚡ handler to use new FA bid system (not old batch system)
+- [x] ⚡ now parses single bid, validates players, records to database
+- [x] Both handlers check user ID (679275787664359435)
+- [x] Server restarted
+- [ ] User to test both reactions
+- [ ] Save checkpoint
+
+
+## CURRENT TASK: Rollback & Swap Reaction Handlers
+
+### Issue
+Reactions were backwards - processed 6 bids when should have only recorded 1
+
+### Transactions to Rollback
+1. Day'Ron Sharpe → Rockets ($35)
+2. Bruce Brown → Raptors ($6)
+3. Jonathan Mogbo → Raptors ($3)
+4. Chris Paul → Nuggets ($1)
+5. Nate Williams → Hornets ($1)
+6. Johnny Furphy → Jazz ($1)
+
+### Tasks
+- [x] Find batch ID for window 2025-11-15-PM
+- [x] Confirmed transactions DID go through (Nuggets now 15/14 overcap)
+- [x] !rollback command failed - batch not found
+- [x] Manually reversed all 6 transactions (rosters + coins)
+- [x] Swapped handlers: ❗ records single bid, ⚡ processes bids from message
+- [x] ⚡ now executes roster transaction (drop/sign/deduct coins)
+- [x] Server restarted
+- [ ] User to test both reactions
+- [ ] Save checkpoint
+
+
+## CURRENT TASK: Fix Trade Parser & Zap Validation
+
+### Issues
+1. Trade parser shows teams backwards (Nets send → should be Wizards receives, but shows Nets receives)
+2. ⚡ validation failures should allow user to respond and fix instead of just erroring
+
+### Tasks
+- [x] Fix trade parser to correctly map "Team A send" → "Team B receives"
+- [x] Swapped player lists in confirmation message (team1 receives team2Players, team2 receives team1Players)
+- [x] Add interactive validation fix for ⚡ failures (ask user how to fix)
+- [x] Added prompts for corrections (sign: X, drop: Y, team: Z)
+- [x] 60 second timeout with cancel option
+- [x] Server restarted
+- [ ] User to test trade parser
+- [ ] User to test ⚡ validation failure flow
+- [ ] Save checkpoint
