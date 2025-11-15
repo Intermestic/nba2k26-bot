@@ -130,6 +130,10 @@ export const coinsRouter = router({
       }
 
       const tx = txs[0];
+      
+      // Normalize team name to handle aliases (Blazers -> Trail Blazers, etc.)
+      const { validateTeamName } = await import('../team-validator');
+      const normalizedTeam = validateTeamName(tx.team) || tx.team;
 
       // 1. Return signed player to Free Agents
       const signedPlayers = await db.select().from(players).where(eq(players.name, tx.signPlayer));
@@ -140,14 +144,14 @@ export const coinsRouter = router({
       // 2. Restore cut player to team
       const cutPlayers = await db.select().from(players).where(eq(players.name, tx.dropPlayer));
       if (cutPlayers.length > 0) {
-        await db.update(players).set({ team: tx.team }).where(eq(players.id, cutPlayers[0].id));
+        await db.update(players).set({ team: normalizedTeam }).where(eq(players.id, cutPlayers[0].id));
       }
 
       // 3. Refund coins
-      const teamCoinsData = await db.select().from(teamCoins).where(eq(teamCoins.team, tx.team));
+      const teamCoinsData = await db.select().from(teamCoins).where(eq(teamCoins.team, normalizedTeam));
       if (teamCoinsData.length > 0) {
         const newBalance = teamCoinsData[0].coinsRemaining + tx.bidAmount;
-        await db.update(teamCoins).set({ coinsRemaining: newBalance }).where(eq(teamCoins.team, tx.team));
+        await db.update(teamCoins).set({ coinsRemaining: newBalance }).where(eq(teamCoins.team, normalizedTeam));
       }
 
       // 4. Log reversal
@@ -187,6 +191,10 @@ export const coinsRouter = router({
       }
 
       const tx = txs[0];
+      
+      // Normalize team name
+      const { validateTeamName } = await import('../team-validator');
+      const normalizedTeam = validateTeamName(tx.team) || tx.team;
 
       // 1. Return signed player to Free Agents
       const signedPlayers = await db.select().from(players).where(eq(players.name, tx.signPlayer));
@@ -195,10 +203,10 @@ export const coinsRouter = router({
       }
 
       // 2. Refund coins
-      const teamCoinsData = await db.select().from(teamCoins).where(eq(teamCoins.team, tx.team));
+      const teamCoinsData = await db.select().from(teamCoins).where(eq(teamCoins.team, normalizedTeam));
       if (teamCoinsData.length > 0) {
         const newBalance = teamCoinsData[0].coinsRemaining + tx.bidAmount;
-        await db.update(teamCoins).set({ coinsRemaining: newBalance }).where(eq(teamCoins.team, tx.team));
+        await db.update(teamCoins).set({ coinsRemaining: newBalance }).where(eq(teamCoins.team, normalizedTeam));
       }
 
       // 3. Log action
@@ -238,15 +246,19 @@ export const coinsRouter = router({
       }
 
       const tx = txs[0];
+      
+      // Normalize team name
+      const { validateTeamName } = await import('../team-validator');
+      const normalizedTeam = validateTeamName(tx.team) || tx.team;
 
       // Restore cut player to team
       const cutPlayers = await db.select().from(players).where(eq(players.name, tx.dropPlayer));
       if (cutPlayers.length > 0) {
-        await db.update(players).set({ team: tx.team }).where(eq(players.id, cutPlayers[0].id));
+        await db.update(players).set({ team: normalizedTeam }).where(eq(players.id, cutPlayers[0].id));
       }
 
       // Log action (no coin change)
-      const teamCoinsData = await db.select().from(teamCoins).where(eq(teamCoins.team, tx.team));
+      const teamCoinsData = await db.select().from(teamCoins).where(eq(teamCoins.team, normalizedTeam));
       await db.insert(faTransactions).values({
         team: tx.team,
         dropPlayer: "N/A",
@@ -282,12 +294,16 @@ export const coinsRouter = router({
       }
 
       const tx = txs[0];
+      
+      // Normalize team name
+      const { validateTeamName } = await import('../team-validator');
+      const normalizedTeam = validateTeamName(tx.team) || tx.team;
 
       // Refund coins only
-      const teamCoinsData = await db.select().from(teamCoins).where(eq(teamCoins.team, tx.team));
+      const teamCoinsData = await db.select().from(teamCoins).where(eq(teamCoins.team, normalizedTeam));
       if (teamCoinsData.length > 0) {
         const newBalance = teamCoinsData[0].coinsRemaining + tx.bidAmount;
-        await db.update(teamCoins).set({ coinsRemaining: newBalance }).where(eq(teamCoins.team, tx.team));
+        await db.update(teamCoins).set({ coinsRemaining: newBalance }).where(eq(teamCoins.team, normalizedTeam));
       }
 
       // Log action

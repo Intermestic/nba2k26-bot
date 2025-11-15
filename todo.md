@@ -239,3 +239,19 @@ Assign Luke Kornet to Raptors roster (should have won FA bid)
 - [x] Update team from current assignment to Raptors
 - [x] Verify roster update successful
 - [ ] Save checkpoint
+
+
+## CURRENT TASK: Fix coinsRemaining Error
+
+### Issue
+Error on /admin/coins page: "Cannot read properties of undefined (reading 'coinsRemaining')"
+Root cause: Team name variations (Blazers/Trail Blazers/Trailblazers) causing coin lookup failures
+
+### Tasks
+- [x] Find transaction reversal API endpoints (server/routers/coins.ts)
+- [x] Add team name normalization using validateTeamName() before coin queries
+- [x] Ensure all coin lookups use canonical team names (all 4 reversal mutations updated)
+- [x] Applied fix to: sendAllBack, removeSignedPlayer, resignCutPlayer, returnCoinsOnly
+- [x] Code compiled successfully with no TypeScript errors
+- [x] Dev server running without errors
+- [ ] Save checkpoint
