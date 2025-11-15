@@ -197,31 +197,33 @@ export async function handleReactionAdd(
     // Check if user has Trade Committee role
     const hasRole = await hasTradeCommitteeRole(reaction, user.id);
     
-    // Remove bot's placeholder reactions after first Trade Committee member votes
+    // Remove bot's placeholder reaction only for the specific reaction type voted on
     if (hasRole) {
       const message = reaction.message;
       const botId = message.client.user?.id;
+      const emojiName = reaction.emoji.name;
       
       if (botId) {
-        // Remove bot's 👍 reaction
-        const upReaction = message.reactions.cache.get('👍');
-        if (upReaction) {
-          try {
-            await upReaction.users.remove(botId);
-            console.log(`[Trade Voting] Removed bot's 👍 reaction`);
-          } catch (error) {
-            console.log(`[Trade Voting] Could not remove bot's 👍 reaction`);
+        // Only remove bot's reaction if it matches the type being voted on
+        if (emojiName === '👍') {
+          const upReaction = message.reactions.cache.get('👍');
+          if (upReaction) {
+            try {
+              await upReaction.users.remove(botId);
+              console.log(`[Trade Voting] Removed bot's 👍 reaction after first 👍 vote`);
+            } catch (error) {
+              console.log(`[Trade Voting] Could not remove bot's 👍 reaction`);
+            }
           }
-        }
-        
-        // Remove bot's 👎 reaction
-        const downReaction = message.reactions.cache.get('👎');
-        if (downReaction) {
-          try {
-            await downReaction.users.remove(botId);
-            console.log(`[Trade Voting] Removed bot's 👎 reaction`);
-          } catch (error) {
-            console.log(`[Trade Voting] Could not remove bot's 👎 reaction`);
+        } else if (emojiName === '👎') {
+          const downReaction = message.reactions.cache.get('👎');
+          if (downReaction) {
+            try {
+              await downReaction.users.remove(botId);
+              console.log(`[Trade Voting] Removed bot's 👎 reaction after first 👎 vote`);
+            } catch (error) {
+              console.log(`[Trade Voting] Could not remove bot's 👎 reaction`);
+            }
           }
         }
       }

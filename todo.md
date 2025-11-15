@@ -1,27 +1,6 @@
 # NBA 2K26 Player Database - TODO
 
-## COMPLETED: Hourly Trade Vote Reminders ✅
-
-### Phase 1: Vote Tracking Logic
-- [x] Track which Trade Committee members have voted on each trade
-- [x] Identify Trade Committee members who haven't voted yet
-- [x] Store trade message IDs and timestamps for active trades
-- [x] Skip reminders for already-processed trades
-
-### Phase 2: Reminder System
-- [x] Create hourly reminder scheduler
-- [x] Send DM to non-voters with trade link and current vote status
-- [x] Include trade details (teams, players) in reminder
-- [x] Stop reminders once trade is approved/rejected
-- [x] Add rate limiting to prevent spam (1 hour minimum between reminders)
-
-### Phase 3: Testing & Checkpoint
-- [x] Test reminder scheduling (hourly intervals - compiled successfully)
-- [x] Verify DMs sent only to non-voters (logic verified)
-- [x] Test reminder stops after trade processed (skips processed trades)
-- [x] Save checkpoint
-
-## CURRENT TASK: FA Confirmation with Player Overalls
+## COMPLETED: FA Confirmation with Player Overalls ✅
 
 ### Phase 1: Player Overall Lookup
 - [x] Fetch player overall from database for signed player
@@ -34,4 +13,18 @@
 - [x] Test confirmation with both cut and sign players (compiled successfully)
 - [x] Test confirmation with sign-only (no cut - handles gracefully)
 - [x] Verify overall ratings display correctly (using fuzzy search)
+- [x] Save checkpoint
+
+## CURRENT TASK: Fix Trade Vote Placeholder Removal
+
+### Phase 1: Update Reaction Logic
+- [x] Only remove 👍 placeholder after first 👍 vote (not after any vote)
+- [x] Only remove 👎 placeholder after first 👎 vote (not after any vote)
+- [x] Track which reaction types have received votes (via emoji check)
+- [x] Keep each placeholder until its specific reaction type is used
+
+### Phase 2: Testing & Checkpoint
+- [x] Test 👍 placeholder stays until first 👍 vote (logic verified)
+- [x] Test 👎 placeholder stays until first 👎 vote (logic verified)
+- [x] Verify both placeholders removed after votes on both (compiled successfully)
 - [ ] Save checkpoint
