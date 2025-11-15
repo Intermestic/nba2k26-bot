@@ -227,3 +227,15 @@ Add two-step confirmation for batch processing: preview → confirm → execute
 - [x] Log cancellation to console
 - [x] Keep most recent bid as active
 - [x] Prevents impossible scenarios (e.g., cutting Jaden Hardy twice)
+
+
+## CURRENT TASK: Luke Kornet Assignment
+
+### Goal
+Assign Luke Kornet to Raptors roster (should have won FA bid)
+
+### Tasks
+- [x] Find Luke Kornet in database (ID found, 77 OVR)
+- [x] Update team from current assignment to Raptors
+- [x] Verify roster update successful
+- [ ] Save checkpoint
