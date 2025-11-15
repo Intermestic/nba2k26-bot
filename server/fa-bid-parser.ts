@@ -338,7 +338,33 @@ export async function getActiveBids(windowId: string): Promise<Array<{ playerNam
       }
     }
     
-    return Array.from(highestBids.values()).map(bid => ({
+    // Filter out players who have already been processed (have a completed transaction)
+    const { faTransactions } = await import('../drizzle/schema');
+    const playerNames = Array.from(highestBids.keys());
+    
+    const processedTransactions = await db
+      .select({ signPlayer: faTransactions.signPlayer })
+      .from(faTransactions)
+      .where(
+        sql`LOWER(${faTransactions.signPlayer}) IN (${sql.join(playerNames.map(n => sql`LOWER(${n})`), sql`, `)})`
+      );
+    
+    const processedPlayerNames = new Set(
+      processedTransactions
+        .filter(t => t.signPlayer)
+        .map(t => t.signPlayer!.toLowerCase())
+    );
+    
+    // Only return bids for players that haven't been processed yet
+    const activeBids = Array.from(highestBids.values()).filter(bid => {
+      const isProcessed = processedPlayerNames.has(bid.playerName.toLowerCase());
+      if (isProcessed) {
+        console.log(`[FA Bids] Excluding already-processed player: ${bid.playerName}`);
+      }
+      return !isProcessed;
+    });
+    
+    return activeBids.map(bid => ({
       playerName: bid.playerName,
       team: bid.team,
       bidAmount: bid.bidAmount,
