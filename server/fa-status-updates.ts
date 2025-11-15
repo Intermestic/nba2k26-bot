@@ -9,7 +9,7 @@ let lastStatusMessage: Message | null = null;
 /**
  * Format status update message with all active bids
  */
-async function formatStatusMessage(bids: Array<{ playerName: string; team: string; bidAmount: number; bidderName: string }>, windowId: string, windowEndTime: Date): Promise<string> {
+async function formatStatusMessage(bids: Array<{ playerName: string; dropPlayer: string | null; team: string; bidAmount: number; bidderName: string }>, windowId: string, windowEndTime: Date): Promise<string> {
   if (bids.length === 0) {
     return `📊 **FA Bid Status Update**\n\n🏀 **Bidding Window:** ${windowId}\n\n_No active bids at this time._`;
   }
@@ -86,8 +86,11 @@ async function formatStatusMessage(bids: Array<{ playerName: string; team: strin
     const escapedBidderName = bid.bidderName.replace(/_/g, '\\_');
     message += `**${bid.playerName}**\n`;
     message += `• Bid: $${bid.bidAmount}\n`;
-    message += `• Leader: ${escapedBidderName} (${bid.team})\n`;
-    message += `---\n\n`;
+    message += `• Leader: ${escapedBidderName} (${bid.team})`;
+    if (bid.dropPlayer) {
+      message += ` - cutting: ${bid.dropPlayer}`;
+    }
+    message += `\n---\n\n`;
   }
   
   message += `---\n\n`;

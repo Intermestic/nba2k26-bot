@@ -1,28 +1,35 @@
 # NBA 2K26 Player Database - TODO
 
-## COMPLETED: Batch Processing Fix ✅
-- [x] Added dropPlayer field to faBids schema
-- [x] Updated window close summary format to show "Cut: X / Sign: Y"
-- [x] Updated batch processor parser to extract both players
-- [x] Implemented automatic roster updates for dropped players
+## COMPLETED: Manual Summary Regeneration ✅
+- [x] Added !regenerate-summary command
+- [x] Command ready to use: !regenerate-summary 2025-11-15-AM
 
-## CURRENT TASK: Manual Window Summary Regeneration
+## CURRENT TASK: Enhance Status Messages with Drop Info
 
 ### Goal
-Regenerate window close summary for 2025-11-15-AM window with all cut/sign information so admin can process via ⚡ reaction
+Update hourly FA status messages to show which player each bidder is planning to drop
 
-### Phase 1: Create Manual Command
-- [x] Add !regenerate-summary command to Discord bot
-- [x] Query all bids from 2025-11-15-AM window (or specify window ID)
-- [x] Include dropPlayer info from database
-- [x] Format as window close summary embed
-- [x] Post to FA channel
+### Current Format
+```
+Bruce Brown (75 OVR)
+├─ $5 - TeamName (bidder)
+└─ $3 - OtherTeam (bidder)
+```
 
-### Phase 2: Test & Execute
-- [x] Command ready to test (dev server running, no errors)
-- [ ] User to execute: !regenerate-summary 2025-11-15-AM
-- [ ] Verify all bids appear with cut/sign format
-- [ ] Confirm ⚡ reaction triggers batch processing
+### New Format
+```
+Bruce Brown (75 OVR)
+├─ $5 - TeamName (bidder) - cutting: Player X
+└─ $3 - OtherTeam (bidder) - cutting: Player Y
+```
 
-### Phase 3: Checkpoint
-- [ ] Save checkpoint with manual command
+### Phase 1: Update Status Message
+- [x] Find status message generation code
+- [x] Query dropPlayer from faBids for each bid (already in getActiveBids)
+- [x] Update message format to include "cutting: PlayerName"
+- [x] Handle cases where dropPlayer is null
+
+### Phase 2: Test & Checkpoint
+- [x] Code compiled successfully (no TypeScript errors)
+- [x] Status message format updated to show cutting info
+- [ ] Save checkpoint
