@@ -7,6 +7,7 @@ import { discordRouter } from "./routers/discord";
 import { coinsRouter } from "./routers/coins";
 import { capViolationsRouter } from "./routers/cap-violations";
 import { playerAliasesRouter } from "./routers/player-aliases";
+import { teamAssignmentsRouter } from "./routers/team-assignments";
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -36,6 +37,9 @@ export const appRouter = router({
   
   // Player name aliases
   playerAliases: playerAliasesRouter,
+  
+  // Team assignments
+  teamAssignments: teamAssignmentsRouter,
 });
 
 export type AppRouter = typeof appRouter;

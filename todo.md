@@ -357,3 +357,21 @@ DoubleMetaphone import error breaking player name matching
 - [x] Dev server running without errors
 - [x] All systems operational (no TypeScript or build errors)
 - [ ] Save checkpoint
+
+
+## CURRENT TASK: Team Assignment Admin UI & Change Logging
+
+### Features
+1. Admin page at /admin/teams to manage Discord user → team mappings
+2. Change history tracking for audit trail
+
+### Tasks
+- [x] Create teamAssignmentHistory table (assignmentId, previousTeam, newTeam, changedBy, changedAt)
+- [x] Create TRPC router for team assignments (getAll, add, update, delete, getHistory, bulkImport)
+- [x] Build admin UI with table view, search, add/edit/delete actions
+- [x] Add bulk import from CSV functionality
+- [x] Show change history for each assignment
+- [x] Add route to App.tsx (/admin/teams)
+- [x] TypeScript compilation successful (no errors)
+- [x] Dev server running without errors
+- [ ] Save checkpoint

@@ -120,6 +120,13 @@
       "when": 1763242030506,
       "tag": "0016_acoustic_princess_powerful",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "5",
+      "when": 1763242476592,
+      "tag": "0017_jazzy_red_hulk",
+      "breakpoints": true
     }
   ]
 }

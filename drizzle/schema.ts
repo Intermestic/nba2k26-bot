@@ -224,3 +224,21 @@ export const teamAssignments = mysqlTable("team_assignments", {
 
 export type TeamAssignment = typeof teamAssignments.$inferSelect;
 export type InsertTeamAssignment = typeof teamAssignments.$inferInsert;
+
+/**
+ * Team Assignment History table - tracks changes to team assignments
+ */
+export const teamAssignmentHistory = mysqlTable("team_assignment_history", {
+  id: int("id").autoincrement().primaryKey(),
+  assignmentId: int("assignmentId").notNull(), // Reference to teamAssignments.id
+  discordUserId: varchar("discordUserId", { length: 64 }).notNull(), // Discord user ID
+  previousTeam: varchar("previousTeam", { length: 100 }), // Previous team (null for new assignments)
+  newTeam: varchar("newTeam", { length: 100 }).notNull(), // New team
+  changedBy: int("changedBy"), // Reference to users.id who made the change
+  changedByDiscordId: varchar("changedByDiscordId", { length: 64 }), // Discord ID of who made the change
+  changedAt: timestamp("changedAt").defaultNow().notNull(), // When change was made
+  reason: text("reason"), // Optional reason for the change
+});
+
+export type TeamAssignmentHistory = typeof teamAssignmentHistory.$inferSelect;
+export type InsertTeamAssignmentHistory = typeof teamAssignmentHistory.$inferInsert;
