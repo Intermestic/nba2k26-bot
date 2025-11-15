@@ -201,11 +201,10 @@ export async function processBidsFromSummary(message: any, processorId: string) 
       };
     }
     
-    // Pre-processing validation
+    // Pre-processing warnings (non-blocking)
     const warnings: string[] = [];
-    const errors: string[] = [];
     
-    // Check each team's roster size and coin balance
+    // Check each team's roster size and coin balance for warnings
     const teamStats = new Map<string, { rosterSize: number; coins: number; totalOverall: number }>();
     
     for (const bid of bidsToProcess) {
@@ -224,25 +223,23 @@ export async function processBidsFromSummary(message: any, processorId: string) 
       
       const stats = teamStats.get(bid.team)!;
       
-      // Check roster size
-      // If there's a dropPlayer, roster size stays the same (drop 1, add 1)
-      // If no dropPlayer, roster size increases by 1
+      // Check roster size (warning only)
       const rosterSizeAfter = bid.dropPlayer ? stats.rosterSize : stats.rosterSize + 1;
       if (rosterSizeAfter > 14) {
-        errors.push(`${bid.team} would exceed 14 players after signing ${bid.playerName} (no drop specified)`);
+        warnings.push(`⚠️ ${bid.team} would exceed 14 players after signing ${bid.playerName} (no drop specified)`);
       }
       
-      // Check coin balance
+      // Check coin balance (warning only)
       if (stats.coins < bid.bidAmount) {
-        errors.push(`${bid.team} has insufficient coins ($${stats.coins} < $${bid.bidAmount} for ${bid.playerName})`);
+        warnings.push(`⚠️ ${bid.team} has insufficient coins ($${stats.coins} < $${bid.bidAmount} for ${bid.playerName})`);
       }
       
-      // Check over-cap restriction (teams over 1098 cannot sign 71+ OVR)
+      // Check over-cap restriction (warning only)
       const isOverCap = await isTeamOverCap(bid.team);
       if (isOverCap) {
         const signPlayer = await findPlayerByFuzzyName(bid.playerName);
         if (signPlayer && signPlayer.overall > 70) {
-          errors.push(`${bid.team} is over cap and cannot sign ${bid.playerName} (${signPlayer.overall} OVR > 70)`);
+          warnings.push(`⚠️ ${bid.team} is over cap and cannot sign ${bid.playerName} (${signPlayer.overall} OVR > 70)`);
         }
       }
       
@@ -251,7 +248,7 @@ export async function processBidsFromSummary(message: any, processorId: string) 
       stats.coins -= bid.bidAmount;
     }
     
-    // Check for duplicate player signings
+    // Check for duplicate player signings (warning only)
     const playerCounts = new Map<string, number>();
     for (const bid of bidsToProcess) {
       const count = playerCounts.get(bid.playerName.toLowerCase()) || 0;
@@ -260,19 +257,11 @@ export async function processBidsFromSummary(message: any, processorId: string) 
     
     Array.from(playerCounts.entries()).forEach(([player, count]) => {
       if (count > 1) {
-        errors.push(`Duplicate signing detected: ${player} has ${count} bids`);
+        warnings.push(`⚠️ Duplicate signing detected: ${player} has ${count} bids`);
       }
     });
     
-    // Return validation errors if any
-    if (errors.length > 0) {
-      return {
-        success: false,
-        message: 'Validation failed',
-        errors,
-        warnings
-      };
-    }
+    console.log(`[Batch Process] Pre-processing complete: ${bidsToProcess.length} bids, ${warnings.length} warnings`);
     
     const results: Array<{
       playerName: string;
@@ -286,8 +275,9 @@ export async function processBidsFromSummary(message: any, processorId: string) 
     // Generate batch ID for this processing run
     const batchId = `batch-${Date.now()}-${processorId.replace(/[^a-zA-Z0-9]/g, '')}`;
     console.log(`[Batch Process] Batch ID: ${batchId}`);
+    console.log(`[Batch Process] Processing ${bidsToProcess.length} bids with partial failure handling`);
     
-    // Process each bid
+    // Process each bid (continue on individual failures)
     for (const bid of bidsToProcess) {
       try {
         console.log(`[Batch Process] Processing: ${bid.playerName} → ${bid.team} ($${bid.bidAmount})`);
@@ -634,6 +624,7 @@ export async function generateBatchPreview(message: any): Promise<{
   bidCount?: number;
   cuts?: string[];
   signs?: string[];
+  teamSummaries?: string[];
   totalCoins?: number;
 }> {
   try {
@@ -668,94 +659,48 @@ export async function generateBatchPreview(message: any): Promise<{
       };
     }
     
-    // Pre-processing validation
-    const warnings: string[] = [];
-    const errors: string[] = [];
-    const cuts: string[] = [];
-    const signs: string[] = [];
+    // Group transactions by team
+    const teamTransactions = new Map<string, Array<{cut?: string; sign: string; coins: number}>>();
     let totalCoins = 0;
     
-    // Check each team's roster size and coin balance
-    const teamStats = new Map<string, { rosterSize: number; coins: number; totalOverall: number }>();
-    
     for (const bid of bidsToProcess) {
-      if (!teamStats.has(bid.team)) {
-        // Get team roster
-        const roster = await db.select().from(players).where(eq(players.team, bid.team));
-        const coins = await db.select().from(teamCoins).where(eq(teamCoins.team, bid.team));
-        const totalOverall = roster.reduce((sum, p) => sum + p.overall, 0);
-        
-        teamStats.set(bid.team, {
-          rosterSize: roster.length,
-          coins: coins[0]?.coinsRemaining || 100,
-          totalOverall
-        });
+      if (!teamTransactions.has(bid.team)) {
+        teamTransactions.set(bid.team, []);
       }
       
-      const stats = teamStats.get(bid.team)!;
+      teamTransactions.get(bid.team)!.push({
+        cut: bid.dropPlayer || undefined,
+        sign: bid.playerName,
+        coins: bid.bidAmount
+      });
       
-      // Check roster size
-      const rosterSizeAfter = bid.dropPlayer ? stats.rosterSize : stats.rosterSize + 1;
-      if (rosterSizeAfter > 14) {
-        errors.push(`${bid.team} would exceed 14 players after signing ${bid.playerName} (no drop specified)`);
-      }
-      
-      // Check coin balance
-      if (stats.coins < bid.bidAmount) {
-        errors.push(`${bid.team} has insufficient coins ($${stats.coins} < $${bid.bidAmount} for ${bid.playerName})`);
-      }
-      
-      // Check over-cap restriction
-      const isOverCap = await isTeamOverCap(bid.team);
-      if (isOverCap) {
-        const signPlayer = await findPlayerByFuzzyName(bid.playerName);
-        if (signPlayer && signPlayer.overall > 70) {
-          errors.push(`${bid.team} is over cap and cannot sign ${bid.playerName} (${signPlayer.overall} OVR > 70)`);
-        }
-      }
-      
-      // Build preview lists
-      if (bid.dropPlayer) {
-        cuts.push(`${bid.dropPlayer} (${bid.team})`);
-      }
-      signs.push(`${bid.playerName} → ${bid.team} ($${bid.bidAmount})`);
       totalCoins += bid.bidAmount;
+    }
+    
+    // Build grouped preview lists
+    const teamSummaries: string[] = [];
+    const sortedTeams = Array.from(teamTransactions.keys()).sort();
+    
+    for (const team of sortedTeams) {
+      const transactions = teamTransactions.get(team)!;
+      const teamCoins = transactions.reduce((sum, t) => sum + t.coins, 0);
       
-      // Update stats for next check
-      stats.rosterSize = rosterSizeAfter;
-      stats.coins -= bid.bidAmount;
-    }
-    
-    // Check for duplicate player signings
-    const playerCounts = new Map<string, number>();
-    for (const bid of bidsToProcess) {
-      const count = playerCounts.get(bid.playerName.toLowerCase()) || 0;
-      playerCounts.set(bid.playerName.toLowerCase(), count + 1);
-    }
-    
-    Array.from(playerCounts.entries()).forEach(([player, count]) => {
-      if (count > 1) {
-        errors.push(`Duplicate signing detected: ${player} has ${count} bids`);
-      }
-    });
-    
-    // Return validation errors if any
-    if (errors.length > 0) {
-      return {
-        success: false,
-        message: 'Validation failed',
-        errors,
-        warnings
-      };
+      const transactionDetails = transactions.map(t => {
+        if (t.cut) {
+          return `Cut ${t.cut}, Sign ${t.sign} ($${t.coins})`;
+        } else {
+          return `Sign ${t.sign} ($${t.coins})`;
+        }
+      }).join('; ');
+      
+      teamSummaries.push(`**${team}** ($${teamCoins}): ${transactionDetails}`);
     }
     
     return {
       success: true,
       bidCount: bidsToProcess.length,
-      cuts,
-      signs,
-      totalCoins,
-      warnings
+      teamSummaries,
+      totalCoins
     };
     
   } catch (error) {

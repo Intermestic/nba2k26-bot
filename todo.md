@@ -145,3 +145,19 @@ Add two-step confirmation for batch processing: preview → confirm → execute
 
 - [x] Change preview cuts display from 10 to 20
 - [x] Change preview signs display from 10 to 20
+
+
+## CURRENT TASK: Team Grouping & Partial Processing
+
+### Goal 1: Group Preview by Team
+- [x] Update generateBatchPreview to group transactions by team
+- [x] Format: "Team: Cut X, Sign Y ($Z)"
+- [x] Sort teams alphabetically
+- [x] Update preview display to show teamSummaries
+
+### Goal 2: Partial Batch Processing
+- [x] Remove validation that stops entire batch on errors (converted to warnings)
+- [x] Wrap each transaction in try-catch (already exists)
+- [x] Continue processing even if individual transactions fail
+- [x] Report successes and failures separately (already exists)
+- [x] Show detailed error for each failed transaction (already exists)

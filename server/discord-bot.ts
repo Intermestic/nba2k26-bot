@@ -964,22 +964,12 @@ export async function startDiscordBot(token: string) {
           .setTitle('⚠️ Batch Processing Preview')
           .setDescription(`**${preview.bidCount} transactions ready to process**\n\nReact with ✅ within 30 seconds to confirm and execute.`);
         
-        if (preview.cuts && preview.cuts.length > 0) {
-          const cutsList = preview.cuts.slice(0, 20).join('\n');
-          const remaining = preview.cuts.length - 20;
+        if (preview.teamSummaries && preview.teamSummaries.length > 0) {
+          const summaryList = preview.teamSummaries.slice(0, 20).join('\n');
+          const remaining = preview.teamSummaries.length - 20;
           previewEmbed.addFields({ 
-            name: `Players to be Cut (${preview.cuts.length})`, 
-            value: cutsList + (remaining > 0 ? `\n... and ${remaining} more` : ''),
-            inline: false
-          });
-        }
-        
-        if (preview.signs && preview.signs.length > 0) {
-          const signsList = preview.signs.slice(0, 20).join('\n');
-          const remaining = preview.signs.length - 20;
-          previewEmbed.addFields({ 
-            name: `Players to be Signed (${preview.signs.length})`, 
-            value: signsList + (remaining > 0 ? `\n... and ${remaining} more` : ''),
+            name: `Transactions by Team (${preview.teamSummaries.length} teams)`, 
+            value: summaryList + (remaining > 0 ? `\n... and ${remaining} more teams` : ''),
             inline: false
           });
         }
