@@ -193,6 +193,36 @@ export async function handleReactionAdd(
     // Check if user has Trade Committee role
     const hasRole = await hasTradeCommitteeRole(reaction, user.id);
     
+    // Remove bot's placeholder reactions after first Trade Committee member votes
+    if (hasRole) {
+      const message = reaction.message;
+      const botId = message.client.user?.id;
+      
+      if (botId) {
+        // Remove bot's 👍 reaction
+        const upReaction = message.reactions.cache.get('👍');
+        if (upReaction) {
+          try {
+            await upReaction.users.remove(botId);
+            console.log(`[Trade Voting] Removed bot's 👍 reaction`);
+          } catch (error) {
+            console.log(`[Trade Voting] Could not remove bot's 👍 reaction`);
+          }
+        }
+        
+        // Remove bot's 👎 reaction
+        const downReaction = message.reactions.cache.get('👎');
+        if (downReaction) {
+          try {
+            await downReaction.users.remove(botId);
+            console.log(`[Trade Voting] Removed bot's 👎 reaction`);
+          } catch (error) {
+            console.log(`[Trade Voting] Could not remove bot's 👎 reaction`);
+          }
+        }
+      }
+    }
+    
     if (!hasRole) {
       // Remove invalid vote
       await reaction.users.remove(user.id);
