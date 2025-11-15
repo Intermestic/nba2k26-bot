@@ -107,6 +107,16 @@ export const playerRouter = router({
 
       const { id, ...updateData } = input;
 
+      // Validate team name if team is being updated
+      if (updateData.team !== undefined && updateData.team !== null) {
+        const { validateTeamName } = await import('../team-validator');
+        const validatedTeam = validateTeamName(updateData.team);
+        if (!validatedTeam) {
+          throw new Error(`Invalid team name: ${updateData.team}. Must be one of the 28 valid teams or Free Agents.`);
+        }
+        updateData.team = validatedTeam;
+      }
+
       await db
         .update(players)
         .set({
@@ -164,6 +174,13 @@ export const playerRouter = router({
       const db = await getDb();
       if (!db) throw new Error("Database not available");
 
+      // Validate team name
+      const { validateTeamName } = await import('../team-validator');
+      const validatedTeam = validateTeamName(input.team);
+      if (!validatedTeam) {
+        throw new Error(`Invalid team name: ${input.team}. Must be one of the 28 valid teams or Free Agents.`);
+      }
+
       // Get current player data before update
       const [player] = await db
         .select()
@@ -179,7 +196,7 @@ export const playerRouter = router({
       await db
         .update(players)
         .set({
-          team: input.team,
+          team: validatedTeam,
           updatedAt: new Date(),
         })
         .where(eq(players.id, input.playerId));
@@ -189,7 +206,7 @@ export const playerRouter = router({
         playerId: player.id,
         playerName: player.name,
         fromTeam: player.team || null,
-        toTeam: input.team,
+        toTeam: validatedTeam,
         adminId: ctx.user?.id || null,
         adminName: ctx.user?.name || "Unknown",
         transactionType: player.team ? "trade" : "signing",

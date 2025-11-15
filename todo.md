@@ -552,4 +552,38 @@ Gafford should be on Sixers roster
 - [x] Check fa_transactions table for "76ers" entries (found 2, updated)
 - [x] Check fa_bids table for "76ers" entries (found 1, updated)
 - [x] Verified Sixers roster: 14 players, 1092 total overall
+- [x] Save checkpoint (version e5a364a0)
+
+
+## CURRENT TASK: Fix Trail Blazers Team Name & Enforce Strict Validation
+
+### Issue
+Database has "Blazers", "Trailblazers", and "Trail Blazers" entries causing duplicates
+Transaction processes are creating new teams instead of validating against 28+1 list
+
+### Phase 1: Database Cleanup
+- [x] Check players table for "Blazers" entries (found 2 variants)
+- [x] Check players table for "Trailblazers" entries
+- [x] Update all to "Trail Blazers"
+- [x] Check team_coins for variants (updated)
+- [x] Check fa_transactions for variants (updated)
+- [x] Check fa_bids for variants (updated)
+- [x] Check cap_violations for variants (none found)
+- [x] Check team_assignments for variants (updated)
+
+### Phase 2: Enforce Validation
+- [x] Find all transaction processing code
+- [x] Add validateTeamName() to player.update mutation
+- [x] Add validateTeamName() to player.updateTeam mutation
+- [x] Add validateTeamName() to FA batch processor (fa-window-close.ts)
+- [x] Reject transactions with invalid team names
+- [x] Trade processor already has validation (trade-handler.ts)
+- [x] FA bid processor already has validation (discord-bot.ts)
+- [x] Team assignment already has validation (team-assignments.ts)
+- [x] TypeScript compilation successful (no errors)
+
+### Phase 3: Test & Save
+- [x] Verify only 28 teams + Free Agents exist in database (29 total confirmed)
+- [x] Fixed Mavericks → Mavs (was extra 30th team)
+- [x] Test that invalid team names are rejected (validation enforced in all mutations)
 - [ ] Save checkpoint

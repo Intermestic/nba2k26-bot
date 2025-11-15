@@ -1,5 +1,6 @@
 import { Client, TextChannel, EmbedBuilder } from 'discord.js';
 import { getActiveBids, getCurrentBiddingWindow } from './fa-bid-parser';
+import { validateTeamName } from './team-validator';
 
 const FA_CHANNEL_ID = '1095812920056762510';
 
@@ -282,6 +283,19 @@ export async function processBidsFromSummary(message: any, processorId: string) 
       try {
         console.log(`[Batch Process] Processing: ${bid.playerName} → ${bid.team} ($${bid.bidAmount})`);
         
+        // Validate team name
+        const validatedTeam = validateTeamName(bid.team);
+        if (!validatedTeam) {
+          results.push({
+            playerName: bid.playerName,
+            team: bid.team,
+            bidAmount: bid.bidAmount,
+            success: false,
+            error: `Invalid team name: ${bid.team}`
+          });
+          continue;
+        }
+        
         // Find the player being signed
         const signPlayer = await findPlayerByFuzzyName(bid.playerName);
         if (!signPlayer) {
@@ -310,7 +324,7 @@ export async function processBidsFromSummary(message: any, processorId: string) 
               .update(players)
               .set({ team: 'Free Agents' })
               .where(eq(players.id, dropPlayer.id));
-            console.log(`[Batch Process] Dropped ${dropPlayer.name} from ${bid.team}`);
+            console.log(`[Batch Process] Dropped ${dropPlayer.name} from ${validatedTeam}`);
           } else {
             console.log(`[Batch Process] Warning: Could not find dropped player ${bid.dropPlayer}`);
           }
@@ -322,28 +336,27 @@ export async function processBidsFromSummary(message: any, processorId: string) 
         // Add signed player to roster
         await db
           .update(players)
-          .set({ team: bid.team })
+          .set({ team: validatedTeam })
           .where(eq(players.id, signPlayer.id));
-        console.log(`[Batch Process] Signed ${signPlayer.name} to ${bid.team} (from ${previousTeam})`);
+        console.log(`[Batch Process] Signed ${signPlayer.name} to ${validatedTeam} (from ${previousTeam})`);
         
         // Get team's current coins
         const teamCoinRecord = await db
           .select()
           .from(teamCoins)
-          .where(eq(teamCoins.team, bid.team));
+          .where(eq(teamCoins.team, validatedTeam));
         
         const currentCoins = teamCoinRecord[0]?.coinsRemaining || 100;
         const coinsAfter = currentCoins - bid.bidAmount;
-        
-        // Deduct coins
+            // Update team coins
         await db
           .update(teamCoins)
           .set({ coinsRemaining: coinsAfter })
-          .where(eq(teamCoins.team, bid.team));
+          .where(eq(teamCoins.team, validatedTeam));
         
         // Create transaction record
         await db.insert(faTransactions).values({
-          team: bid.team,
+          team: validatedTeam,
           dropPlayer: dropPlayerName,
           signPlayer: signPlayer.name,
           signPlayerOvr: signPlayer.overall,
