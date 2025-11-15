@@ -64,9 +64,11 @@ async function formatStatusMessage(bids: Array<{ playerName: string; team: strin
   message += `🏆 **Active Bids (${bids.length} players)**\n\n`;
   
   for (const bid of sortedBids) {
+    // Escape underscores to prevent markdown italics
+    const escapedBidderName = bid.bidderName.replace(/_/g, '\\_');
     message += `**${bid.playerName}**\n`;
     message += `• Bid: $${bid.bidAmount}\n`;
-    message += `• Leader: ${bid.bidderName} (${bid.team})\n`;
+    message += `• Leader: ${escapedBidderName} (${bid.team})\n`;
     message += `---\n\n`;
   }
   
@@ -77,8 +79,10 @@ async function formatStatusMessage(bids: Array<{ playerName: string; team: strin
   const sortedCommitments = Array.from(bidderCommitments.entries()).sort((a, b) => b[1].total - a[1].total);
   
   for (const [bidderName, commitment] of sortedCommitments) {
+    // Escape underscores to prevent markdown italics
+    const escapedBidderName = bidderName.replace(/_/g, '\\_');
     const remaining = commitment.available - commitment.total;
-    message += `**${bidderName}** (${commitment.team}): $${commitment.total} committed, $${remaining} remaining\n`;
+    message += `**${escapedBidderName}** (${commitment.team}): $${commitment.total} committed, $${remaining} remaining\n`;
   }
   
   message += `\n---\n`;
