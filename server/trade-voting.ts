@@ -4,6 +4,7 @@ const TRADE_CHANNEL_ID = '1087524540634116116';
 const TRADE_COMMITTEE_ROLE = 'Trade Committee';
 const APPROVAL_THRESHOLD = 7; // 👍 votes needed
 const REJECTION_THRESHOLD = 5; // 👎 votes needed
+const MIN_AUTO_TRACK_MESSAGE_ID = '1439096316801060964'; // Only auto-track trades after this message
 
 interface VoteCount {
   upvotes: number;
@@ -191,8 +192,35 @@ export async function handleReactionAdd(
     if (reaction.emoji.name !== '👍' && reaction.emoji.name !== '👎') return;
     
     // Check if this is a tracked trade vote
-    const voteData = activeVotes.get(reaction.message.id);
-    if (!voteData || voteData.processed) return;
+    let voteData = activeVotes.get(reaction.message.id);
+    
+    // If not tracked yet, initialize tracking (handles bot restarts or missed messages)
+    if (!voteData) {
+      // Only initialize if message has embeds (is a trade post) AND is after minimum message ID
+      if (reaction.message.embeds && reaction.message.embeds.length > 0) {
+        // Check if message ID is after the minimum threshold
+        if (BigInt(reaction.message.id) >= BigInt(MIN_AUTO_TRACK_MESSAGE_ID)) {
+          console.log(`[Trade Voting] Auto-initializing vote tracking for message ${reaction.message.id}`);
+          voteData = {
+            upvotes: 0,
+            downvotes: 0,
+            voters: new Set(),
+            messageId: reaction.message.id,
+            processed: false,
+            createdAt: new Date()
+          };
+          activeVotes.set(reaction.message.id, voteData);
+        } else {
+          console.log(`[Trade Voting] Skipping auto-initialization for old message ${reaction.message.id} (before ${MIN_AUTO_TRACK_MESSAGE_ID})`);
+          return; // Old trade, don't auto-track
+        }
+      } else {
+        return; // Not a trade post, ignore
+      }
+    }
+    
+    // Skip if already processed
+    if (voteData.processed) return;
     
     // Check if user has Trade Committee role
     const hasRole = await hasTradeCommitteeRole(reaction, user.id);
@@ -298,8 +326,35 @@ export async function handleReactionRemove(
     if (reaction.emoji.name !== '👍' && reaction.emoji.name !== '👎') return;
     
     // Check if this is a tracked trade vote
-    const voteData = activeVotes.get(reaction.message.id);
-    if (!voteData || voteData.processed) return;
+    let voteData = activeVotes.get(reaction.message.id);
+    
+    // If not tracked yet, initialize tracking (handles bot restarts or missed messages)
+    if (!voteData) {
+      // Only initialize if message has embeds (is a trade post) AND is after minimum message ID
+      if (reaction.message.embeds && reaction.message.embeds.length > 0) {
+        // Check if message ID is after the minimum threshold
+        if (BigInt(reaction.message.id) >= BigInt(MIN_AUTO_TRACK_MESSAGE_ID)) {
+          console.log(`[Trade Voting] Auto-initializing vote tracking for message ${reaction.message.id}`);
+          voteData = {
+            upvotes: 0,
+            downvotes: 0,
+            voters: new Set(),
+            messageId: reaction.message.id,
+            processed: false,
+            createdAt: new Date()
+          };
+          activeVotes.set(reaction.message.id, voteData);
+        } else {
+          console.log(`[Trade Voting] Skipping auto-initialization for old message ${reaction.message.id} (before ${MIN_AUTO_TRACK_MESSAGE_ID})`);
+          return; // Old trade, don't auto-track
+        }
+      } else {
+        return; // Not a trade post, ignore
+      }
+    }
+    
+    // Skip if already processed
+    if (voteData.processed) return;
     
     // Recount votes when someone removes their vote
     const { upvotes, downvotes } = await countVotes(reaction);
