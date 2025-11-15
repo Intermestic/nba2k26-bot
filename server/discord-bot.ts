@@ -443,6 +443,29 @@ async function handleBidMessage(message: Message) {
     }
   }
   
+  // Check if team is over cap and trying to sign 70+ OVR player
+  const { isTeamOverCap } = await import('./cap-violation-alerts');
+  const overCap = await isTeamOverCap(team);
+  
+  if (overCap && player.overall >= 70) {
+    console.log(`[FA Bids] ❌ Over-cap restriction: ${team} cannot sign ${player.name} (${player.overall} OVR)`);
+    await message.reply(
+      `❌ **Over-Cap Restriction**
+
+` +
+      `${team} is currently **over the 1098 overall cap** and cannot sign players with **70+ overall rating**.
+
+` +
+      `**Player**: ${player.name} (${player.overall} OVR)
+` +
+      `**Restriction**: Over-cap teams may only sign players with **69 or lower overall** to reduce cap burden.
+
+` +
+      `💡 **Tip**: Focus on signing lower-rated players (<70 OVR) to get back under the cap limit.`
+    );
+    return;
+  }
+  
   // Validate coin commitment
   const { validateBidCoins } = await import('./fa-bid-parser');
   const validation = await validateBidCoins(

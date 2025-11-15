@@ -14,6 +14,22 @@ interface TeamCapStatus {
 }
 
 /**
+ * Check if a specific team is over cap
+ */
+export async function isTeamOverCap(teamName: string): Promise<boolean> {
+  const db = await getDb();
+  if (!db) return false;
+  
+  const result = await db
+    .select()
+    .from(players)
+    .where(eq(players.team, teamName));
+  
+  const totalOverall = result.reduce((sum, p) => sum + p.overall, 0);
+  return totalOverall > OVERALL_CAP_LIMIT;
+}
+
+/**
  * Get cap status for all teams
  */
 async function getTeamCapStatuses(): Promise<TeamCapStatus[]> {
