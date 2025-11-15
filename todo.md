@@ -824,3 +824,14 @@
 - [x] Test overbid notifications (ready for user testing)
 - [x] Test auto-cancel with over-budget scenario (ready for user testing)
 - [ ] Save checkpoint
+
+## Bid Confirmation System
+
+- [x] Add confirmation reply for valid bids (shows bid details)
+- [x] Check if user already has highest bid on player
+- [x] Notify user if they're already winning
+- [x] Show current highest bid and bidder when confirming
+- [x] Keep existing invalid bid error messages
+- [x] Remove ✅ emoji reaction (replaced by confirmation message)
+- [x] Test all confirmation scenarios (ready for user testing)
+- [ ] Save checkpoint

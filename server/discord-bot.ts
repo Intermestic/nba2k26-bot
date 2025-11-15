@@ -456,7 +456,29 @@ async function handleBidMessage(message: Message) {
   }
   
   console.log(`[FA Bids] ✅ Bid recorded: ${message.author.username} (${team}) bid $${parsedBid.bidAmount} on ${player.name}`);
-  await message.react('✅');
+  
+  // Get all bids for this player to show current status
+  const { getActiveBids } = await import('./fa-bid-parser');
+  const activeBids = await getActiveBids(window.windowId);
+  const playerBids = activeBids.filter(b => b.playerName === player.name);
+  const highestBid = playerBids.length > 0 ? playerBids[0] : null;
+  
+  // Send confirmation message
+  let confirmationMessage = `✅ **Bid Confirmed**\n\n`;
+  confirmationMessage += `**Player**: ${player.name} (${player.overall} OVR)\n`;
+  confirmationMessage += `**Your bid**: $${parsedBid.bidAmount}\n`;
+  confirmationMessage += `**Team**: ${team}\n\n`;
+  
+  if (highestBid && highestBid.bidderName === message.author.username) {
+    confirmationMessage += `🏆 **You have the highest bid!**`;
+  } else if (highestBid) {
+    confirmationMessage += `⚠️ **Current leader**: ${highestBid.bidderName} (${highestBid.team}) with $${highestBid.bidAmount}\n`;
+    confirmationMessage += `Place a higher bid to take the lead!`;
+  } else {
+    confirmationMessage += `🏆 **You're the first bidder!**`;
+  }
+  
+  await message.reply(confirmationMessage);
   
   // Send DM notification to previous highest bidder if they were outbid
   if (bidResult.previousHighestBidder && client) {
