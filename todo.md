@@ -375,3 +375,15 @@ DoubleMetaphone import error breaking player name matching
 - [x] TypeScript compilation successful (no errors)
 - [x] Dev server running without errors
 - [ ] Save checkpoint
+
+
+## CURRENT TASK: Add Team Assignments to Admin Navigation
+
+### Tasks
+- [x] Find DashboardLayout component
+- [x] Add Team Assignments link to navigation sidebar (second item, prominent position)
+- [x] Use Shield icon for Team Assignments
+- [x] Added all other admin pages to navigation (Dashboard, FA Coins, Cap Compliance, FA History, Transactions, Player Aliases)
+- [x] TypeScript compilation successful (no errors)
+- [x] Dev server running without errors
+- [ ] Save checkpoint
