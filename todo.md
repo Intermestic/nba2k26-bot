@@ -1,35 +1,34 @@
 # NBA 2K26 Player Database - TODO
 
-## COMPLETED: Manual Summary Regeneration ✅
-- [x] Added !regenerate-summary command
-- [x] Command ready to use: !regenerate-summary 2025-11-15-AM
+## COMPLETED: Status Message Enhancement ✅
+- [x] Status messages now show "cutting: PlayerName" for each bid
+- [x] !regenerate-summary command available
 
-## CURRENT TASK: Enhance Status Messages with Drop Info
+## CURRENT TASK: Bug Fixes & Manual Processing Permission
 
-### Goal
-Update hourly FA status messages to show which player each bidder is planning to drop
+### Issue 1: 70 OVR Bid Rejection Bug
+**Problem:** Over-cap teams are being rejected when bidding on exactly 70 OVR players
+**Expected:** Over-cap teams can bid on players ≤70 OVR (only reject 71+ OVR)
+**Fix:** Change condition from `>= 70` to `> 70`
 
-### Current Format
-```
-Bruce Brown (75 OVR)
-├─ $5 - TeamName (bidder)
-└─ $3 - OtherTeam (bidder)
-```
+### Issue 2: Manual Processing Permission
+**Requirement:** Only user ID 679275787664359435 can use ❗ emoji to manually process current window bids
+**Implementation:** Add reaction handler for ❗ emoji with user ID check
 
-### New Format
-```
-Bruce Brown (75 OVR)
-├─ $5 - TeamName (bidder) - cutting: Player X
-└─ $3 - OtherTeam (bidder) - cutting: Player Y
-```
+### Phase 1: Fix 70 OVR Validation
+- [x] Find over-cap bid validation code
+- [x] Change `>= 70` to `> 70` in rejection logic
+- [x] Update error messages to reflect correct threshold
 
-### Phase 1: Update Status Message
-- [x] Find status message generation code
-- [x] Query dropPlayer from faBids for each bid (already in getActiveBids)
-- [x] Update message format to include "cutting: PlayerName"
-- [x] Handle cases where dropPlayer is null
+### Phase 2: Add Manual Processing
+- [x] Add ❗ emoji reaction handler
+- [x] Check user ID === '679275787664359435'
+- [x] Get current window bids via regenerateWindowSummary
+- [x] Call processBidsFromSummary for current window
+- [x] Post results with embed
 
-### Phase 2: Test & Checkpoint
+### Phase 3: Test & Checkpoint
 - [x] Code compiled successfully (no TypeScript errors)
-- [x] Status message format updated to show cutting info
+- [x] 70 OVR validation fixed (now allows ≤70 OVR for over-cap teams)
+- [x] Manual processing ready (❗ emoji for user 679275787664359435)
 - [ ] Save checkpoint

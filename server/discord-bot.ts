@@ -443,25 +443,25 @@ async function handleBidMessage(message: Message) {
     }
   }
   
-  // Check if team is over cap and trying to sign 70+ OVR player
+  // Check if team is over cap and trying to sign 71+ OVR player
   const { isTeamOverCap } = await import('./cap-violation-alerts');
   const overCap = await isTeamOverCap(team);
   
-  if (overCap && player.overall >= 70) {
+  if (overCap && player.overall > 70) {
     console.log(`[FA Bids] ❌ Over-cap restriction: ${team} cannot sign ${player.name} (${player.overall} OVR)`);
     await message.reply(
       `❌ **Over-Cap Restriction**
 
 ` +
-      `${team} is currently **over the 1098 overall cap** and cannot sign players with **70+ overall rating**.
+      `${team} is currently **over the 1098 overall cap** and cannot sign players with **71+ overall rating**.
 
 ` +
       `**Player**: ${player.name} (${player.overall} OVR)
 ` +
-      `**Restriction**: Over-cap teams may only sign players with **69 or lower overall** to reduce cap burden.
+      `**Restriction**: Over-cap teams may only sign players with **70 or lower overall** to reduce cap burden.
 
 ` +
-      `💡 **Tip**: Focus on signing lower-rated players (<70 OVR) to get back under the cap limit.`
+      `💡 **Tip**: Focus on signing lower-rated players (≤70 OVR) to get back under the cap limit.`
     );
     return;
   }
@@ -834,15 +834,98 @@ export async function startDiscordBot(token: string) {
       return;
     }
     
-    // Only process lightning bolt emoji for manual processing
-    if (reaction.emoji.name !== '⚡') return;
+    // Process lightning bolt emoji (⚡) or exclamation emoji (❗) for manual processing
+    if (reaction.emoji.name !== '⚡' && reaction.emoji.name !== '❗') return;
     
     // Fetch the full message if it's partial
     const message = reaction.message.partial ? await reaction.message.fetch() : reaction.message;
     
     // Route to appropriate handler based on channel
     if (reaction.message.channelId === FA_CHANNEL_ID) {
-      console.log(`[Discord Bot] ⚡ reaction detected in FA channel by ${user.tag}`);
+      console.log(`[Discord Bot] ${reaction.emoji.name} reaction detected in FA channel by ${user.tag}`);
+      
+      // Handle ❗ emoji - manual processing for current window (authorized user only)
+      if (reaction.emoji.name === '❗') {
+        // Check if user is authorized
+        if (user.id !== '679275787664359435') {
+          console.log(`[Discord Bot] Unauthorized user ${user.tag} (${user.id}) attempted manual processing`);
+          return;
+        }
+        
+        console.log('[Discord Bot] Authorized user triggered manual processing for current window');
+        const { getCurrentBiddingWindow } = await import('./fa-bid-parser');
+        const { regenerateWindowSummary } = await import('./fa-window-close');
+        
+        try {
+          const window = getCurrentBiddingWindow();
+          await message.reply(`🔄 Processing current window: ${window.windowId}...`);
+          
+          // Regenerate summary to get latest bids
+          const summaryResult = await regenerateWindowSummary(client!, window.windowId);
+          
+          if (!summaryResult.success) {
+            await message.reply(`❌ Failed to get bids: ${summaryResult.message}`);
+            return;
+          }
+          
+          // Wait a moment for the summary message to be posted
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          
+          // Fetch the latest message (should be the summary we just posted)
+          const channel = await client!.channels.fetch(FA_CHANNEL_ID);
+          if (channel?.isTextBased()) {
+            const messages = await (channel as any).messages.fetch({ limit: 1 });
+            const summaryMessage = messages.first();
+            
+            if (summaryMessage && summaryMessage.embeds.length > 0) {
+              // Process the summary
+              const { processBidsFromSummary } = await import('./fa-window-close');
+              const { EmbedBuilder } = await import('discord.js');
+              
+              const result = await processBidsFromSummary(summaryMessage, user.tag || user.username || 'Unknown');
+              
+              if (result.success && 'results' in result && result.results) {
+                const successList = result.results
+                  .filter(r => r.success)
+                  .map(r => `✅ ${r.playerName} → **${r.team}** ($${r.bidAmount})`)
+                  .join('\n') || 'None';
+                
+                const failList = result.results
+                  .filter(r => !r.success)
+                  .map(r => `❌ ${r.playerName} → **${r.team}** - ${r.error || 'Unknown error'}`)
+                  .join('\n') || 'None';
+                
+                const totalCoins = result.results
+                  .filter(r => r.success)
+                  .reduce((sum, r) => sum + r.bidAmount, 0);
+                
+                const embed = new EmbedBuilder()
+                  .setColor(0x00ff00)
+                  .setTitle('✅ Manual Processing Complete')
+                  .setDescription(`Processed ${result.successCount} successful transactions from window ${window.windowId}`);
+                
+                if (successList !== 'None') {
+                  embed.addFields({ name: 'Successful Transactions', value: successList.substring(0, 1024) });
+                }
+                
+                if (failList !== 'None') {
+                  embed.addFields({ name: 'Failed Transactions', value: failList.substring(0, 1024) });
+                }
+                
+                embed.setFooter({ text: `Total coins spent: $${totalCoins} | Processed by ${user.tag}` });
+                
+                await message.reply({ embeds: [embed] });
+              } else {
+                await message.reply(`❌ Processing failed: ${result.message}`);
+              }
+            }
+          }
+        } catch (error) {
+          console.error('[Discord Bot] Manual processing failed:', error);
+          await message.reply('❌ Manual processing failed. Check logs for details.');
+        }
+        return;
+      }
       
       // Check if this is a window close summary message (from bot with "Bidding Window Closed" title)
       if (message.author.bot && message.embeds.length > 0 && message.embeds[0].title?.includes('Bidding Window Closed')) {

@@ -221,12 +221,12 @@ export async function processBidsFromSummary(message: any, processorId: string) 
         errors.push(`${bid.team} has insufficient coins ($${stats.coins} < $${bid.bidAmount} for ${bid.playerName})`);
       }
       
-      // Check over-cap restriction (teams over 1098 cannot sign 70+ OVR)
+      // Check over-cap restriction (teams over 1098 cannot sign 71+ OVR)
       const isOverCap = await isTeamOverCap(bid.team);
       if (isOverCap) {
         const signPlayer = await findPlayerByFuzzyName(bid.playerName);
-        if (signPlayer && signPlayer.overall >= 70) {
-          errors.push(`${bid.team} is over cap and cannot sign ${bid.playerName} (${signPlayer.overall} OVR >= 70)`);
+        if (signPlayer && signPlayer.overall > 70) {
+          errors.push(`${bid.team} is over cap and cannot sign ${bid.playerName} (${signPlayer.overall} OVR > 70)`);
         }
       }
       
