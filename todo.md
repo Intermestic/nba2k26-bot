@@ -1,6 +1,16 @@
 # NBA 2K26 Player Database - TODO
 
-## CURRENT TASK: Trade Voting System
+## CURRENT TASK: Trade Voting System Bug Fixes - COMPLETED ✅
+
+- [x] Fix vote threshold logic (5 👎 before 7 👍 = rejected)
+- [x] Add debug logging for role detection
+- [x] Fix role check to be case-insensitive and trim whitespace
+- [x] Test rejection message posting (5 👎 votes)
+- [x] Test approval message posting (7 👍 votes)
+- [x] Remove excessive debug logging
+- [ ] Save checkpoint
+
+## Trade Voting System - COMPLETED ✅
 
 - [x] Monitor trade channel for new trade embeds
 - [x] Auto-add 👍 and 👎 reactions to new trade embeds
@@ -9,8 +19,7 @@
 - [x] Check vote counts on each new reaction
 - [x] Approve trade when 7 👍 reached before 5 👎 (post confirmation)
 - [x] Reject trade when 5 👎 reached before 7 👍 (post rejection)
-- [ ] Test voting system (ready for testing)
-- [ ] Save checkpoint
+- [x] Initial testing completed
 
 ## Discord FA Status Message Font - COMPLETED ✅
 
@@ -29,9 +38,3 @@
 - [x] Apply validation to trade-handler.ts (trade processing)
 - [x] Test all changes (TypeScript compiled with no errors)
 - [x] Save checkpoint
-
-## Story Generation API Integration - DEFERRED TO TOMORROW
-
-- [ ] Complete story generation API integration for 90+ OVR trades
-- [ ] Test with sample trade
-- [ ] Save checkpoint

@@ -22,10 +22,20 @@ const activeVotes = new Map<string, VoteCount>();
 async function hasTradeCommitteeRole(reaction: MessageReaction | PartialMessageReaction, userId: string): Promise<boolean> {
   try {
     const guild = reaction.message.guild;
-    if (!guild) return false;
+    if (!guild) {
+      console.log('[Trade Voting] No guild found');
+      return false;
+    }
 
     const member = await guild.members.fetch(userId);
-    return member.roles.cache.some(role => role.name === TRADE_COMMITTEE_ROLE);
+    
+    // Case-insensitive and whitespace-trimmed comparison
+    const normalizedTargetRole = TRADE_COMMITTEE_ROLE.toLowerCase().trim();
+    const hasRole = member.roles.cache.some(role => 
+      role.name.toLowerCase().trim() === normalizedTargetRole
+    );
+    
+    return hasRole;
   } catch (error) {
     console.error('[Trade Voting] Error checking role:', error);
     return false;
@@ -129,7 +139,7 @@ export async function handleNewTradeEmbed(message: Message) {
     // Skip messages from our own bot
     if (message.author.id === message.client.user?.id) return;
     
-    console.log('[Trade Voting] New trade embed detected, adding reactions...');
+    console.log(`[Trade Voting] New trade embed detected from ${message.author.tag}, adding reactions...`);
     
     // Add voting reactions
     await message.react('👍');
@@ -141,10 +151,10 @@ export async function handleNewTradeEmbed(message: Message) {
       downvotes: 0,
       voters: new Set(),
       messageId: message.id,
-      processed: false
-    });
+      processed: false    });
     
-    console.log('[Trade Voting] Reactions added to trade embed');
+    console.log(`[Trade Voting] Reactions added and vote tracking initialized`);
+
     
   } catch (error) {
     console.error('[Trade Voting] Error handling new trade embed:', error);
@@ -208,11 +218,13 @@ export async function handleReactionAdd(
     console.log(`[Trade Voting] Current votes: ${upvotes} 👍, ${downvotes} 👎`);
     
     // Check if vote threshold reached
-    if (upvotes >= APPROVAL_THRESHOLD && upvotes > downvotes) {
-      // Trade approved
+    // Approval: 7 👍 before reaching 5 👎
+    // Rejection: 5 👎 before reaching 7 👍
+    if (upvotes >= APPROVAL_THRESHOLD && downvotes < REJECTION_THRESHOLD) {
+      // Trade approved: got 7 upvotes before hitting 5 downvotes
       await processVoteResult(reaction.message as Message, upvotes, downvotes, true);
-    } else if (downvotes >= REJECTION_THRESHOLD && downvotes > upvotes) {
-      // Trade rejected
+    } else if (downvotes >= REJECTION_THRESHOLD && upvotes < APPROVAL_THRESHOLD) {
+      // Trade rejected: got 5 downvotes before hitting 7 upvotes
       await processVoteResult(reaction.message as Message, upvotes, downvotes, false);
     }
     
