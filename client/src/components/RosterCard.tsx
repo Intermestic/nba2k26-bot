@@ -1,8 +1,9 @@
 import { useState, useRef } from 'react';
 import html2canvas from 'html2canvas';
 import { Button } from '@/components/ui/button';
-import { Download, Share2, X } from 'lucide-react';
+import { Download, Share2, X, ChevronDown } from 'lucide-react';
 import { toast } from 'sonner';
+import { getTeamColors, getTeamGradient, getContrastColor } from '@/lib/teamColors';
 
 interface Player {
   id: string;
@@ -20,22 +21,30 @@ interface RosterCardProps {
   onClose: () => void;
 }
 
+type ExportFormat = 'png' | '4k' | 'instagram' | 'pdf';
+
 export default function RosterCard({ players, teamName, teamLogo, onClose }: RosterCardProps) {
   const [isDownloading, setIsDownloading] = useState(false);
+  const [showFormatMenu, setShowFormatMenu] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
 
   // Sort players by overall rating (highest first)
   const sortedPlayers = [...players].sort((a, b) => b.overall - a.overall);
+  
+  // Get team colors
+  const teamColors = getTeamColors(teamName);
+  const teamGradient = getTeamGradient(teamName);
+  const textColor = getContrastColor(teamColors.primary);
   
   // Calculate average overall
   const avgOverall = Math.round(
     sortedPlayers.reduce((sum, p) => sum + p.overall, 0) / sortedPlayers.length
   );
 
-  // Calculate total salary cap
-  const totalCap = sortedPlayers.reduce((sum, p) => sum + (p.salaryCap || 0), 0);
-  const CAP_LIMIT = 140; // NBA salary cap limit
-  const overCap = totalCap > CAP_LIMIT ? totalCap - CAP_LIMIT : 0;
+  // Calculate total overall (cap)
+  const totalOverall = sortedPlayers.reduce((sum, p) => sum + p.overall, 0);
+  const CAP_LIMIT = 1098; // Total overall cap limit
+  const overCap = totalOverall > CAP_LIMIT ? totalOverall - CAP_LIMIT : 0;
   const isFullTeam = sortedPlayers.length === 14;
 
   // Determine layout: if 5+ players, use special layout
@@ -48,20 +57,35 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
   // Grid columns for regular layout
   const gridColumns = sortedPlayers.length <= 4 ? 2 : sortedPlayers.length <= 9 ? 3 : 5;
 
-  const handleDownload = async () => {
+  const handleDownload = async (format: ExportFormat = 'png') => {
     if (!cardRef.current) return;
     
     setIsDownloading(true);
+    setShowFormatMenu(false);
     try {
       // Small delay to ensure DOM is fully rendered
       await new Promise(resolve => setTimeout(resolve, 500));
       
+      // Determine scale and dimensions based on format
+      let scale = 2;
+      let width = cardRef.current.offsetWidth;
+      let height = cardRef.current.offsetHeight;
+      
+      if (format === '4k') {
+        scale = 4; // 4K resolution
+      } else if (format === 'instagram') {
+        // Instagram story size: 1080x1920
+        scale = 1080 / width;
+      }
+      
       const canvas = await html2canvas(cardRef.current, {
-        backgroundColor: '#0f172a',
-        scale: 2,
+        backgroundColor: teamColors.secondary,
+        scale,
         useCORS: true,
         allowTaint: false,
         logging: false,
+        width: format === 'instagram' ? 1080 : undefined,
+        height: format === 'instagram' ? 1920 : undefined,
         onclone: (clonedDoc) => {
           // Convert OKLCH colors to hex in cloned document
           const elements = clonedDoc.querySelectorAll('*');
@@ -69,7 +93,7 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
             const htmlEl = el as HTMLElement;
             const style = window.getComputedStyle(el);
             if (style.backgroundColor && style.backgroundColor.includes('oklch')) {
-              htmlEl.style.backgroundColor = '#0f172a';
+              htmlEl.style.backgroundColor = teamColors.secondary;
             }
             if (style.color && style.color.includes('oklch')) {
               htmlEl.style.color = '#ffffff';
@@ -77,14 +101,29 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
           });
         },
       });
-      const dataUrl = canvas.toDataURL('image/png');
       
-      const link = document.createElement('a');
-      link.download = `${teamName}-roster-card.png`;
-      link.href = dataUrl;
-      link.click();
+      if (format === 'pdf') {
+        // For PDF, we'll use the canvas as an image in a PDF
+        const imgData = canvas.toDataURL('image/png');
+        const { jsPDF } = await import('jspdf');
+        const pdfDoc = new jsPDF({
+          orientation: width > height ? 'landscape' : 'portrait',
+          unit: 'px',
+          format: [canvas.width / 2, canvas.height / 2]
+        });
+        pdfDoc.addImage(imgData, 'PNG', 0, 0, canvas.width / 2, canvas.height / 2);
+        pdfDoc.save(`${teamName}-roster-card.pdf`);
+      } else {
+        const dataUrl = canvas.toDataURL('image/png');
+        const link = document.createElement('a');
+        const formatSuffix = format === '4k' ? '-4k' : format === 'instagram' ? '-instagram' : '';
+        link.download = `${teamName}-roster-card${formatSuffix}.png`;
+        link.href = dataUrl;
+        link.click();
+      }
       
-      toast.success('Roster card downloaded!');
+      const formatNames = { png: 'PNG', '4k': '4K PNG', instagram: 'Instagram Story', pdf: 'PDF' };
+      toast.success(`Roster card downloaded as ${formatNames[format]}!`);
     } catch (error) {
       console.error('Download failed:', error);
       toast.error(`Download failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -153,14 +192,45 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
         <div className="flex items-center justify-between p-4 border-b border-slate-700">
           <h2 className="text-xl font-bold">Roster Card Preview</h2>
           <div className="flex gap-2">
-            <Button
-              onClick={handleDownload}
-              disabled={isDownloading}
-              className="bg-blue-600 hover:bg-blue-700"
-            >
-              <Download className="w-4 h-4 mr-2" />
-              Download
-            </Button>
+            <div className="relative">
+              <Button
+                onClick={() => setShowFormatMenu(!showFormatMenu)}
+                disabled={isDownloading}
+                className="bg-blue-600 hover:bg-blue-700"
+              >
+                <Download className="w-4 h-4 mr-2" />
+                Download
+                <ChevronDown className="w-4 h-4 ml-2" />
+              </Button>
+              {showFormatMenu && (
+                <div className="absolute top-full mt-2 right-0 bg-slate-800 border border-slate-700 rounded-lg shadow-lg z-10 min-w-[180px]">
+                  <button
+                    onClick={() => handleDownload('png')}
+                    className="w-full text-left px-4 py-2 hover:bg-slate-700 rounded-t-lg"
+                  >
+                    PNG (Standard)
+                  </button>
+                  <button
+                    onClick={() => handleDownload('4k')}
+                    className="w-full text-left px-4 py-2 hover:bg-slate-700"
+                  >
+                    4K PNG (High-Res)
+                  </button>
+                  <button
+                    onClick={() => handleDownload('instagram')}
+                    className="w-full text-left px-4 py-2 hover:bg-slate-700"
+                  >
+                    Instagram Story
+                  </button>
+                  <button
+                    onClick={() => handleDownload('pdf')}
+                    className="w-full text-left px-4 py-2 hover:bg-slate-700 rounded-b-lg"
+                  >
+                    PDF Document
+                  </button>
+                </div>
+              )}
+            </div>
             <Button
               onClick={handleShare}
               disabled={isDownloading}
@@ -185,7 +255,7 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
           <div
             ref={cardRef}
             style={{
-              background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
+              background: teamGradient,
               padding: '32px',
               borderRadius: '12px',
               border: 'none',
@@ -264,7 +334,7 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                             position: 'absolute',
                             bottom: '8px',
                             right: '8px',
-                            background: '#3b82f6',
+                            background: teamColors.primary,
                             color: 'white',
                             padding: '4px 12px',
                             borderRadius: '6px',
@@ -376,7 +446,7 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                             boxShadow: 'none',
                           }}
                         >
-                          Cap: ${totalCap}M{overCap > 0 && ` (+${overCap}M)`}
+                          Cap: {totalOverall} OVR{overCap > 0 && ` (+${overCap})`}
                         </div>
                       )}
                     </div>
@@ -439,7 +509,7 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                             position: 'absolute',
                             bottom: '8px',
                             right: '8px',
-                            background: '#3b82f6',
+                            background: teamColors.primary,
                             color: 'white',
                             padding: '4px 12px',
                             borderRadius: '6px',
@@ -554,7 +624,7 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                             position: 'absolute',
                             bottom: '6px',
                             right: '6px',
-                            background: '#3b82f6',
+                            background: teamColors.primary,
                             color: 'white',
                             padding: '3px 10px',
                             borderRadius: '6px',
@@ -634,7 +704,7 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                       </p>
                       {isFullTeam && (
                         <p style={{ fontSize: '14px', color: overCap > 0 ? '#ef4444' : '#10b981', fontWeight: 'bold', margin: '4px 0 0 0', border: 'none', outline: 'none', boxShadow: 'none' }}>
-                          Cap: ${totalCap}M{overCap > 0 && ` (+${overCap}M)`}
+                          Cap: {totalOverall} OVR{overCap > 0 && ` (+${overCap})`}
                         </p>
                       )}
                     </div>
@@ -724,7 +794,7 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                         <div
                           style={{
                             display: 'inline-block',
-                            background: '#3b82f6',
+                            background: teamColors.primary,
                             color: 'white',
                             padding: '4px 12px',
                             borderRadius: '6px',

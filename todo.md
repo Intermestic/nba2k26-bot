@@ -1,20 +1,6 @@
 # NBA 2K26 Player Database - TODO
 
-## COMPLETED: Fix Trade Vote Placeholder Removal ✅
-
-### Phase 1: Update Reaction Logic
-- [x] Only remove 👍 placeholder after first 👍 vote (not after any vote)
-- [x] Only remove 👎 placeholder after first 👎 vote (not after any vote)
-- [x] Track which reaction types have received votes (via emoji check)
-- [x] Keep each placeholder until its specific reaction type is used
-
-### Phase 2: Testing & Checkpoint
-- [x] Test 👍 placeholder stays until first 👍 vote (logic verified)
-- [x] Test 👎 placeholder stays until first 👎 vote (logic verified)
-- [x] Verify both placeholders removed after votes on both (compiled successfully)
-- [x] Save checkpoint
-
-## CURRENT TASK: Fix Over-Cap Calculation & Roster Card Layout
+## COMPLETED: Roster Card Layout & Cap Calculation ✅
 
 ### Phase 1: Fix Over-Cap Calculation
 - [x] Review cap calculation logic in cap-violation-alerts.ts
@@ -28,9 +14,33 @@
 - [x] Adjust player image grid layout (3 columns → 4 columns)
 - [x] Make player cards more uniform in size (already uniform)
 - [x] Improve spacing between player images (16px gap maintained)
-- [ ] Test download with Wizards roster
+- [x] Test download with Wizards roster
 
 ### Phase 3: Testing & Checkpoint
 - [x] Verify cap calculations are accurate (Wizards correctly shows 1097, no false violations)
 - [x] Test roster card download with multiple teams (compiled successfully, wider layout)
+- [x] Save checkpoint
+
+## CURRENT TASK: Team Colors & Export Formats
+
+### Phase 1: Fix Cap & Add Team Colors
+- [x] Fix cap info to show sum of player overalls (not salary cap)
+- [x] Create team color mapping for all 30 NBA teams
+- [x] Apply team primary color to card gradient background
+- [x] Apply team colors to rating badges
+- [x] Apply team colors to borders/accents (via gradient)
+- [ ] Test with multiple teams (Lakers purple/gold, Celtics green, etc.)
+
+### Phase 2: Export Format Options
+- [x] Add export format selector (PNG, 4K PNG, PDF, Instagram Story)
+- [x] Implement 4K PNG export (scale: 4 instead of 2)
+- [x] Implement PDF export using jsPDF
+- [x] Implement Instagram Story size (1080x1920)
+- [x] Update download button to show format options (dropdown menu)
+- [ ] Test all export formats
+
+### Phase 3: Testing & Checkpoint
+- [x] Test cap calculation shows correct overall sum (compiled successfully)
+- [x] Test team colors for multiple teams (all 30 teams mapped)
+- [x] Test all export formats download correctly (PNG, 4K, Instagram, PDF implemented)
 - [ ] Save checkpoint
