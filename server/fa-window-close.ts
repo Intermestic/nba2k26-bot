@@ -224,9 +224,12 @@ export async function processBidsFromSummary(message: any, processorId: string) 
       
       const stats = teamStats.get(bid.team)!;
       
-      // Check roster size (will be 14 after signing)
-      if (stats.rosterSize >= 14) {
-        errors.push(`${bid.team} already has 14 players (cannot sign ${bid.playerName})`);
+      // Check roster size
+      // If there's a dropPlayer, roster size stays the same (drop 1, add 1)
+      // If no dropPlayer, roster size increases by 1
+      const rosterSizeAfter = bid.dropPlayer ? stats.rosterSize : stats.rosterSize + 1;
+      if (rosterSizeAfter > 14) {
+        errors.push(`${bid.team} would exceed 14 players after signing ${bid.playerName} (no drop specified)`);
       }
       
       // Check coin balance
@@ -244,7 +247,7 @@ export async function processBidsFromSummary(message: any, processorId: string) 
       }
       
       // Update stats for next check
-      stats.rosterSize += 1;
+      stats.rosterSize = rosterSizeAfter;
       stats.coins -= bid.bidAmount;
     }
     

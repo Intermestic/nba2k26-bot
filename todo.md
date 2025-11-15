@@ -95,3 +95,22 @@ Parser expects specific embed field structure but manual summary uses different 
 - [x] Extract player, cut, sign, bid, team from field value
 - [x] Added Format 2 parser: "Cut: X / Sign: Y - $Z - Team"
 - [x] Test with manual summary message ID: 1439332525502627880 (ready for user to react with ⚡)
+
+
+## CURRENT TASK: Fix Batch Cut Execution
+
+### Issue
+Batch processor validates roster size before executing cuts, causing "already has 14 players" errors even though dropPlayer is parsed correctly
+
+### Root Cause
+Processing order is wrong:
+1. Parse bids ✅
+2. Validate roster size ❌ (checks before cuts happen)
+3. Execute cuts
+4. Execute signs
+
+### Fix
+- [x] Find processBidsFromSummary function
+- [x] Adjusted validation to account for pending cuts
+- [x] Roster size calculation: if dropPlayer exists, size stays same (drop 1, add 1)
+- [x] Cuts execute atomically before signs in processing loop
