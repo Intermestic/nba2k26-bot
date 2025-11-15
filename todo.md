@@ -897,3 +897,13 @@
 - [ ] Create API endpoint on story site (/api/generate-story)
 - [ ] Test with real trade
 - [ ] Save checkpoint
+
+## Player Card Edit Fixes
+
+- [x] Add team dropdown to player edit form (Free Agents + 28 teams)
+- [x] Prevent transaction features from creating new teams (added validation)
+- [x] Add 2kratings URL field to player schema (already exists)
+- [x] Add 2kratings URL field to edit form
+- [x] Add team field to update API mutation
+- [x] Test all changes (TypeScript compiled with no errors)
+- [ ] Save checkpoint

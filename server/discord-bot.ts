@@ -2,6 +2,7 @@ import type { Message, ButtonInteraction } from 'discord.js';
 import { Client, GatewayIntentBits, Partials } from 'discord.js';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 import { getDb } from './db';
+import { validateTeamName } from './team-validator';
 import { players, teamCoins, faTransactions } from '../drizzle/schema';
 import { eq, sql } from 'drizzle-orm';
 import { extract } from 'fuzzball';
@@ -212,15 +213,22 @@ async function processTransactions(transactions: ParsedTransaction[], adminUser:
         .set({ coinsRemaining: newCoinsRemaining })
         .where(eq(teamCoins.team, team));
       
+      // Validate team name
+      const validTeam = validateTeamName(team);
+      if (!validTeam) {
+        console.error(`[FA Transactions] Invalid team name: ${team}`);
+        continue; // Skip this transaction
+      }
+      
       // Update both players
       await db
         .update(players)
-        .set({ team: 'Free Agent' })
+        .set({ team: 'Free Agents' })
         .where(eq(players.id, droppedPlayer.id));
       
       await db
         .update(players)
-        .set({ team: team })
+        .set({ team: validTeam })
         .where(eq(players.id, signedPlayer.id));
       
       // Log transaction

@@ -50,6 +50,8 @@ export default function Home() {
     name: "",
     overall: 75,
     photoUrl: "",
+    team: "",
+    playerPageUrl: "",
   });
 
   // Normalize name for fuzzy search (remove special chars, lowercase)
@@ -198,6 +200,8 @@ export default function Home() {
       name: player.name,
       overall: player.overall,
       photoUrl: player.photoUrl || "",
+      team: player.team || "",
+      playerPageUrl: player.playerPageUrl || "",
     });
   };
 
@@ -207,7 +211,8 @@ export default function Home() {
       name: playerForm.name,
       overall: playerForm.overall,
       photoUrl: playerForm.photoUrl || null,
-      playerPageUrl: null,
+      team: playerForm.team || null,
+      playerPageUrl: playerForm.playerPageUrl || null,
       badgeCount: null,
     });
   };
@@ -584,6 +589,48 @@ export default function Home() {
               />
             </div>
             <div>
+              <Label htmlFor="edit-team" className="text-slate-300">Team</Label>
+              <Select
+                value={playerForm.team}
+                onValueChange={(value) => setPlayerForm({ ...playerForm, team: value })}
+              >
+                <SelectTrigger className="bg-slate-900 border-slate-700 text-white">
+                  <SelectValue placeholder="Select team" />
+                </SelectTrigger>
+                <SelectContent className="bg-slate-900 border-slate-700 text-white max-h-[300px]">
+                  <SelectItem value="Free Agents">Free Agents</SelectItem>
+                  <SelectItem value="76ers">76ers</SelectItem>
+                  <SelectItem value="Bucks">Bucks</SelectItem>
+                  <SelectItem value="Bulls">Bulls</SelectItem>
+                  <SelectItem value="Cavaliers">Cavaliers</SelectItem>
+                  <SelectItem value="Celtics">Celtics</SelectItem>
+                  <SelectItem value="Grizzlies">Grizzlies</SelectItem>
+                  <SelectItem value="Hawks">Hawks</SelectItem>
+                  <SelectItem value="Heat">Heat</SelectItem>
+                  <SelectItem value="Hornets">Hornets</SelectItem>
+                  <SelectItem value="Jazz">Jazz</SelectItem>
+                  <SelectItem value="Kings">Kings</SelectItem>
+                  <SelectItem value="Knicks">Knicks</SelectItem>
+                  <SelectItem value="Lakers">Lakers</SelectItem>
+                  <SelectItem value="Magic">Magic</SelectItem>
+                  <SelectItem value="Mavs">Mavs</SelectItem>
+                  <SelectItem value="Nets">Nets</SelectItem>
+                  <SelectItem value="Nuggets">Nuggets</SelectItem>
+                  <SelectItem value="Pacers">Pacers</SelectItem>
+                  <SelectItem value="Pelicans">Pelicans</SelectItem>
+                  <SelectItem value="Pistons">Pistons</SelectItem>
+                  <SelectItem value="Raptors">Raptors</SelectItem>
+                  <SelectItem value="Rockets">Rockets</SelectItem>
+                  <SelectItem value="Spurs">Spurs</SelectItem>
+                  <SelectItem value="Suns">Suns</SelectItem>
+                  <SelectItem value="Timberwolves">Timberwolves</SelectItem>
+                  <SelectItem value="Trailblazers">Trailblazers</SelectItem>
+                  <SelectItem value="Warriors">Warriors</SelectItem>
+                  <SelectItem value="Wizards">Wizards</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
               <Label htmlFor="edit-photoUrl" className="text-slate-300">Photo URL</Label>
               <Input
                 id="edit-photoUrl"
@@ -591,6 +638,16 @@ export default function Home() {
                 onChange={(e) => setPlayerForm({ ...playerForm, photoUrl: e.target.value })}
                 className="bg-slate-900 border-slate-700 text-white"
                 placeholder="https://..."
+              />
+            </div>
+            <div>
+              <Label htmlFor="edit-playerPageUrl" className="text-slate-300">2KRatings Player Page URL</Label>
+              <Input
+                id="edit-playerPageUrl"
+                value={playerForm.playerPageUrl}
+                onChange={(e) => setPlayerForm({ ...playerForm, playerPageUrl: e.target.value })}
+                className="bg-slate-900 border-slate-700 text-white"
+                placeholder="https://www.2kratings.com/..."
               />
             </div>
           </div>

@@ -4,6 +4,7 @@ import { parseTrade, resolveTradePlayer } from './trade-parser';
 import { getDb } from './db';
 import { players } from '../drizzle/schema';
 import { eq } from 'drizzle-orm';
+import { validateTeamName } from './team-validator';
 
 /**
  * Handle trade message from trade channel
@@ -137,12 +138,23 @@ async function processTrade(resolved: {
   }
   
   try {
+    // Validate team names
+    const validTeam1 = validateTeamName(resolved.team1);
+    const validTeam2 = validateTeamName(resolved.team2);
+    
+    if (!validTeam1 || !validTeam2) {
+      return { 
+        success: false, 
+        message: `Invalid team names: ${!validTeam1 ? resolved.team1 : ''} ${!validTeam2 ? resolved.team2 : ''}` 
+      };
+    }
+    
     // Update all players
     // Team 1 receives team 2's players
     for (const player of resolved.team2Players) {
       await db
         .update(players)
-        .set({ team: resolved.team1 })
+        .set({ team: validTeam1 })
         .where(eq(players.id, player.id));
     }
     
@@ -150,7 +162,7 @@ async function processTrade(resolved: {
     for (const player of resolved.team1Players) {
       await db
         .update(players)
-        .set({ team: resolved.team2 })
+        .set({ team: validTeam2 })
         .where(eq(players.id, player.id));
     }
     

@@ -90,6 +90,7 @@ export const playerRouter = router({
         id: z.string(),
         name: z.string().optional(),
         overall: z.number().min(0).max(99).optional(),
+        team: z.string().nullable().optional(),
         photoUrl: z.string().nullable().optional(),
         playerPageUrl: z.string().nullable().optional(),
         badgeCount: z.number().nullable().optional(),
