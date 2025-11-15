@@ -9,6 +9,7 @@ import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
 import { publicApiRouter } from "./publicApi";
 import imageProxyRouter from "./imageProxy";
+import { startDiscordBot } from "../discord-bot";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -66,6 +67,19 @@ async function startServer() {
   server.listen(port, () => {
     console.log(`Server running on http://localhost:${port}/`);
   });
+
+  // Start Discord bot if token is available
+  const botToken = process.env.DISCORD_BOT_TOKEN;
+  if (botToken) {
+    try {
+      await startDiscordBot(botToken);
+      console.log('[Discord Bot] Started successfully');
+    } catch (error) {
+      console.error('[Discord Bot] Failed to start:', error);
+    }
+  } else {
+    console.log('[Discord Bot] DISCORD_BOT_TOKEN not found, bot will not start');
+  }
 }
 
 startServer().catch(console.error);

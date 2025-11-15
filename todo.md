@@ -685,3 +685,98 @@
 - [x] Auto-refresh status every 5 seconds
 - [ ] Test status indicator
 - [ ] Save checkpoint
+
+## Add Bot Token and Test Connection
+
+- [x] Add DISCORD_BOT_TOKEN to project secrets
+- [x] Restart dev server to activate bot
+- [x] Verify bot status shows "Online" with username (HoFBot#6872)
+- [ ] Test bot with FA transaction message
+- [ ] Verify coin deduction and roster updates
+- [ ] Save checkpoint
+
+## URGENT: Fix Bot Not Starting
+
+- [ ] Add Discord bot initialization to server/_core/index.ts
+- [ ] Import startDiscordBot from discord-bot.ts
+- [ ] Call startDiscordBot with DISCORD_BOT_TOKEN on server startup
+- [ ] Add error handling for missing token
+- [ ] Restart server and verify bot connects
+- [ ] Test with FA transaction message
+- [ ] Save checkpoint
+
+## URGENT: Fix Bot Not Starting
+
+- [ ] Add Discord bot initialization to server/_core/index.ts
+- [ ] Import startDiscordBot from discord-bot.ts
+- [ ] Call startDiscordBot with DISCORD_BOT_TOKEN on server startup
+- [ ] Add error handling for missing token
+- [ ] Restart server and verify bot connects
+- [ ] Test with FA transaction message
+- [ ] Save checkpoint
+
+## Debug Bot Not Responding to Messages
+
+- [ ] Check bot message handler in discord-bot.ts
+- [ ] Add console.log to verify messages are being received
+- [ ] Verify channel ID matches
+- [ ] Check message ID threshold logic
+- [ ] Test message parsing
+- [ ] Fix any issues found
+- [ ] Restart and test
+- [ ] Save checkpoint
+
+## Redesign Bot to Use Emoji Reactions
+
+- [x] Remove automatic messageCreate handler
+- [x] Add messageReactionAdd event listener
+- [x] Choose trigger emoji (⚡ lightning)
+- [x] Update bot to fetch message content when emoji is added
+- [x] Parse transaction from reacted message
+- [x] Post confirmation with buttons (existing code)
+- [x] Remove MIN_MESSAGE_ID threshold check
+- [ ] Restart server and test
+- [ ] Update Discord Integration page documentation
+- [ ] Test with forwarded bot messages
+- [ ] Save checkpoint
+
+## Update Bot to Monitor Correct Channel
+
+- [x] Change FA_CHANNEL_ID from 1267935048997539862 to 1095812920056762510
+- [ ] Restart server
+- [ ] Test with ⚡ reaction in correct channel
+- [ ] Save checkpoint
+
+## FA Bid Tracking System
+
+- [x] Create faBids database table (player_id, player_name, bidder_discord_id, bidder_name, team, bid_amount, window_id, timestamp)
+- [x] Create bidWindows table (window_id, start_time, end_time, status)
+- [x] Push database schema changes
+- [x] Implement bid parsing with acquisition/removal/value keywords
+- [x] Add fuzzy player name matching with nicknames
+- [x] Create import function for existing bids from status message
+- [x] Add automatic message monitoring (after message ID 1438945025479282822)
+- [x] Add bot initialization to import existing bids on startup
+- [x] Implement 12-hour window logic (12:00 AM - 11:49 AM, 12:00 PM - 11:49 PM EST)
+- [x] Seed initial bid data manually
+- [x] Test automatic bid tracking (WORKING - captured new Daniel Gafford bid)
+- [x] Handle bid updates (same user replaces previous bid)
+- [x] Keep ⚡ reaction for manual processing
+- [x] Create hourly status update system
+- [x] Format status update message with all active bids
+- [x] Integrate hourly updates into bot startup
+- [ ] Test hourly updates
+- [ ] Save checkpoint
+
+## Bid Validation & Roster Checking
+
+- [x] Seed team FA coin budgets in team_coins table
+- [x] Check if bid target player is actually a free agent (not on any roster)
+- [x] Reject bids for players who are already on rosters
+- [x] Calculate total coin commitment per user across VALID bids only
+- [x] Validate new bids against available coins
+- [x] Post Discord notification when bid is rejected (not a FA)
+- [x] Post Discord notification when bid is rejected (insufficient coins)
+- [x] Remove invalid bids from database (Jaden Ivey)
+- [ ] Test bid validation with real Discord messages
+- [ ] Save checkpoint

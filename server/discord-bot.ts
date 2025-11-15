@@ -1,12 +1,12 @@
-import { Client, GatewayIntentBits, Message, ActionRowBuilder, ButtonBuilder, ButtonStyle, ButtonInteraction } from 'discord.js';
+import { Client, GatewayIntentBits, Message, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, Partials, ButtonInteraction } from 'discord.js';
 import { getDb } from './db';
 import { players, teamCoins, faTransactions } from '../drizzle/schema';
 import { eq, sql } from 'drizzle-orm';
 import { extract } from 'fuzzball';
 
-const FA_CHANNEL_ID = '1267935048997539862';
+const FA_CHANNEL_ID = '1095812920056762510';
 const GUILD_ID = '860782751656837140';
-const MIN_MESSAGE_ID = '1439020316058714263'; // Only process messages after this ID
+const MIN_MESSAGE_ID = '1438945025479282822'; // Only process bid messages after this status update
 
 interface ParsedTransaction {
   dropPlayer: string;
@@ -248,18 +248,23 @@ async function processTransactions(transactions: ParsedTransaction[], adminUser:
  * Handle message in FA channel
  */
 async function handleFAMessage(message: Message) {
-  // Ignore bot messages
-  if (message.author.bot) return;
+  console.log(`[Discord Bot] Received message in FA channel (ID: ${message.id}): ${message.content.substring(0, 100)}`);
   
-  // Only process messages after the specified threshold
-  if (message.id <= MIN_MESSAGE_ID) {
-    console.log(`[Discord Bot] Ignoring old message (ID: ${message.id})`);
+  // Ignore bot messages
+  if (message.author.bot) {
+    console.log(`[Discord Bot] Ignoring bot message`);
     return;
   }
   
+  console.log(`[Discord Bot] Attempting to parse message...`);
+  
   // Parse the message
   const transaction = parseTransaction(message.content);
-  if (!transaction) return;
+  if (!transaction) {
+    console.log(`[Discord Bot] Failed to parse transaction from message`);
+    return;
+  }
+  console.log(`[Discord Bot] Successfully parsed transaction:`, transaction);
   
   // Detect team from dropped player's current roster
   const droppedPlayer = await findPlayerByName(transaction.dropPlayer);
@@ -357,6 +362,98 @@ async function handleFAMessage(message: Message) {
 }
 
 /**
+ * Handle FA bid message - parse and record bids
+ */
+async function handleBidMessage(message: Message) {
+  // Ignore bot messages
+  if (message.author.bot) return;
+  
+  // Only process messages after the status update threshold
+  if (message.id <= MIN_MESSAGE_ID) {
+    return;
+  }
+  
+  console.log(`[FA Bids] Checking message ${message.id}: ${message.content.substring(0, 50)}...`);
+  
+  // Try to parse as bid
+  const { parseBidMessage, findPlayerByFuzzyName, getCurrentBiddingWindow, recordBid } = await import('./fa-bid-parser');
+  const parsedBid = parseBidMessage(message.content);
+  
+  if (!parsedBid) {
+    return; // Not a valid bid message
+  }
+  
+  console.log(`[FA Bids] Parsed bid:`, parsedBid);
+  
+  // Get current bidding window
+  const window = getCurrentBiddingWindow();
+  
+  if (window.isLocked) {
+    console.log(`[FA Bids] Window ${window.windowId} is locked, ignoring bid`);
+    return;
+  }
+  
+  // Find player by fuzzy matching
+  const player = await findPlayerByFuzzyName(parsedBid.playerName);
+  
+  if (!player) {
+    console.log(`[FA Bids] Player not found: ${parsedBid.playerName}`);
+    return;
+  }
+  
+  console.log(`[FA Bids] Matched player: ${player.name} (${player.overall} OVR)`);
+  
+  // Check if player is actually a free agent
+  if (player.team && player.team !== 'Free Agent') {
+    console.log(`[FA Bids] ❌ ${player.name} is not a free agent (currently on ${player.team})`);
+    await message.reply(`❌ **Invalid Bid**: ${player.name} is not a free agent. They are currently on the ${player.team}.`);
+    return;
+  }
+  
+  // Determine team from drop player or message context
+  let team = 'Unknown';
+  if (parsedBid.dropPlayer) {
+    const droppedPlayer = await findPlayerByName(parsedBid.dropPlayer);
+    if (droppedPlayer) {
+      team = droppedPlayer.team || 'Unknown';
+    }
+  }
+  
+  // Validate coin commitment
+  const { validateBidCoins } = await import('./fa-bid-parser');
+  const validation = await validateBidCoins(
+    message.author.username,
+    team,
+    parsedBid.bidAmount
+  );
+  
+  if (!validation.valid) {
+    console.log(`[FA Bids] ❌ Insufficient coins: ${team} has ${validation.available} coins, needs ${validation.required}`);
+    await message.reply(
+      `❌ **Insufficient Coins**: ${team} has **${validation.available}** coins remaining.\n` +
+      `This bid ($${parsedBid.bidAmount}) would bring your total commitment to **$${validation.required}**, which exceeds your budget.\n\n` +
+      `💰 Current commitments:\n${validation.currentBids.map((b: any) => `• ${b.playerName}: $${b.bidAmount}`).join('\n')}`
+    );
+    return;
+  }
+  
+  // Record the bid
+  await recordBid(
+    player.name,
+    player.id,
+    message.author.id,
+    message.author.username,
+    team,
+    parsedBid.bidAmount,
+    window.windowId,
+    message.id
+  );
+  
+  console.log(`[FA Bids] ✅ Bid recorded: ${message.author.username} (${team}) bid $${parsedBid.bidAmount} on ${player.name}`);
+  await message.react('✅');
+}
+
+/**
  * Start Discord bot
  */
 export async function startDiscordBot(token: string) {
@@ -369,19 +466,57 @@ export async function startDiscordBot(token: string) {
     intents: [
       GatewayIntentBits.Guilds,
       GatewayIntentBits.GuildMessages,
-      GatewayIntentBits.MessageContent
+      GatewayIntentBits.MessageContent,
+      GatewayIntentBits.GuildMessageReactions
+    ],
+    partials: [
+      Partials.Message,
+      Partials.Channel,
+      Partials.Reaction
     ]
   });
   
-  client.on('ready', () => {
+  client.on('ready', async () => {
     console.log(`[Discord Bot] Logged in as ${client?.user?.tag}`);
     console.log(`[Discord Bot] Monitoring FA channel: ${FA_CHANNEL_ID}`);
+    console.log(`[Discord Bot] React with ⚡ to trigger transaction processing`);
+    
+    // Bid data was manually seeded, no import needed
+    
+    // Start hourly status updates
+    try {
+      const { startHourlyUpdates } = await import('./fa-status-updates');
+      startHourlyUpdates(client!);
+    } catch (error) {
+      console.error('[FA Status] Failed to start hourly updates:', error);
+    }
   });
   
+  // Monitor all messages for FA bids
   client.on('messageCreate', async (message) => {
     if (message.channelId === FA_CHANNEL_ID) {
-      await handleFAMessage(message);
+      await handleBidMessage(message);
     }
+  });
+  
+  // Also handle emoji reactions for manual transaction processing
+  client.on('messageReactionAdd', async (reaction, user) => {
+    // Ignore bot reactions
+    if (user.bot) return;
+    
+    // Only process reactions in FA channel
+    if (reaction.message.channelId !== FA_CHANNEL_ID) return;
+    
+    // Only process lightning bolt emoji
+    if (reaction.emoji.name !== '⚡') return;
+    
+    console.log(`[Discord Bot] ⚡ reaction detected by ${user.tag} on message ${reaction.message.id}`);
+    
+    // Fetch the full message if it's partial
+    const message = reaction.message.partial ? await reaction.message.fetch() : reaction.message;
+    
+    // Process the message as transaction
+    await handleFAMessage(message);
   });
   
   await client.login(token);

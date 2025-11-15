@@ -1,0 +1,14 @@
+{
+  "query": "SELECT bidderName, SUM(bidAmount) as totalCommitted FROM fa_bids WHERE bidderName = 'kuroko4' GROUP BY bidderName;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT bidderName, SUM(bidAmount) as totalCommitted FROM fa_bids WHERE bidderName = 'kuroko4' GROUP BY bidderName;",
+  "rows": [
+    {
+      "bidderName": "kuroko4",
+      "totalCommitted": "163"
+    }
+  ],
+  "messages": [],
+  "stdout": "bidderName\ttotalCommitted\nkuroko4\t163\n",
+  "stderr": "",
+  "execution_time_ms": 1555
+}

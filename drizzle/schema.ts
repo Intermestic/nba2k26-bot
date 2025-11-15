@@ -112,3 +112,40 @@ export const faTransactions = mysqlTable("fa_transactions", {
 
 export type FaTransaction = typeof faTransactions.$inferSelect;
 export type InsertFaTransaction = typeof faTransactions.$inferInsert;
+
+/**
+ * FA Bids table - tracks all bids during bidding windows
+ */
+export const faBids = mysqlTable("fa_bids", {
+  id: int("id").autoincrement().primaryKey(),
+  playerId: varchar("playerId", { length: 64 }), // Reference to players table
+  playerName: varchar("playerName", { length: 255 }).notNull(), // Player being bid on
+  bidderDiscordId: varchar("bidderDiscordId", { length: 64 }).notNull(), // Discord user ID of bidder
+  bidderName: varchar("bidderName", { length: 255 }), // Discord username
+  team: varchar("team", { length: 100 }).notNull(), // Team making the bid
+  bidAmount: int("bidAmount").notNull(), // Bid amount in coins
+  windowId: varchar("windowId", { length: 64 }).notNull(), // Bidding window identifier (e.g., "2025-01-14-AM")
+  messageId: varchar("messageId", { length: 64 }), // Discord message ID where bid was placed
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type FaBid = typeof faBids.$inferSelect;
+export type InsertFaBid = typeof faBids.$inferInsert;
+
+/**
+ * Bid Windows table - tracks bidding window status
+ */
+export const bidWindows = mysqlTable("bid_windows", {
+  id: int("id").autoincrement().primaryKey(),
+  windowId: varchar("windowId", { length: 64 }).notNull().unique(), // e.g., "2025-01-14-AM" or "2025-01-14-PM"
+  startTime: timestamp("startTime").notNull(), // Window start time
+  endTime: timestamp("endTime").notNull(), // Window end time (11:49 AM/PM)
+  status: mysqlEnum("status", ["active", "locked", "closed"]).default("active").notNull(),
+  statusMessageId: varchar("statusMessageId", { length: 64 }), // Discord message ID for hourly updates
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type BidWindow = typeof bidWindows.$inferSelect;
+export type InsertBidWindow = typeof bidWindows.$inferInsert;
