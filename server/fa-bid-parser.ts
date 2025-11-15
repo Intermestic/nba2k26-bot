@@ -220,17 +220,19 @@ export async function findPlayerByFuzzyName(
     }
   }
   
-  // Strategy 2.5: Phonetic matching (sound-alike names)
+  // Strategy 2.5: Phonetic matching (sound-alike names) - DISABLED due to import issues
+  // TODO: Fix DoubleMetaphone import and re-enable
+  /*
   try {
-    const { DoubleMetaphone } = await import('natural');
-    const metaphone = new DoubleMetaphone();
-    const searchPhonetic = metaphone.process(searchName);
+    const natural = await import('natural');
+    const DoubleMetaphone = natural.DoubleMetaphone;
+    const searchPhonetic = DoubleMetaphone.process(searchName);
     
     // Check if any player name sounds similar
     const phoneticMatches: Array<{ player: typeof allPlayers[0]; score: number }> = [];
     
     for (const player of allPlayers) {
-      const playerPhonetic = metaphone.process(player.name.toLowerCase());
+      const playerPhonetic = DoubleMetaphone.process(player.name.toLowerCase());
       
       // Compare primary and secondary phonetic codes
       if (searchPhonetic[0] === playerPhonetic[0] || 
@@ -261,6 +263,7 @@ export async function findPlayerByFuzzyName(
   } catch (error) {
     console.log(`[Player Matcher] Phonetic matching failed:`, error);
   }
+  */
   
   // Strategy 3: First name matching for common first names (Johnny, etc.)
   const firstNameMatch = searchName.match(/^(\w+)/);

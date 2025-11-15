@@ -208,3 +208,19 @@ export const failedSearches = mysqlTable("failed_searches", {
 
 export type FailedSearch = typeof failedSearches.$inferSelect;
 export type InsertFailedSearch = typeof failedSearches.$inferInsert;
+
+/**
+ * Team Assignments table - maps Discord user IDs to teams
+ */
+export const teamAssignments = mysqlTable("team_assignments", {
+  id: int("id").autoincrement().primaryKey(),
+  discordUserId: varchar("discordUserId", { length: 64 }).notNull().unique(), // Discord user ID
+  discordUsername: varchar("discordUsername", { length: 255 }), // Discord username (for reference, can change)
+  team: varchar("team", { length: 100 }).notNull(), // Team assigned to this user
+  assignedAt: timestamp("assignedAt").defaultNow().notNull(), // When assignment was made
+  assignedBy: int("assignedBy"), // Reference to users.id who made the assignment
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type TeamAssignment = typeof teamAssignments.$inferSelect;
+export type InsertTeamAssignment = typeof teamAssignments.$inferInsert;

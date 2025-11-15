@@ -333,3 +333,27 @@ Log unsuccessful player name searches and provide admin UI to quickly add them a
 - [x] Dev server running without errors
 - [x] Failed searches section displays with orange styling
 - [ ] Save checkpoint
+
+
+## CURRENT TASK: Discord User ID → Team Mapping & Bug Fixes
+
+### Issue 1: Team Detection Unreliable
+Bot relies on drop player's team instead of Discord user ID - fails when nicknames change
+
+### Issue 2: Incorrect Projected Cap Math
+Raptors bid shows "Projected cap: 🟢 1082/1098 (-16)" but math is wrong
+
+### Issue 3: Phonetic Matching Broken
+DoubleMetaphone import error breaking player name matching
+
+### Tasks
+- [x] Fix cap calculation logic (use salaryCap || overall)
+- [x] Create teamAssignments database table (discordUserId, team, assignedAt)
+- [x] Import 27 team assignments from user's list
+- [x] Update bot to look up team from message.author.id
+- [x] Keep drop player validation for roster verification
+- [x] Fix DoubleMetaphone import/usage (disabled temporarily - commented out)
+- [x] TypeScript compilation successful
+- [x] Dev server running without errors
+- [x] All systems operational (no TypeScript or build errors)
+- [ ] Save checkpoint

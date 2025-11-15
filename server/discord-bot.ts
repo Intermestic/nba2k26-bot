@@ -137,8 +137,8 @@ async function isTeamOverCap(team: string): Promise<boolean> {
   // Get all players on team
   const teamPlayers = await db.select().from(players).where(eq(players.team, team));
   
-  // Calculate total cap
-  const totalCap = teamPlayers.reduce((sum, p) => sum + (p.salaryCap || 0), 0);
+  // Calculate total cap (use salaryCap if set, otherwise use overall)
+  const totalCap = teamPlayers.reduce((sum, p) => sum + (p.salaryCap || p.overall), 0);
   
   return totalCap > 1098;
 }
@@ -416,8 +416,45 @@ async function handleBidMessage(message: Message) {
     return;
   }
   
-  // Determine team from drop player first (needed for team-aware matching)
-  let team = 'Unknown';
+  // Determine team from Discord user ID (reliable, doesn't depend on nicknames)
+  const db = await getDb();
+  if (!db) {
+    console.log(`[FA Bids] Database not available`);
+    await message.reply(`❌ **Database Error**: Unable to process bid at this time.`);
+    return;
+  }
+  
+  const { teamAssignments } = await import('../drizzle/schema');
+  const teamAssignment = await db.select().from(teamAssignments).where(eq(teamAssignments.discordUserId, message.author.id));
+  
+  if (teamAssignment.length === 0) {
+    console.log(`[FA Bids] User ${message.author.username} (${message.author.id}) has no team assignment`);
+    await message.reply(
+      `❌ **No Team Assignment**: Your Discord account is not assigned to a team.\n\n` +
+      `💡 **Contact an admin** to get assigned to a team.`
+    );
+    return;
+  }
+  
+  let team = teamAssignment[0].team;
+  console.log(`[FA Bids] User ${message.author.username} is assigned to team: ${team}`);
+  
+  // Validate team name using team-validator
+  const { validateTeamName } = await import('./team-validator');
+  const validatedTeam = validateTeamName(team);
+  
+  if (!validatedTeam) {
+    console.log(`[FA Bids] Invalid team in assignment: ${team}`);
+    await message.reply(
+      `❌ **Invalid Team Assignment**: Your team "${team}" is not valid.\n\n` +
+      `💡 **Contact an admin** to fix your team assignment.`
+    );
+    return;
+  }
+  
+  team = validatedTeam;
+  
+  // Validate drop player if specified (verify they're on the user's team)
   let dropPlayerValidated: { id: string; name: string; team: string; overall: number } | null = null;
   
   if (parsedBid.dropPlayer) {
@@ -618,23 +655,19 @@ async function handleBidMessage(message: Message) {
   confirmationMessage += `**Your bid**: $${parsedBid.bidAmount}\n`;
   confirmationMessage += `**Team**: ${team}\n`;
   
-  // Calculate and show cap projection
-  const db = await getDb();
+  // Calculate and show cap projection (db already initialized above)
   if (db) {
     const teamPlayers = await db
       .select()
       .from(players)
       .where(eq(players.team, team));
     
-    const currentTotal = teamPlayers.reduce((sum, p) => sum + p.overall, 0);
+    const currentTotal = teamPlayers.reduce((sum, p) => sum + (p.salaryCap || p.overall), 0);
     let projectedTotal = currentTotal;
     
-    // Subtract dropped player if present
-    if (parsedBid.dropPlayer) {
-      const droppedPlayer = await findPlayerByFuzzyName(parsedBid.dropPlayer);
-      if (droppedPlayer && droppedPlayer.team === team) {
-        projectedTotal -= droppedPlayer.overall;
-      }
+    // Subtract dropped player if present (use already-validated drop player)
+    if (dropPlayerValidated) {
+      projectedTotal -= (dropPlayerValidated.overall); // Use overall for cap calculation
     }
     
     // Add signed player
