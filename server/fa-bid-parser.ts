@@ -218,6 +218,28 @@ export async function recordBid(
   if (!db) return { success: false };
   
   try {
+    // Check for duplicate drop player - cancel older bid if team is cutting same player again
+    if (dropPlayer) {
+      const duplicateDropBids = await db
+        .select()
+        .from(faBids)
+        .where(
+          and(
+            eq(faBids.team, team),
+            eq(faBids.dropPlayer, dropPlayer),
+            eq(faBids.windowId, windowId)
+          )
+        );
+      
+      if (duplicateDropBids.length > 0) {
+        // Cancel all older bids with same drop player
+        for (const oldBid of duplicateDropBids) {
+          await db.delete(faBids).where(eq(faBids.id, oldBid.id));
+          console.log(`[FA Bids] Cancelled duplicate drop bid: ${oldBid.bidderName} (${team}) was cutting ${dropPlayer} for ${oldBid.playerName}, now cutting for ${playerName}`);
+        }
+      }
+    }
+    
     // Check if this user already has a bid on this player in this window
     const existingBid = await db
       .select()

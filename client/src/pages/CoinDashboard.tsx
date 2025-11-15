@@ -7,7 +7,132 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Coins, History, Plus, Minus } from "lucide-react";
+import { Coins, History, Plus, Minus, RotateCcw, UserMinus, UserPlus, DollarSign } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+
+function TransactionActions({ transactionId, onSuccess }: { transactionId: number; onSuccess: () => void }) {
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertAction, setAlertAction] = useState<{
+    title: string;
+    description: string;
+    action: () => Promise<any>;
+  } | null>(null);
+
+  const sendAllBackMutation = trpc.coins.sendAllBack.useMutation();
+  const removeSignedMutation = trpc.coins.removeSignedPlayer.useMutation();
+  const resignCutMutation = trpc.coins.resignCutPlayer.useMutation();
+  const returnCoinsMutation = trpc.coins.returnCoinsOnly.useMutation();
+
+  const handleAction = (title: string, description: string, action: () => Promise<any>) => {
+    setAlertAction({ title, description, action });
+    setAlertOpen(true);
+  };
+
+  const executeAction = async () => {
+    if (!alertAction) return;
+
+    try {
+      await alertAction.action();
+      toast.success("Action completed successfully");
+      onSuccess();
+    } catch (error: any) {
+      toast.error(error.message || "Action failed");
+    } finally {
+      setAlertOpen(false);
+      setAlertAction(null);
+    }
+  };
+
+  return (
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline" size="sm">
+            Actions
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem
+            onClick={() =>
+              handleAction(
+                "Send All Back",
+                "This will return the signed player to Free Agents, restore the cut player to the team, and refund the coins.",
+                () => sendAllBackMutation.mutateAsync({ transactionId })
+              )
+            }
+          >
+            <RotateCcw className="mr-2 h-4 w-4" />
+            Send All Back
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() =>
+              handleAction(
+                "Remove Signed Player",
+                "This will return the signed player to Free Agents and refund the coins. The cut player will remain removed.",
+                () => removeSignedMutation.mutateAsync({ transactionId })
+              )
+            }
+          >
+            <UserMinus className="mr-2 h-4 w-4" />
+            Remove Signed Player
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() =>
+              handleAction(
+                "Re-sign Cut Player",
+                "This will restore the cut player to the team. The signed player and coins will remain unchanged.",
+                () => resignCutMutation.mutateAsync({ transactionId })
+              )
+            }
+          >
+            <UserPlus className="mr-2 h-4 w-4" />
+            Re-sign Cut Player
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() =>
+              handleAction(
+                "Return Coins Only",
+                "This will refund the coins without making any roster changes.",
+                () => returnCoinsMutation.mutateAsync({ transactionId })
+              )
+            }
+          >
+            <DollarSign className="mr-2 h-4 w-4" />
+            Return Coins Only
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <AlertDialog open={alertOpen} onOpenChange={setAlertOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{alertAction?.title}</AlertDialogTitle>
+            <AlertDialogDescription>{alertAction?.description}</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={executeAction}>Confirm</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
+  );
+}
 
 export default function CoinDashboard() {
   const { data: user } = trpc.auth.me.useQuery();
@@ -147,6 +272,7 @@ export default function CoinDashboard() {
                 <TableHead className="text-right">Bid</TableHead>
                 <TableHead className="text-right">Remaining</TableHead>
                 <TableHead>Admin</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -162,6 +288,9 @@ export default function CoinDashboard() {
                   <TableCell className="text-right">{tx.bidAmount}</TableCell>
                   <TableCell className="text-right">{tx.coinsRemaining}</TableCell>
                   <TableCell className="text-sm text-muted-foreground">{tx.adminUser}</TableCell>
+                  <TableCell className="text-right">
+                    <TransactionActions transactionId={tx.id} onSuccess={refetchCoins} />
+                  </TableCell>
                 </TableRow>
               ))}
               {(!transactions || transactions.length === 0) && (

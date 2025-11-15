@@ -208,3 +208,22 @@ Add two-step confirmation for batch processing: preview → confirm → execute
 - [x] If not found, use fuzzy matching to suggest similar names (top 3)
 - [x] Reply with suggestions and tips if validation fails
 - [x] Require drop player to be specified (no more "Unknown" team)
+
+
+## CURRENT TASK: FA Transaction Management
+
+### Transaction Reversal (FA Coins Page)
+- [x] Add "Send All Back" button - full rollback (return signed player to FA, restore cut player, refund coins)
+- [x] Add "Remove Signed Player" button - remove signed player only, refund coins, keep cut player removed
+- [x] Add "Re-sign Cut Player" button - restore cut player to roster, keep signed player
+- [x] Add "Return Coins" button - manual coin refund without roster changes
+- [x] Create backend API endpoints for each reversal action
+- [x] Add confirmation dialogs before executing reversals
+- [x] Add dropdown menu with all 4 actions in transaction table
+
+### Duplicate Drop Player Detection
+- [x] When new bid is submitted, check if team has existing active bid with same drop player
+- [x] If duplicate found, automatically cancel older bid (delete from faBids)
+- [x] Log cancellation to console
+- [x] Keep most recent bid as active
+- [x] Prevents impossible scenarios (e.g., cutting Jaden Hardy twice)

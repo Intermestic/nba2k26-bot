@@ -104,5 +104,204 @@ export const coinsRouter = router({
       });
 
       return { success: true, newBalance: newCoins };
+    }),
+
+  /**
+   * Send all back - full rollback (return signed player to FA, restore cut player, refund coins)
+   */
+  sendAllBack: protectedProcedure
+    .input(z.object({
+      transactionId: z.number()
+    }))
+    .mutation(async ({ ctx, input }: { ctx: any; input: { transactionId: number } }) => {
+      if (ctx.user.role !== "admin") {
+        throw new Error("Admin access required");
+      }
+
+      const db = await getDb();
+      if (!db) throw new Error("Database connection failed");
+
+      // Get transaction details
+      const { players } = await import('../../drizzle/schema');
+      const txs = await db.select().from(faTransactions).where(eq(faTransactions.id, input.transactionId));
+      
+      if (txs.length === 0) {
+        throw new Error("Transaction not found");
+      }
+
+      const tx = txs[0];
+
+      // 1. Return signed player to Free Agents
+      const signedPlayers = await db.select().from(players).where(eq(players.name, tx.signPlayer));
+      if (signedPlayers.length > 0) {
+        await db.update(players).set({ team: 'Free Agents' }).where(eq(players.id, signedPlayers[0].id));
+      }
+
+      // 2. Restore cut player to team
+      const cutPlayers = await db.select().from(players).where(eq(players.name, tx.dropPlayer));
+      if (cutPlayers.length > 0) {
+        await db.update(players).set({ team: tx.team }).where(eq(players.id, cutPlayers[0].id));
+      }
+
+      // 3. Refund coins
+      const teamCoinsData = await db.select().from(teamCoins).where(eq(teamCoins.team, tx.team));
+      if (teamCoinsData.length > 0) {
+        const newBalance = teamCoinsData[0].coinsRemaining + tx.bidAmount;
+        await db.update(teamCoins).set({ coinsRemaining: newBalance }).where(eq(teamCoins.team, tx.team));
+      }
+
+      // 4. Log reversal
+      await db.insert(faTransactions).values({
+        team: tx.team,
+        dropPlayer: tx.signPlayer,
+        signPlayer: tx.dropPlayer,
+        signPlayerOvr: 0,
+        bidAmount: -tx.bidAmount,
+        adminUser: ctx.user.name || ctx.user.openId,
+        coinsRemaining: teamCoinsData[0].coinsRemaining + tx.bidAmount
+      });
+
+      return { success: true, message: "Transaction fully reversed" };
+    }),
+
+  /**
+   * Remove signed player only (keep cut player removed, refund coins)
+   */
+  removeSignedPlayer: protectedProcedure
+    .input(z.object({
+      transactionId: z.number()
+    }))
+    .mutation(async ({ ctx, input }: { ctx: any; input: { transactionId: number } }) => {
+      if (ctx.user.role !== "admin") {
+        throw new Error("Admin access required");
+      }
+
+      const db = await getDb();
+      if (!db) throw new Error("Database connection failed");
+
+      const { players } = await import('../../drizzle/schema');
+      const txs = await db.select().from(faTransactions).where(eq(faTransactions.id, input.transactionId));
+      
+      if (txs.length === 0) {
+        throw new Error("Transaction not found");
+      }
+
+      const tx = txs[0];
+
+      // 1. Return signed player to Free Agents
+      const signedPlayers = await db.select().from(players).where(eq(players.name, tx.signPlayer));
+      if (signedPlayers.length > 0) {
+        await db.update(players).set({ team: 'Free Agents' }).where(eq(players.id, signedPlayers[0].id));
+      }
+
+      // 2. Refund coins
+      const teamCoinsData = await db.select().from(teamCoins).where(eq(teamCoins.team, tx.team));
+      if (teamCoinsData.length > 0) {
+        const newBalance = teamCoinsData[0].coinsRemaining + tx.bidAmount;
+        await db.update(teamCoins).set({ coinsRemaining: newBalance }).where(eq(teamCoins.team, tx.team));
+      }
+
+      // 3. Log action
+      await db.insert(faTransactions).values({
+        team: tx.team,
+        dropPlayer: "N/A",
+        signPlayer: `Removed: ${tx.signPlayer}`,
+        signPlayerOvr: 0,
+        bidAmount: -tx.bidAmount,
+        adminUser: ctx.user.name || ctx.user.openId,
+        coinsRemaining: teamCoinsData[0].coinsRemaining + tx.bidAmount
+      });
+
+      return { success: true, message: "Signed player removed, coins refunded" };
+    }),
+
+  /**
+   * Re-sign cut player only (restore cut player, keep signed player)
+   */
+  resignCutPlayer: protectedProcedure
+    .input(z.object({
+      transactionId: z.number()
+    }))
+    .mutation(async ({ ctx, input }: { ctx: any; input: { transactionId: number } }) => {
+      if (ctx.user.role !== "admin") {
+        throw new Error("Admin access required");
+      }
+
+      const db = await getDb();
+      if (!db) throw new Error("Database connection failed");
+
+      const { players } = await import('../../drizzle/schema');
+      const txs = await db.select().from(faTransactions).where(eq(faTransactions.id, input.transactionId));
+      
+      if (txs.length === 0) {
+        throw new Error("Transaction not found");
+      }
+
+      const tx = txs[0];
+
+      // Restore cut player to team
+      const cutPlayers = await db.select().from(players).where(eq(players.name, tx.dropPlayer));
+      if (cutPlayers.length > 0) {
+        await db.update(players).set({ team: tx.team }).where(eq(players.id, cutPlayers[0].id));
+      }
+
+      // Log action (no coin change)
+      const teamCoinsData = await db.select().from(teamCoins).where(eq(teamCoins.team, tx.team));
+      await db.insert(faTransactions).values({
+        team: tx.team,
+        dropPlayer: "N/A",
+        signPlayer: `Restored: ${tx.dropPlayer}`,
+        signPlayerOvr: 0,
+        bidAmount: 0,
+        adminUser: ctx.user.name || ctx.user.openId,
+        coinsRemaining: teamCoinsData[0]?.coinsRemaining || 0
+      });
+
+      return { success: true, message: "Cut player restored to roster" };
+    }),
+
+  /**
+   * Return coins only (manual coin refund without roster changes)
+   */
+  returnCoinsOnly: protectedProcedure
+    .input(z.object({
+      transactionId: z.number()
+    }))
+    .mutation(async ({ ctx, input }: { ctx: any; input: { transactionId: number } }) => {
+      if (ctx.user.role !== "admin") {
+        throw new Error("Admin access required");
+      }
+
+      const db = await getDb();
+      if (!db) throw new Error("Database connection failed");
+
+      const txs = await db.select().from(faTransactions).where(eq(faTransactions.id, input.transactionId));
+      
+      if (txs.length === 0) {
+        throw new Error("Transaction not found");
+      }
+
+      const tx = txs[0];
+
+      // Refund coins only
+      const teamCoinsData = await db.select().from(teamCoins).where(eq(teamCoins.team, tx.team));
+      if (teamCoinsData.length > 0) {
+        const newBalance = teamCoinsData[0].coinsRemaining + tx.bidAmount;
+        await db.update(teamCoins).set({ coinsRemaining: newBalance }).where(eq(teamCoins.team, tx.team));
+      }
+
+      // Log action
+      await db.insert(faTransactions).values({
+        team: tx.team,
+        dropPlayer: "N/A",
+        signPlayer: "Coin Refund Only",
+        signPlayerOvr: 0,
+        bidAmount: -tx.bidAmount,
+        adminUser: ctx.user.name || ctx.user.openId,
+        coinsRemaining: teamCoinsData[0].coinsRemaining + tx.bidAmount
+      });
+
+      return { success: true, message: "Coins refunded" };
     })
+
 });
