@@ -11,10 +11,33 @@ const OVERCAP_ROLE_NAME = 'overcap';
  * This maps team names to Discord user IDs
  */
 const TEAM_TO_DISCORD_USER: Record<string, string> = {
-  // TODO: Populate this mapping from database or config
-  // Example:
-  // '76ers': '123456789012345678',
-  // 'Bucks': '234567890123456789',
+  'Bucks': '294659496247033857',
+  'Bulls': '265682789326782465',
+  'Suns': '853835596123471883',
+  'Cavaliers': '560133436501917726',
+  'Celtics': '1090784134416322663',
+  'Hawks': '651615180198903822',
+  'Heat': '140276921685639168',
+  'Hornets': '1188260635734196274',
+  'Jazz': '836929618404704316',
+  'Pelicans': '609904178994872330',
+  'Kings': '675490663348961310',
+  'Knicks': '1351006163780501676',
+  'Lakers': '764123341816201217',
+  'Magic': '1061989363879264326',
+  'Mavs': '716585837969801317',
+  'Nuggets': '459172069641289739',
+  'Nets': '992170912554168440',
+  'Raptors': '683053192359182376',
+  'Rockets': '786625418396172289',
+  'Timberwolves': '1210078581892583445',
+  'Trailblazers': '668299741158834237',
+  'Spurs': '327661967537864706',
+  'Warriors': '1032395638433919017',
+  'Wizards': '679275787664359435',
+  'Pistons': '1068828938765348904',
+  '76ers': '1311886696907931728'
+  // Note: Grizzlies and Pacers have no assigned users
 };
 
 /**

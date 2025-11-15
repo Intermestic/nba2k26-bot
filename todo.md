@@ -845,6 +845,6 @@
 - [x] Remove "overcap" role from users on teams at/under 1098 OVR
 - [x] Trigger role updates after roster changes (trades, adds, drops)
 - [x] Add manual command to force role update check (!updateovercap)
-- [ ] Configure team-to-Discord-user mapping (requires user input)
+- [x] Configure team-to-Discord-user mapping (26 teams configured)
 - [x] Test role assignment and removal (ready after mapping configured)
 - [ ] Save checkpoint

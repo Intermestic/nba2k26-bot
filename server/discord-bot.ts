@@ -563,7 +563,8 @@ export async function startDiscordBot(token: string) {
       GatewayIntentBits.Guilds,
       GatewayIntentBits.GuildMessages,
       GatewayIntentBits.MessageContent,
-      GatewayIntentBits.GuildMessageReactions
+      GatewayIntentBits.GuildMessageReactions,
+      GatewayIntentBits.GuildMembers
     ],
     partials: [
       Partials.Message,
