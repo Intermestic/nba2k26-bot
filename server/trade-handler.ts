@@ -21,8 +21,23 @@ export async function handleTradeMessage(message: Message) {
   if (!messageText || messageText.trim().length === 0) {
     if (message.embeds && message.embeds.length > 0) {
       const embed = message.embeds[0];
-      messageText = embed.description || embed.title || '';
-      console.log('[Trade Handler] Extracted text from embed:', messageText);
+      
+      // Try to extract from embed fields first (bot-posted trades)
+      if (embed.fields && embed.fields.length >= 2) {
+        console.log('[Trade Handler] Found embed fields:', embed.fields.length);
+        
+        // Look for fields with team names like "Knicks receives" or "Hornets receives"
+        const field1 = embed.fields[0];
+        const field2 = embed.fields[1];
+        
+        // Reconstruct trade text from fields
+        messageText = `${field1.name}\n${field1.value}\n\n${field2.name}\n${field2.value}`;
+        console.log('[Trade Handler] Extracted text from embed fields:', messageText);
+      } else {
+        // Fallback to description/title
+        messageText = embed.description || embed.title || '';
+        console.log('[Trade Handler] Extracted text from embed description/title:', messageText);
+      }
     }
   }
   

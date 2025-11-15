@@ -419,4 +419,20 @@ Bot removes both its own reaction AND the user's first reaction - should only re
 - [x] Add better logging to identify which users lack role (shows user ID and emoji)
 - [x] TypeScript compilation successful
 - [x] Dev server running without errors
+- [x] Save checkpoint
+
+
+## CURRENT TASK: Fix Trade Parser Embed Extraction
+
+### Issue
+Trade confirmation shows empty player lists because parser fails to extract names from Discord embed fields
+
+### Tasks
+- [x] Investigate trade-parser.ts embed extraction logic
+- [x] Found issue: trade-handler.ts line 24 only reads embed.description/title, not embed.fields
+- [x] Discord embeds store player lists in fields array (name/value pairs)
+- [x] Fix parser to read embed fields and extract player lists
+- [x] Updated trade-handler.ts to check embed.fields first
+- [x] Reconstructs trade text from field name/value pairs
+- [x] TypeScript compilation successful
 - [ ] Save checkpoint
