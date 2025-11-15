@@ -835,3 +835,16 @@
 - [x] Remove ✅ emoji reaction (replaced by confirmation message)
 - [x] Test all confirmation scenarios (ready for user testing)
 - [ ] Save checkpoint
+
+## Overcap Role Management
+
+- [x] Query roster data from database to calculate team OVR totals
+- [x] Check each team against 1098 OVR cap
+- [x] Find or create "overcap" Discord role
+- [x] Assign "overcap" role to users on teams over 1098 OVR
+- [x] Remove "overcap" role from users on teams at/under 1098 OVR
+- [x] Trigger role updates after roster changes (trades, adds, drops)
+- [x] Add manual command to force role update check (!updateovercap)
+- [ ] Configure team-to-Discord-user mapping (requires user input)
+- [x] Test role assignment and removal (ready after mapping configured)
+- [ ] Save checkpoint

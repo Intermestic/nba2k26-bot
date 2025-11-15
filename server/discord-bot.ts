@@ -241,6 +241,17 @@ async function processTransactions(transactions: ParsedTransaction[], adminUser:
     }
   }
   
+  // Update overcap roles after roster changes
+  if (success > 0 && client) {
+    try {
+      const { updateOvercapRoles } = await import('./overcap-roles');
+      await updateOvercapRoles(client);
+      console.log('[Discord Bot] Overcap roles updated after transactions');
+    } catch (error) {
+      console.error('[Discord Bot] Failed to update overcap roles:', error);
+    }
+  }
+  
   return { success, failed, details, coinSummary };
 }
 
@@ -575,11 +586,35 @@ export async function startDiscordBot(token: string) {
     } catch (error) {
       console.error('[FA Status] Failed to start hourly updates:', error);
     }
+    
+    // Initial overcap role check
+    try {
+      const { updateOvercapRoles, loadTeamUserMapping } = await import('./overcap-roles');
+      await loadTeamUserMapping();
+      await updateOvercapRoles(client!);
+      console.log('[Overcap Roles] Initial role check complete');
+    } catch (error) {
+      console.error('[Overcap Roles] Failed initial role check:', error);
+    }
   });
   
-  // Monitor all messages for FA bids
+  // Monitor all messages for FA bids and commands
   client.on('messageCreate', async (message) => {
     if (message.channelId === FA_CHANNEL_ID) {
+      // Check for manual overcap role update command
+      if (message.content.trim().toLowerCase() === '!updateovercap') {
+        try {
+          await message.reply('🔄 Updating overcap roles...');
+          const { updateOvercapRoles } = await import('./overcap-roles');
+          await updateOvercapRoles(client!);
+          await message.reply('✅ Overcap roles updated successfully!');
+        } catch (error) {
+          console.error('[Overcap Roles] Manual update failed:', error);
+          await message.reply('❌ Failed to update overcap roles. Check logs for details.');
+        }
+        return;
+      }
+      
       await handleBidMessage(message);
     }
   });
