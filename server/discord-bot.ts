@@ -609,6 +609,14 @@ export async function startDiscordBot(token: string) {
     } catch (error) {
       console.error('[Overcap Roles] Failed initial role check:', error);
     }
+    
+    // Initialize trade voting system
+    try {
+      const { initializeTradeVoting } = await import('./trade-voting');
+      initializeTradeVoting(client!);
+    } catch (error) {
+      console.error('[Trade Voting] Failed to initialize:', error);
+    }
   });
   
   // Monitor all messages for FA bids and commands
@@ -629,6 +637,14 @@ export async function startDiscordBot(token: string) {
       }
       
       await handleBidMessage(message);
+    } else if (message.channelId === TRADE_CHANNEL_ID) {
+      // Handle new trade embeds for voting
+      try {
+        const { handleNewTradeEmbed } = await import('./trade-voting');
+        await handleNewTradeEmbed(message);
+      } catch (error) {
+        console.error('[Trade Voting] Error handling new trade embed:', error);
+      }
     }
   });
   
@@ -637,7 +653,18 @@ export async function startDiscordBot(token: string) {
     // Ignore bot reactions
     if (user.bot) return;
     
-    // Only process lightning bolt emoji
+    // Handle trade voting (👍 👎)
+    if (reaction.emoji.name === '👍' || reaction.emoji.name === '👎') {
+      try {
+        const { handleReactionAdd } = await import('./trade-voting');
+        await handleReactionAdd(reaction, user);
+      } catch (error) {
+        console.error('[Trade Voting] Error handling reaction add:', error);
+      }
+      return;
+    }
+    
+    // Only process lightning bolt emoji for manual processing
     if (reaction.emoji.name !== '⚡') return;
     
     // Fetch the full message if it's partial
@@ -650,6 +677,22 @@ export async function startDiscordBot(token: string) {
     } else if (reaction.message.channelId === TRADE_CHANNEL_ID) {
       console.log(`[Discord Bot] ⚡ reaction detected in Trade channel by ${user.tag}`);
       await handleTradeMessage(message);
+    }
+  });
+  
+  // Handle reaction removal for trade voting
+  client.on('messageReactionRemove', async (reaction, user) => {
+    // Ignore bot reactions
+    if (user.bot) return;
+    
+    // Handle trade voting (👍 👎)
+    if (reaction.emoji.name === '👍' || reaction.emoji.name === '👎') {
+      try {
+        const { handleReactionRemove } = await import('./trade-voting');
+        await handleReactionRemove(reaction, user);
+      } catch (error) {
+        console.error('[Trade Voting] Error handling reaction remove:', error);
+      }
     }
   });
   
