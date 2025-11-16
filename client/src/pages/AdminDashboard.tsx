@@ -40,9 +40,39 @@ interface DashboardStats {
   totalAssignments: number;
 }
 
+/**
+ * Get badge color based on stat type and value
+ * Red = urgent/critical, Yellow = warning, Green = normal
+ */
+function getBadgeColor(statKey: keyof DashboardStats, value: number): string {
+  switch (statKey) {
+    case 'capViolations':
+      // Any cap violations are critical
+      return value > 0 ? 'bg-red-600 text-white hover:bg-red-700' : 'bg-slate-700 text-white';
+    
+    case 'pendingUpgrades':
+      // Many pending upgrades need attention
+      if (value > 10) return 'bg-red-600 text-white hover:bg-red-700';
+      if (value > 5) return 'bg-yellow-600 text-white hover:bg-yellow-700';
+      return 'bg-green-600 text-white hover:bg-green-700';
+    
+    case 'activeBids':
+      // High activity is good (green)
+      if (value > 20) return 'bg-green-600 text-white hover:bg-green-700';
+      if (value > 10) return 'bg-yellow-600 text-white hover:bg-yellow-700';
+      return 'bg-slate-700 text-white';
+    
+    default:
+      // Default neutral color for informational stats
+      return 'bg-slate-700 text-white';
+  }
+}
+
 export default function AdminDashboard() {
   const { user } = useAuth();
-  const { data: stats, isLoading } = trpc.dashboard.getStats.useQuery();
+  const { data: stats, isLoading } = trpc.dashboard.getStats.useQuery(undefined, {
+    refetchInterval: 60000, // Auto-refresh every 60 seconds
+  });
 
   const tools: AdminTool[] = [
     // Team Management Section
@@ -287,7 +317,10 @@ export default function AdminDashboard() {
                                     <Skeleton className="h-6 w-8 rounded-full" />
                                   ) : (
                                     stats && stats[tool.statKey] > 0 && (
-                                      <Badge variant="secondary" className="bg-slate-700 text-white">
+                                      <Badge 
+                                        variant="secondary" 
+                                        className={getBadgeColor(tool.statKey, stats[tool.statKey])}
+                                      >
                                         {stats[tool.statKey]}
                                       </Badge>
                                     )

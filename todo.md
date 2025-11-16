@@ -1760,4 +1760,14 @@ Upgrade messages posted in team channels (e.g., team-wizards) are not being proc
 - [x] Update AdminDashboard to fetch and display stats
 - [x] Show badge with count on relevant cards (e.g., "5" on Upgrade Requests)
 - [x] Use loading skeleton while fetching
+- [x] Save checkpoint
+
+
+## CURRENT TASK: Color-Coded Badges & Auto-Refresh
+
+### Requirements
+- [x] Add color-coded badge variants (red for urgent, yellow for warning, green for normal)
+- [x] Define urgency thresholds: cap violations (any > 0 = red), pending upgrades (> 10 = red, > 5 = yellow)
+- [x] Implement auto-refresh polling (every 60 seconds)
+- [x] Use TRPC refetchInterval option for automatic polling
 - [ ] Save checkpoint
