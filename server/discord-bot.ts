@@ -859,6 +859,19 @@ export async function startDiscordBot(token: string) {
     }
   });
   
+  // Monitor role changes for logging
+  client.on('guildMemberUpdate', async (oldMember, newMember) => {
+    try {
+      // Ensure we have full member objects (not partial)
+      if (!oldMember.roles || !newMember.roles) return;
+      
+      const { logTeamRoleChange } = await import('./team-role-logger');
+      await logTeamRoleChange(oldMember, newMember);
+    } catch (error) {
+      console.error('[Team Role Logger] Error logging role change:', error);
+    }
+  });
+  
   // Monitor message updates for team role sync
   client.on('messageUpdate', async (oldMessage, newMessage) => {
     try {

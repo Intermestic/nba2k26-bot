@@ -1057,4 +1057,24 @@ TRPC returning HTML instead of JSON - server likely crashing during Discord bot 
 - [x] TypeScript compilation successful (no errors)
 - [x] Test server stability (homepage loads without errors)
 - [x] Verify TRPC endpoints working correctly
+- [x] Save checkpoint
+
+
+## CURRENT TASK: Team Role Change Logging
+
+### Goal
+Log when users gain or lose team roles to track team membership changes over time
+
+### Tasks
+- [x] Create database table for role change logs (teamRoleChanges)
+- [x] Define schema: userId, username, teamName, action (added/removed), timestamp
+- [x] Run database migration (pnpm db:push)
+- [x] Listen to Discord guildMemberUpdate event
+- [x] Detect role changes by comparing old and new roles
+- [x] Filter for team roles only (28 teams)
+- [x] Log changes to database (teamRoleChanges table)
+- [x] Add console logging for visibility (✅ for added, ❌ for removed)
+- [x] Handle PartialGuildMember types
+- [x] TypeScript compilation successful (no errors)
+- [x] Verify server running and monitoring role changes
 - [ ] Save checkpoint

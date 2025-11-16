@@ -260,3 +260,18 @@ export const matchLogs = mysqlTable("match_logs", {
 
 export type MatchLog = typeof matchLogs.$inferSelect;
 export type InsertMatchLog = typeof matchLogs.$inferInsert;
+
+/**
+ * Team Role Changes table - tracks Discord role additions/removals
+ */
+export const teamRoleChanges = mysqlTable("team_role_changes", {
+  id: int("id").autoincrement().primaryKey(),
+  discordUserId: varchar("discordUserId", { length: 64 }).notNull(), // Discord user ID
+  discordUsername: varchar("discordUsername", { length: 255 }).notNull(), // Discord username at time of change
+  teamName: varchar("teamName", { length: 100 }).notNull(), // Team role that changed
+  action: mysqlEnum("action", ["added", "removed"]).notNull(), // Role added or removed
+  changedAt: timestamp("changedAt").defaultNow().notNull(), // When change occurred
+});
+
+export type TeamRoleChange = typeof teamRoleChanges.$inferSelect;
+export type InsertTeamRoleChange = typeof teamRoleChanges.$inferInsert;
