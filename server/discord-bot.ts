@@ -891,6 +891,14 @@ export async function startDiscordBot(token: string) {
   
   // Monitor message updates for team role sync
   client.on('messageUpdate', async (oldMessage, newMessage) => {
+    // Log message edit
+    try {
+      const { logMessageEdit } = await import('./logging-system');
+      await logMessageEdit(oldMessage, newMessage);
+    } catch (error) {
+      console.error('[Logging] Error logging message edit:', error);
+    }
+    
     try {
       // Check if this is the team message being updated
       if (newMessage.id === '1130885281508233316' && newMessage.channelId === '860782989280935966') {
@@ -913,8 +921,38 @@ export async function startDiscordBot(token: string) {
     }
   });
   
+  // Monitor message deletes for logging
+  client.on('messageDelete', async (message) => {
+    try {
+      const { logMessageDelete } = await import('./logging-system');
+      await logMessageDelete(message);
+    } catch (error) {
+      console.error('[Logging] Error logging message delete:', error);
+    }
+  });
+  
   // Monitor all messages for FA bids and commands
   client.on('messageCreate', async (message) => {
+    // Ignore bot messages
+    if (message.author.bot) return;
+    
+    // Track message for analytics
+    try {
+      const { trackMessage } = await import('./analytics-tracker');
+      await trackMessage(message);
+    } catch (error) {
+      console.error('[Analytics] Error tracking message:', error);
+    }
+    
+    // Try to handle as custom command first (works in all channels)
+    try {
+      const { handleCustomCommand } = await import('./custom-command-handler');
+      const handled = await handleCustomCommand(message);
+      if (handled) return; // Command was handled, don't process further
+    } catch (error) {
+      console.error('[Custom Commands] Error handling command:', error);
+    }
+    
     if (message.channelId === FA_CHANNEL_ID) {
       // Check for update bid command: !update bid <player> <amount>
       if (message.content.trim().toLowerCase().startsWith('!update bid')) {
@@ -1118,6 +1156,14 @@ export async function startDiscordBot(token: string) {
   client.on('messageReactionAdd', async (reaction, user) => {
     // Ignore bot reactions
     if (user.bot) return;
+    
+    // Handle reaction roles first
+    try {
+      const { handleReactionAdd: handleReactionRoleAdd } = await import('./reaction-role-handler');
+      await handleReactionRoleAdd(reaction, user);
+    } catch (error) {
+      console.error('[Reaction Roles] Error handling reaction add:', error);
+    }
     
     // Handle trade voting (👍 👎)
     if (reaction.emoji.name === '👍' || reaction.emoji.name === '👎') {
@@ -1656,6 +1702,14 @@ export async function startDiscordBot(token: string) {
     // Ignore bot reactions
     if (user.bot) return;
     
+    // Handle reaction roles first
+    try {
+      const { handleReactionRemove: handleReactionRoleRemove } = await import('./reaction-role-handler');
+      await handleReactionRoleRemove(reaction, user);
+    } catch (error) {
+      console.error('[Reaction Roles] Error handling reaction remove:', error);
+    }
+    
     // Handle trade voting (👍 👎)
     if (reaction.emoji.name === '👍' || reaction.emoji.name === '👎') {
       try {
@@ -1667,7 +1721,67 @@ export async function startDiscordBot(token: string) {
     }
   });
   
+  // Handle member join (welcome messages)
+  client.on('guildMemberAdd', async (member) => {
+    // Log member join
+    try {
+      const { logMemberJoin } = await import('./logging-system');
+      await logMemberJoin(member);
+    } catch (error) {
+      console.error('[Logging] Error logging member join:', error);
+    }
+    
+    // Send welcome message
+    try {
+      const { handleMemberJoin } = await import('./welcome-goodbye-handler');
+      await handleMemberJoin(member);
+    } catch (error) {
+      console.error('[Welcome] Error handling member join:', error);
+    }
+  });
+  
+  // Handle voice state updates (analytics)
+  client.on('voiceStateUpdate', async (oldState, newState) => {
+    try {
+      const { trackVoiceState } = await import('./analytics-tracker');
+      await trackVoiceState(oldState, newState);
+    } catch (error) {
+      console.error('[Analytics] Error tracking voice state:', error);
+    }
+  });
+  
+  // Handle member leave (goodbye messages)
+  client.on('guildMemberRemove', async (member) => {
+    // Log member leave
+    try {
+      const { logMemberLeave } = await import('./logging-system');
+      await logMemberLeave(member);
+    } catch (error) {
+      console.error('[Logging] Error logging member leave:', error);
+    }
+    
+    // Send goodbye message
+    try {
+      // Fetch full member if partial
+      const fullMember = member.partial ? await member.fetch() : member;
+      const { handleMemberLeave } = await import('./welcome-goodbye-handler');
+      await handleMemberLeave(fullMember);
+    } catch (error) {
+      console.error('[Goodbye] Error handling member leave:', error);
+    }
+  });
+  
   await client.login(token);
+  
+  // Set up periodic cooldown cleanup (every 5 minutes)
+  setInterval(async () => {
+    try {
+      const { cleanupExpiredCooldowns } = await import('./custom-command-handler');
+      await cleanupExpiredCooldowns();
+    } catch (error) {
+      console.error('[Custom Commands] Error cleaning up cooldowns:', error);
+    }
+  }, 5 * 60 * 1000); // 5 minutes
 }
 
 /**

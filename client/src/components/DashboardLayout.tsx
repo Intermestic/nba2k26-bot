@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/sidebar";
 import { APP_LOGO, APP_TITLE, getLoginUrl } from "@/const";
 import { useIsMobile } from "@/hooks/useMobile";
-import { LayoutDashboard, LogOut, PanelLeft, Users, DollarSign, AlertTriangle, History, FileText, Shield, Activity } from "lucide-react";
+import { LayoutDashboard, LogOut, PanelLeft, Users, DollarSign, AlertTriangle, History, FileText, Shield, Activity, Terminal, UserPlus, Smile, BarChart3, ScrollText } from "lucide-react";
 import { CSSProperties, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { DashboardLayoutSkeleton } from './DashboardLayoutSkeleton';
@@ -37,11 +37,12 @@ const menuSections = [
     ],
   },
   {
-    label: "Team Management",
+    label: "System",
     items: [
-      { icon: Shield, label: "Team Assignments", path: "/admin/teams" },
-      { icon: DollarSign, label: "FA Coins", path: "/admin/coins" },
-      { icon: AlertTriangle, label: "Cap Compliance", path: "/admin/cap-compliance" },
+      { icon: Users, label: "Player Aliases", path: "/admin/player-aliases" },
+      { icon: Shield, label: "Bot Management", path: "/admin/bot-management" },
+      { icon: Activity, label: "Match Logs", path: "/admin/match-logs" },
+      { icon: ScrollText, label: "Server Logs", path: "/admin/logs" },
     ],
   },
   {
@@ -50,6 +51,15 @@ const menuSections = [
       { icon: Activity, label: "FA Monitor", path: "/admin/fa-monitor" },
       { icon: History, label: "FA History", path: "/admin/fa-history" },
       { icon: FileText, label: "Transactions", path: "/admin/transactions" },
+    ],
+  },
+  {
+    label: "Bot Features",
+    items: [
+      { icon: Terminal, label: "Custom Commands", path: "/admin/custom-commands" },
+      { icon: UserPlus, label: "Welcome & Goodbye", path: "/admin/welcome-goodbye" },
+      { icon: Smile, label: "Reaction Roles", path: "/admin/reaction-roles" },
+      { icon: BarChart3, label: "Analytics", path: "/admin/analytics" },
     ],
   },
   {

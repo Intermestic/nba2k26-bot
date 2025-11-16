@@ -364,3 +364,199 @@ export const scheduledMessageLogs = mysqlTable("scheduled_message_logs", {
 
 export type ScheduledMessageLog = typeof scheduledMessageLogs.$inferSelect;
 export type InsertScheduledMessageLog = typeof scheduledMessageLogs.$inferInsert;
+
+/**
+ * Custom Commands table - user-created bot commands
+ */
+export const customCommands = mysqlTable("custom_commands", {
+  id: int("id").autoincrement().primaryKey(),
+  trigger: varchar("trigger", { length: 100 }).notNull().unique(), // Command trigger (e.g., "!rules")
+  response: text("response").notNull(), // Command response (supports variables and Discord markdown)
+  responseType: mysqlEnum("responseType", ["text", "embed", "reaction"]).default("text").notNull(),
+  embedTitle: varchar("embedTitle", { length: 256 }), // Embed title (if responseType is embed)
+  embedColor: varchar("embedColor", { length: 7 }), // Hex color for embed (e.g., "#FF5733")
+  cooldownSeconds: int("cooldownSeconds").default(0).notNull(), // Cooldown in seconds
+  cooldownType: mysqlEnum("cooldownType", ["user", "channel", "global"]).default("user").notNull(),
+  permissionLevel: mysqlEnum("permissionLevel", ["everyone", "role", "admin"]).default("everyone").notNull(),
+  requiredRoleIds: text("requiredRoleIds"), // JSON array of required role IDs
+  enabled: boolean("enabled").default(true).notNull(),
+  useCount: int("useCount").default(0).notNull(), // Track how many times command has been used
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  createdBy: int("createdBy"), // Reference to users.id
+});
+
+export type CustomCommand = typeof customCommands.$inferSelect;
+export type InsertCustomCommand = typeof customCommands.$inferInsert;
+
+/**
+ * Command Cooldowns table - tracks active cooldowns
+ */
+export const commandCooldowns = mysqlTable("command_cooldowns", {
+  id: int("id").autoincrement().primaryKey(),
+  commandId: int("commandId").notNull(), // Reference to customCommands.id
+  userId: varchar("userId", { length: 64 }), // Discord user ID (null for global cooldowns)
+  channelId: varchar("channelId", { length: 64 }), // Discord channel ID (null for user/global cooldowns)
+  expiresAt: timestamp("expiresAt").notNull(), // When cooldown expires
+});
+
+export type CommandCooldown = typeof commandCooldowns.$inferSelect;
+export type InsertCommandCooldown = typeof commandCooldowns.$inferInsert;
+
+/**
+ * Welcome Configuration table - server welcome settings
+ */
+export const welcomeConfig = mysqlTable("welcome_config", {
+  id: int("id").autoincrement().primaryKey(),
+  enabled: boolean("enabled").default(true).notNull(),
+  channelId: varchar("channelId", { length: 64 }).notNull(), // Channel to send welcome messages
+  messageType: mysqlEnum("messageType", ["text", "embed", "card"]).default("embed").notNull(),
+  messageContent: text("messageContent").notNull(), // Message content with variables
+  embedTitle: varchar("embedTitle", { length: 256 }), // Embed title
+  embedColor: varchar("embedColor", { length: 7 }).default("#5865F2"), // Discord blurple
+  embedImageUrl: text("embedImageUrl"), // Optional image URL
+  dmEnabled: boolean("dmEnabled").default(false).notNull(), // Send DM to new member
+  dmContent: text("dmContent"), // DM message content
+  autoRoleIds: text("autoRoleIds"), // JSON array of role IDs to assign on join
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  updatedBy: int("updatedBy"), // Reference to users.id
+});
+
+export type WelcomeConfig = typeof welcomeConfig.$inferSelect;
+export type InsertWelcomeConfig = typeof welcomeConfig.$inferInsert;
+
+/**
+ * Goodbye Configuration table - server goodbye settings
+ */
+export const goodbyeConfig = mysqlTable("goodbye_config", {
+  id: int("id").autoincrement().primaryKey(),
+  enabled: boolean("enabled").default(false).notNull(),
+  channelId: varchar("channelId", { length: 64 }).notNull(), // Channel to send goodbye messages
+  messageType: mysqlEnum("messageType", ["text", "embed"]).default("text").notNull(),
+  messageContent: text("messageContent").notNull(), // Message content with variables
+  embedTitle: varchar("embedTitle", { length: 256 }), // Embed title
+  embedColor: varchar("embedColor", { length: 7 }).default("#ED4245"), // Discord red
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  updatedBy: int("updatedBy"), // Reference to users.id
+});
+
+export type GoodbyeConfig = typeof goodbyeConfig.$inferSelect;
+export type InsertGoodbyeConfig = typeof goodbyeConfig.$inferInsert;
+
+/**
+ * Reaction Role Panels table - message panels with reaction roles
+ */
+export const reactionRolePanels = mysqlTable("reaction_role_panels", {
+  id: int("id").autoincrement().primaryKey(),
+  name: varchar("name", { length: 100 }).notNull(), // Panel name for admin reference
+  channelId: varchar("channelId", { length: 64 }).notNull(), // Channel where panel is posted
+  messageId: varchar("messageId", { length: 64 }), // Discord message ID (null until posted)
+  title: varchar("title", { length: 256 }).notNull(), // Panel title
+  description: text("description"), // Panel description
+  embedColor: varchar("embedColor", { length: 7 }).default("#5865F2"),
+  maxRoles: int("maxRoles").default(0).notNull(), // Max roles per user (0 = unlimited)
+  enabled: boolean("enabled").default(true).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  createdBy: int("createdBy"), // Reference to users.id
+});
+
+export type ReactionRolePanel = typeof reactionRolePanels.$inferSelect;
+export type InsertReactionRolePanel = typeof reactionRolePanels.$inferInsert;
+
+/**
+ * Reaction Roles table - individual emoji-to-role mappings
+ */
+export const reactionRoles = mysqlTable("reaction_roles", {
+  id: int("id").autoincrement().primaryKey(),
+  panelId: int("panelId").notNull(), // Reference to reactionRolePanels.id
+  emoji: varchar("emoji", { length: 100 }).notNull(), // Emoji (unicode or custom emoji ID)
+  roleId: varchar("roleId", { length: 64 }).notNull(), // Discord role ID
+  roleName: varchar("roleName", { length: 100 }).notNull(), // Role name for display
+  description: varchar("description", { length: 256 }), // Optional role description
+  requiredRoleIds: text("requiredRoleIds"), // JSON array of required role IDs to get this role
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type ReactionRole = typeof reactionRoles.$inferSelect;
+export type InsertReactionRole = typeof reactionRoles.$inferInsert;
+
+/**
+ * User Activity table - tracks message and voice activity
+ */
+export const userActivity = mysqlTable("user_activity", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: varchar("userId", { length: 64 }).notNull(), // Discord user ID
+  username: varchar("username", { length: 255 }).notNull(), // Discord username (denormalized)
+  messageCount: int("messageCount").default(0).notNull(), // Total messages sent
+  voiceMinutes: int("voiceMinutes").default(0).notNull(), // Total voice time in minutes
+  lastActive: timestamp("lastActive").defaultNow().notNull(), // Last activity timestamp
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type UserActivity = typeof userActivity.$inferSelect;
+export type InsertUserActivity = typeof userActivity.$inferInsert;
+
+/**
+ * Message Stats table - detailed message statistics per user/channel
+ */
+export const messageStats = mysqlTable("message_stats", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: varchar("userId", { length: 64 }).notNull(), // Discord user ID
+  channelId: varchar("channelId", { length: 64 }).notNull(), // Discord channel ID
+  channelName: varchar("channelName", { length: 100 }), // Channel name (denormalized)
+  messageCount: int("messageCount").default(1).notNull(), // Messages in this channel
+  date: varchar("date", { length: 10 }).notNull(), // Date in YYYY-MM-DD format
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type MessageStats = typeof messageStats.$inferSelect;
+export type InsertMessageStats = typeof messageStats.$inferInsert;
+
+/**
+ * Voice Stats table - voice channel activity tracking
+ */
+export const voiceStats = mysqlTable("voice_stats", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: varchar("userId", { length: 64 }).notNull(), // Discord user ID
+  channelId: varchar("channelId", { length: 64 }).notNull(), // Voice channel ID
+  channelName: varchar("channelName", { length: 100 }), // Channel name (denormalized)
+  joinedAt: timestamp("joinedAt").notNull(), // When user joined voice
+  leftAt: timestamp("leftAt"), // When user left voice (null if still in)
+  durationMinutes: int("durationMinutes"), // Duration in minutes (calculated on leave)
+  date: varchar("date", { length: 10 }).notNull(), // Date in YYYY-MM-DD format
+});
+
+export type VoiceStats = typeof voiceStats.$inferSelect;
+export type InsertVoiceStats = typeof voiceStats.$inferInsert;
+
+/**
+ * Server Logs table - comprehensive event logging
+ */
+export const serverLogs = mysqlTable("server_logs", {
+  id: int("id").autoincrement().primaryKey(),
+  eventType: mysqlEnum("eventType", [
+    "message_edit", "message_delete",
+    "member_join", "member_leave",
+    "role_add", "role_remove",
+    "kick", "ban", "timeout",
+    "channel_create", "channel_delete", "channel_update",
+    "nickname_change", "username_change"
+  ]).notNull(),
+  userId: varchar("userId", { length: 64 }), // Discord user ID (null for channel events)
+  username: varchar("username", { length: 255 }), // Username at time of event
+  channelId: varchar("channelId", { length: 64 }), // Relevant channel ID
+  channelName: varchar("channelName", { length: 100 }), // Channel name
+  moderatorId: varchar("moderatorId", { length: 64 }), // Moderator who performed action
+  moderatorName: varchar("moderatorName", { length: 255 }), // Moderator name
+  oldValue: text("oldValue"), // Previous value (e.g., old message content, old nickname)
+  newValue: text("newValue"), // New value (e.g., edited message, new nickname)
+  reason: text("reason"), // Reason for mod action
+  metadata: text("metadata"), // JSON object for additional data
+  timestamp: timestamp("timestamp").defaultNow().notNull(),
+});
+
+export type ServerLog = typeof serverLogs.$inferSelect;
+export type InsertServerLog = typeof serverLogs.$inferInsert;

@@ -18,6 +18,11 @@ import BotManagement from "./pages/admin/BotManagement";
 import MatchLogs from "./pages/MatchLogs";
 import FAWindowSummary from "./pages/FAWindowSummary";
 import FAMonitor from "./pages/FAMonitor";
+import CustomCommands from "./pages/CustomCommands";
+import WelcomeGoodbye from "./pages/WelcomeGoodbye";
+import ReactionRoles from "./pages/ReactionRoles";
+import Analytics from "./pages/Analytics";
+import ServerLogs from "./pages/ServerLogs";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -37,6 +42,11 @@ function Router() {
       <Route path={"/admin/match-logs"} component={MatchLogs} />
       <Route path={"/admin/fa-summary"} component={FAWindowSummary} />
       <Route path={"/admin/fa-monitor"} component={FAMonitor} />
+      <Route path={"/admin/custom-commands"} component={CustomCommands} />
+      <Route path={"/admin/welcome-goodbye"} component={WelcomeGoodbye} />
+      <Route path={"/admin/reaction-roles"} component={ReactionRoles} />
+      <Route path={"/admin/analytics"} component={Analytics} />
+      <Route path={"/admin/logs"} component={ServerLogs} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />

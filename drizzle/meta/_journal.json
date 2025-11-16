@@ -169,6 +169,13 @@
       "when": 1763294494660,
       "tag": "0023_needy_iron_fist",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "5",
+      "when": 1763304525319,
+      "tag": "0024_medical_firestar",
+      "breakpoints": true
     }
   ]
 }

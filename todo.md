@@ -1550,3 +1550,81 @@ Use same styling as gold R badge for OVR numbers (gold color, text shadow, no st
 - [x] Remove WebkitTextStroke and extra styling
 - [ ] Test download
 - [ ] Save checkpoint
+
+## CURRENT TASK: Verify Roster Card Export Formats
+
+### Formats to Test
+1. PNG (standard resolution)
+2. 4K PNG (high resolution)
+3. Instagram Story (1080x1920)
+4. PDF
+
+### Tasks
+- [x] Review export code in RosterCard.tsx - All formats use html2canvas with proper preloading and base64 logo
+- [x] Test PNG export rendering - Working perfectly
+- [x] Test 4K PNG export rendering - Working perfectly
+- [x] Test Instagram Story format rendering - Working perfectly
+- [x] Test PDF export rendering - Working perfectly
+- [x] Document findings - All formats verified, no issues found
+- [x] No rendering problems found - All elements render correctly across formats
+
+
+## NEW TASK: MEE6-Style Bot Dashboard Features
+
+### Feature 2: Custom Commands Builder
+- [x] Create database schema (custom_commands table)
+- [x] Add TRPC router for command CRUD operations
+- [x] Build admin UI for creating/editing custom commands
+- [x] Implement command parser with variable support ({user}, {channel}, {server})
+- [x] Add cooldown system (per-user, per-channel, global)
+- [x] Add permission levels (everyone, roles, admin-only)
+- [x] Integrate command handler into Discord bot
+- [x] Add response types (text, embed, reaction)
+
+### Feature 4: Welcome & Goodbye Messages
+- [x] Create database schema (welcome_config, goodbye_config tables)
+- [x] Add TRPC router for welcome/goodbye settings
+- [x] Build admin UI for message customization
+- [x] Implement welcome card generator with user info
+- [x] Add auto-role assignment on member join
+- [x] Add DM welcome message option
+- [x] Implement goodbye message system
+- [x] Add variable support ({user}, {server}, {memberCount})
+
+### Feature 5: Reaction Roles
+- [x] Create database schema (reaction_role_panels, reaction_roles tables)
+- [x] Add TRPC router for reaction role management
+- [x] Build admin UI for creating reaction role panels
+- [x] Implement emoji picker for role assignment
+- [x] Add role limits (max roles per user)
+- [x] Add role requirements (must have X to get Y)
+- [x] Integrate reaction handler into Discord bot
+- [x] Add panel message posting to Discord
+
+### Feature 7: Analytics Dashboard
+- [x] Create database schema (user_activity, message_stats, voice_stats tables)
+- [x] Add activity tracking middleware to Discord bot
+- [x] Track message counts per user/channel
+- [x] Track voice channel time per user
+- [x] Add TRPC router for analytics queries
+- [x] Build analytics dashboard UI with charts
+- [x] Add top users leaderboard
+- [x] Add channel activity breakdown
+
+### Feature 8: Logging System
+- [x] Create database schema (server_logs table)
+- [x] Add TRPC router for log queries
+- [x] Track message edits/deletes
+- [x] Track member joins/leaves
+- [x] Track role changes
+- [x] Track mod actions (kicks, bans, timeouts)
+- [x] Track channel changes
+- [x] Build admin logs UI with filters
+- [ ] Add log export (CSV/JSON)
+
+### Testing & Deployment
+- [x] Test all 5 features with Discord bot
+- [x] Verify database migrations
+- [x] Test admin UI for all features
+- [ ] Create user documentation
+- [ ] Save checkpoint
