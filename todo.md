@@ -1770,4 +1770,19 @@ Upgrade messages posted in team channels (e.g., team-wizards) are not being proc
 - [x] Define urgency thresholds: cap violations (any > 0 = red), pending upgrades (> 10 = red, > 5 = yellow)
 - [x] Implement auto-refresh polling (every 60 seconds)
 - [x] Use TRPC refetchInterval option for automatic polling
+- [x] Save checkpoint
+
+
+## CURRENT TASK: Add Approve/Reject Buttons to Upgrade Summary
+
+### Issue
+Upgrade summary page shows pending upgrades but has no approve/reject buttons
+
+### Requirements
+- [x] Find UpgradeSummary component
+- [x] Add approve and reject buttons to each pending upgrade
+- [x] Create TRPC mutations for approve/reject actions (already existed)
+- [x] Update upgrade status in database (already existed)
+- [x] Show success/error messages (already existed)
+- [x] Refresh list after action (already existed)
 - [ ] Save checkpoint
