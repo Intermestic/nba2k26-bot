@@ -513,15 +513,15 @@ export default function Home() {
                       size="lg"
                       className="w-full h-full rounded-none group-hover:scale-110 transition-transform duration-300"
                     />
-                    {/* Rookie Badge */}
-                    {player.isRookie === 1 && (
-                      <div className="absolute top-2 left-10 bg-gradient-to-br from-yellow-400 to-orange-500 text-black px-2 py-1 rounded text-xs font-bold shadow-lg">
-                        ROOKIE
-                      </div>
-                    )}
                     <div className="absolute top-2 right-2 bg-black/70 text-white px-2 py-1 rounded text-sm font-bold">
                       {player.overall}
                     </div>
+                    {/* Rookie Badge */}
+                    {player.isRookie === 1 && (
+                      <div className="absolute top-14 right-2 bg-gradient-to-br from-yellow-400 to-orange-500 text-black px-2 py-1 rounded text-xs font-bold shadow-lg">
+                        R
+                      </div>
+                    )}
                     <div className="absolute bottom-2 left-2">
                       <TeamLogoBadge team={player.team} size="xl" />
                     </div>

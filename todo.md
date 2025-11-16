@@ -1373,4 +1373,18 @@ Build comprehensive admin dashboard for managing Discord bot configuration, comm
 - [x] Test rookie badges appear on home page (gold badges showing correctly)
 - [x] Verify all 59 rookies show badges (visible in player grid)
 - [x] Test on different screen sizes (responsive grid layout)
-- [ ] Save final checkpoint
+- [x] Save final checkpoint
+
+
+## CURRENT TASK: Reposition Rookie Badge
+
+### Issue
+- Rookie badges on home page positioned at top-left are obscured by checkboxes
+- User requested: move to top-right below overall rating as gold "R" badge
+
+### Tasks
+- [x] Update Home.tsx to change badge from "ROOKIE" to "R"
+- [x] Position badge at top-right, below overall rating (top-14 right-2)
+- [x] Keep gold gradient styling
+- [x] Test visibility on multiple rookies
+- [ ] Save checkpoint
