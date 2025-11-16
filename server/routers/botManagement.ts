@@ -319,6 +319,8 @@ export const botManagementRouter = router({
       const db = await getDb();
       if (!db) throw new Error("Database not available");
       
+      let messageId: number;
+      
       if (input.id) {
         // Update existing
         await db
@@ -331,7 +333,7 @@ export const botManagementRouter = router({
             enabled: input.enabled ?? true,
           })
           .where(eq(scheduledMessages.id, input.id));
-        return { success: true, id: input.id };
+        messageId = input.id;
       } else {
         // Create new
         const result: any = await db.insert(scheduledMessages).values({
@@ -342,8 +344,22 @@ export const botManagementRouter = router({
           enabled: input.enabled ?? true,
           createdBy: ctx.user.id,
         });
-        return { success: true, id: result.insertId || 0 };
+        messageId = result.insertId || 0;
       }
+      
+      // Reload scheduler for this message
+      try {
+        const { getDiscordClient } = await import('../discord-bot.js');
+        const { reloadScheduledMessage } = await import('../scheduled-message-handler.js');
+        const client = getDiscordClient();
+        if (client) {
+          await reloadScheduledMessage(messageId, client);
+        }
+      } catch (error) {
+        console.error('[Bot Management] Failed to reload scheduled message:', error);
+      }
+      
+      return { success: true, id: messageId };
     }),
 
   /**

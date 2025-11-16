@@ -849,6 +849,15 @@ export async function startDiscordBot(token: string) {
       console.error('[Team Roles] Failed to initialize:', error);
     }
     
+    // Initialize scheduled messages
+    try {
+      const { initializeScheduledMessages } = await import('./scheduled-message-handler.js');
+      await initializeScheduledMessages(client!);
+      console.log('[Scheduled Messages] Initialization complete');
+    } catch (error) {
+      console.error('[Scheduled Messages] Failed to initialize:', error);
+    }
+    
     // Initialize team channel manager (after roles are synced)
     try {
       const { syncTeamChannels } = await import('./team-channel-manager');

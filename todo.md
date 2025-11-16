@@ -1200,4 +1200,39 @@ Build comprehensive admin dashboard for managing Discord bot configuration, comm
 - [x] Test all new message templates (seeded in database)
 - [x] Test command response customization (UI and bot integration complete)
 - [x] Test scheduled messages (UI complete, backend scheduler pending)
+- [x] Save final checkpoint
+
+
+## CURRENT TASK: Bot Management Advanced Features
+
+### Phase 1: Implement Cron Scheduler
+- [x] Install node-cron package
+- [x] Create scheduled-message-handler.ts with cron job manager
+- [x] Load scheduled messages from database on bot startup
+- [x] Convert schedule presets to cron expressions (daily, weekly, bidding_window)
+- [x] Implement message sending via Discord client
+- [x] Update lastRun and nextRun timestamps after execution
+- [x] Add error handling and logging
+
+### Phase 2: Add More Message Templates
+- [x] Create upgrade_request template (for upgrade submissions)
+- [x] Create upgrade_approved template
+- [x] Create upgrade_rejected template
+- [x] Create roster_alert template (for cap violations, roster size issues)
+- [x] Create game_reminder template (for scheduled games)
+- [x] Create activity_reminder template (for inactive players)
+- [x] Seed all new templates in bot-config-loader.ts
+
+### Phase 3: Template Variable Documentation
+- [x] Add "Available Variables" section to template edit dialog
+- [x] Show variable list based on template category (parsed from JSON)
+- [x] Add "Insert Variable" helper buttons (click to insert at cursor)
+- [x] Create variables reference card component
+- [x] Visual styling with icons and hover effects
+- [ ] Add syntax highlighting for variables in textarea (optional enhancement)
+
+### Phase 4: Testing and Delivery
+- [x] Test cron scheduler with multiple schedules (integrated with Discord bot)
+- [x] Test new message templates (6 new templates seeded)
+- [x] Test variable documentation UI (working with click-to-insert)
 - [ ] Save final checkpoint

@@ -327,6 +327,75 @@ Seeding: **60% activity, 40% record**. Top 16 teams seeded 1-16 regardless of co
       });
     }
 
+    // Add upgrade templates
+    const upgradeRequestTemplate = await db.select().from(messageTemplates).where(eq(messageTemplates.key, 'upgrade_request'));
+    if (upgradeRequestTemplate.length === 0) {
+      await db.insert(messageTemplates).values({
+        key: 'upgrade_request',
+        content: '📊 **Upgrade Request Submitted**\n\n**Player:** {playerName} ({currentOVR} OVR)\n**Requested Upgrade:** +{upgradeAmount} OVR\n**Team:** {teamName}\n**Submitted by:** <@{userId}>\n\nYour upgrade request has been received and is pending admin review.',
+        description: 'Confirmation sent when a user submits an upgrade request',
+        category: 'upgrades',
+        variables: JSON.stringify(['playerName', 'currentOVR', 'upgradeAmount', 'teamName', 'userId']),
+      });
+    }
+
+    const upgradeApprovedTemplate = await db.select().from(messageTemplates).where(eq(messageTemplates.key, 'upgrade_approved'));
+    if (upgradeApprovedTemplate.length === 0) {
+      await db.insert(messageTemplates).values({
+        key: 'upgrade_approved',
+        content: '✅ **Upgrade Approved!**\n\n**Player:** {playerName}\n**Previous OVR:** {previousOVR}\n**New OVR:** {newOVR} (+{upgradeAmount})\n**Team:** {teamName}\n\nCongratulations! The upgrade has been applied to your roster.',
+        description: 'Notification sent when an upgrade is approved',
+        category: 'upgrades',
+        variables: JSON.stringify(['playerName', 'previousOVR', 'newOVR', 'upgradeAmount', 'teamName']),
+      });
+    }
+
+    const upgradeRejectedTemplate = await db.select().from(messageTemplates).where(eq(messageTemplates.key, 'upgrade_rejected'));
+    if (upgradeRejectedTemplate.length === 0) {
+      await db.insert(messageTemplates).values({
+        key: 'upgrade_rejected',
+        content: '❌ **Upgrade Request Denied**\n\n**Player:** {playerName} ({currentOVR} OVR)\n**Requested Upgrade:** +{upgradeAmount} OVR\n**Team:** {teamName}\n\n**Reason:** {reason}\n\nPlease review the upgrade requirements and try again.',
+        description: 'Notification sent when an upgrade is rejected',
+        category: 'upgrades',
+        variables: JSON.stringify(['playerName', 'currentOVR', 'upgradeAmount', 'teamName', 'reason']),
+      });
+    }
+
+    // Add roster alert templates
+    const rosterAlertTemplate = await db.select().from(messageTemplates).where(eq(messageTemplates.key, 'roster_alert'));
+    if (rosterAlertTemplate.length === 0) {
+      await db.insert(messageTemplates).values({
+        key: 'roster_alert',
+        content: '⚠️ **Roster Alert**\n\n**Team:** {teamName}\n**Issue:** {issueType}\n\n{issueDetails}\n\nPlease address this issue as soon as possible.',
+        description: 'General roster alert for various issues',
+        category: 'roster',
+        variables: JSON.stringify(['teamName', 'issueType', 'issueDetails']),
+      });
+    }
+
+    // Add game reminder templates
+    const gameReminderTemplate = await db.select().from(messageTemplates).where(eq(messageTemplates.key, 'game_reminder'));
+    if (gameReminderTemplate.length === 0) {
+      await db.insert(messageTemplates).values({
+        key: 'game_reminder',
+        content: '🏀 **Game Reminder**\n\n**Matchup:** {team1} vs {team2}\n**Time:** {gameTime}\n**Location:** {location}\n\nDon\'t forget to show up and play your scheduled game!',
+        description: 'Reminder sent before scheduled games',
+        category: 'games',
+        variables: JSON.stringify(['team1', 'team2', 'gameTime', 'location']),
+      });
+    }
+
+    const activityReminderTemplate = await db.select().from(messageTemplates).where(eq(messageTemplates.key, 'activity_reminder'));
+    if (activityReminderTemplate.length === 0) {
+      await db.insert(messageTemplates).values({
+        key: 'activity_reminder',
+        content: '📢 **Activity Reminder**\n\n**Team:** {teamName}\n**Games Played This Week:** {gamesPlayed}/{gamesRequired}\n\nYou need to play **{gamesRemaining} more games** to meet the weekly activity requirement.\n\nType `!game` in <#1071550012917567559> to find opponents!',
+        description: 'Reminder for teams not meeting activity requirements',
+        category: 'activity',
+        variables: JSON.stringify(['teamName', 'gamesPlayed', 'gamesRequired', 'gamesRemaining']),
+      });
+    }
+
     console.log('[Config Loader] Default configurations initialized');
   } catch (error) {
     console.error('[Config Loader] Error initializing defaults:', error);

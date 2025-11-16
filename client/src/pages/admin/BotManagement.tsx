@@ -24,7 +24,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Pencil, Trash2, Plus, Save, X, Clock, Send, Calendar } from "lucide-react";
+import { Pencil, Trash2, Plus, Save, X, Clock, Send, Calendar, Info, Copy } from "lucide-react";
 
 export default function BotManagement() {
   const [activeTab, setActiveTab] = useState("config");
@@ -513,6 +513,57 @@ function TemplateDialog({ open, templateKey, onClose }: { open: boolean; templat
               rows={15}
               className="font-mono text-sm"
             />
+            
+            {/* Variable Documentation */}
+            {formData.variables && (() => {
+              try {
+                const vars = JSON.parse(formData.variables);
+                if (Array.isArray(vars) && vars.length > 0) {
+                  return (
+                    <div className="mt-2 p-3 bg-muted rounded-md">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Info className="w-4 h-4 text-muted-foreground" />
+                        <span className="text-sm font-medium">Available Variables</span>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {vars.map((variable: string) => (
+                          <button
+                            key={variable}
+                            type="button"
+                            onClick={() => {
+                              const textarea = document.getElementById('content') as HTMLTextAreaElement;
+                              if (textarea) {
+                                const start = textarea.selectionStart;
+                                const end = textarea.selectionEnd;
+                                const text = textarea.value;
+                                const before = text.substring(0, start);
+                                const after = text.substring(end, text.length);
+                                const newText = before + `{${variable}}` + after;
+                                setFormData({ ...formData, content: newText });
+                                setTimeout(() => {
+                                  textarea.focus();
+                                  textarea.setSelectionRange(start + variable.length + 2, start + variable.length + 2);
+                                }, 0);
+                              }
+                            }}
+                            className="inline-flex items-center gap-1 px-2 py-1 text-xs font-mono bg-background border rounded hover:bg-accent transition-colors"
+                          >
+                            <Copy className="w-3 h-3" />
+                            {`{${variable}}`}
+                          </button>
+                        ))}
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-2">
+                        Click a variable to insert it at cursor position
+                      </p>
+                    </div>
+                  );
+                }
+              } catch (e) {
+                // Invalid JSON, don't show anything
+              }
+              return null;
+            })()}
           </div>
           <div>
             <Label htmlFor="category">Category</Label>
