@@ -7,6 +7,7 @@ import { players, teamCoins, faTransactions } from '../drizzle/schema';
 import { eq, sql } from 'drizzle-orm';
 import { extract } from 'fuzzball';
 import { handleTradeMessage } from './trade-handler';
+import { getConfig } from './bot-config-loader.js';
 
 const FA_CHANNEL_ID = '1095812920056762510';
 const TRADE_CHANNEL_ID = '1087524540634116116';
@@ -1257,7 +1258,7 @@ export async function startDiscordBot(token: string) {
         const previewEmbed = new EmbedBuilder()
           .setColor(0xffaa00)
           .setTitle('⚠️ Batch Processing Preview')
-          .setDescription(`**${preview.bidCount} transactions ready to process**\n\nReact with ✅ within 30 seconds to confirm and execute.`);
+          .setDescription(`**${preview.bidCount} transactions ready to process**\n\nReact with ${await getConfig('confirm_emoji', '✅')} within ${Math.round(parseInt(await getConfig('fa_confirm_timeout', '30000') || '30000') / 1000)} seconds to confirm and execute.`);
         
         if (preview.teamSummaries && preview.teamSummaries.length > 0) {
           const summaryList = preview.teamSummaries.slice(0, 20).join('\n');
@@ -1274,9 +1275,11 @@ export async function startDiscordBot(token: string) {
         const previewMessage = await message.reply({ embeds: [previewEmbed] });
         await previewMessage.react('✅');
         
-        // Wait for confirmation
-        const filter = (r: any, u: any) => r.emoji.name === '✅' && u.id === user.id;
-        const collector = previewMessage.createReactionCollector({ filter, time: 30000, max: 1 });
+        // Wait for confirmation (use database config)
+        const confirmTimeout = parseInt(await getConfig('fa_confirm_timeout', '30000') || '30000');
+        const confirmEmoji = await getConfig('confirm_emoji', '✅') || '✅';
+        const filter = (r: any, u: any) => r.emoji.name === confirmEmoji && u.id === user.id;
+        const collector = previewMessage.createReactionCollector({ filter, time: confirmTimeout, max: 1 });
         
         collector.on('collect', async () => {
           console.log('[Discord Bot] Batch processing confirmed, executing...');
@@ -1321,10 +1324,12 @@ export async function startDiscordBot(token: string) {
             if (result.failCount && result.failCount > 0) {
               await completionMessage.react('🔄');
               
-              // Set up retry collector
+              // Set up retry collector (use database config)
+              const retryTimeout = parseInt(await getConfig('retry_timeout', '300000') || '300000');
+              const retryEmoji = await getConfig('retry_emoji', '🔄') || '🔄';
               const retryCollector = completionMessage.createReactionCollector({
-                filter: (r, u) => r.emoji.name === '🔄' && !u.bot,
-                time: 300000, // 5 minutes
+                filter: (r, u) => r.emoji.name === retryEmoji && !u.bot,
+                time: retryTimeout,
                 max: 1
               });
               
@@ -1398,7 +1403,7 @@ export async function startDiscordBot(token: string) {
                 const retryPreviewEmbed = new EmbedBuilder2()
                   .setColor(0xffaa00)
                   .setTitle('⚠️ Retry Batch Processing Preview')
-                  .setDescription(`**${retryPreview.bidCount} failed transactions ready to retry**\n\nReact with ✅ within 30 seconds to confirm and execute.`);
+                  .setDescription(`**${retryPreview.bidCount} failed transactions ready to retry**\n\nReact with ${await getConfig('confirm_emoji', '✅')} within ${Math.round(parseInt(await getConfig('fa_confirm_timeout', '30000') || '30000') / 1000)} seconds to confirm and execute.`);
                 
                 if (retryPreview.teamSummaries && retryPreview.teamSummaries.length > 0) {
                   const summaryList = retryPreview.teamSummaries.slice(0, 20).join('\n');
@@ -1415,10 +1420,12 @@ export async function startDiscordBot(token: string) {
                 const retryPreviewMessage = await completionMessage.reply({ embeds: [retryPreviewEmbed] });
                 await retryPreviewMessage.react('✅');
                 
-                // Set up confirmation collector for retry
+                // Set up confirmation collector for retry (use database config)
+                const retryConfirmTimeout = parseInt(await getConfig('fa_confirm_timeout', '30000') || '30000');
+                const retryConfirmEmoji = await getConfig('confirm_emoji', '✅') || '✅';
                 const retryConfirmCollector = retryPreviewMessage.createReactionCollector({
-                  filter: (r, u) => r.emoji.name === '✅' && !u.bot,
-                  time: 30000,
+                  filter: (r, u) => r.emoji.name === retryConfirmEmoji && !u.bot,
+                  time: retryConfirmTimeout,
                   max: 1
                 });
                 

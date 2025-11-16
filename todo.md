@@ -1271,4 +1271,36 @@ Build comprehensive admin dashboard for managing Discord bot configuration, comm
 - [x] Test category filtering (tabs working)
 - [x] Test delivery logging and analytics (backend integrated)
 - [x] Test retry logic (3 attempts with 5s delay)
+- [x] Save final checkpoint
+
+
+## CURRENT TASK: Fix Template Edit Bug & Add Webhook Automation Settings
+
+### Phase 1: Fix Template Edit Dialog Bug
+- [x] Investigate why template edit dialog loads wrong template (formData persisted across opens)
+- [x] Fix template key/ID passing in TemplatesTab (added useEffect to reset)
+- [x] Verify template dialog receives correct key (loads fresh data on open)
+- [x] Test editing multiple different templates (working now)
+
+### Phase 2: Add Webhook Automation Configuration
+- [x] Add webhook automation settings to bot_config table
+- [x] Create settings for FA confirmation timeout (default 30s)
+- [x] Create settings for reaction emoji configuration (confirm, trigger, retry)
+- [x] Add webhook URL configuration
+- [x] Add retry timeout configuration (default 5 mins)
+- [ ] Add TRPC endpoints for webhook settings (will do in Phase 3)
+
+### Phase 3: Create Webhook Settings UI
+- [x] Add "Automation" tab to bot management dashboard
+- [x] Create webhook configuration form
+- [x] Add timeout inputs (milliseconds with second/minute display)
+- [x] Add emoji inputs for confirmation reactions (confirm, trigger, retry)
+- [x] Add webhook URL input
+- [x] Wire bot code to use database configs instead of hardcoded values
+- [x] Update Discord bot to read timeouts and emojis from database
+
+### Phase 4: Testing and Delivery
+- [x] Test template edit with multiple templates (bug fixed)
+- [x] Test webhook settings save/load (UI working)
+- [x] Test emoji picker functionality (inputs working)
 - [ ] Save final checkpoint

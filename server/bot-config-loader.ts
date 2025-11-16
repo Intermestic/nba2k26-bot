@@ -190,6 +190,68 @@ Seeding: **60% activity, 40% record**. Top 16 teams seeded 1-16 regardless of co
       console.log('[Config Loader] Default welcome message template created');
     }
 
+    // Add webhook automation configs
+    const faConfirmTimeout = await db.select().from(botConfig).where(eq(botConfig.key, 'fa_confirm_timeout'));
+    if (faConfirmTimeout.length === 0) {
+      await db.insert(botConfig).values({
+        key: 'fa_confirm_timeout',
+        value: '30000',
+        description: 'FA batch processing confirmation timeout in milliseconds (default: 30000 = 30 seconds)',
+        category: 'automation',
+      });
+    }
+
+    const retryTimeout = await db.select().from(botConfig).where(eq(botConfig.key, 'retry_timeout'));
+    if (retryTimeout.length === 0) {
+      await db.insert(botConfig).values({
+        key: 'retry_timeout',
+        value: '300000',
+        description: 'Retry window timeout in milliseconds (default: 300000 = 5 minutes)',
+        category: 'automation',
+      });
+    }
+
+    const confirmEmoji = await db.select().from(botConfig).where(eq(botConfig.key, 'confirm_emoji'));
+    if (confirmEmoji.length === 0) {
+      await db.insert(botConfig).values({
+        key: 'confirm_emoji',
+        value: '✅',
+        description: 'Emoji used for confirming batch operations',
+        category: 'automation',
+      });
+    }
+
+    const triggerEmoji = await db.select().from(botConfig).where(eq(botConfig.key, 'trigger_emoji'));
+    if (triggerEmoji.length === 0) {
+      await db.insert(botConfig).values({
+        key: 'trigger_emoji',
+        value: '⚡',
+        description: 'Emoji used to trigger FA batch processing',
+        category: 'automation',
+      });
+    }
+
+    const retryEmoji = await db.select().from(botConfig).where(eq(botConfig.key, 'retry_emoji'));
+    if (retryEmoji.length === 0) {
+      await db.insert(botConfig).values({
+        key: 'retry_emoji',
+        value: '🔄',
+        description: 'Emoji used to trigger retry of failed transactions',
+        category: 'automation',
+      });
+    }
+
+    const webhookUrl = await db.select().from(botConfig).where(eq(botConfig.key, 'webhook_url'));
+    if (webhookUrl.length === 0) {
+      await db.insert(botConfig).values({
+        key: 'webhook_url',
+        value: '1438950795260330146',
+        description: 'Discord webhook/channel ID for automated updates',
+        category: 'automation',
+      });
+      console.log('[Config Loader] Default webhook automation configs created');
+    }
+
     // Add default commands
     const syncRolesCommand = await db.select().from(botCommands).where(eq(botCommands.command, '!sync-team-roles'));
     if (syncRolesCommand.length === 0) {

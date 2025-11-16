@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -45,11 +45,12 @@ export default function BotManagement() {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="config">Configuration</TabsTrigger>
           <TabsTrigger value="templates">Message Templates</TabsTrigger>
           <TabsTrigger value="commands">Commands</TabsTrigger>
           <TabsTrigger value="scheduled">Scheduled Messages</TabsTrigger>
+          <TabsTrigger value="automation">Automation</TabsTrigger>
         </TabsList>
 
         <TabsContent value="config" className="mt-6">
@@ -78,6 +79,10 @@ export default function BotManagement() {
             onEdit={(id) => setScheduleDialog({ open: true, id })}
             onAdd={() => setScheduleDialog({ open: true })}
           />
+        </TabsContent>
+
+        <TabsContent value="automation" className="mt-6">
+          <AutomationTab />
         </TabsContent>
       </Tabs>
 
@@ -495,6 +500,20 @@ function TemplateDialog({ open, templateKey, onClose }: { open: boolean; templat
   });
   const [previewMode, setPreviewMode] = useState(false);
 
+  // Reset form when dialog closes or templateKey changes
+  useEffect(() => {
+    if (!open) {
+      setFormData({
+        key: "",
+        content: "",
+        description: "",
+        category: "",
+        variables: "",
+      });
+      setPreviewMode(false);
+    }
+  }, [open]);
+
   // Sample data for preview
   const getSampleData = (category: string): Record<string, string> => {
     const samples: Record<string, Record<string, string>> = {
@@ -578,16 +597,18 @@ function TemplateDialog({ open, templateKey, onClose }: { open: boolean; templat
     },
   });
 
-  // Load existing data
-  if (existingTemplate && formData.key === "") {
-    setFormData({
-      key: existingTemplate.key,
-      content: existingTemplate.content,
-      description: existingTemplate.description || "",
-      category: existingTemplate.category || "",
-      variables: existingTemplate.variables || "",
-    });
-  }
+  // Load existing data when template changes
+  useEffect(() => {
+    if (existingTemplate && open) {
+      setFormData({
+        key: existingTemplate.key,
+        content: existingTemplate.content,
+        description: existingTemplate.description || "",
+        category: existingTemplate.category || "",
+        variables: existingTemplate.variables || "",
+      });
+    }
+  }, [existingTemplate, open]);
 
   const handleSubmit = () => {
     if (!formData.key || !formData.content) {
@@ -890,6 +911,161 @@ function CommandDialog({ open, commandName, onClose }: { open: boolean; commandN
         </DialogFooter>
       </DialogContent>
     </Dialog>
+  );
+}
+
+// ==================== AUTOMATION TAB ====================
+
+function AutomationTab() {
+  const { data: allConfigs, isLoading, refetch } = trpc.botManagement.getConfig.useQuery();
+  const configs = allConfigs?.filter((c: any) => c.category === 'automation') || [];
+  const updateConfig = trpc.botManagement.upsertConfig.useMutation({
+    onSuccess: () => {
+      toast.success("Settings updated");
+      refetch();
+    },
+  });
+
+  const [formData, setFormData] = useState({
+    fa_confirm_timeout: '30000',
+    retry_timeout: '300000',
+    confirm_emoji: '✅',
+    trigger_emoji: '⚡',
+    retry_emoji: '🔄',
+    webhook_url: '1438950795260330146',
+  });
+
+  // Load configs when data arrives
+  useEffect(() => {
+    if (configs && configs.length > 0) {
+      const configMap: Record<string, string> = {};
+      configs.forEach((c: any) => {
+        configMap[c.key] = c.value;
+      });
+      setFormData(prev => ({ ...prev, ...configMap }));
+    }
+  }, [configs]);
+
+  const handleSave = () => {
+    // Save all automation configs
+    Object.entries(formData).forEach(([key, value]) => {
+      updateConfig.mutate({ key, value, category: 'automation' });
+    });
+  };
+
+  if (isLoading) return <div className="text-center py-8 text-muted-foreground">Loading automation settings...</div>;
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Send className="w-5 h-5" />
+          Webhook & Bot Automation
+        </CardTitle>
+        <CardDescription>
+          Configure automated bot behaviors, confirmation timeouts, and reaction emojis
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        {/* Timeouts Section */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold">Confirmation Timeouts</h3>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="fa_confirm_timeout">FA Batch Confirmation (milliseconds)</Label>
+              <Input
+                id="fa_confirm_timeout"
+                type="number"
+                value={formData.fa_confirm_timeout}
+                onChange={(e) => setFormData({ ...formData, fa_confirm_timeout: e.target.value })}
+                placeholder="30000"
+              />
+              <p className="text-xs text-muted-foreground mt-1">
+                Current: {Math.round(parseInt(formData.fa_confirm_timeout) / 1000)} seconds
+              </p>
+            </div>
+            <div>
+              <Label htmlFor="retry_timeout">Retry Window (milliseconds)</Label>
+              <Input
+                id="retry_timeout"
+                type="number"
+                value={formData.retry_timeout}
+                onChange={(e) => setFormData({ ...formData, retry_timeout: e.target.value })}
+                placeholder="300000"
+              />
+              <p className="text-xs text-muted-foreground mt-1">
+                Current: {Math.round(parseInt(formData.retry_timeout) / 1000 / 60)} minutes
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Emojis Section */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold">Reaction Emojis</h3>
+          <div className="grid grid-cols-3 gap-4">
+            <div>
+              <Label htmlFor="confirm_emoji">Confirm Emoji</Label>
+              <Input
+                id="confirm_emoji"
+                value={formData.confirm_emoji}
+                onChange={(e) => setFormData({ ...formData, confirm_emoji: e.target.value })}
+                placeholder="✅"
+                className="text-2xl text-center"
+              />
+              <p className="text-xs text-muted-foreground mt-1">Used to confirm batch operations</p>
+            </div>
+            <div>
+              <Label htmlFor="trigger_emoji">Trigger Emoji</Label>
+              <Input
+                id="trigger_emoji"
+                value={formData.trigger_emoji}
+                onChange={(e) => setFormData({ ...formData, trigger_emoji: e.target.value })}
+                placeholder="⚡"
+                className="text-2xl text-center"
+              />
+              <p className="text-xs text-muted-foreground mt-1">Used to start FA batch processing</p>
+            </div>
+            <div>
+              <Label htmlFor="retry_emoji">Retry Emoji</Label>
+              <Input
+                id="retry_emoji"
+                value={formData.retry_emoji}
+                onChange={(e) => setFormData({ ...formData, retry_emoji: e.target.value })}
+                placeholder="🔄"
+                className="text-2xl text-center"
+              />
+              <p className="text-xs text-muted-foreground mt-1">Used to retry failed transactions</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Webhook Section */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold">Webhook Configuration</h3>
+          <div>
+            <Label htmlFor="webhook_url">Webhook/Channel ID</Label>
+            <Input
+              id="webhook_url"
+              value={formData.webhook_url}
+              onChange={(e) => setFormData({ ...formData, webhook_url: e.target.value })}
+              placeholder="1438950795260330146"
+            />
+            <p className="text-xs text-muted-foreground mt-1">
+              Discord channel ID for automated updates
+            </p>
+          </div>
+        </div>
+
+        {/* Save Button */}
+        <div className="flex justify-end pt-4 border-t">
+          <Button onClick={handleSave} disabled={updateConfig.isPending}>
+            <Save className="w-4 h-4 mr-2" />
+            Save Automation Settings
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 
