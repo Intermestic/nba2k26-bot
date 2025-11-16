@@ -1,0 +1,8 @@
+{
+  "query": "SELECT id, signPlayer, window_id, created_at FROM fa_transactions WHERE LOWER(signPlayer) IN ('day''ron sharpe', 'dayron sharpe', 'bruce brown', 'chris paul') ORDER BY created_at DESC",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT id, signPlayer, window_id, created_at FROM fa_transactions WHERE LOWER(signPlayer) IN ('day''ron sharpe', 'dayron sharpe', 'bruce brown', 'chris paul') ORDER BY created_at DESC",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1054 (42S22) at line 1: Unknown column 'window_id' in 'field list'"
+  ]
+}

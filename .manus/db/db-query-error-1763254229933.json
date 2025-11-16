@@ -1,0 +1,8 @@
+{
+  "query": "INSERT INTO fa_bids (playerName, bidAmount, team, bidderName, dropPlayer, windowId, messageId, createdAt) VALUES ('Day''Ron Sharpe', 1, 'Hawks', 'Hawks- 2X🏆🏆', 'Terrance Mann', '2025-11-15-PM', '1', '2024-11-15 16:49:00')",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute INSERT INTO fa_bids (playerName, bidAmount, team, bidderName, dropPlayer, windowId, messageId, createdAt) VALUES ('Day''Ron Sharpe', 1, 'Hawks', 'Hawks- 2X🏆🏆', 'Terrance Mann', '2025-11-15-PM', '1', '2024-11-15 16:49:00')",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1364 (HY000) at line 1: Field 'bidderDiscordId' doesn't have a default value"
+  ]
+}

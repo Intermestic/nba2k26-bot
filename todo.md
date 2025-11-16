@@ -860,4 +860,67 @@ Should show: [correct calculation based on roster]
 - [x] Implement sort logic for all columns (Player, From, To, Type, Admin, Date)
 - [x] Converted card layout to sortable table format
 - [x] Test sorting functionality (no TypeScript errors, dev server running)
+- [x] Save checkpoint
+
+
+## Feature: Sortable FA Coins Transaction History
+
+### Requirements
+- Make FA Coins transaction history table sortable (in CoinDashboard page)
+- Support sorting by: Date, Team, Sign Player, Drop Player, Bid Amount, Coins Remaining, Admin
+- Add visual indicators for sort direction
+
+### Tasks
+- [ ] Add sorting state to CoinDashboard page
+- [ ] Add clickable column headers with sort icons
+- [ ] Implement sort logic for all columns
+- [ ] Test sorting
 - [ ] Save checkpoint
+
+
+## BUG: FA Status Update Missing Most Bids
+
+### Issue
+FA Status Update only showing 2 bids (Jaylen Nowell, Malcolm Brogdon for Lakers) when there should be many more bids from Hawks, Rockets, Nuggets, Raptors, Hornets.
+
+### Missing Bids
+- Hawks: Cut Terrance Mann, Sign Dayron Sharpe, Bid $1
+- Rockets: Multiple bids for Day'Ron Sharpe ($25, $35)
+- Nuggets: Multiple bids (Bruce Brown, Chris Paul)
+- Raptors: Multiple bids (Bruce Brown $6, Dayron Sharpe $29, Johnathan Mogbo $3)
+- Hornets: Multiple bids (Patrick Williams $1, Daniel Theis $1)
+
+### Tasks
+- [ ] Check if bids are in database
+- [ ] Verify window ID matching
+- [ ] Check bid parsing for these messages
+- [ ] Fix missing bids issue
+- [ ] Test status update shows all bids
+
+## BUG: Incorrect Bid Commitment Calculation
+
+### Issue
+When a user bids on multiple players and cuts a player they're already bidding on, the commitment calculation counts both bids instead of recognizing the replacement.
+
+### Example
+- Bid 1: Sign Jaylen Nowell, cut Ajay Mitchell, $1
+- Bid 2: Sign Malcolm Brogdon, cut Jaylen Nowell, $1
+- Shows: $2 committed ❌
+- Should show: $1 committed ✅ (Bid 2 replaces Bid 1 since Jaylen is being cut)
+
+### Tasks
+- [ ] Find bid commitment calculation logic
+- [ ] Update logic to detect when a drop player is also a sign player in another bid
+- [ ] Exclude replaced bids from commitment total
+- [ ] Test with example scenario
+- [ ] Save checkpoint
+
+
+## URGENT: Manual Bid Import for Window 2025-11-15-PM
+
+### Tasks
+- [ ] Delete all existing bids for window 2025-11-15-PM
+- [ ] Parse manual bid list from user
+- [ ] Insert correct bids into database
+- [ ] Trigger FA status update
+- [ ] Verify status shows all players with correct highest bidders

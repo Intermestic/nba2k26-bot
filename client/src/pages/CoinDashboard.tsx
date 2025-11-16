@@ -7,7 +7,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Coins, History, Plus, Minus, RotateCcw, UserMinus, UserPlus, DollarSign } from "lucide-react";
+import { Coins, History, Plus, Minus, RotateCcw, UserMinus, UserPlus, DollarSign, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -144,6 +144,8 @@ export default function CoinDashboard() {
   const [selectedTeam, setSelectedTeam] = useState<string>("");
   const [adjustAmount, setAdjustAmount] = useState<string>("");
   const [adjustReason, setAdjustReason] = useState<string>("");
+  const [sortField, setSortField] = useState<'date' | 'team' | 'dropped' | 'signed' | 'ovr' | 'bid' | 'remaining' | 'admin'>('date');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
 
   const isAdmin = user?.role === "admin";
 
@@ -194,6 +196,53 @@ export default function CoinDashboard() {
     setSelectedTeam(team);
     setAdjustDialogOpen(true);
   };
+
+  const toggleSort = (field: typeof sortField) => {
+    if (sortField === field) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortDirection('asc');
+    }
+  };
+
+  const getSortIcon = (field: typeof sortField) => {
+    if (sortField !== field) return <ArrowUpDown className="w-4 h-4" />;
+    return sortDirection === 'asc' ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />;
+  };
+
+  const sortedTransactions = transactions?.slice().sort((a, b) => {
+    let comparison = 0;
+    
+    switch (sortField) {
+      case 'date':
+        comparison = new Date(a.processedAt).getTime() - new Date(b.processedAt).getTime();
+        break;
+      case 'team':
+        comparison = a.team.localeCompare(b.team);
+        break;
+      case 'dropped':
+        comparison = a.dropPlayer.localeCompare(b.dropPlayer);
+        break;
+      case 'signed':
+        comparison = a.signPlayer.localeCompare(b.signPlayer);
+        break;
+      case 'ovr':
+        comparison = (a.signPlayerOvr || 0) - (b.signPlayerOvr || 0);
+        break;
+      case 'bid':
+        comparison = a.bidAmount - b.bidAmount;
+        break;
+      case 'remaining':
+        comparison = a.coinsRemaining - b.coinsRemaining;
+        break;
+      case 'admin':
+        comparison = (a.adminUser || '').localeCompare(b.adminUser || '');
+        break;
+    }
+    
+    return sortDirection === 'asc' ? comparison : -comparison;
+  });
 
   return (
     <div className="container py-8">
@@ -264,19 +313,51 @@ export default function CoinDashboard() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Date</TableHead>
-                <TableHead>Team</TableHead>
-                <TableHead>Dropped</TableHead>
-                <TableHead>Signed</TableHead>
-                <TableHead>OVR</TableHead>
-                <TableHead className="text-right">Bid</TableHead>
-                <TableHead className="text-right">Remaining</TableHead>
-                <TableHead>Admin</TableHead>
+                <TableHead>
+                  <Button variant="ghost" size="sm" onClick={() => toggleSort('date')} className="-ml-3 hover:bg-accent">
+                    Date {getSortIcon('date')}
+                  </Button>
+                </TableHead>
+                <TableHead>
+                  <Button variant="ghost" size="sm" onClick={() => toggleSort('team')} className="-ml-3 hover:bg-accent">
+                    Team {getSortIcon('team')}
+                  </Button>
+                </TableHead>
+                <TableHead>
+                  <Button variant="ghost" size="sm" onClick={() => toggleSort('dropped')} className="-ml-3 hover:bg-accent">
+                    Dropped {getSortIcon('dropped')}
+                  </Button>
+                </TableHead>
+                <TableHead>
+                  <Button variant="ghost" size="sm" onClick={() => toggleSort('signed')} className="-ml-3 hover:bg-accent">
+                    Signed {getSortIcon('signed')}
+                  </Button>
+                </TableHead>
+                <TableHead>
+                  <Button variant="ghost" size="sm" onClick={() => toggleSort('ovr')} className="-ml-3 hover:bg-accent">
+                    OVR {getSortIcon('ovr')}
+                  </Button>
+                </TableHead>
+                <TableHead className="text-right">
+                  <Button variant="ghost" size="sm" onClick={() => toggleSort('bid')} className="hover:bg-accent">
+                    Bid {getSortIcon('bid')}
+                  </Button>
+                </TableHead>
+                <TableHead className="text-right">
+                  <Button variant="ghost" size="sm" onClick={() => toggleSort('remaining')} className="hover:bg-accent">
+                    Remaining {getSortIcon('remaining')}
+                  </Button>
+                </TableHead>
+                <TableHead>
+                  <Button variant="ghost" size="sm" onClick={() => toggleSort('admin')} className="-ml-3 hover:bg-accent">
+                    Admin {getSortIcon('admin')}
+                  </Button>
+                </TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {transactions?.map((tx) => (
+              {sortedTransactions?.map((tx) => (
                 <TableRow key={tx.id}>
                   <TableCell className="text-sm text-muted-foreground">
                     {new Date(tx.processedAt).toLocaleDateString()}
@@ -293,7 +374,7 @@ export default function CoinDashboard() {
                   </TableCell>
                 </TableRow>
               ))}
-              {(!transactions || transactions.length === 0) && (
+              {(!sortedTransactions || sortedTransactions.length === 0) && (
                 <TableRow>
                   <TableCell colSpan={8} className="text-center text-muted-foreground">
                     No transactions yet
