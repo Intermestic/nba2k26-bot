@@ -976,4 +976,37 @@ Configure team roles to be displayed separately in Discord member list (hoisted)
 - [x] Update getOrCreateTeamRole to set hoist: true for new roles
 - [x] Add logic to update existing roles to enable hoisting
 - [x] Test compilation (no TypeScript errors)
+- [x] Save checkpoint
+
+
+## CURRENT TASK: Fix TRPC API Error on Homepage
+
+### Issue
+TRPC client error: "Unexpected token '<', '<!doctype'..." - API returning HTML instead of JSON
+Occurs on homepage load for authenticated user
+
+### Tasks
+- [ ] Check server logs for errors
+- [ ] Identify which API endpoint is failing
+- [ ] Find root cause of HTML response
+- [ ] Fix the issue
+- [ ] Test homepage loads without errors
+- [ ] Save checkpoint
+
+
+## CURRENT TASK: Team-Specific Private Channels
+
+### Goal
+Create private Discord channels for each team that are only visible to members with that team's role
+
+### Tasks
+- [x] Design channel naming convention (team-{teamname})
+- [x] Create "Team Channels" category automatically
+- [x] Implement channel creation function with proper permissions
+- [x] Set permissions: deny @everyone, allow team role (view, send, read history, reactions, attachments)
+- [x] Create channels for all 28 teams in sync function
+- [x] Integrate with role sync (auto-syncs after role updates)
+- [x] Add command to manually sync channels (!sync-team-channels)
+- [x] Add initialization on bot startup (2s delay after roles)
+- [x] TypeScript compilation successful (no errors)
 - [ ] Save checkpoint

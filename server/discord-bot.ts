@@ -841,6 +841,18 @@ export async function startDiscordBot(token: string) {
     } catch (error) {
       console.error('[Team Roles] Failed to initialize:', error);
     }
+    
+    // Initialize team channel manager (after roles are synced)
+    try {
+      const { syncTeamChannels } = await import('./team-channel-manager');
+      // Wait 2 seconds to ensure roles are created first
+      setTimeout(async () => {
+        await syncTeamChannels(client!);
+        console.log('[Team Channels] Initial channel sync complete');
+      }, 2000);
+    } catch (error) {
+      console.error('[Team Channels] Failed to initialize:', error);
+    }
   });
   
   // Monitor message updates for team role sync
@@ -851,6 +863,12 @@ export async function startDiscordBot(token: string) {
         console.log('[Team Roles] Team message updated, syncing roles...');
         const { syncTeamRoles } = await import('./team-role-manager');
         await syncTeamRoles(client!);
+        
+        // Also sync team channels after role sync
+        setTimeout(async () => {
+          const { syncTeamChannels } = await import('./team-channel-manager');
+          await syncTeamChannels(client!);
+        }, 1000);
       }
     } catch (error) {
       console.error('[Team Roles] Error handling message update:', error);
@@ -991,6 +1009,20 @@ export async function startDiscordBot(token: string) {
         } catch (error) {
           console.error('[Team Roles] Sync command failed:', error);
           await message.reply('❌ Failed to sync team roles. Check logs for details.');
+        }
+        return;
+      }
+      
+      // Check for team channel sync command
+      if (message.content.trim().toLowerCase() === '!sync-team-channels') {
+        try {
+          await message.reply('🔄 Syncing team channels...');
+          const { syncTeamChannels } = await import('./team-channel-manager');
+          await syncTeamChannels(client!);
+          await message.reply('✅ Team channels synced successfully!');
+        } catch (error) {
+          console.error('[Team Channels] Sync command failed:', error);
+          await message.reply('❌ Failed to sync team channels. Check logs for details.');
         }
         return;
       }
