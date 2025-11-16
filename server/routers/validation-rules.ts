@@ -79,4 +79,38 @@ export const validationRulesRouter = router({
 
       return { success: true, enabled: newEnabled };
     }),
+
+  // Create new rule
+  create: protectedProcedure
+    .input(
+      z.object({
+        ruleKey: z.string().min(1),
+        ruleName: z.string().min(1),
+        description: z.string().optional(),
+        ruleType: z.enum(["boolean", "numeric", "text"]),
+        enabled: z.number().min(0).max(1).default(1),
+        numericValue: z.number().nullable().optional(),
+        textValue: z.string().nullable().optional(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const db = await getDb();
+      if (!db) throw new Error("Database not available");
+
+      await db.insert(validationRules).values(input);
+
+      return { success: true };
+    }),
+
+  // Delete rule
+  delete: protectedProcedure
+    .input(z.object({ id: z.number() }))
+    .mutation(async ({ input }) => {
+      const db = await getDb();
+      if (!db) throw new Error("Database not available");
+
+      await db.delete(validationRules).where(eq(validationRules.id, input.id));
+
+      return { success: true };
+    }),
 });

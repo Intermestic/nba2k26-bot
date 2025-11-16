@@ -1860,3 +1860,17 @@ Create admin UI to manage upgrade validation rules without code changes. Pre-pop
 - [x] Add navigation link to admin sidebar
 - [x] Test rule modifications
 - [x] Save checkpoint
+
+
+## FIX: Validation Rules UI - Edit and Create
+
+### Issue
+User can toggle rules on/off but cannot edit numeric values or create new rules.
+
+### Tasks
+- [x] Fix numeric value editor to actually save changes
+- [x] Add create rule mutation to TRPC router
+- [x] Add "Create New Rule" button and dialog
+- [x] Allow editing rule name and description
+- [x] Test editing and creating rules
+- [x] Save checkpoint
