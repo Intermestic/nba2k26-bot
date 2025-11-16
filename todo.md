@@ -1423,4 +1423,19 @@ Build comprehensive admin dashboard for managing Discord bot configuration, comm
 - [x] Fix rookie data for missing badges (all 5 updated)
 - [x] Remove duplicate entries (deleted 5 duplicates)
 - [x] Verify player count back to 643 and rookie count at 59
+- [x] Save checkpoint
+
+
+## CURRENT TASK: Find and Remove Mystery Player
+
+### Issue
+- Player count increased from 643 to 644
+- Photo percentage dropped from 100% to 99.8%
+- 1 player was added without a photo
+
+### Tasks
+- [x] Find most recently added player (Kyle Lowry)
+- [x] Identify player without photoUrl (Kyle Lowry had NULL photoUrl)
+- [x] Delete unwanted player (Kyle Lowry removed)
+- [x] Verify count returns to 643 and photos back to 100%
 - [ ] Save checkpoint
