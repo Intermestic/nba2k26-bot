@@ -70,39 +70,44 @@ export function parseTrade(message: string): ParsedTrade | null {
   // Try different parsing strategies
   
   // Strategy 1: "Team send: Player OVR (badges) ..." format (multi-line)
-  const sendPattern = new RegExp(
-    `${team1}\\s+send[s]?[:\\s]+([^]+?)(?:for|${team2}\\s+send)`,
+  // This strategy is very flexible - accepts:
+  // - "Team send: players"
+  // - "Team sends: players"
+  // - "Team: players"
+  // - "Team\nplayers" (just team name followed by player list)
+  
+  // Try to match team1's section with optional "send/sends" keyword
+  const team1Pattern = new RegExp(
+    `${team1}\\s*(?:send[s]?)?[:\\s]*\\n?([^]+?)(?:${team2}|$)`,
     'is'
   );
-  const sendMatch = text.match(sendPattern);
+  const team1Match = text.match(team1Pattern);
   
-  if (sendMatch) {
-    // Also extract team2's players - try with "send" first
-    let team2Pattern = new RegExp(
-      `${team2}\\s+send[s]?[:\\s]+([^]+?)(?:$|\\n\\n)`,
+  if (team1Match) {
+    // Try to match team2's section with optional "send/sends" keyword
+    const team2Pattern = new RegExp(
+      `${team2}\\s*(?:send[s]?)?[:\\s]*\\n?([^]+?)(?:$|\\n\\n)`,
       'is'
     );
-    let team2Match = text.match(team2Pattern);
-    
-    // If no "send", try just team name followed by players
-    if (!team2Match) {
-      team2Pattern = new RegExp(
-        `${team2}\\s*\\n([^]+?)(?:$|\\n\\n)`,
-        'is'
-      );
-      team2Match = text.match(team2Pattern);
-    }
+    const team2Match = text.match(team2Pattern);
     
     if (team2Match) {
-      console.log('[Trade Parser] Using "Send" format strategy');
-      console.log('[Trade Parser] Team1 raw:', sendMatch[1]);
+      console.log('[Trade Parser] Using flexible format strategy');
+      console.log('[Trade Parser] Team1 raw:', team1Match[1]);
       console.log('[Trade Parser] Team2 raw:', team2Match[1]);
-      return {
-        team1,
-        team1Players: parsePlayerListWithOVR(sendMatch[1]),
-        team2,
-        team2Players: parsePlayerListWithOVR(team2Match[1])
-      };
+      
+      const team1Players = parsePlayerListWithOVR(team1Match[1]);
+      const team2Players = parsePlayerListWithOVR(team2Match[1]);
+      
+      // Only return if we found players for both teams
+      if (team1Players.length > 0 && team2Players.length > 0) {
+        return {
+          team1,
+          team1Players,
+          team2,
+          team2Players
+        };
+      }
     }
   }
   

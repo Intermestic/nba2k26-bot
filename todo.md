@@ -1636,3 +1636,38 @@ Use same styling as gold R badge for OVR numbers (gold color, text shadow, no st
 - [x] Fix team assignment to trigger welcome message in team channel
 - [x] Ensure all team chats get welcome messages on user assignment
 - [x] Test with Grizzlies team specifically
+
+
+## MANUAL TEST: Post Welcome Message to Grizzlies
+
+- [x] Create test script to post welcome message
+- [x] Execute and verify message appears in #team-grizzlies
+
+
+## CURRENT TASK: Fix Trade Parser - More Flexible Format Support
+
+### Issue
+Trade parser failing on valid trade messages with format:
+```
+Mavericks send:
+Stephen curry 95 (21)
+...
+
+Blazers send:
+Ja morant 89 (19)
+...
+```
+
+Parser should accept ANY of these formats:
+- "Team send: players"
+- "Team sends: players"  
+- "Team: players"
+- "Team name players" (with line breaks)
+
+### Tasks
+- [x] Update trade-parser.ts to be more flexible
+- [x] Accept team names with or without "send/sends" keyword
+- [x] Handle multi-line player lists
+- [x] TypeScript compilation successful
+- [ ] Test with the failed Mavericks/Blazers trade
+- [ ] Save checkpoint
