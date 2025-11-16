@@ -162,6 +162,13 @@
       "when": 1763291118672,
       "tag": "0022_military_daredevil",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "5",
+      "when": 1763294494660,
+      "tag": "0023_needy_iron_fist",
+      "breakpoints": true
     }
   ]
 }

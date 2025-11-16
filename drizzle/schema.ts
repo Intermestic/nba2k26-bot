@@ -33,12 +33,15 @@ export const players = mysqlTable("players", {
   name: varchar("name", { length: 255 }).notNull(),
   overall: int("overall").notNull(), // NBA 2K26 overall rating
   team: varchar("team", { length: 100 }), // Team name
+  height: varchar("height", { length: 10 }), // Player height (e.g., 6'5")
   photoUrl: text("photoUrl"), // NBA.com or 2kratings photo URL
   playerPageUrl: text("playerPageUrl"), // 2kratings player page URL
   nbaId: varchar("nbaId", { length: 64 }), // NBA.com player ID
   source: varchar("source", { length: 64 }), // Data source (nba.com, 2kratings, etc.)
   badgeCount: int("badgeCount"), // Total badge count from 2kratings
   salaryCap: int("salaryCap"), // Salary cap hit in millions (based on overall rating)
+  isRookie: int("isRookie").default(0).notNull(), // 1 = rookie, 0 = veteran
+  draftYear: int("draftYear"), // Draft year (e.g., 2025)
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });

@@ -12,6 +12,9 @@ interface Player {
   team: string | null;
   photoUrl?: string | null;
   salaryCap?: number | null;
+  isRookie?: number;
+  draftYear?: number | null;
+  height?: string | null;
 }
 
 interface RosterCardProps {
@@ -342,6 +345,29 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                           </div>
                         )}
 
+                        {/* Rookie Badge */}
+                        {topPlayers[0].isRookie === 1 && (
+                          <div
+                            style={{
+                              position: 'absolute',
+                              top: '8px',
+                              left: '8px',
+                              background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)',
+                              color: '#000',
+                              padding: '4px 10px',
+                              borderRadius: '6px',
+                              fontSize: '14px',
+                              fontWeight: 'bold',
+                              border: 'none',
+                              outline: 'none',
+                              boxShadow: '0 2px 8px rgba(255, 215, 0, 0.4)',
+                              letterSpacing: '0.5px',
+                            }}
+                          >
+                            ROOKIE
+                          </div>
+                        )}
+
                         {/* Overall Rating Badge */}
                         <div
                           style={{
@@ -517,6 +543,29 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                           </div>
                         )}
 
+                        {/* Rookie Badge */}
+                        {topPlayers[1].isRookie === 1 && (
+                          <div
+                            style={{
+                              position: 'absolute',
+                              top: '8px',
+                              left: '8px',
+                              background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)',
+                              color: '#000',
+                              padding: '4px 10px',
+                              borderRadius: '6px',
+                              fontSize: '14px',
+                              fontWeight: 'bold',
+                              border: 'none',
+                              outline: 'none',
+                              boxShadow: '0 2px 8px rgba(255, 215, 0, 0.4)',
+                              letterSpacing: '0.5px',
+                            }}
+                          >
+                            ROOKIE
+                          </div>
+                        )}
+
                         {/* Overall Rating Badge */}
                         <div
                           style={{
@@ -633,6 +682,29 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                         ) : (
                           <div style={{ fontSize: '32px', fontWeight: 'bold', color: '#475569', border: 'none', outline: 'none', boxShadow: 'none' }}>
                             {player.name.split(' ').map(n => n[0]).join('')}
+                          </div>
+                        )}
+
+                        {/* Rookie Badge */}
+                        {player.isRookie === 1 && (
+                          <div
+                            style={{
+                              position: 'absolute',
+                              top: '6px',
+                              left: '6px',
+                              background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)',
+                              color: '#000',
+                              padding: '3px 8px',
+                              borderRadius: '4px',
+                              fontSize: '11px',
+                              fontWeight: 'bold',
+                              border: 'none',
+                              outline: 'none',
+                              boxShadow: '0 2px 6px rgba(255, 215, 0, 0.4)',
+                              letterSpacing: '0.5px',
+                            }}
+                          >
+                            ROOKIE
                           </div>
                         )}
 
@@ -794,6 +866,29 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                             {player.name.split(' ').map(n => n[0]).join('')}
                           </div>
                         )}
+                        
+                        {/* Rookie Badge for regular layout */}
+                        {player.isRookie === 1 && (
+                          <div
+                            style={{
+                              position: 'absolute',
+                              top: '6px',
+                              left: '6px',
+                              background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)',
+                              color: '#000',
+                              padding: '3px 8px',
+                              borderRadius: '4px',
+                              fontSize: '11px',
+                              fontWeight: 'bold',
+                              border: 'none',
+                              outline: 'none',
+                              boxShadow: '0 2px 6px rgba(255, 215, 0, 0.4)',
+                              letterSpacing: '0.5px',
+                            }}
+                          >
+                            ROOKIE
+                          </div>
+                        )}
                       </div>
 
                       {/* Player Info */}
@@ -814,21 +909,41 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                         >
                           {player.name}
                         </div>
-                        <div
-                          style={{
-                            display: 'inline-block',
-                            background: teamColors.primary,
-                            color: 'white',
-                            padding: '4px 12px',
-                            borderRadius: '6px',
-                            fontSize: '14px',
-                            fontWeight: 'bold',
-                            border: 'none',
-                            outline: 'none',
-                            boxShadow: 'none',
-                          }}
-                        >
-                          {player.overall}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', border: 'none', outline: 'none', boxShadow: 'none' }}>
+                          {player.isRookie === 1 && (
+                            <div
+                              style={{
+                                background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)',
+                                color: '#000',
+                                padding: '2px 6px',
+                                borderRadius: '4px',
+                                fontSize: '10px',
+                                fontWeight: 'bold',
+                                border: 'none',
+                                outline: 'none',
+                                boxShadow: 'none',
+                                letterSpacing: '0.5px',
+                              }}
+                            >
+                              R
+                            </div>
+                          )}
+                          <div
+                            style={{
+                              display: 'inline-block',
+                              background: teamColors.primary,
+                              color: 'white',
+                              padding: '4px 12px',
+                              borderRadius: '6px',
+                              fontSize: '14px',
+                              fontWeight: 'bold',
+                              border: 'none',
+                              outline: 'none',
+                              boxShadow: 'none',
+                            }}
+                          >
+                            {player.overall}
+                          </div>
                         </div>
                       </div>
                     </div>

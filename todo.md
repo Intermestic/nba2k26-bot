@@ -1323,4 +1323,33 @@ Build comprehensive admin dashboard for managing Discord bot configuration, comm
 ### Phase 3: Testing and Delivery
 - [x] Test preview with different emoji combinations (working perfectly)
 - [x] Verify preview updates instantly on input change (real-time updates confirmed)
+- [x] Save final checkpoint
+
+
+## CURRENT TASK: Add Class of 2025 Rookies
+
+### Phase 1: Update Database Schema
+- [x] Check if players table has rookie/isRookie field
+- [x] Add isRookie boolean field to players table
+- [x] Add draftYear field to track rookie class
+- [x] Add height field to store player heights
+- [x] Push schema changes to database
+
+### Phase 2: Add Rookie Players
+- [x] Create SQL script to insert/update 59 Class of 2025 rookies
+- [x] Include name, height, overall rating, isRookie=true, draftYear=2025
+- [x] Execute script to populate database
+- [x] Verify all rookies added correctly (59 added successfully)
+
+### Phase 3: Add Rookie Badge UI
+- [x] Add rookie badge/indicator to player card component
+- [x] Style badge with distinctive gold gradient (FFD700 to FFA500)
+- [x] Add "ROOKIE" label for large cards, "R" for compact view
+- [x] Ensure badge shows on all player card views (top players, bottom players, regular layout)
+- [x] Position badge at top-left of player photo with shadow effect
+
+### Phase 4: Testing and Delivery
+- [x] Test rookie badge display on player cards (gold badges showing correctly)
+- [x] Verify rookie filtering works (isRookie field in database)
+- [x] Test player search includes rookies (all 59 rookies added)
 - [ ] Save final checkpoint
