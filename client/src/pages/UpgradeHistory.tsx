@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Download, Search, TrendingUp, CheckCircle, XCircle, Clock } from "lucide-react";
 import { format } from "date-fns";
+import { PlayerUpgradeTimeline } from "@/components/PlayerUpgradeTimeline";
 
 const VALID_TEAMS = [
   "Hawks", "Celtics", "Nets", "Hornets", "Bulls", "Cavaliers", "Mavs",
@@ -19,6 +20,7 @@ export default function UpgradeHistory() {
   const [searchPlayer, setSearchPlayer] = useState("");
   const [filterTeam, setFilterTeam] = useState<string>("");
   const [filterStatus, setFilterStatus] = useState<string>("");
+  const [selectedPlayer, setSelectedPlayer] = useState<string | null>(null);
 
   const { data: upgrades = [], isLoading } = trpc.upgrades.getAllUpgrades.useQuery({
     player: searchPlayer || undefined,
@@ -235,7 +237,14 @@ export default function UpgradeHistory() {
                         <td className="p-3 text-sm">
                           {upgrade.createdAt ? format(new Date(upgrade.createdAt), "MMM d, yyyy HH:mm") : "N/A"}
                         </td>
-                        <td className="p-3 font-medium">{upgrade.playerName}</td>
+                        <td className="p-3 font-medium">
+                          <button
+                            onClick={() => setSelectedPlayer(upgrade.playerName)}
+                            className="text-primary hover:underline cursor-pointer font-medium"
+                          >
+                            {upgrade.playerName}
+                          </button>
+                        </td>
                         <td className="p-3 text-sm">{upgrade.team}</td>
                         <td className="p-3 text-sm">{upgrade.badgeName}</td>
                         <td className="p-3 text-sm">
@@ -258,6 +267,15 @@ export default function UpgradeHistory() {
             )}
           </CardContent>
         </Card>
+
+        {/* Player Timeline Dialog */}
+        {selectedPlayer && (
+          <PlayerUpgradeTimeline
+            playerName={selectedPlayer}
+            open={!!selectedPlayer}
+            onOpenChange={(open) => !open && setSelectedPlayer(null)}
+          />
+        )}
       </div>
     </div>
   );

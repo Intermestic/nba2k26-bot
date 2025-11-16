@@ -1796,3 +1796,16 @@ Trade parser now extracts teams correctly, but player validation is failing:
 - [x] Add navigation link to admin sidebar
 - [x] Test filtering and sorting
 - [x] Save checkpoint
+
+
+## NEW: Player Drill-Down Feature
+
+### Features to Implement
+- [x] Create PlayerUpgradeTimeline dialog component
+- [x] Show complete upgrade history for selected player
+- [x] Display badge progression timeline with visual indicators
+- [x] Show all attributes for each upgrade
+- [x] Add click handler to player names in upgrade history table
+- [x] Include player stats (total upgrades, badges earned, etc.)
+- [x] Test dialog functionality
+- [x] Save checkpoint
