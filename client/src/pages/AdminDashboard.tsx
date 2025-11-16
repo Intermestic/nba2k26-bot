@@ -97,7 +97,7 @@ export default function AdminDashboard() {
     {
       title: "Cap Compliance",
       description: "Monitor salary cap violations and alerts",
-      href: "/admin/cap",
+      href: "/admin/cap-compliance",
       icon: <AlertTriangle className="w-6 h-6" />,
       color: "bg-red-500",
       section: "team",

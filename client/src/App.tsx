@@ -25,6 +25,8 @@ import Analytics from "./pages/Analytics";
 import ServerLogs from "./pages/ServerLogs";
 import AdminDashboard from "./pages/AdminDashboard";
 import UpgradeSummary from "./pages/admin/UpgradeSummary";
+import UpgradeHistory from "./pages/admin/UpgradeHistory";
+import ValidationRules from "./pages/admin/ValidationRules";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -33,6 +35,8 @@ function Router() {
       <Route path={"/"} component={Home} />
       <Route path={"/admin"} component={AdminDashboard} />
       <Route path={"/admin/upgrade-summary"} component={UpgradeSummary} />
+      <Route path={"/admin/upgrade-history"} component={UpgradeHistory} />
+      <Route path={"/admin/validation-rules"} component={ValidationRules} />
       <Route path={"/admin/roster"} component={Admin} />
       <Route path={"/admin/transactions"} component={Transactions} />
       <Route path={"/admin/history"} component={History} />

@@ -1846,4 +1846,33 @@ Badge abbreviations (SS, PTZ, CHL, SSS, LR) not matching database requirements -
 - [x] Test !badge command with multiple abbreviations
 - [x] Test bulk revert with multiple upgrades
 - [x] Verify Discord reactions removed
-- [ ] Save checkpoint
+- [x] Save checkpoint
+
+
+## COMPLETED: Fix 404 Errors in Admin Dashboard ✅
+
+### Issue
+Multiple admin dashboard links were pointing to non-existent routes:
+1. Cap Compliance: `/admin/cap` → should be `/admin/cap-compliance`
+2. Upgrade History: `/admin/upgrade-history` → page didn't exist
+3. Validation Rules: `/admin/validation-rules` → page didn't exist
+
+### Phase 1: Fix Cap Compliance Link
+- [x] Found incorrect link in AdminDashboard.tsx (line 100)
+- [x] Changed href from `/admin/cap` to `/admin/cap-compliance`
+
+### Phase 2: Create Missing Pages
+- [x] Created UpgradeHistory.tsx page with full upgrade request history
+- [x] Created ValidationRules.tsx page with validation rule management
+- [x] Fixed TypeScript errors (tier → toLevel, requestedAt → createdAt)
+
+### Phase 3: Add Routes
+- [x] Added UpgradeHistory and ValidationRules imports to App.tsx
+- [x] Added `/admin/upgrade-history` route
+- [x] Added `/admin/validation-rules` route
+
+### Phase 4: Verify & Checkpoint
+- [x] TypeScript compilation successful (no errors)
+- [x] Dev server running without errors
+- [x] All admin dashboard links now functional
+- [x] Save checkpoint
