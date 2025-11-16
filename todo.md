@@ -1038,4 +1038,23 @@ Add custom topics to each team channel showing roster summary (e.g., "Lakers: 14
 - [x] Update channel.setTopic() with roster summary
 - [x] Update both new and existing channels with topics
 - [x] TypeScript compilation successful (no errors)
+- [x] Save checkpoint
+
+
+## CURRENT TASK: Fix TRPC Server Error
+
+### Issue
+TRPC returning HTML instead of JSON - server likely crashing during Discord bot initialization or database queries in team channel manager
+
+### Tasks
+- [x] Check server logs for crash errors
+- [x] Identify database queries in getRosterSummary as potential cause
+- [x] Add timeout (5s) to database queries to prevent hanging
+- [x] Add client.isReady() check before syncing channels
+- [x] Increase initialization delay from 2s to 5s for database readiness
+- [x] Wrap all async operations in try-catch blocks
+- [x] Add error handling to message update channel sync
+- [x] TypeScript compilation successful (no errors)
+- [x] Test server stability (homepage loads without errors)
+- [x] Verify TRPC endpoints working correctly
 - [ ] Save checkpoint

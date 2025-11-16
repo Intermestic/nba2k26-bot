@@ -33,33 +33,42 @@ function getChannelName(teamName: string): string {
  */
 async function getRosterSummary(teamName: string): Promise<string> {
   try {
-    const db = await getDb();
-    if (!db) {
-      return `${teamName} team channel`;
-    }
+    // Add timeout to prevent hanging
+    const timeout = new Promise<null>((_, reject) => 
+      setTimeout(() => reject(new Error('Database query timeout')), 5000)
+    );
+    
+    const dbPromise = (async () => {
+      const db = await getDb();
+      if (!db) {
+        throw new Error('Database not available');
+      }
 
-    // Get player count and total OVR
-    const teamPlayers = await db
-      .select({
-        count: sql<number>`count(*)`,
-        totalOvr: sql<number>`sum(${players.overall})`
-      })
-      .from(players)
-      .where(eq(players.team, teamName));
+      // Get player count and total OVR
+      const teamPlayers = await db
+        .select({
+          count: sql<number>`count(*)`,
+          totalOvr: sql<number>`sum(${players.overall})`
+        })
+        .from(players)
+        .where(eq(players.team, teamName));
 
-    const playerCount = teamPlayers[0]?.count || 0;
-    const totalOvr = teamPlayers[0]?.totalOvr || 0;
+      const playerCount = Number(teamPlayers[0]?.count) || 0;
+      const totalOvr = Number(teamPlayers[0]?.totalOvr) || 0;
 
-    // Get FA coins
-    const coins = await db
-      .select()
-      .from(teamCoins)
-      .where(eq(teamCoins.team, teamName));
+      // Get FA coins
+      const coins = await db
+        .select()
+        .from(teamCoins)
+        .where(eq(teamCoins.team, teamName));
 
-    const coinsRemaining = coins[0]?.coinsRemaining || 0;
-    const maxCoins = (teamName === 'Nuggets' || teamName === 'Hawks') ? 115 : 100;
+      const coinsRemaining = coins[0]?.coinsRemaining || 0;
+      const maxCoins = (teamName === 'Nuggets' || teamName === 'Hawks') ? 115 : 100;
 
-    return `${teamName}: ${playerCount} players, ${totalOvr} total OVR, ${coinsRemaining}/${maxCoins} FA coins`;
+      return `${teamName}: ${playerCount} players, ${totalOvr} total OVR, ${coinsRemaining}/${maxCoins} FA coins`;
+    })();
+    
+    return await Promise.race([dbPromise, timeout]) as string;
   } catch (error) {
     console.error(`[Team Channels] Error getting roster summary for ${teamName}:`, error);
     return `${teamName} team channel`;
@@ -184,6 +193,12 @@ async function createOrUpdateTeamChannel(
 export async function syncTeamChannels(client: Client): Promise<void> {
   try {
     console.log('[Team Channels] Starting channel sync...');
+    
+    // Ensure client is ready
+    if (!client.isReady()) {
+      console.warn('[Team Channels] Client not ready, skipping sync');
+      return;
+    }
 
     // Get guild
     const guild = await client.guilds.fetch(GUILD_ID);

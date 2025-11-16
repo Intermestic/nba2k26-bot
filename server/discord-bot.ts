@@ -845,11 +845,15 @@ export async function startDiscordBot(token: string) {
     // Initialize team channel manager (after roles are synced)
     try {
       const { syncTeamChannels } = await import('./team-channel-manager');
-      // Wait 2 seconds to ensure roles are created first
+      // Wait 5 seconds to ensure roles are created and database is ready
       setTimeout(async () => {
-        await syncTeamChannels(client!);
-        console.log('[Team Channels] Initial channel sync complete');
-      }, 2000);
+        try {
+          await syncTeamChannels(client!);
+          console.log('[Team Channels] Initial channel sync complete');
+        } catch (error) {
+          console.error('[Team Channels] Sync failed during initialization:', error);
+        }
+      }, 5000);
     } catch (error) {
       console.error('[Team Channels] Failed to initialize:', error);
     }
@@ -866,8 +870,12 @@ export async function startDiscordBot(token: string) {
         
         // Also sync team channels after role sync
         setTimeout(async () => {
-          const { syncTeamChannels } = await import('./team-channel-manager');
-          await syncTeamChannels(client!);
+          try {
+            const { syncTeamChannels } = await import('./team-channel-manager');
+            await syncTeamChannels(client!);
+          } catch (error) {
+            console.error('[Team Channels] Sync failed after role update:', error);
+          }
         }, 1000);
       }
     } catch (error) {
