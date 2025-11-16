@@ -11,7 +11,8 @@ export interface ValidationResult {
 
 /**
  * Validate an upgrade request
- * Checks badge requirements and attribute thresholds
+ * Checks badge requirements and attribute thresholds for badge upgrades
+ * Validates stat increases for stat upgrades
  */
 export async function validateUpgradeRequest(
   upgrade: ParsedUpgrade,
@@ -21,10 +22,72 @@ export async function validateUpgradeRequest(
   const errors: string[] = [];
   const ruleViolations: string[] = [];
   
+  // Handle stat upgrades differently
+  if (upgrade.upgradeType === "stat") {
+    return validateStatUpgrade(upgrade, errors, ruleViolations);
+  }
+  
+  // Badge upgrade validation
+  return validateBadgeUpgrade(upgrade, errors, ruleViolations, playerHeight);
+}
+
+/**
+ * Validate stat upgrade
+ * Stat upgrades have simpler validation - just check format
+ */
+function validateStatUpgrade(
+  upgrade: ParsedUpgrade,
+  errors: string[],
+  ruleViolations: string[]
+): ValidationResult {
+  if (!upgrade.statName || !upgrade.statIncrease || !upgrade.newStatValue) {
+    errors.push("Invalid stat upgrade format. Expected: +X stat to value");
+    return { valid: false, errors, ruleViolations };
+  }
+  
+  // Validate stat name is recognized
+  const validStats = ['3pt', 'mid', 'ft', 'dunk', 'layup', 'pd', 'agl', 'vert', 'str', 'spd'];
+  if (!validStats.includes(upgrade.statName.toLowerCase())) {
+    ruleViolations.push(`Unrecognized stat: ${upgrade.statName}. Admin review required.`);
+  }
+  
+  // Validate increase is reasonable (1-10 points)
+  if (upgrade.statIncrease < 1 || upgrade.statIncrease > 10) {
+    ruleViolations.push(`Unusual stat increase: +${upgrade.statIncrease}. Verify this is correct.`);
+  }
+  
+  // Validate new value is reasonable (25-99)
+  if (upgrade.newStatValue < 25 || upgrade.newStatValue > 99) {
+    ruleViolations.push(`Unusual stat value: ${upgrade.newStatValue}. Verify this is correct.`);
+  }
+  
+  return {
+    valid: errors.length === 0,
+    errors,
+    ruleViolations,
+  };
+}
+
+/**
+ * Validate badge upgrade
+ * Checks badge requirements and attribute thresholds
+ */
+async function validateBadgeUpgrade(
+  upgrade: ParsedUpgrade,
+  errors: string[],
+  ruleViolations: string[],
+  playerHeight?: string
+): Promise<ValidationResult> {
   // Check if badge requirements exist for this badge + tier
   const db = await getDb();
   if (!db) {
     errors.push("Database not available");
+    return { valid: false, errors, ruleViolations };
+  }
+  
+  // Badge name and tier must be present for badge upgrades
+  if (!upgrade.badgeName || !upgrade.toLevel) {
+    errors.push("Invalid badge upgrade format. Expected: +1 BADGE to Tier (attributes)");
     return { valid: false, errors, ruleViolations };
   }
   
@@ -34,7 +97,7 @@ export async function validateUpgradeRequest(
     .where(
       and(
         eq(badgeRequirements.badgeName, upgrade.badgeName),
-        eq(badgeRequirements.tier, upgrade.toLevel)
+        eq(badgeRequirements.tier, upgrade.toLevel as any) // Cast to satisfy TypeScript
       )
     );
   
@@ -116,7 +179,11 @@ export function formatValidationMessage(upgrade: ParsedUpgrade, validation: Vali
   const lines: string[] = [];
   
   // Header
-  lines.push(`**${upgrade.playerName}** - ${upgrade.badgeName} → ${capitalize(upgrade.toLevel)}`);
+  if (upgrade.upgradeType === "badge") {
+    lines.push(`**${upgrade.playerName}** - ${upgrade.badgeName} → ${capitalize(upgrade.toLevel || "")}`);
+  } else {
+    lines.push(`**${upgrade.playerName}** - ${upgrade.statName?.toUpperCase()} +${upgrade.statIncrease} → ${upgrade.newStatValue}`);
+  }
   
   if (validation.valid) {
     lines.push("✅ **Valid** - Awaiting admin approval");

@@ -61,11 +61,10 @@ export async function handleUpgradeRequest(message: Message, teamName: string) {
     
     results.push({ upgrade: parsed, validation, playerHeight });
     
-    // Save request to database
+    // Save request to database (only for badge upgrades, stat upgrades are tracked separately)
     const db = await getDb();
-    if (db) {
+    if (db && parsed.upgradeType === "badge" && parsed.badgeName && parsed.fromLevel && parsed.toLevel) {
       await db.insert(upgradeRequests).values({
-        playerId: player?.id || null,
         playerName: parsed.playerName,
         badgeName: parsed.badgeName,
         fromLevel: parsed.fromLevel,

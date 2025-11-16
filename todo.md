@@ -1707,4 +1707,24 @@ Upgrade messages posted in team channels (e.g., team-wizards) are not being proc
 ### Phase 3: Test
 - [ ] Test upgrade validation with real badge data
 - [ ] Verify attribute thresholds work correctly
+- [x] Save checkpoint
+
+
+## CURRENT TASK: Update Upgrade Parser for Structured Messages
+
+### Requirements
+- [ ] Parse messages with headers (e.g., **Welcomes**, **Game 5**)
+- [ ] Handle player names with bullet points (- Suggs)
+- [ ] Parse badge upgrades: "+1 SS (83 3pt)", "+1 CHL to bronze (88 pd 79 agl)"
+- [ ] Parse attribute increases: "+3 Mid to 72", "+2 3pt to 86"
+- [ ] Handle "90+" format for attributes
+- [ ] Support multiple upgrades per player
+- [ ] Ignore header lines, only process player/upgrade lines
+
+### Implementation
+- [x] Update upgrade-parser.ts to handle structured format
+- [x] Add logic to detect player names (lines starting with -)
+- [x] Add logic to parse attribute stat increases (+X stat to value)
+- [x] Update validator to handle both badge and stat upgrade types
+- [ ] Test with example message from user
 - [ ] Save checkpoint
