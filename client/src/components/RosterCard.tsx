@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import html2canvas from 'html2canvas';
 import { Button } from '@/components/ui/button';
 import { Download, Share2, X, ChevronDown } from 'lucide-react';
@@ -29,10 +29,30 @@ type ExportFormat = 'png' | '4k' | 'instagram' | 'pdf';
 export default function RosterCard({ players, teamName, teamLogo, onClose }: RosterCardProps) {
   const [isDownloading, setIsDownloading] = useState(false);
   const [showFormatMenu, setShowFormatMenu] = useState(false);
+  const [logoDataUrl, setLogoDataUrl] = useState<string>('');
   const cardRef = useRef<HTMLDivElement>(null);
 
   // Sort players by overall rating (highest first)
   const sortedPlayers = [...players].sort((a, b) => b.overall - a.overall);
+  
+  // Convert team logo to base64 for html2canvas compatibility
+  useEffect(() => {
+    if (teamLogo) {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.drawImage(img, 0, 0);
+          setLogoDataUrl(canvas.toDataURL('image/png'));
+        }
+      };
+      img.src = `/api/image-proxy?url=${encodeURIComponent(teamLogo)}`;
+    }
+  }, [teamLogo]);
   
   // Get team colors
   const teamColors = getTeamColors(teamName);
@@ -66,6 +86,21 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
     setIsDownloading(true);
     setShowFormatMenu(false);
     try {
+      // Preload all images to ensure they're ready for html2canvas
+      const images = cardRef.current.querySelectorAll('img');
+      await Promise.all(
+        Array.from(images).map((img) => {
+          return new Promise((resolve) => {
+            if (img.complete) {
+              resolve(true);
+            } else {
+              img.onload = () => resolve(true);
+              img.onerror = () => resolve(true); // Continue even if image fails
+            }
+          });
+        })
+      );
+      
       // Small delay to ensure DOM is fully rendered
       await new Promise(resolve => setTimeout(resolve, 500));
       
@@ -312,7 +347,7 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                         style={{
                           position: 'relative',
                           width: '100%',
-                          aspectRatio: '3/4',
+                          aspectRatio: '5/4',
                           marginBottom: '12px',
                           borderRadius: '12px',
                           overflow: 'hidden',
@@ -333,7 +368,7 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                             style={{
                               width: '100%',
                               height: '100%',
-                              objectFit: 'cover',
+                              objectFit: 'contain',
                               border: 'none',
                               outline: 'none',
                               boxShadow: 'none',
@@ -351,38 +386,27 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                             style={{
                               position: 'absolute',
                               top: '8px',
-                              left: '8px',
-                              background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)',
-                              color: '#000',
-                              padding: '4px 10px',
-                              borderRadius: '6px',
-                              fontSize: '14px',
+                              right: '8px',
+                              color: '#FFD700',
+                              fontSize: '28px',
                               fontWeight: 'bold',
-                              border: 'none',
-                              outline: 'none',
-                              boxShadow: '0 2px 8px rgba(255, 215, 0, 0.4)',
-                              letterSpacing: '0.5px',
+                              textShadow: '0 2px 4px rgba(0,0,0,0.8), 0 0 8px rgba(0,0,0,0.6)',
                             }}
                           >
-                            ROOKIE
+                            R
                           </div>
                         )}
 
-                        {/* Overall Rating Badge */}
+                        {/* Overall Rating */}
                         <div
                           style={{
                             position: 'absolute',
                             bottom: '8px',
                             right: '8px',
-                            background: teamColors.primary,
-                            color: 'white',
-                            padding: '4px 12px',
-                            borderRadius: '6px',
-                            fontSize: '18px',
+                            color: '#FFD700',
+                            fontSize: '24px',
                             fontWeight: 'bold',
-                            border: 'none',
-                            outline: 'none',
-                            boxShadow: 'none',
+                            textShadow: '0 2px 4px rgba(0,0,0,0.8), 0 0 8px rgba(0,0,0,0.6)',
                           }}
                         >
                           {topPlayers[0].overall}
@@ -436,7 +460,7 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                   >
                     <div style={{ textAlign: 'center' }}>
                       <img
-                        src={`/api/image-proxy?url=${encodeURIComponent(teamLogo)}`}
+                        src={logoDataUrl || `/api/image-proxy?url=${encodeURIComponent(teamLogo)}`}
                         alt={`${teamName} logo`}
                         crossOrigin="anonymous"
                         style={{
@@ -510,7 +534,7 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                         style={{
                           position: 'relative',
                           width: '100%',
-                          aspectRatio: '3/4',
+                          aspectRatio: '5/4',
                           marginBottom: '12px',
                           borderRadius: '12px',
                           overflow: 'hidden',
@@ -531,7 +555,7 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                             style={{
                               width: '100%',
                               height: '100%',
-                              objectFit: 'cover',
+                              objectFit: 'contain',
                               border: 'none',
                               outline: 'none',
                               boxShadow: 'none',
@@ -549,38 +573,27 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                             style={{
                               position: 'absolute',
                               top: '8px',
-                              left: '8px',
-                              background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)',
-                              color: '#000',
-                              padding: '4px 10px',
-                              borderRadius: '6px',
-                              fontSize: '14px',
+                              right: '8px',
+                              color: '#FFD700',
+                              fontSize: '28px',
                               fontWeight: 'bold',
-                              border: 'none',
-                              outline: 'none',
-                              boxShadow: '0 2px 8px rgba(255, 215, 0, 0.4)',
-                              letterSpacing: '0.5px',
+                              textShadow: '0 2px 4px rgba(0,0,0,0.8), 0 0 8px rgba(0,0,0,0.6)',
                             }}
                           >
-                            ROOKIE
+                            R
                           </div>
                         )}
 
-                        {/* Overall Rating Badge */}
+                        {/* Overall Rating */}
                         <div
                           style={{
                             position: 'absolute',
                             bottom: '8px',
                             right: '8px',
-                            background: teamColors.primary,
-                            color: 'white',
-                            padding: '4px 12px',
-                            borderRadius: '6px',
-                            fontSize: '18px',
+                            color: '#FFD700',
+                            fontSize: '24px',
                             fontWeight: 'bold',
-                            border: 'none',
-                            outline: 'none',
-                            boxShadow: 'none',
+                            textShadow: '0 2px 4px rgba(0,0,0,0.8), 0 0 8px rgba(0,0,0,0.6)',
                           }}
                         >
                           {topPlayers[1].overall}
@@ -652,7 +665,7 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                         style={{
                           position: 'relative',
                           width: '100%',
-                          aspectRatio: '3/4',
+                          aspectRatio: '5/4',
                           marginBottom: '8px',
                           borderRadius: '8px',
                           overflow: 'hidden',
@@ -673,7 +686,7 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                             style={{
                               width: '100%',
                               height: '100%',
-                              objectFit: 'cover',
+                              objectFit: 'contain',
                               border: 'none',
                               outline: 'none',
                               boxShadow: 'none',
@@ -691,38 +704,27 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                             style={{
                               position: 'absolute',
                               top: '6px',
-                              left: '6px',
-                              background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)',
-                              color: '#000',
-                              padding: '3px 8px',
-                              borderRadius: '4px',
-                              fontSize: '11px',
+                              right: '6px',
+                              color: '#FFD700',
+                              fontSize: '22px',
                               fontWeight: 'bold',
-                              border: 'none',
-                              outline: 'none',
-                              boxShadow: '0 2px 6px rgba(255, 215, 0, 0.4)',
-                              letterSpacing: '0.5px',
+                              textShadow: '0 2px 4px rgba(0,0,0,0.8), 0 0 8px rgba(0,0,0,0.6)',
                             }}
                           >
-                            ROOKIE
+                            R
                           </div>
                         )}
 
-                        {/* Overall Rating Badge */}
+                        {/* Overall Rating */}
                         <div
                           style={{
                             position: 'absolute',
                             bottom: '6px',
                             right: '6px',
-                            background: teamColors.primary,
-                            color: 'white',
-                            padding: '3px 10px',
-                            borderRadius: '6px',
-                            fontSize: '14px',
+                            color: '#FFD700',
+                            fontSize: '18px',
                             fontWeight: 'bold',
-                            border: 'none',
-                            outline: 'none',
-                            boxShadow: 'none',
+                            textShadow: '0 2px 4px rgba(0,0,0,0.8), 0 0 8px rgba(0,0,0,0.6)',
                           }}
                         >
                           {player.overall}
@@ -855,7 +857,7 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                             style={{
                               width: '100%',
                               height: '100%',
-                              objectFit: 'cover',
+                              objectFit: 'contain',
                               border: 'none',
                               outline: 'none',
                               boxShadow: 'none',
@@ -913,16 +915,10 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                           {player.isRookie === 1 && (
                             <div
                               style={{
-                                background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)',
-                                color: '#000',
-                                padding: '2px 6px',
-                                borderRadius: '4px',
-                                fontSize: '10px',
+                                color: '#FFD700',
+                                fontSize: '18px',
                                 fontWeight: 'bold',
-                                border: 'none',
-                                outline: 'none',
-                                boxShadow: 'none',
-                                letterSpacing: '0.5px',
+                                textShadow: '0 2px 4px rgba(0,0,0,0.8), 0 0 8px rgba(0,0,0,0.6)',
                               }}
                             >
                               R
@@ -930,16 +926,10 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                           )}
                           <div
                             style={{
-                              display: 'inline-block',
-                              background: teamColors.primary,
-                              color: 'white',
-                              padding: '4px 12px',
-                              borderRadius: '6px',
-                              fontSize: '14px',
+                              color: '#FFD700',
+                              fontSize: '16px',
                               fontWeight: 'bold',
-                              border: 'none',
-                              outline: 'none',
-                              boxShadow: 'none',
+                              textShadow: '0 2px 4px rgba(0,0,0,0.8), 0 0 8px rgba(0,0,0,0.6)',
                             }}
                           >
                             {player.overall}

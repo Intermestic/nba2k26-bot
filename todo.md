@@ -1454,4 +1454,99 @@ Build comprehensive admin dashboard for managing Discord bot configuration, comm
 - [x] Restored Kyle Lowry to database (75 OVR, 6'0", PG, Free Agents)
 - [x] Added Kyle Lowry photo (/kyle-lowry.jpg)
 - [x] Verified: 644 total players, 644 with photos (100%)
+- [x] Save checkpoint
+
+
+## CURRENT TASK: Fix Roster Card Download Issues
+
+### Issues
+1. Player images distorted (stretched/squashed instead of maintaining aspect ratio)
+2. Team logo not loading in center
+3. OVR rating badges misaligned (numbers not centered in shadowbox)
+
+### Tasks
+- [x] Investigate RosterCard.tsx rendering code
+- [x] Fix player image aspect ratio and object-fit properties (changed objectFit from 'cover' to 'contain')
+- [x] Fix team logo loading in html2canvas export (added image preloading)
+- [x] Fix OVR rating badge alignment and centering (added flexbox centering, minWidth, textAlign)
+- [x] Adjust aspect ratio from 3/4 to 4/5 for better NBA headshot proportions
+- [x] Convert team logo to base64 data URL for html2canvas (useEffect + canvas conversion) ✅ WORKING
+- [x] Improve OVR badge centering with line-height and explicit height
+- [x] Change aspect ratio to 1:1 (square) - images still too tall at 4:5
+- [x] Fix OVR badge centering - removed line-height conflicts, use lineHeight: '1' and symmetric padding
+- [ ] Test PNG, 4K PNG, Instagram Story, and PDF exports
+- [ ] Save checkpoint
+
+## CURRENT TASK: Simplify Roster Card Design to Match Homepage
+
+### Changes Requested
+1. Replace ROOKIE banner with gold "R" badge (top-right, like homepage)
+2. Match OVR rating style from homepage player cards exactly
+
+### Tasks
+- [ ] Check homepage player card component for rookie badge style
+- [ ] Check homepage player card component for OVR rating style
+- [ ] Replace ROOKIE banner with gold R badge in RosterCard
+- [ ] Replace OVR shadowbox with homepage-style OVR display
+- [ ] Test all export formats
+- [ ] Save checkpoint
+
+## CURRENT TASK: Simplify Roster Card Design (Option B)
+
+### Changes
+1. Replace ROOKIE banner with small gold "R" badge (top-right corner)
+2. Replace OVR shadowbox with simple text + text-shadow (no background)
+
+### Tasks
+- [x] Replace ROOKIE banner with gold R badge (circular, top-right)
+- [x] Remove OVR background box, use text with shadow only
+- [x] Change aspect ratio from 1:1 to 5:4 for wider images
+- [ ] Test all export formats
+- [ ] Save checkpoint
+
+## CURRENT TASK: Final Roster Card Polish
+
+### Adjustments
+1. Change R badge from "black text in gold circle" to just "gold R" (like homepage)
+2. Add thick colored stroke/outline to OVR numbers for better visibility
+
+### Tasks
+- [x] Remove circular background from R badge, make it just gold text (#FFD700)
+- [x] Add thick green stroke (WebkitTextStroke: 2px #10b981) to OVR numbers
+- [ ] Test download
+- [ ] Save checkpoint
+
+## CURRENT TASK: Improve OVR Visibility for Mobile
+
+### Change
+Replace green stroke with thick black stroke for better mobile visibility
+
+### Tasks
+- [x] Change OVR WebkitTextStroke from green to black (3px for large, 2.5px for small)
+- [ ] Test download
+- [ ] Save checkpoint
+
+## CURRENT TASK: Change OVR to Green with White Stroke
+
+### Change
+- Green font color (bright green for visibility)
+- Thick white stroke (3-4px)
+- Block-style font (heavy weight, adjusted spacing)
+
+### Tasks
+- [x] Change OVR color to bright green (#22c55e)
+- [x] Change stroke to white (3px for large, 2.5px for small)
+- [x] Adjust font weight to 900 and letter-spacing 0.5px for block style
+- [ ] Test download
+- [ ] Save checkpoint
+
+## CURRENT TASK: Match OVR Style with Gold R
+
+### Change
+Use same styling as gold R badge for OVR numbers (gold color, text shadow, no stroke)
+
+### Tasks
+- [x] Change OVR to gold (#FFD700) with same shadow as R badge
+- [x] Remove WebkitTextStroke and extra styling
+- [ ] Test download
 - [ ] Save checkpoint
