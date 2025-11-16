@@ -255,11 +255,6 @@ export default function Admin() {
                 </Link>
               </Button>
               <Button asChild variant="outline" size="sm" className="bg-slate-800 border-slate-700 hover:bg-slate-700">
-                <Link href="/admin/upgrade-summary">
-                  Upgrades
-                </Link>
-              </Button>
-              <Button asChild variant="outline" size="sm" className="bg-slate-800 border-slate-700 hover:bg-slate-700">
                 <Link href="/">
                   Home
                 </Link>

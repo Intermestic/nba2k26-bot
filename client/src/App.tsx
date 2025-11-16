@@ -23,8 +23,7 @@ import WelcomeGoodbye from "./pages/WelcomeGoodbye";
 import ReactionRoles from "./pages/ReactionRoles";
 import Analytics from "./pages/Analytics";
 import ServerLogs from "./pages/ServerLogs";
-import UpgradeHistory from "./pages/UpgradeHistory";
-import ValidationRules from "./pages/ValidationRules";
+import AdminDashboard from "./pages/AdminDashboard";
 import UpgradeSummary from "./pages/admin/UpgradeSummary";
 
 function Router() {
@@ -32,6 +31,8 @@ function Router() {
   return (
     <Switch>
       <Route path={"/"} component={Home} />
+      <Route path={"/admin/dashboard"} component={AdminDashboard} />
+      <Route path={"/admin/upgrade-summary"} component={UpgradeSummary} />
       <Route path={"/admin"} component={Admin} />
       <Route path={"/admin/transactions"} component={Transactions} />
       <Route path={"/admin/history"} component={History} />
@@ -50,9 +51,6 @@ function Router() {
       <Route path={"/admin/reaction-roles"} component={ReactionRoles} />
       <Route path={"/admin/analytics"} component={Analytics} />
       <Route path={"/admin/logs"} component={ServerLogs} />
-      <Route path={"/admin/upgrade-history"} component={UpgradeHistory} />
-      <Route path={"/admin/validation-rules"} component={ValidationRules} />
-      <Route path={"/admin/upgrade-summary"} component={UpgradeSummary} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />

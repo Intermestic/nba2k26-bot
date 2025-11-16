@@ -1,1 +1,0 @@
-ALTER TABLE `upgrade_requests` ADD `gameNumber` int;

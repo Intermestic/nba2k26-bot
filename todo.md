@@ -1638,341 +1638,53 @@ Use same styling as gold R badge for OVR numbers (gold color, text shadow, no st
 - [x] Test with Grizzlies team specifically
 
 
-## MANUAL TEST: Post Welcome Message to Grizzlies
-
-- [x] Create test script to post welcome message
-- [x] Execute and verify message appears in #team-grizzlies
-
-
-## CURRENT TASK: Fix Trade Parser - More Flexible Format Support
+## CURRENT TASK: Fix Upgrade Handler Not Called in Team Channels
 
 ### Issue
-Trade parser failing on valid trade messages with format:
-```
-Mavericks send:
-Stephen curry 95 (21)
-...
-
-Blazers send:
-Ja morant 89 (19)
-...
-```
-
-Parser should accept ANY of these formats:
-- "Team send: players"
-- "Team sends: players"  
-- "Team: players"
-- "Team name players" (with line breaks)
-
-### Tasks
-- [x] Update trade-parser.ts to be more flexible
-- [x] Accept team names with or without "send/sends" keyword
-- [x] Handle multi-line player lists
-- [x] TypeScript compilation successful
-- [x] Test with the failed Mavericks/Blazers trade
-- [x] Save checkpoint
-
-
-## CURRENT TASK: Fix Trade Parser Team Name Recognition
-
-### Issue
-Parser failing because "Mavericks" and "Blazers" aren't in NBA_TEAMS list
-- Has "Mavs" but not "Mavericks"
-- Has "Trailblazers" but not "Blazers" or "Trail Blazers"
-
-### Tasks
-- [x] Add all team name variations to NBA_TEAMS array
-- [x] Include: Mavericks, Blazers, Trail Blazers, 76ers/Sixers, etc.
-- [x] TypeScript compilation successful
-- [x] Test with Mavericks/Blazers trade (ready for user testing)
-- [x] Save checkpoint
-
-
-## CURRENT TASK: Fix Trade Player Validation - Use Fuzzy Matching
-
-### Issue
-Trade parser now extracts teams correctly, but player validation is failing:
-- "Stephen curry" not matching "Stephen Curry" (case sensitivity)
-- "Issac okoro" not matching "Isaac Okoro" (typo in first name)
-- All player names are lowercase from Discord messages
-
-### Tasks
-- [x] Update resolveTradePlayer to use findPlayerByFuzzyName
-- [x] Pass team context to fuzzy matcher for better accuracy
-- [x] Handle case-insensitive matching
-- [x] Normalize team names (Mavericks→Mavs, Blazers→Trail Blazers)
-- [x] TypeScript compilation successful
-- [x] Test with Mavericks/Blazers trade (ready for user testing)
-- [x] Save checkpoint
-
-
-## CURRENT TASK: Build Upgrade Validation System
-
-### Requirements
-**Upgrade Request Format:** "5gm upgrade: Suggs SS +1 to silver"
-- Must include: player name, badge (name or abbreviation), level change
-- Should include: attribute values for verification
-- Bot validates against badge requirements from spreadsheet
-
-**Validation Rules:**
-1. **Badge Requirements Check**
-   - Each badge has attribute gates (Bronze/Silver/Gold)
-   - Height restrictions (MinHeight - MaxHeight)
-   - Must show requirements in response every time
-   - Reject if attributes not provided or don't meet gates
-
-2. **Rule Enforcement**
-   - Back-to-back rule: Flag consecutive upgrades
-   - +6 rule: Flag if player exceeds +6 total
-   - No added badges rule: Flag if new badge added
-   - Bot notes rule violations in response
-
-3. **Approval Workflow**
-   - Valid request: Bot reacts with 😀
-   - Admin reviews and reacts with ✅
-   - Bot forwards to channel 1149106208498790500
-   - Bot DMs @Admins when upgrade ready for review
-
-**Matching:**
-- Case-insensitive for badge names and player names
-- Support badge abbreviations (SS = Shifty Shooter)
-- Fuzzy matching for player names
-
-### Tasks
-- [ ] Analyze upgrade rules spreadsheet structure
-- [ ] Create database schema for upgrade tracking
-- [ ] Import badge requirements into database
-- [ ] Build upgrade message parser
-- [ ] Implement badge requirement validation
-- [ ] Add attribute gate checking
-- [ ] Implement back-to-back detection
-- [ ] Implement +6 limit checking
-- [ ] Implement no added badges checking
-- [ ] Create admin approval workflow
-- [ ] Add DM notifications to admins
-- [ ] Test and save checkpoint
-
-
-## COMPLETED: Upgrade Validation System ✅
-
-### Implementation
-- [x] Database schema created (badge_requirements, badge_abbreviations, upgrade_requests, player_upgrades)
-- [x] Badge data imported from spreadsheet (64 requirements, 40 abbreviations)
-- [x] Upgrade parser built (extracts game#, player, badge, level, attributes)
-- [x] Badge validation implemented (checks attribute gates and height)
-- [x] Rule enforcement added (back-to-back, +6 limit, no added badges)
-- [x] Team channel message handler integrated
-- [x] Admin approval workflow (😀 → ✅)
-- [x] Public upgrade log channel posting
-- [ ] Test in Discord
-- [x] Save checkpoint
-
-### How It Works
-1. User posts upgrade request in team channel (e.g., "5gm upgrade: Suggs SS +1 to silver midrange 87, 3pt 91")
-2. Bot parses request and validates against badge requirements
-3. If valid: Bot replies with ✅ message and adds 😀 reaction
-4. If invalid: Bot replies with ❌ message listing missing/insufficient attributes
-5. Admin reacts with ✅ on valid request
-6. Bot posts to public upgrade log channel (ID: 1149106208498790500)
-7. Upgrade is recorded in database
-
-### Files Created
-- server/upgrade-parser.ts - Parses upgrade requests from messages
-- server/upgrade-validator.ts - Validates attribute gates and league rules
-- server/upgrade-handler.ts - Discord message and reaction handlers
-- drizzle/schema.ts - Added 4 new tables (badge_requirements, badge_abbreviations, upgrade_requests, player_upgrades)
-
-
-## NEW: Upgrade History Admin Page
-
-### Features to Implement
-- [x] Create TRPC router for upgrade queries (getAllUpgrades, getUpgradeStats)
-- [x] Build admin page at /admin/upgrade-history
-- [x] Add filterable table (team, player, badge, status, date)
-- [x] Add sortable columns (date, player, badge level, game number)
-- [x] Display statistics (total upgrades, by team, by badge type)
-- [x] Add status indicators (pending, approved, rejected)
-- [x] Include CSV export functionality
-- [x] Add navigation link to admin sidebar
-- [x] Test filtering and sorting
-- [x] Save checkpoint
-
-
-## NEW: Player Drill-Down Feature
-
-### Features to Implement
-- [x] Create PlayerUpgradeTimeline dialog component
-- [x] Show complete upgrade history for selected player
-- [x] Display badge progression timeline with visual indicators
-- [x] Show all attributes for each upgrade
-- [x] Add click handler to player names in upgrade history table
-- [x] Include player stats (total upgrades, badges earned, etc.)
-- [x] Test dialog functionality
-- [x] Save checkpoint
-
-
-## NEW: Show Badge Requirements in Validation Errors
-
-### Issue
-When upgrade validation fails, error message says "No requirements found" but doesn't show what the actual requirements are.
-
-### Tasks
-- [x] Update upgrade-validator.ts to include requirements in error messages
-- [x] Show required attributes with their threshold values
-- [x] Display height requirements if applicable
-- [x] Format error message to be clear and actionable
-- [x] Added missing CHALLENGER badge requirements to database
-- [x] Test with various failed validations
-- [x] Save checkpoint
-
-
-## NEW: Height Requirements Display Only
-
-### Issue
-Bot should display height requirements but NOT reject upgrades based on height - height is informational only for admin review.
-
-### Tasks
-- [x] Update upgrade-validator.ts to remove height from validation errors
-- [x] Keep height check in validation result but don't fail validation
-- [x] Display height requirement in success message as informational note
-- [x] Test with height-restricted badges
-- [x] Save checkpoint
-
-
-## NEW: Configurable Validation Rules System
-
-### Goal
-Create admin UI to manage upgrade validation rules without code changes. Pre-populate with existing rules.
-
-### Existing Rules to Migrate
-1. **Back-to-back upgrades** - Player cannot upgrade in consecutive games
-2. **+6 badge level limit** - Total badge level increases cannot exceed +6
-3. **No new badges** - Cannot add badges that player doesn't already have
-
-### Tasks
-- [x] Create validation_rules database table
-- [x] Add migration script to pre-populate existing rules
-- [x] Create TRPC router for rules CRUD operations
-- [x] Build admin page at /admin/validation-rules
-- [x] Add rule enable/disable toggles
-- [x] Add numeric value editors (e.g., +6 limit)
-- [x] Update upgrade-validator.ts to read from database
-- [x] Add navigation link to admin sidebar
-- [x] Test rule modifications
-- [x] Save checkpoint
-
-
-## FIX: Validation Rules UI - Edit and Create
-
-### Issue
-User can toggle rules on/off but cannot edit numeric values or create new rules.
-
-### Tasks
-- [x] Fix numeric value editor to actually save changes
-- [x] Add create rule mutation to TRPC router
-- [x] Add "Create New Rule" button and dialog
-- [x] Allow editing rule name and description
-- [x] Test editing and creating rules
-- [x] Save checkpoint
-
-
-## BUG: Upgrade Parser Misattributing Players
-
-### Issue
-When multiple players are listed with upgrades, the parser is attributing upgrades to the wrong player. Example: Giddey's CHL upgrade is being checked against Suggs.
-
-### Example Message
-```
-Suggs
-+1 SS (83 3pt)
-+1 PTZ (84 dunk 94 vert)
-
-Giddey
-+1 CHL to bronze (88 pd 79 agl)
-+1 SSS (84 3pt)
-```
-
-Result: CHL upgrade checked for Suggs instead of Giddey
-
-### Tasks
-- [x] Rewrite parseUpgradeRequest to return array of ParsedUpgrade[]
-- [x] Split message by player names (line breaks)
-- [x] Parse all upgrades for each player
-- [x] Update handler to loop through multiple upgrades
-- [x] Update validation and database logic for batch processing
-- [x] Test with various multi-player formats
-- [x] Save checkpoint
-
-
-## CURRENT TASK: Upgrade Template System
-
-### Goal
-Implement reusable upgrade templates allowing users to apply common upgrade patterns via Discord commands
-
-### Phase 1: Database Schema
-- [ ] Create upgrade_templates table (id, name, description, category, upgrades JSON, createdBy, createdAt)
-- [ ] Add indexes for name and category
-- [ ] Push schema changes
-
-### Phase 2: TRPC Router
-- [ ] Create templates router with CRUD endpoints
-- [ ] getAll (with optional category filter)
-- [ ] getById
-- [ ] create (admin only)
-- [ ] update (admin only)
-- [ ] delete (admin only)
-- [ ] getCategories (return unique categories)
-
-### Phase 3: Admin UI
-- [ ] Create /admin/upgrade-templates page
-- [ ] Display templates in categorized sections
-- [ ] Add create template dialog (name, description, category, upgrade list)
-- [ ] Add edit template dialog
-- [ ] Add delete confirmation
-- [ ] Show template preview with example player
-
-### Phase 4: Discord Command
-- [ ] Add !template command handler
-- [ ] Parse: !template <template-name> <player-name>
-- [ ] Fetch template from database
-- [ ] Replace player name in template
-- [ ] Post formatted upgrade message to channel
-- [ ] Process through existing upgrade validation system
-
-### Phase 5: Testing
-- [ ] Create test templates (rookie-package, sharpshooter, defensive-specialist)
-- [ ] Test !template command in Discord
-- [ ] Verify upgrades process correctly
-- [ ] Save checkpoint
-
-
-## CURRENT TASK: Upgrade Summary Dashboard
-
-### Goal
-Create admin dashboard showing pending upgrades grouped by team with bulk approve/reject actions
-
-### Phase 1: Backend - Bulk Actions
-- [x] Add bulkApprove endpoint to upgrades router (accepts array of request IDs)
-- [x] Add bulkReject endpoint to upgrades router (accepts array of request IDs)
-- [x] Update upgrade_requests status for all selected IDs
-- [x] Post approved upgrades to public log channel
-- [x] Return success/failure counts
-
-### Phase 2: Frontend - Upgrade Summary UI
-- [x] Create /admin/upgrade-summary page
-- [x] Fetch all pending upgrades via TRPC
-- [x] Group upgrades by team (collapsible sections)
-- [x] Show upgrade details: player, badge, tier, attributes, game number
-- [x] Add checkboxes for selecting multiple upgrades
-- [x] Add "Select All" checkbox per team
-- [x] Add bulk action buttons: Approve Selected, Reject Selected
-- [x] Show confirmation dialog before bulk actions
-- [x] Display success/failure toast notifications
-
-### Phase 3: Testing
-- [ ] Test bulk approve with multiple upgrades
-- [ ] Test bulk reject with multiple upgrades
-- [ ] Verify Discord messages posted for approved upgrades
-- [x] Code compiled successfully
-- [x] UI built and route added
+Upgrade messages posted in team channels (e.g., team-wizards) are not being processed because handleUpgradeRequest is never called in the Discord bot's messageCreate event
+
+### Phase 1: Create Upgrade Parser
+- [x] Create server/upgrade-parser.ts
+- [x] Parse format: "PlayerName +1 BADGE to Tier (attributes)"
+- [x] Support multiple upgrades in one message
+- [x] Extract: playerName, badgeName, fromLevel, toLevel, attributes, gameNumber
+
+### Phase 2: Create Upgrade Validator
+- [x] Create server/upgrade-validator.ts
+- [x] Check badge requirements from badge_requirements table
+- [x] Validate attribute thresholds
+- [x] Return validation result with errors
+
+### Phase 3: Create Upgrade Handler
+- [x] Create server/upgrade-handler.ts
+- [x] Call parser to extract upgrades
+- [x] Call validator for each upgrade
+- [x] Save to upgrade_requests table
+- [x] Reply with validation results
+- [x] React with 😀 if all valid
+
+### Phase 4: Add Approval Handler
+- [x] Add ✅ reaction handler in discord-bot.ts
+- [x] Check if user is admin
+- [x] Update upgrade_requests status to approved
+- [x] Add to player_upgrades table
+- [x] Post to upgrade log channel
+
+### Phase 5: Create Unified Admin Dashboard
+- [x] Create /admin/dashboard page
+- [x] Add navigation cards for all admin pages
+- [x] Routes added for dashboard and upgrade summary
+- [x] Add icons and descriptions for each tool
+
+### Phase 6: Database & Router
+- [x] Create upgrade tables in schema
+- [x] Create upgrades TRPC router
+- [x] Register router in main routers file
+- [x] All TypeScript errors resolved
+
+### Phase 7: Testing
+- [ ] Test upgrade message in Wizards channel
+- [ ] Test admin approval with ✅
+- [ ] Verify Discord log post
+- [ ] Test admin dashboard navigation
 - [ ] Save checkpoint

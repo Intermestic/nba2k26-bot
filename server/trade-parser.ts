@@ -1,7 +1,6 @@
 import { getDb } from './db';
 import { players, matchLogs } from '../drizzle/schema';
 import { extract } from 'fuzzball';
-import { validateTeamName } from './team-validator';
 
 /**
  * Parsed trade structure
@@ -15,38 +14,13 @@ export interface ParsedTrade {
 
 /**
  * NBA team names for fuzzy matching
- * Includes all common variations to maximize parsing success
  */
 const NBA_TEAMS = [
-  // Include both short and full names for teams
-  '76ers', 'Sixers',
-  'Blazers', 'Trail Blazers', 'Trailblazers',
-  'Bucks',
-  'Bulls',
-  'Cavaliers', 'Cavs',
-  'Celtics',
-  'Grizzlies',
-  'Hawks',
-  'Heat',
-  'Hornets',
-  'Jazz',
-  'Kings',
-  'Knicks',
-  'Lakers',
-  'Magic',
-  'Mavericks', 'Mavs',
-  'Nets',
-  'Nuggets',
-  'Pacers',
-  'Pelicans',
-  'Pistons',
-  'Raptors',
-  'Rockets',
-  'Spurs',
-  'Suns',
-  'Timberwolves', 'Wolves',
-  'Warriors',
-  'Wizards'
+  '76ers', 'Bucks', 'Bulls', 'Cavaliers', 'Celtics', 'Grizzlies',
+  'Hawks', 'Heat', 'Hornets', 'Jazz', 'Kings', 'Knicks', 'Lakers', 'Magic',
+  'Mavs', 'Mavericks', 'Nets', 'Nuggets', 'Pacers', 'Pelicans', 'Pistons',
+  'Raptors', 'Rockets', 'Spurs', 'Suns', 'Timberwolves', 'Trailblazers',
+  'Warriors', 'Wizards'
 ];
 
 /**
@@ -96,44 +70,39 @@ export function parseTrade(message: string): ParsedTrade | null {
   // Try different parsing strategies
   
   // Strategy 1: "Team send: Player OVR (badges) ..." format (multi-line)
-  // This strategy is very flexible - accepts:
-  // - "Team send: players"
-  // - "Team sends: players"
-  // - "Team: players"
-  // - "Team\nplayers" (just team name followed by player list)
-  
-  // Try to match team1's section with optional "send/sends" keyword
-  const team1Pattern = new RegExp(
-    `${team1}\\s*(?:send[s]?)?[:\\s]*\\n?([^]+?)(?:${team2}|$)`,
+  const sendPattern = new RegExp(
+    `${team1}\\s+send[s]?[:\\s]+([^]+?)(?:for|${team2}\\s+send)`,
     'is'
   );
-  const team1Match = text.match(team1Pattern);
+  const sendMatch = text.match(sendPattern);
   
-  if (team1Match) {
-    // Try to match team2's section with optional "send/sends" keyword
-    const team2Pattern = new RegExp(
-      `${team2}\\s*(?:send[s]?)?[:\\s]*\\n?([^]+?)(?:$|\\n\\n)`,
+  if (sendMatch) {
+    // Also extract team2's players - try with "send" first
+    let team2Pattern = new RegExp(
+      `${team2}\\s+send[s]?[:\\s]+([^]+?)(?:$|\\n\\n)`,
       'is'
     );
-    const team2Match = text.match(team2Pattern);
+    let team2Match = text.match(team2Pattern);
+    
+    // If no "send", try just team name followed by players
+    if (!team2Match) {
+      team2Pattern = new RegExp(
+        `${team2}\\s*\\n([^]+?)(?:$|\\n\\n)`,
+        'is'
+      );
+      team2Match = text.match(team2Pattern);
+    }
     
     if (team2Match) {
-      console.log('[Trade Parser] Using flexible format strategy');
-      console.log('[Trade Parser] Team1 raw:', team1Match[1]);
+      console.log('[Trade Parser] Using "Send" format strategy');
+      console.log('[Trade Parser] Team1 raw:', sendMatch[1]);
       console.log('[Trade Parser] Team2 raw:', team2Match[1]);
-      
-      const team1Players = parsePlayerListWithOVR(team1Match[1]);
-      const team2Players = parsePlayerListWithOVR(team2Match[1]);
-      
-      // Only return if we found players for both teams
-      if (team1Players.length > 0 && team2Players.length > 0) {
-        return {
-          team1,
-          team1Players,
-          team2,
-          team2Players
-        };
-      }
+      return {
+        team1,
+        team1Players: parsePlayerListWithOVR(sendMatch[1]),
+        team2,
+        team2Players: parsePlayerListWithOVR(team2Match[1])
+      };
     }
   }
   
@@ -458,15 +427,9 @@ export async function resolveTradePlayer(parsedTrade: ParsedTrade): Promise<{
   const team1Players: Array<{ id: string; name: string; overall: number }> = [];
   const team2Players: Array<{ id: string; name: string; overall: number }> = [];
   
-  // Normalize team names to match database (case-insensitive)
-  const normalizedTeam1 = validateTeamName(parsedTrade.team1) || parsedTrade.team1;
-  const normalizedTeam2 = validateTeamName(parsedTrade.team2) || parsedTrade.team2;
-  
-  console.log(`[Trade Parser] Normalized teams: "${parsedTrade.team1}" → "${normalizedTeam1}", "${parsedTrade.team2}" → "${normalizedTeam2}"`);
-  
   // Resolve team 1 players (filter by team1 roster)
   for (const playerName of parsedTrade.team1Players) {
-    const player = await findPlayerByFuzzyName(playerName, normalizedTeam1, 'trade');
+    const player = await findPlayerByFuzzyName(playerName, parsedTrade.team1, 'trade');
     if (player) {
       team1Players.push({ id: player.id, name: player.name, overall: player.overall });
     } else {
@@ -476,7 +439,7 @@ export async function resolveTradePlayer(parsedTrade: ParsedTrade): Promise<{
   
   // Resolve team 2 players (filter by team2 roster)
   for (const playerName of parsedTrade.team2Players) {
-    const player = await findPlayerByFuzzyName(playerName, normalizedTeam2, 'trade');
+    const player = await findPlayerByFuzzyName(playerName, parsedTrade.team2, 'trade');
     if (player) {
       team2Players.push({ id: player.id, name: player.name, overall: player.overall });
     } else {

@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "80ba9c6a-0eb5-4b0a-b0d0-315e5288afc9",
+  "id": "d995cb06-b1ae-4cb9-a3ba-e14c85b12eef",
   "prevId": "76cca19d-d8df-4841-90b3-ea6866bdaac0",
   "tables": {
     "badge_abbreviations": {
@@ -14,13 +14,6 @@
           "notNull": true,
           "autoincrement": true
         },
-        "badgeName": {
-          "name": "badgeName",
-          "type": "varchar(100)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
         "abbreviation": {
           "name": "abbreviation",
           "type": "varchar(10)",
@@ -28,11 +21,11 @@
           "notNull": true,
           "autoincrement": false
         },
-        "description": {
-          "name": "description",
-          "type": "text",
+        "fullName": {
+          "name": "fullName",
+          "type": "varchar(100)",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "category": {
@@ -49,6 +42,15 @@
           "notNull": true,
           "autoincrement": false,
           "default": "(now())"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "onUpdate": true,
+          "default": "(now())"
         }
       },
       "indexes": {},
@@ -62,12 +64,6 @@
         }
       },
       "uniqueConstraints": {
-        "badge_abbreviations_badgeName_unique": {
-          "name": "badge_abbreviations_badgeName_unique",
-          "columns": [
-            "badgeName"
-          ]
-        },
         "badge_abbreviations_abbreviation_unique": {
           "name": "badge_abbreviations_abbreviation_unique",
           "columns": [
@@ -87,13 +83,6 @@
           "notNull": true,
           "autoincrement": true
         },
-        "category": {
-          "name": "category",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
         "badgeName": {
           "name": "badgeName",
           "type": "varchar(100)",
@@ -101,44 +90,51 @@
           "notNull": true,
           "autoincrement": false
         },
-        "attribute": {
-          "name": "attribute",
-          "type": "varchar(100)",
+        "tier": {
+          "name": "tier",
+          "type": "enum('bronze','silver','gold')",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "bronzeMin": {
-          "name": "bronzeMin",
+        "attribute1": {
+          "name": "attribute1",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "threshold1": {
+          "name": "threshold1",
           "type": "int",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
-        "silverMin": {
-          "name": "silverMin",
+        "attribute2": {
+          "name": "attribute2",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "threshold2": {
+          "name": "threshold2",
           "type": "int",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
-        "goldMin": {
-          "name": "goldMin",
+        "attribute3": {
+          "name": "attribute3",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "threshold3": {
+          "name": "threshold3",
           "type": "int",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "minHeight": {
-          "name": "minHeight",
-          "type": "varchar(10)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "maxHeight": {
-          "name": "maxHeight",
-          "type": "varchar(10)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -149,6 +145,15 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
+          "default": "(now())"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "onUpdate": true,
           "default": "(now())"
         }
       },
@@ -2554,6 +2559,13 @@
           "notNull": false,
           "autoincrement": false
         },
+        "gameNumber": {
+          "name": "gameNumber",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
         "requestedBy": {
           "name": "requestedBy",
           "type": "varchar(64)",
@@ -2597,20 +2609,6 @@
           "autoincrement": false,
           "default": "'pending'"
         },
-        "validationErrors": {
-          "name": "validationErrors",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "ruleViolations": {
-          "name": "ruleViolations",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
         "approvedBy": {
           "name": "approvedBy",
           "type": "varchar(64)",
@@ -2625,9 +2623,16 @@
           "notNull": false,
           "autoincrement": false
         },
-        "forwardedAt": {
-          "name": "forwardedAt",
-          "type": "timestamp",
+        "validationErrors": {
+          "name": "validationErrors",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "ruleViolations": {
+          "name": "ruleViolations",
+          "type": "text",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -2829,6 +2834,105 @@
           "name": "users_openId_unique",
           "columns": [
             "openId"
+          ]
+        }
+      },
+      "checkConstraint": {}
+    },
+    "validation_rules": {
+      "name": "validation_rules",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "ruleName": {
+          "name": "ruleName",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "ruleType": {
+          "name": "ruleType",
+          "type": "enum('game_requirement','attribute_check','badge_limit','cooldown')",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "enabled": {
+          "name": "enabled",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        },
+        "config": {
+          "name": "config",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "errorMessage": {
+          "name": "errorMessage",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "severity": {
+          "name": "severity",
+          "type": "enum('error','warning')",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'error'"
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(now())"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "onUpdate": true,
+          "default": "(now())"
+        },
+        "createdBy": {
+          "name": "createdBy",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "validation_rules_id": {
+          "name": "validation_rules_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {
+        "validation_rules_ruleName_unique": {
+          "name": "validation_rules_ruleName_unique",
+          "columns": [
+            "ruleName"
           ]
         }
       },

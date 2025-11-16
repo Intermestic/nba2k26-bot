@@ -1,9 +1,10 @@
-import { Message } from 'discord.js';
+import type { Message } from 'discord.js';
 import { parseUpgradeRequests } from './upgrade-parser';
 import { validateUpgradeRequest, formatValidationMessage } from './upgrade-validator';
 import { getDb } from './db';
-import { upgradeRequests, players, teamAssignments } from '../drizzle/schema';
+import { upgradeRequests, players, playerUpgrades } from '../drizzle/schema';
 import { findPlayerByFuzzyName } from './trade-parser';
+import { eq } from 'drizzle-orm';
 
 const UPGRADE_LOG_CHANNEL_ID = process.env.UPGRADE_LOG_CHANNEL_ID || '1149106208498790500';
 
@@ -17,7 +18,7 @@ export async function handleUpgradeRequest(message: Message, teamName: string) {
   const text = message.content.trim();
   
   // Check if message contains upgrade keywords
-  if (!text.match(/upgrade|badge|bronze|silver|gold|\+\d/i)) {
+  if (!text.match(/\+1|upgrade|badge|bronze|silver|gold/i)) {
     return; // Not an upgrade request
   }
   
@@ -102,9 +103,9 @@ export async function handleUpgradeRequest(message: Message, teamName: string) {
   }
   
   // Send combined response
-  const reply = await message.reply(responseLines.join('\n'));
+  await message.reply(responseLines.join('\n'));
   
-  // If all valid, add 😀 reaction for admin to see
+  // If all valid, add 😀 reaction for admin to approve with ✅
   if (allValid && results.length > 0) {
     await message.react('😀');
     console.log('[Upgrade Handler] ✅ All upgrade requests valid - awaiting admin approval');
@@ -134,26 +135,31 @@ export async function handleUpgradeApproval(message: Message, adminUser: any) {
   console.log(`[Upgrade Handler] Approving ${requests.length} upgrade requests`);
   
   // Update all requests and add to player_upgrades
-  const { createConnection } = await import('mysql2/promise');
-  const connection = await createConnection(process.env.DATABASE_URL!);
-  
   for (const request of requests) {
     // Update request status
-    await connection.execute(
-      'UPDATE upgrade_requests SET status = ?, approvedBy = ?, approvedAt = NOW() WHERE id = ?',
-      ['approved', adminUser.id, request.id]
-    );
+    await db
+      .update(upgradeRequests)
+      .set({
+        status: 'approved',
+        approvedBy: adminUser.id,
+        approvedAt: new Date(),
+      })
+      .where(eq(upgradeRequests.id, request.id));
     
     // Add to player_upgrades table
     if (request.playerId) {
-      await connection.execute(
-        'INSERT INTO player_upgrades (playerId, badgeName, fromLevel, toLevel, gameNumber, approvedBy, approvedAt) VALUES (?, ?, ?, ?, ?, ?, NOW())',
-        [request.playerId, request.badgeName, request.fromLevel, request.toLevel, request.gameNumber || null, adminUser.id]
-      );
+      await db.insert(playerUpgrades).values({
+        playerId: request.playerId,
+        playerName: request.playerName,
+        badgeName: request.badgeName,
+        fromLevel: request.fromLevel,
+        toLevel: request.toLevel,
+        upgradeType: request.fromLevel === 'none' ? 'new_badge' : 'badge_level',
+        gameNumber: request.gameNumber || null,
+        requestId: request.id,
+      });
     }
   }
-  
-  await connection.end();
   
   // Post to upgrade log channel
   const logChannel = await message.client.channels.fetch(UPGRADE_LOG_CHANNEL_ID);

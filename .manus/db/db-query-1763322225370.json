@@ -1,9 +1,0 @@
-{
-  "query": "INSERT INTO validation_rules (ruleKey, ruleName, description, ruleType, enabled, numericValue, textValue) VALUES \n('back_to_back_upgrades', 'Back-to-Back Upgrades Check', 'Prevents players from being upgraded in consecutive games. If enabled, warns when a player was upgraded in the previous game.', 'boolean', 1, NULL, NULL),\n('badge_level_limit', 'Badge Level Increase Limit', 'Maximum total badge level increases allowed per player (bronze=+1, silver=+2, gold=+3). Default is +6.', 'numeric', 1, 6, NULL),\n('no_new_badges', 'No New Badges', 'Prevents adding badges that the player does not already have. Only existing badges can be upgraded.', 'boolean', 1, NULL, NULL);",
-  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute INSERT INTO validation_rules (ruleKey, ruleName, description, ruleType, enabled, numericValue, textValue) VALUES \n('back_to_back_upgrades', 'Back-to-Back Upgrades Check', 'Prevents players from being upgraded in consecutive games. If enabled, warns when a player was upgraded in the previous game.', 'boolean', 1, NULL, NULL),\n('badge_level_limit', 'Badge Level Increase Limit', 'Maximum total badge level increases allowed per player (bronze=+1, silver=+2, gold=+3). Default is +6.', 'numeric', 1, 6, NULL),\n('no_new_badges', 'No New Badges', 'Prevents adding badges that the player does not already have. Only existing badges can be upgraded.', 'boolean', 1, NULL, NULL);",
-  "rows": [],
-  "messages": [],
-  "stdout": "",
-  "stderr": "",
-  "execution_time_ms": 1576
-}
