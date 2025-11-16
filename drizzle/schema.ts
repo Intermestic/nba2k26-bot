@@ -346,3 +346,18 @@ export const scheduledMessages = mysqlTable("scheduled_messages", {
 
 export type ScheduledMessage = typeof scheduledMessages.$inferSelect;
 export type InsertScheduledMessage = typeof scheduledMessages.$inferInsert;
+
+/**
+ * Scheduled Message Logs table - tracks delivery attempts and success/failure
+ */
+export const scheduledMessageLogs = mysqlTable("scheduled_message_logs", {
+  id: int("id").autoincrement().primaryKey(),
+  messageId: int("messageId").notNull(), // Reference to scheduledMessages.id
+  status: mysqlEnum("status", ["success", "failed", "retrying"]).notNull(),
+  attemptNumber: int("attemptNumber").default(1).notNull(), // Retry attempt number
+  errorMessage: text("errorMessage"), // Error details if failed
+  executedAt: timestamp("executedAt").defaultNow().notNull(),
+});
+
+export type ScheduledMessageLog = typeof scheduledMessageLogs.$inferSelect;
+export type InsertScheduledMessageLog = typeof scheduledMessageLogs.$inferInsert;

@@ -1235,4 +1235,40 @@ Build comprehensive admin dashboard for managing Discord bot configuration, comm
 - [x] Test cron scheduler with multiple schedules (integrated with Discord bot)
 - [x] Test new message templates (6 new templates seeded)
 - [x] Test variable documentation UI (working with click-to-insert)
+- [x] Save final checkpoint
+
+
+## CURRENT TASK: Bot Management UI Enhancements
+
+### Phase 1: Template Preview Functionality
+- [x] Add preview section to TemplateDialog
+- [x] Create sample variable data for each category
+- [x] Implement variable substitution for preview
+- [x] Add Discord markdown rendering for preview
+- [x] Add toggle between edit and preview modes
+- [x] Style preview to look like Discord message
+
+### Phase 2: Template Categories Filter
+- [x] Add category tabs to Templates section
+- [x] Implement category filtering logic
+- [x] Add "All" category to show everything
+- [x] Update UI to show category badges on templates (already in table)
+- [x] Add category counts to tabs
+- [x] Persist selected category in state
+
+### Phase 3: Scheduled Message Analytics
+- [x] Add delivery_logs table to database schema
+- [x] Log each scheduled message delivery attempt
+- [x] Track success/failure status and error messages
+- [x] Add retry logic for failed deliveries (max 3 attempts)
+- [x] Create analytics view in Scheduled Messages tab
+- [x] Show delivery success rate per message
+- [x] Add message history/logs viewer
+- [x] Display last 50 deliveries with status indicators
+
+### Phase 4: Testing and Delivery
+- [x] Test template preview with all categories (UI working)
+- [x] Test category filtering (tabs working)
+- [x] Test delivery logging and analytics (backend integrated)
+- [x] Test retry logic (3 attempts with 5s delay)
 - [ ] Save final checkpoint

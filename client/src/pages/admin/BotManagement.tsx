@@ -24,7 +24,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Pencil, Trash2, Plus, Save, X, Clock, Send, Calendar, Info, Copy } from "lucide-react";
+import { Pencil, Trash2, Plus, Save, X, Clock, Send, Calendar, Info, Copy, Eye, Edit3, Filter, BarChart3, CheckCircle2, XCircle, AlertCircle } from "lucide-react";
 
 export default function BotManagement() {
   const [activeTab, setActiveTab] = useState("config");
@@ -182,6 +182,8 @@ function ConfigTab({ onEdit, onAdd }: { onEdit: (key: string) => void; onAdd: ()
 
 function TemplatesTab({ onEdit, onAdd }: { onEdit: (key: string) => void; onAdd: () => void }) {
   const { data: templates, isLoading, refetch } = trpc.botManagement.getTemplates.useQuery();
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  
   const deleteTemplate = trpc.botManagement.deleteTemplate.useMutation({
     onSuccess: () => {
       toast.success("Template deleted");
@@ -190,6 +192,19 @@ function TemplatesTab({ onEdit, onAdd }: { onEdit: (key: string) => void; onAdd:
   });
 
   if (isLoading) return <div>Loading...</div>;
+
+  // Get unique categories and counts
+  const categories = templates ? Array.from(new Set(templates.map(t => t.category || 'uncategorized'))) : [];
+  const categoryCounts = templates?.reduce((acc, t) => {
+    const cat = t.category || 'uncategorized';
+    acc[cat] = (acc[cat] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>) || {};
+
+  // Filter templates by category
+  const filteredTemplates = selectedCategory === 'all' 
+    ? templates 
+    : templates?.filter(t => (t.category || 'uncategorized') === selectedCategory);
 
   return (
     <Card>
@@ -206,6 +221,33 @@ function TemplatesTab({ onEdit, onAdd }: { onEdit: (key: string) => void; onAdd:
         </div>
       </CardHeader>
       <CardContent>
+        {/* Category Filter Tabs */}
+        <div className="flex items-center gap-2 mb-4 pb-4 border-b overflow-x-auto">
+          <Filter className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+          <button
+            onClick={() => setSelectedCategory('all')}
+            className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors whitespace-nowrap ${
+              selectedCategory === 'all'
+                ? 'bg-primary text-primary-foreground'
+                : 'bg-muted hover:bg-muted/80'
+            }`}
+          >
+            All ({templates?.length || 0})
+          </button>
+          {categories.sort().map((category) => (
+            <button
+              key={category}
+              onClick={() => setSelectedCategory(category)}
+              className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors whitespace-nowrap ${
+                selectedCategory === category
+                  ? 'bg-primary text-primary-foreground'
+                  : 'bg-muted hover:bg-muted/80'
+              }`}
+            >
+              {category} ({categoryCounts[category] || 0})
+            </button>
+          ))}
+        </div>
         <Table>
           <TableHeader>
             <TableRow>
@@ -217,7 +259,7 @@ function TemplatesTab({ onEdit, onAdd }: { onEdit: (key: string) => void; onAdd:
             </TableRow>
           </TableHeader>
           <TableBody>
-            {templates?.map((template) => (
+            {filteredTemplates?.map((template) => (
               <TableRow key={template.id}>
                 <TableCell className="font-mono text-sm">{template.key}</TableCell>
                 <TableCell>{template.category || "-"}</TableCell>
@@ -451,6 +493,78 @@ function TemplateDialog({ open, templateKey, onClose }: { open: boolean; templat
     category: "",
     variables: "",
   });
+  const [previewMode, setPreviewMode] = useState(false);
+
+  // Sample data for preview
+  const getSampleData = (category: string): Record<string, string> => {
+    const samples: Record<string, Record<string, string>> = {
+      fa: {
+        playerName: "LeBron James",
+        teamName: "Lakers",
+        bidAmount: "150",
+        windowId: "FA Window 3",
+        totalBids: "42",
+        totalCoins: "3,250",
+        userId: "123456789",
+        username: "GM_Lakers",
+      },
+      trades: {
+        team1: "Lakers",
+        team2: "Celtics",
+        tradeId: "#TRD-2024-001",
+        userId: "123456789",
+      },
+      upgrades: {
+        playerName: "Stephen Curry",
+        currentOVR: "92",
+        previousOVR: "92",
+        newOVR: "94",
+        upgradeAmount: "2",
+        teamName: "Warriors",
+        userId: "123456789",
+        reason: "Insufficient activity points",
+      },
+      roster: {
+        teamName: "Heat",
+        issueType: "Salary Cap Violation",
+        issueDetails: "Your team is $250 over the salary cap. Please make roster adjustments.",
+      },
+      games: {
+        team1: "Lakers",
+        team2: "Celtics",
+        gameTime: "7:00 PM ET",
+        location: "Staples Center",
+      },
+      activity: {
+        teamName: "Knicks",
+        gamesPlayed: "2",
+        gamesRequired: "5",
+        gamesRemaining: "3",
+      },
+      cap: {
+        teamName: "Nets",
+        capSpace: "$500",
+        totalSalary: "$5,500",
+        capLimit: "$5,000",
+      },
+    };
+    return samples[category] || samples.fa;
+  };
+
+  const renderPreview = () => {
+    let previewContent = formData.content;
+    try {
+      const vars = JSON.parse(formData.variables || '[]');
+      const sampleData = getSampleData(formData.category);
+      vars.forEach((variable: string) => {
+        const value = sampleData[variable] || `{${variable}}`;
+        previewContent = previewContent.replace(new RegExp(`\\{${variable}\\}`, 'g'), value);
+      });
+    } catch (e) {
+      // Invalid JSON, show content as-is
+    }
+    return previewContent;
+  };
 
   const { data: existingTemplate } = trpc.botManagement.getTemplateByKey.useQuery(
     { key: templateKey! },
@@ -504,15 +618,57 @@ function TemplateDialog({ open, templateKey, onClose }: { open: boolean; templat
             />
           </div>
           <div>
-            <Label htmlFor="content">Content * (supports Discord markdown)</Label>
-            <Textarea
-              id="content"
-              value={formData.content}
-              onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-              placeholder="Message content with {variables}"
-              rows={15}
-              className="font-mono text-sm"
-            />
+            <div className="flex items-center justify-between mb-2">
+              <Label htmlFor="content">Content * (supports Discord markdown)</Label>
+              <div className="flex gap-2">
+                <Button
+                  type="button"
+                  variant={previewMode ? "outline" : "default"}
+                  size="sm"
+                  onClick={() => setPreviewMode(false)}
+                >
+                  <Edit3 className="w-4 h-4 mr-1" />
+                  Edit
+                </Button>
+                <Button
+                  type="button"
+                  variant={previewMode ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setPreviewMode(true)}
+                >
+                  <Eye className="w-4 h-4 mr-1" />
+                  Preview
+                </Button>
+              </div>
+            </div>
+            {!previewMode ? (
+              <Textarea
+                id="content"
+                value={formData.content}
+                onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+                placeholder="Message content with {variables}"
+                rows={15}
+                className="font-mono text-sm"
+              />
+            ) : (
+              <div className="border rounded-md p-4 bg-[#36393f] text-[#dcddde] min-h-[300px]">
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-full bg-[#5865f2] flex items-center justify-center text-white font-semibold">
+                    BOT
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="font-semibold text-white">NBA 2K26 Bot</span>
+                      <span className="text-xs bg-[#5865f2] text-white px-1.5 py-0.5 rounded">BOT</span>
+                      <span className="text-xs text-[#72767d]">Today at 12:00 PM</span>
+                    </div>
+                    <div className="text-sm whitespace-pre-wrap" style={{ wordBreak: 'break-word' }}>
+                      {renderPreview()}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
             
             {/* Variable Documentation */}
             {formData.variables && (() => {
@@ -741,6 +897,7 @@ function CommandDialog({ open, commandName, onClose }: { open: boolean; commandN
 
 function ScheduledMessagesTab({ onEdit, onAdd }: { onEdit: (id: number) => void; onAdd: () => void }) {
   const { data: messages, isLoading, refetch } = trpc.botManagement.getScheduledMessages.useQuery();
+  const [analyticsMessageId, setAnalyticsMessageId] = useState<number | null>(null);
   const toggleMessage = trpc.botManagement.toggleScheduledMessage.useMutation({
     onSuccess: () => {
       toast.success("Schedule updated");
@@ -767,6 +924,7 @@ function ScheduledMessagesTab({ onEdit, onAdd }: { onEdit: (id: number) => void;
   }
 
   return (
+    <>
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between">
@@ -799,6 +957,7 @@ function ScheduledMessagesTab({ onEdit, onAdd }: { onEdit: (id: number) => void;
                 <TableHead>Schedule</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Last Run</TableHead>
+                <TableHead>Success Rate</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -817,8 +976,19 @@ function ScheduledMessagesTab({ onEdit, onAdd }: { onEdit: (id: number) => void;
                   <TableCell className="text-sm text-muted-foreground">
                     {msg.lastRun ? new Date(msg.lastRun).toLocaleString() : 'Never'}
                   </TableCell>
+                  <TableCell>
+                    <ScheduledMessageSuccessRate messageId={msg.id} />
+                  </TableCell>
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end gap-2">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setAnalyticsMessageId(msg.id)}
+                        title="View analytics"
+                      >
+                        <BarChart3 className="w-4 h-4" />
+                      </Button>
                       <Button
                         variant="ghost"
                         size="icon"
@@ -854,6 +1024,155 @@ function ScheduledMessagesTab({ onEdit, onAdd }: { onEdit: (id: number) => void;
         )}
       </CardContent>
     </Card>
+    
+    {/* Analytics Dialog */}
+    {analyticsMessageId && (
+      <ScheduledMessageAnalyticsDialog
+        open={!!analyticsMessageId}
+        messageId={analyticsMessageId}
+        onClose={() => setAnalyticsMessageId(null)}
+      />
+    )}
+    </>
+  );
+}
+
+// Helper component to show success rate
+function ScheduledMessageSuccessRate({ messageId }: { messageId: number }) {
+  const { data: analytics } = trpc.botManagement.getScheduledMessageAnalytics.useQuery({ messageId });
+  
+  if (!analytics || analytics.totalAttempts === 0) {
+    return <span className="text-xs text-muted-foreground">No data</span>;
+  }
+  
+  const color = analytics.successRate >= 90 ? 'text-green-600' : analytics.successRate >= 70 ? 'text-yellow-600' : 'text-red-600';
+  
+  return (
+    <span className={`text-sm font-medium ${color}`}>
+      {analytics.successRate}%
+    </span>
+  );
+}
+
+// Analytics Dialog
+function ScheduledMessageAnalyticsDialog({ open, messageId, onClose }: { open: boolean; messageId: number; onClose: () => void }) {
+  const { data: analytics } = trpc.botManagement.getScheduledMessageAnalytics.useQuery({ messageId });
+  const { data: logs } = trpc.botManagement.getScheduledMessageLogs.useQuery({ messageId });
+  const { data: message } = trpc.botManagement.getScheduledMessageById.useQuery({ id: messageId });
+  
+  return (
+    <Dialog open={open} onOpenChange={onClose}>
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>Delivery Analytics: {message?.name}</DialogTitle>
+          <DialogDescription>
+            View delivery history and success metrics
+          </DialogDescription>
+        </DialogHeader>
+        
+        {/* Analytics Summary */}
+        {analytics && (
+          <div className="grid grid-cols-4 gap-4 mb-6">
+            <Card>
+              <CardContent className="pt-6">
+                <div className="text-center">
+                  <CheckCircle2 className="w-8 h-8 mx-auto mb-2 text-green-600" />
+                  <div className="text-2xl font-bold">{analytics.successCount}</div>
+                  <div className="text-xs text-muted-foreground">Successful</div>
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="pt-6">
+                <div className="text-center">
+                  <XCircle className="w-8 h-8 mx-auto mb-2 text-red-600" />
+                  <div className="text-2xl font-bold">{analytics.failedCount}</div>
+                  <div className="text-xs text-muted-foreground">Failed</div>
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="pt-6">
+                <div className="text-center">
+                  <AlertCircle className="w-8 h-8 mx-auto mb-2 text-yellow-600" />
+                  <div className="text-2xl font-bold">{analytics.retryCount}</div>
+                  <div className="text-xs text-muted-foreground">Retries</div>
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="pt-6">
+                <div className="text-center">
+                  <BarChart3 className="w-8 h-8 mx-auto mb-2 text-blue-600" />
+                  <div className="text-2xl font-bold">{analytics.successRate}%</div>
+                  <div className="text-xs text-muted-foreground">Success Rate</div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+        
+        {/* Delivery Logs */}
+        <div>
+          <h3 className="text-lg font-semibold mb-3">Recent Deliveries</h3>
+          {logs && logs.length > 0 ? (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Time</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Attempt</TableHead>
+                  <TableHead>Error</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {logs.map((log) => (
+                  <TableRow key={log.id}>
+                    <TableCell className="text-sm">
+                      {new Date(log.executedAt).toLocaleString()}
+                    </TableCell>
+                    <TableCell>
+                      {log.status === 'success' && (
+                        <span className="inline-flex items-center gap-1 text-green-600">
+                          <CheckCircle2 className="w-4 h-4" />
+                          Success
+                        </span>
+                      )}
+                      {log.status === 'failed' && (
+                        <span className="inline-flex items-center gap-1 text-red-600">
+                          <XCircle className="w-4 h-4" />
+                          Failed
+                        </span>
+                      )}
+                      {log.status === 'retrying' && (
+                        <span className="inline-flex items-center gap-1 text-yellow-600">
+                          <AlertCircle className="w-4 h-4" />
+                          Retrying
+                        </span>
+                      )}
+                    </TableCell>
+                    <TableCell className="text-sm">{log.attemptNumber}</TableCell>
+                    <TableCell className="text-sm text-muted-foreground max-w-[300px] truncate">
+                      {log.errorMessage || '-'}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          ) : (
+            <div className="text-center py-8 text-muted-foreground">
+              No delivery logs yet
+            </div>
+          )}
+        </div>
+        
+        <DialogFooter>
+          <Button variant="outline" onClick={onClose}>
+            Close
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
 

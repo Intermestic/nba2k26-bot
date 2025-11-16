@@ -5,9 +5,9 @@
 
 import { z } from "zod";
 import { router, protectedProcedure } from "../_core/trpc";
-import { getDb } from "../db";
-import { botConfig, messageTemplates, botCommands, scheduledMessages } from "../../drizzle/schema";
-import { eq } from "drizzle-orm";
+import { getDb } from "../db.js";
+import { botConfig, messageTemplates, botCommands, scheduledMessages, scheduledMessageLogs } from '../../drizzle/schema.js';
+import { eq, desc } from "drizzle-orm";
 
 export const botManagementRouter = router({
   // ==================== BOT CONFIG ====================
@@ -279,15 +279,15 @@ export const botManagementRouter = router({
     }),
 
   // ==================== SCHEDULED MESSAGES ====================
-  
   /**
    * Get all scheduled messages
    */
-  getScheduledMessages: protectedProcedure.query(async ({ ctx }) => {
+  getScheduledMessages: protectedProcedure.query(async () => {
     const db = await getDb();
     if (!db) throw new Error("Database not available");
     
-    return await db.select().from(scheduledMessages);
+    const messages = await db.select().from(scheduledMessages);
+    return messages;
   }),
 
   /**
@@ -295,7 +295,7 @@ export const botManagementRouter = router({
    */
   getScheduledMessageById: protectedProcedure
     .input(z.object({ id: z.number() }))
-    .query(async ({ input, ctx }) => {
+    .query(async ({ input }) => {
       const db = await getDb();
       if (!db) throw new Error("Database not available");
       
@@ -409,5 +409,54 @@ export const botManagementRouter = router({
       console.log('[Test Send] Message:', message[0].message);
       
       return { success: true };
+    }),
+
+  /**
+   * Get delivery logs for a scheduled message
+   */
+  getScheduledMessageLogs: protectedProcedure
+    .input(z.object({ messageId: z.number() }))
+    .query(async ({ input }) => {
+      const db = await getDb();
+      if (!db) throw new Error("Database not available");
+      
+      const logs = await db
+        .select()
+        .from(scheduledMessageLogs)
+        .where(eq(scheduledMessageLogs.messageId, input.messageId))
+        .orderBy(desc(scheduledMessageLogs.executedAt))
+        .limit(50);
+      
+      return logs;
+    }),
+
+  /**
+   * Get analytics for a scheduled message (success rate, etc.)
+   */
+  getScheduledMessageAnalytics: protectedProcedure
+    .input(z.object({ messageId: z.number() }))
+    .query(async ({ input }) => {
+      const db = await getDb();
+      if (!db) throw new Error("Database not available");
+      
+      const logs = await db
+        .select()
+        .from(scheduledMessageLogs)
+        .where(eq(scheduledMessageLogs.messageId, input.messageId));
+      
+      const totalAttempts = logs.length;
+      const successCount = logs.filter(log => log.status === 'success').length;
+      const failedCount = logs.filter(log => log.status === 'failed').length;
+      const retryCount = logs.filter(log => log.status === 'retrying').length;
+      
+      const successRate = totalAttempts > 0 ? (successCount / totalAttempts) * 100 : 0;
+      
+      return {
+        totalAttempts,
+        successCount,
+        failedCount,
+        retryCount,
+        successRate: Math.round(successRate * 10) / 10, // Round to 1 decimal
+      };
     }),
 });

@@ -6,8 +6,8 @@
 import * as cron from 'node-cron';
 import type { Client, TextChannel } from 'discord.js';
 import { getDb } from './db.js';
-import { scheduledMessages } from '../drizzle/schema.js';
-import { eq } from 'drizzle-orm';
+import { scheduledMessages, scheduledMessageLogs } from '../drizzle/schema.js';
+import { eq, desc } from 'drizzle-orm';
 
 interface ScheduledJob {
   id: number;
@@ -116,24 +116,72 @@ async function createJob(messageId: number, name: string, schedule: string, chan
   const task = cron.schedule(cronExpression, async () => {
     console.log(`[Scheduled Messages] Executing job: ${name} (ID: ${messageId})`);
     
-    try {
-      // Send message
-      await sendScheduledMessage(channelId, message, client);
-      
-      // Update lastRun and nextRun in database
-      const db = await getDb();
-      if (db) {
-        const nextRun = getNextRunTime(cronExpression);
-        await db
-          .update(scheduledMessages)
-          .set({ 
-            lastRun: new Date(),
-            nextRun: nextRun
-          })
-          .where(eq(scheduledMessages.id, messageId));
+    const db = await getDb();
+    let attemptNumber = 1;
+    let success = false;
+    let errorMessage: string | null = null;
+    
+    // Try up to 3 times
+    while (attemptNumber <= 3 && !success) {
+      try {
+        // Send message
+        await sendScheduledMessage(channelId, message, client);
+        success = true;
+        
+        // Log success
+        if (db) {
+          await db.insert(scheduledMessageLogs).values({
+            messageId: messageId,
+            status: 'success',
+            attemptNumber: attemptNumber,
+            errorMessage: null,
+          });
+        }
+        
+        console.log(`[Scheduled Messages] Job succeeded: ${name} (Attempt ${attemptNumber})`);
+      } catch (error: any) {
+        errorMessage = error?.message || String(error);
+        console.error(`[Scheduled Messages] Job attempt ${attemptNumber} failed for ${name}:`, error);
+        
+        if (attemptNumber < 3) {
+          // Log retry
+          if (db) {
+            await db.insert(scheduledMessageLogs).values({
+              messageId: messageId,
+              status: 'retrying',
+              attemptNumber: attemptNumber,
+              errorMessage: errorMessage,
+            });
+          }
+          
+          // Wait 5 seconds before retry
+          await new Promise(resolve => setTimeout(resolve, 5000));
+          attemptNumber++;
+        } else {
+          // Final failure
+          if (db) {
+            await db.insert(scheduledMessageLogs).values({
+              messageId: messageId,
+              status: 'failed',
+              attemptNumber: attemptNumber,
+              errorMessage: errorMessage,
+            });
+          }
+          console.error(`[Scheduled Messages] Job failed after ${attemptNumber} attempts: ${name}`);
+        }
       }
-    } catch (error) {
-      console.error(`[Scheduled Messages] Job execution failed for ${name}:`, error);
+    }
+    
+    // Update lastRun and nextRun in database
+    if (db) {
+      const nextRun = getNextRunTime(cronExpression);
+      await db
+        .update(scheduledMessages)
+        .set({ 
+          lastRun: new Date(),
+          nextRun: nextRun
+        })
+        .where(eq(scheduledMessages.id, messageId));
     }
   });
 
