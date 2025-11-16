@@ -190,6 +190,13 @@
       "when": 1763322188386,
       "tag": "0026_flimsy_deathbird",
       "breakpoints": true
+    },
+    {
+      "idx": 27,
+      "version": "5",
+      "when": 1763323379319,
+      "tag": "0027_woozy_mad_thinker",
+      "breakpoints": true
     }
   ]
 }

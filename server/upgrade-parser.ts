@@ -16,44 +16,104 @@ export interface ParsedUpgrade {
 }
 
 /**
- * Parse upgrade request message
+ * Parse upgrade request message - now handles multiple players and upgrades
  * 
  * Supported formats:
- * - "5gm upgrade: Suggs SS +1 to silver"
- * - "Upgrade: Paolo Banchero Shifty Shooter bronze to silver"
- * - "10gm: Suggs SS bronze->silver midrange 87, 3pt 91"
+ * - Single player: "5gm upgrade: Suggs SS +1 to silver"
+ * - Multiple players:
+ *   ```
+ *   Suggs
+ *   +1 SS (83 3pt)
+ *   +1 PTZ (84 dunk)
+ *   
+ *   Giddey
+ *   +1 CHL to bronze (88 pd)
+ *   ```
  */
-export async function parseUpgradeRequest(message: string): Promise<ParsedUpgrade | null> {
-  const text = message.trim().toLowerCase();
-  console.log('[Upgrade Parser] Input:', text);
+export async function parseUpgradeRequests(message: string): Promise<ParsedUpgrade[]> {
+  const upgrades: ParsedUpgrade[] = [];
   
-  // Extract game number if present (e.g., "5gm", "10gm")
-  const gameMatch = text.match(/(\d+)\s*gm/i);
-  const gameNumber = gameMatch ? parseInt(gameMatch[1]) : undefined;
+  console.log('[Upgrade Parser] Input:', message);
   
-  // Remove "upgrade:", "gm upgrade:", etc. to get core content
-  let core = text
-    .replace(/^\d+\s*gm\s*(upgrade)?:?\s*/i, '')
-    .replace(/^upgrade:?\s*/i, '')
-    .trim();
+  // Extract game number if present at the start (e.g., "5gm", "Game 5")
+  const gameMatch = message.match(/(?:^|\n)(?:game\s+)?(\d+)\s*gm/i);
+  const globalGameNumber = gameMatch ? parseInt(gameMatch[1]) : undefined;
   
-  console.log('[Upgrade Parser] Core text:', core);
-  
-  // Try to extract badge name or abbreviation
   const db = await getDb();
-  if (!db) return null;
+  if (!db) return [];
   
   // Get all badge abbreviations for matching
   const badges = await db.select().from(badgeAbbreviations);
   
-  // Try to find badge in the message (case-insensitive)
+  // Split message by double line breaks or player name patterns
+  // Player names are typically on their own line before upgrades
+  const lines = message.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+  
+  let currentPlayer: string | null = null;
+  let currentGameNumber = globalGameNumber;
+  
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const lineLower = line.toLowerCase();
+    
+    // Skip header lines
+    if (lineLower.includes('welcome') || lineLower.includes('upgrade') && !lineLower.match(/\+\d/)) {
+      continue;
+    }
+    
+    // Check if line contains a game number
+    const lineGameMatch = line.match(/(?:game\s+)?(\d+)\s*gm/i);
+    if (lineGameMatch) {
+      currentGameNumber = parseInt(lineGameMatch[1]);
+      // Remove game number from line for further processing
+      const cleanLine = line.replace(/(?:game\s+)?(\d+)\s*gm/i, '').trim();
+      if (cleanLine.length === 0) continue;
+    }
+    
+    // Check if this line is an upgrade (+1, +2, +3 pattern) or contains a badge
+    const isUpgradeLine = lineLower.match(/^\+\d/) || badges.some(b => 
+      lineLower.includes(b.abbreviation.toLowerCase()) || 
+      lineLower.includes(b.badgeName.toLowerCase())
+    );
+    
+    if (!isUpgradeLine) {
+      // This is likely a player name
+      currentPlayer = line.trim();
+      console.log('[Upgrade Parser] Found player:', currentPlayer);
+      continue;
+    }
+    
+    // Parse this upgrade line
+    if (currentPlayer) {
+      const parsed = await parseSingleUpgrade(lineLower, currentPlayer, currentGameNumber, badges);
+      if (parsed) {
+        upgrades.push(parsed);
+        console.log('[Upgrade Parser] Parsed upgrade:', parsed);
+      }
+    }
+  }
+  
+  console.log(`[Upgrade Parser] Total upgrades parsed: ${upgrades.length}`);
+  return upgrades;
+}
+
+/**
+ * Parse a single upgrade line for a known player
+ */
+async function parseSingleUpgrade(
+  line: string,
+  playerName: string,
+  gameNumber: number | undefined,
+  badges: Array<{ badgeName: string; abbreviation: string }>
+): Promise<ParsedUpgrade | null> {
+  // Try to find badge in the line (case-insensitive)
   let matchedBadge: typeof badges[0] | null = null;
   let badgePosition = -1;
   
   // First try abbreviations (shorter, more specific)
   for (const badge of badges) {
     const abbrevLower = badge.abbreviation.toLowerCase();
-    const pos = core.indexOf(abbrevLower);
+    const pos = line.indexOf(abbrevLower);
     if (pos !== -1) {
       matchedBadge = badge;
       badgePosition = pos;
@@ -65,7 +125,7 @@ export async function parseUpgradeRequest(message: string): Promise<ParsedUpgrad
   if (!matchedBadge) {
     for (const badge of badges) {
       const nameLower = badge.badgeName.toLowerCase();
-      const pos = core.indexOf(nameLower);
+      const pos = line.indexOf(nameLower);
       if (pos !== -1) {
         matchedBadge = badge;
         badgePosition = pos;
@@ -75,36 +135,29 @@ export async function parseUpgradeRequest(message: string): Promise<ParsedUpgrad
   }
   
   if (!matchedBadge) {
-    console.log('[Upgrade Parser] No badge found in message');
+    console.log('[Upgrade Parser] No badge found in line:', line);
     return null;
   }
   
-  console.log('[Upgrade Parser] Matched badge:', matchedBadge.badgeName);
-  
-  // Extract player name (everything before the badge)
-  const playerName = core.substring(0, badgePosition).trim();
-  
-  // Extract level change (e.g., "+1 to silver", "bronze to silver", "bronze->silver")
-  const levelMatch = core.match(/(none|bronze|silver|gold)?\s*(?:\+1|\->|to)\s*(bronze|silver|gold)/i);
+  // Extract level change (e.g., "+1 to silver", "bronze to silver", "to bronze")
+  const levelMatch = line.match(/(none|bronze|silver|gold)?\s*(?:\+\d+|\->|to)\s*(bronze|silver|gold)/i);
   
   if (!levelMatch) {
-    console.log('[Upgrade Parser] No level change found');
+    console.log('[Upgrade Parser] No level change found in line:', line);
     return null;
   }
   
   const fromLevel = (levelMatch[1] || 'none') as 'none' | 'bronze' | 'silver' | 'gold';
   const toLevel = levelMatch[2] as 'bronze' | 'silver' | 'gold';
   
-  console.log('[Upgrade Parser] Level change:', fromLevel, '->', toLevel);
-  
-  // Extract attributes if provided (e.g., "midrange 87, 3pt 91" or "midrange: 87 3pt: 91")
+  // Extract attributes if provided (e.g., "(88 pd 79 agl)" or "midrange 87, 3pt 91")
   const attributes: Record<string, number> = {};
   
   // Common attribute patterns
   const attrPatterns = [
     /(?:mid-?range|midrange|mid)\s*:?\s*(\d+)/i,
     /(?:3pt|three-?point|3-?point)\s*:?\s*(\d+)/i,
-    /(?:driving\s+dunk|dd)\s*:?\s*(\d+)/i,
+    /(?:driving\s+dunk|dd|dunk)\s*:?\s*(\d+)/i,
     /(?:standing\s+dunk|sd)\s*:?\s*(\d+)/i,
     /(?:close\s+shot|close)\s*:?\s*(\d+)/i,
     /(?:layup)\s*:?\s*(\d+)/i,
@@ -117,9 +170,10 @@ export async function parseUpgradeRequest(message: string): Promise<ParsedUpgrad
     /(?:block|blk)\s*:?\s*(\d+)/i,
     /(?:vertical|vert)\s*:?\s*(\d+)/i,
     /(?:post\s+control|pc)\s*:?\s*(\d+)/i,
-    /(?:agility|agi)\s*:?\s*(\d+)/i,
+    /(?:agility|agi|agl)\s*:?\s*(\d+)/i,
     /(?:speed|spd)\s*:?\s*(\d+)/i,
     /(?:interior\s+defense|idef|id)\s*:?\s*(\d+)/i,
+    /(?:free\s+throw|ft)\s*:?\s*(\d+)/i,
   ];
   
   const attrNameMap: Record<string, string> = {
@@ -130,6 +184,7 @@ export async function parseUpgradeRequest(message: string): Promise<ParsedUpgrad
     'three-point': 'Three-Point Shot',
     '3-point': 'Three-Point Shot',
     'dd': 'Driving Dunk',
+    'dunk': 'Driving Dunk',
     'driving dunk': 'Driving Dunk',
     'sd': 'Standing Dunk',
     'standing dunk': 'Standing Dunk',
@@ -158,24 +213,25 @@ export async function parseUpgradeRequest(message: string): Promise<ParsedUpgrad
     'pc': 'Post Control',
     'post control': 'Post Control',
     'agi': 'Agility',
+    'agl': 'Agility',
     'agility': 'Agility',
     'spd': 'Speed',
     'speed': 'Speed',
     'id': 'Interior Defense',
     'idef': 'Interior Defense',
     'interior defense': 'Interior Defense',
+    'ft': 'Free Throw',
+    'free throw': 'Free Throw',
   };
   
   for (const pattern of attrPatterns) {
-    const match = core.match(pattern);
+    const match = line.match(pattern);
     if (match) {
       const attrKey = match[0].split(/\s*:?\s*/)[0].toLowerCase().trim();
       const normalizedKey = attrNameMap[attrKey] || attrKey;
       attributes[normalizedKey] = parseInt(match[1]);
     }
   }
-  
-  console.log('[Upgrade Parser] Extracted attributes:', attributes);
   
   return {
     gameNumber,
@@ -186,6 +242,14 @@ export async function parseUpgradeRequest(message: string): Promise<ParsedUpgrad
     toLevel,
     attributes: Object.keys(attributes).length > 0 ? attributes : undefined
   };
+}
+
+/**
+ * Legacy function for backward compatibility - returns first upgrade only
+ */
+export async function parseUpgradeRequest(message: string): Promise<ParsedUpgrade | null> {
+  const upgrades = await parseUpgradeRequests(message);
+  return upgrades.length > 0 ? upgrades[0] : null;
 }
 
 /**

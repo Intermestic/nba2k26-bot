@@ -606,6 +606,7 @@ export const upgradeRequests = mysqlTable("upgrade_requests", {
   fromLevel: mysqlEnum("fromLevel", ["none", "bronze", "silver", "gold"]).notNull(), // Current level
   toLevel: mysqlEnum("toLevel", ["bronze", "silver", "gold"]).notNull(), // Target level
   attributes: text("attributes"), // JSON object of provided attribute values
+  gameNumber: int("gameNumber"), // Game number when upgrade was requested (e.g., "5gm")
   requestedBy: varchar("requestedBy", { length: 64 }).notNull(), // Discord user ID
   requestedByName: varchar("requestedByName", { length: 255 }), // Discord username
   team: varchar("team", { length: 100 }).notNull(), // Team making request

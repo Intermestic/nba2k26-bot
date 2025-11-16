@@ -1874,3 +1874,31 @@ User can toggle rules on/off but cannot edit numeric values or create new rules.
 - [x] Allow editing rule name and description
 - [x] Test editing and creating rules
 - [x] Save checkpoint
+
+
+## BUG: Upgrade Parser Misattributing Players
+
+### Issue
+When multiple players are listed with upgrades, the parser is attributing upgrades to the wrong player. Example: Giddey's CHL upgrade is being checked against Suggs.
+
+### Example Message
+```
+Suggs
++1 SS (83 3pt)
++1 PTZ (84 dunk 94 vert)
+
+Giddey
++1 CHL to bronze (88 pd 79 agl)
++1 SSS (84 3pt)
+```
+
+Result: CHL upgrade checked for Suggs instead of Giddey
+
+### Tasks
+- [x] Rewrite parseUpgradeRequest to return array of ParsedUpgrade[]
+- [x] Split message by player names (line breaks)
+- [x] Parse all upgrades for each player
+- [x] Update handler to loop through multiple upgrades
+- [x] Update validation and database logic for batch processing
+- [x] Test with various multi-player formats
+- [x] Save checkpoint
