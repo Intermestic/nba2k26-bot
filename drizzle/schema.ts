@@ -560,3 +560,85 @@ export const serverLogs = mysqlTable("server_logs", {
 
 export type ServerLog = typeof serverLogs.$inferSelect;
 export type InsertServerLog = typeof serverLogs.$inferInsert;
+
+/**
+ * Badge Requirements table - stores attribute gates for each badge level
+ */
+export const badgeRequirements = mysqlTable("badge_requirements", {
+  id: int("id").autoincrement().primaryKey(),
+  category: varchar("category", { length: 50 }).notNull(), // Finishing, Shooting, Playmaking, Defense
+  badgeName: varchar("badgeName", { length: 100 }).notNull(), // Full badge name
+  attribute: varchar("attribute", { length: 100 }).notNull(), // Required attribute (e.g., "Mid-Range Shot")
+  bronzeMin: int("bronzeMin"), // Minimum attribute value for Bronze
+  silverMin: int("silverMin"), // Minimum attribute value for Silver
+  goldMin: int("goldMin"), // Minimum attribute value for Gold
+  minHeight: varchar("minHeight", { length: 10 }), // Minimum height (e.g., "5'9")
+  maxHeight: varchar("maxHeight", { length: 10 }), // Maximum height (e.g., "7'4")
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type BadgeRequirement = typeof badgeRequirements.$inferSelect;
+export type InsertBadgeRequirement = typeof badgeRequirements.$inferInsert;
+
+/**
+ * Badge Abbreviations table - maps abbreviations to full badge names
+ */
+export const badgeAbbreviations = mysqlTable("badge_abbreviations", {
+  id: int("id").autoincrement().primaryKey(),
+  badgeName: varchar("badgeName", { length: 100 }).notNull().unique(), // Full badge name
+  abbreviation: varchar("abbreviation", { length: 10 }).notNull().unique(), // Short code (e.g., "SS")
+  description: text("description"), // Badge description
+  category: varchar("category", { length: 50 }), // Finishing, Shooting, Playmaking, Defense
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type BadgeAbbreviation = typeof badgeAbbreviations.$inferSelect;
+export type InsertBadgeAbbreviation = typeof badgeAbbreviations.$inferInsert;
+
+/**
+ * Upgrade Requests table - tracks all upgrade requests from team channels
+ */
+export const upgradeRequests = mysqlTable("upgrade_requests", {
+  id: int("id").autoincrement().primaryKey(),
+  playerId: varchar("playerId", { length: 64 }), // Reference to players.id
+  playerName: varchar("playerName", { length: 255 }).notNull(), // Player name from request
+  badgeName: varchar("badgeName", { length: 100 }).notNull(), // Badge being upgraded
+  fromLevel: mysqlEnum("fromLevel", ["none", "bronze", "silver", "gold"]).notNull(), // Current level
+  toLevel: mysqlEnum("toLevel", ["bronze", "silver", "gold"]).notNull(), // Target level
+  attributes: text("attributes"), // JSON object of provided attribute values
+  requestedBy: varchar("requestedBy", { length: 64 }).notNull(), // Discord user ID
+  requestedByName: varchar("requestedByName", { length: 255 }), // Discord username
+  team: varchar("team", { length: 100 }).notNull(), // Team making request
+  channelId: varchar("channelId", { length: 64 }).notNull(), // Team channel ID
+  messageId: varchar("messageId", { length: 64 }).notNull(), // Original message ID
+  status: mysqlEnum("status", ["pending", "approved", "rejected", "forwarded"]).default("pending").notNull(),
+  validationErrors: text("validationErrors"), // JSON array of validation errors
+  ruleViolations: text("ruleViolations"), // JSON array of rule violations (back-to-back, +6, etc.)
+  approvedBy: varchar("approvedBy", { length: 64 }), // Discord user ID of admin who approved
+  approvedAt: timestamp("approvedAt"), // When request was approved
+  forwardedAt: timestamp("forwardedAt"), // When request was forwarded to upgrade channel
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type UpgradeRequest = typeof upgradeRequests.$inferSelect;
+export type InsertUpgradeRequest = typeof upgradeRequests.$inferInsert;
+
+/**
+ * Player Upgrades table - tracks completed upgrades for rule enforcement
+ */
+export const playerUpgrades = mysqlTable("player_upgrades", {
+  id: int("id").autoincrement().primaryKey(),
+  playerId: varchar("playerId", { length: 64 }).notNull(), // Reference to players.id
+  playerName: varchar("playerName", { length: 255 }).notNull(), // Player name
+  badgeName: varchar("badgeName", { length: 100 }).notNull(), // Badge upgraded
+  fromLevel: mysqlEnum("fromLevel", ["none", "bronze", "silver", "gold"]).notNull(),
+  toLevel: mysqlEnum("toLevel", ["bronze", "silver", "gold"]).notNull(),
+  upgradeType: mysqlEnum("upgradeType", ["badge_level", "new_badge", "attribute"]).notNull(),
+  gameNumber: int("gameNumber"), // Game number when upgrade was applied (e.g., "5gm")
+  requestId: int("requestId"), // Reference to upgradeRequests.id
+  completedAt: timestamp("completedAt").defaultNow().notNull(),
+});
+
+export type PlayerUpgrade = typeof playerUpgrades.$inferSelect;
+export type InsertPlayerUpgrade = typeof playerUpgrades.$inferInsert;

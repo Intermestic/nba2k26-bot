@@ -176,6 +176,13 @@
       "when": 1763304525319,
       "tag": "0024_medical_firestar",
       "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "5",
+      "when": 1763314930921,
+      "tag": "0025_red_power_man",
+      "breakpoints": true
     }
   ]
 }

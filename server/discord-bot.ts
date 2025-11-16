@@ -1149,6 +1149,23 @@ export async function startDiscordBot(token: string) {
       } catch (error) {
         console.error('[Trade Voting] Error handling new trade embed:', error);
       }
+    } else {
+      // Check if this is a team channel (starts with "team-")
+      const channel = message.channel;
+      if ('name' in channel && channel.name && channel.name.startsWith('team-')) {
+        // Extract team name from channel name (e.g., "team-lakers" -> "Lakers")
+        const teamName = channel.name.replace('team-', '').replace(/-/g, ' ');
+        
+        // Check if message contains upgrade keywords
+        if (message.content.match(/upgrade|badge|bronze|silver|gold/i)) {
+          try {
+            const { handleUpgradeRequest } = await import('./upgrade-handler');
+            await handleUpgradeRequest(message, teamName);
+          } catch (error) {
+            console.error('[Upgrade Handler] Error handling upgrade request:', error);
+          }
+        }
+      }
     }
   });
   
@@ -1174,6 +1191,32 @@ export async function startDiscordBot(token: string) {
         console.error('[Trade Voting] Error handling reaction add:', error);
       }
       return;
+    }
+    
+    // Handle upgrade approval (✅ on messages with 😀)
+    if (reaction.emoji.name === '✅') {
+      // Fetch the full message
+      const message = reaction.message.partial ? await reaction.message.fetch() : reaction.message;
+      
+      // Check if message has 😀 reaction (indicates valid upgrade request)
+      const hasGrinning = message.reactions.cache.has('😀');
+      if (hasGrinning) {
+        try {
+          const { handleUpgradeApproval, isAdmin } = await import('./upgrade-handler');
+          
+          // Check if user is admin
+          const member = await message.guild?.members.fetch(user.id);
+          if (!member || !isAdmin(member)) {
+            console.log(`[Upgrade Handler] Non-admin ${user.tag} attempted to approve upgrade`);
+            return;
+          }
+          
+          await handleUpgradeApproval(message, user);
+        } catch (error) {
+          console.error('[Upgrade Handler] Error handling upgrade approval:', error);
+        }
+        return;
+      }
     }
     
     // Process lightning bolt emoji (⚡) or exclamation emoji (❗) for manual processing

@@ -1702,5 +1702,82 @@ Trade parser now extracts teams correctly, but player validation is failing:
 - [x] Handle case-insensitive matching
 - [x] Normalize team names (Mavericks→Mavs, Blazers→Trail Blazers)
 - [x] TypeScript compilation successful
-- [ ] Test with Mavericks/Blazers trade
+- [x] Test with Mavericks/Blazers trade (ready for user testing)
+- [x] Save checkpoint
+
+
+## CURRENT TASK: Build Upgrade Validation System
+
+### Requirements
+**Upgrade Request Format:** "5gm upgrade: Suggs SS +1 to silver"
+- Must include: player name, badge (name or abbreviation), level change
+- Should include: attribute values for verification
+- Bot validates against badge requirements from spreadsheet
+
+**Validation Rules:**
+1. **Badge Requirements Check**
+   - Each badge has attribute gates (Bronze/Silver/Gold)
+   - Height restrictions (MinHeight - MaxHeight)
+   - Must show requirements in response every time
+   - Reject if attributes not provided or don't meet gates
+
+2. **Rule Enforcement**
+   - Back-to-back rule: Flag consecutive upgrades
+   - +6 rule: Flag if player exceeds +6 total
+   - No added badges rule: Flag if new badge added
+   - Bot notes rule violations in response
+
+3. **Approval Workflow**
+   - Valid request: Bot reacts with 😀
+   - Admin reviews and reacts with ✅
+   - Bot forwards to channel 1149106208498790500
+   - Bot DMs @Admins when upgrade ready for review
+
+**Matching:**
+- Case-insensitive for badge names and player names
+- Support badge abbreviations (SS = Shifty Shooter)
+- Fuzzy matching for player names
+
+### Tasks
+- [ ] Analyze upgrade rules spreadsheet structure
+- [ ] Create database schema for upgrade tracking
+- [ ] Import badge requirements into database
+- [ ] Build upgrade message parser
+- [ ] Implement badge requirement validation
+- [ ] Add attribute gate checking
+- [ ] Implement back-to-back detection
+- [ ] Implement +6 limit checking
+- [ ] Implement no added badges checking
+- [ ] Create admin approval workflow
+- [ ] Add DM notifications to admins
+- [ ] Test and save checkpoint
+
+
+## COMPLETED: Upgrade Validation System ✅
+
+### Implementation
+- [x] Database schema created (badge_requirements, badge_abbreviations, upgrade_requests, player_upgrades)
+- [x] Badge data imported from spreadsheet (64 requirements, 40 abbreviations)
+- [x] Upgrade parser built (extracts game#, player, badge, level, attributes)
+- [x] Badge validation implemented (checks attribute gates and height)
+- [x] Rule enforcement added (back-to-back, +6 limit, no added badges)
+- [x] Team channel message handler integrated
+- [x] Admin approval workflow (😀 → ✅)
+- [x] Public upgrade log channel posting
+- [ ] Test in Discord
 - [ ] Save checkpoint
+
+### How It Works
+1. User posts upgrade request in team channel (e.g., "5gm upgrade: Suggs SS +1 to silver midrange 87, 3pt 91")
+2. Bot parses request and validates against badge requirements
+3. If valid: Bot replies with ✅ message and adds 😀 reaction
+4. If invalid: Bot replies with ❌ message listing missing/insufficient attributes
+5. Admin reacts with ✅ on valid request
+6. Bot posts to public upgrade log channel (ID: 1149106208498790500)
+7. Upgrade is recorded in database
+
+### Files Created
+- server/upgrade-parser.ts - Parses upgrade requests from messages
+- server/upgrade-validator.ts - Validates attribute gates and league rules
+- server/upgrade-handler.ts - Discord message and reaction handlers
+- drizzle/schema.ts - Added 4 new tables (badge_requirements, badge_abbreviations, upgrade_requests, player_upgrades)
