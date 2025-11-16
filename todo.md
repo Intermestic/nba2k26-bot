@@ -759,3 +759,17 @@ Consolidate "Dayron Sharpe" and "Day'Ron Sharpe" bids under the correct name
 
 #### Final
 - [ ] Save checkpoint
+
+
+## CURRENT TASK: Add Mavericks Alias + Status Command + FA Coins Display
+
+### Tasks
+- [x] Add "Mavericks" → "Mavs" alias to team-validator.ts (added capitalized version)
+- [x] Find manual command for bid window status message (!regenerate-summary <windowId>)
+- [x] Document the status command
+- [x] Add FA coin display to main page team list
+- [x] Show format: 🪙 x/100 (or /115 for Hawks and Nuggets)
+- [x] Fetch team coins data in Home.tsx (using getTeamCoins endpoint)
+- [x] Display coins next to team name in TeamSummariesTable
+- [x] Added public getTeamCoins endpoint to coins router
+- [ ] Save checkpoint

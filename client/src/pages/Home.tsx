@@ -70,6 +70,12 @@ export default function Home() {
     limit: 1000,
   });
 
+  // Fetch team coins (public read-only)
+  const { data: teamCoins = [] } = trpc.coins.getTeamCoins.useQuery(undefined, {
+    enabled: isAuthenticated,
+    retry: false,
+  });
+
   const filteredPlayers = useMemo(() => {
     return players
       .filter((p) => {
@@ -119,7 +125,7 @@ export default function Home() {
 
   // Calculate team roster summaries (only for NBA teams, not Free Agents)
   const teamSummaries = useMemo(() => {
-    const summaries = new Map<string, { playerCount: number; totalOverall: number; totalCap: number; isFreeAgent?: boolean }>();
+    const summaries = new Map<string, { playerCount: number; totalOverall: number; totalCap: number; coinsRemaining?: number; isFreeAgent?: boolean }>();
     
     players.forEach(player => {
       const team = player.team;
@@ -133,10 +139,26 @@ export default function Home() {
       });
     });
     
+    // Merge with team coins data
+    teamCoins.forEach((coinData: any) => {
+      const existing = summaries.get(coinData.team);
+      if (existing) {
+        existing.coinsRemaining = coinData.coinsRemaining;
+      } else {
+        // Team has no players but has coins
+        summaries.set(coinData.team, {
+          playerCount: 0,
+          totalOverall: 0,
+          totalCap: 0,
+          coinsRemaining: coinData.coinsRemaining
+        });
+      }
+    });
+    
     return Array.from(summaries.entries())
       .map(([team, data]) => ({ team, ...data }))
       .sort((a, b) => a.team.localeCompare(b.team));
-  }, [players]);
+  }, [players, teamCoins]);
 
   // Get Free Agents count
   const freeAgentCount = useMemo(() => {

@@ -9,6 +9,7 @@ interface TeamSummary {
   playerCount: number;
   totalOverall: number;
   totalCap: number;
+  coinsRemaining?: number;
 }
 
 interface TeamSummariesTableProps {
@@ -93,6 +94,9 @@ export function TeamSummariesTable({ summaries, onTeamClick }: TeamSummariesTabl
                     <ArrowUpDown className="w-4 h-4" />
                   </div>
                 </TableHead>
+                <TableHead className="text-slate-300 text-center">
+                  FA Coins
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -115,6 +119,15 @@ export function TeamSummariesTable({ summaries, onTeamClick }: TeamSummariesTabl
                     {summary.totalOverall}
                     {summary.totalOverall > OVERALL_CAP_LIMIT && (
                       <span className="text-red-500 ml-1">(+{summary.totalOverall - OVERALL_CAP_LIMIT})</span>
+                    )}
+                  </TableCell>
+                  <TableCell className="text-center text-slate-300">
+                    {summary.coinsRemaining !== undefined ? (
+                      <span>
+                        🪙 {summary.coinsRemaining}/{summary.team === 'Hawks' || summary.team === 'Nuggets' ? '115' : '100'}
+                      </span>
+                    ) : (
+                      <span className="text-slate-500">-</span>
                     )}
                   </TableCell>
                 </TableRow>

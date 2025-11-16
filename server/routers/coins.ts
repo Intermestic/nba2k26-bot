@@ -6,7 +6,21 @@ import { eq, desc } from "drizzle-orm";
 
 export const coinsRouter = router({
   /**
-   * Get all team coin balances
+   * Get all team coin balances (public, read-only)
+   */
+  getTeamCoins: protectedProcedure
+    .query(async () => {
+      const db = await getDb();
+      if (!db) throw new Error("Database connection failed");
+
+      // Get all team coins, ordered by team name
+      const coins = await db.select().from(teamCoins).orderBy(teamCoins.team);
+
+      return coins;
+    }),
+
+  /**
+   * Get all team coin balances (admin only, for management)
    */
   getAllTeamCoins: protectedProcedure
     .query(async ({ ctx }: { ctx: any }) => {
