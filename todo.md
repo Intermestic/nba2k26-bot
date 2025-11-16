@@ -932,4 +932,18 @@ When a user bids on multiple players and cuts a player they're already bidding o
 - [x] Add admin check to Home page
 - [x] Wrap stats cards in conditional render (only show if admin)
 - [x] Test with regular user account (stats hidden successfully)
+- [x] Save checkpoint
+
+
+## BUG: Trade Parser Too Strict + Missing Manual Correction
+
+### Issue
+Trade parser failing on valid trades like "Rockets send ... Knicks ..." format. No way to manually correct when parsing fails.
+
+### Tasks
+- [x] Simplify trade parser to only require team names followed by player lists
+- [x] Updated parser to handle "Team1 send ... Team2" format (without "send" for team2)
+- [x] Add manual trade correction instructions when parsing fails
+- [x] Provide clear format example in error message
+- [x] Test with failing example (Rockets/Knicks trade) - parser fix verified
 - [ ] Save checkpoint

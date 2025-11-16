@@ -51,7 +51,20 @@ export async function handleTradeMessage(message: Message) {
   const parsedTrade = parseTrade(messageText);
   if (!parsedTrade) {
     console.log(`[Trade Handler] Failed to parse trade from message`);
-    await message.reply('❌ Could not parse trade. Please check the format and try again.');
+    await message.reply(
+      '❌ **Could not parse trade automatically.**\n\n' +
+      '**Manual Correction:**\n' +
+      'Reply to this message with the trade in this format:\n' +
+      '```\n' +
+      'Team1 send: Player1, Player2\n' +
+      'Team2 send: Player3, Player4\n' +
+      '```\n' +
+      '**Example:**\n' +
+      '```\n' +
+      'Rockets send: Derrick Jones Jr, Moussa Diabate\n' +
+      'Knicks send: Keegan Murray, Aden Bona\n' +
+      '```'
+    );
     return;
   }
   

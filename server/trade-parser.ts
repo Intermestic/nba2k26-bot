@@ -77,12 +77,21 @@ export function parseTrade(message: string): ParsedTrade | null {
   const sendMatch = text.match(sendPattern);
   
   if (sendMatch) {
-    // Also extract team2's players
-    const team2Pattern = new RegExp(
+    // Also extract team2's players - try with "send" first
+    let team2Pattern = new RegExp(
       `${team2}\\s+send[s]?[:\\s]+([^]+?)(?:$|\\n\\n)`,
       'is'
     );
-    const team2Match = text.match(team2Pattern);
+    let team2Match = text.match(team2Pattern);
+    
+    // If no "send", try just team name followed by players
+    if (!team2Match) {
+      team2Pattern = new RegExp(
+        `${team2}\\s*\\n([^]+?)(?:$|\\n\\n)`,
+        'is'
+      );
+      team2Match = text.match(team2Pattern);
+    }
     
     if (team2Match) {
       console.log('[Trade Parser] Using "Send" format strategy');
