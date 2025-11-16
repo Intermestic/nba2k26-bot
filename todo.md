@@ -1749,4 +1749,15 @@ Upgrade messages posted in team channels (e.g., team-wizards) are not being proc
 - [x] Free Agency: FA Coins, FA History, FA Window Summary, FA Monitor, Transactions
 - [x] System Admin: Upgrade Requests, Player Aliases, Bot Management, Custom Commands, Welcome/Goodbye, Reaction Roles, Analytics, Server Logs, Upgrade History, Validation Rules, Match Logs, Discord Integration, Transaction History
 - [x] Add section headers with visual separation
+- [x] Save checkpoint
+
+
+## CURRENT TASK: Add Real-Time Stats to Dashboard Cards
+
+### Requirements
+- [x] Create TRPC endpoint to fetch dashboard statistics
+- [x] Query counts for: pending upgrades, active FA bids, cap violations, total teams, total players, total transactions
+- [x] Update AdminDashboard to fetch and display stats
+- [x] Show badge with count on relevant cards (e.g., "5" on Upgrade Requests)
+- [x] Use loading skeleton while fetching
 - [ ] Save checkpoint

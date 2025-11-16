@@ -1,6 +1,9 @@
 import { Link } from "wouter";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
+import { trpc } from "@/lib/trpc";
 import { 
   Users, 
   DollarSign, 
@@ -24,10 +27,22 @@ interface AdminTool {
   icon: React.ReactNode;
   color: string;
   section: "team" | "freeagency" | "system";
+  statKey?: keyof DashboardStats;
+}
+
+interface DashboardStats {
+  pendingUpgrades: number;
+  activeBids: number;
+  capViolations: number;
+  totalPlayers: number;
+  totalTeams: number;
+  totalTransactions: number;
+  totalAssignments: number;
 }
 
 export default function AdminDashboard() {
   const { user } = useAuth();
+  const { data: stats, isLoading } = trpc.dashboard.getStats.useQuery();
 
   const tools: AdminTool[] = [
     // Team Management Section
@@ -37,7 +52,8 @@ export default function AdminDashboard() {
       href: "/admin/teams",
       icon: <Shield className="w-6 h-6" />,
       color: "bg-blue-500",
-      section: "team"
+      section: "team",
+      statKey: "totalAssignments"
     },
     {
       title: "Team Management",
@@ -45,7 +61,8 @@ export default function AdminDashboard() {
       href: "/admin/roster",
       icon: <Users className="w-6 h-6" />,
       color: "bg-blue-600",
-      section: "team"
+      section: "team",
+      statKey: "totalPlayers"
     },
     {
       title: "Cap Compliance",
@@ -53,7 +70,8 @@ export default function AdminDashboard() {
       href: "/admin/cap",
       icon: <AlertTriangle className="w-6 h-6" />,
       color: "bg-red-500",
-      section: "team"
+      section: "team",
+      statKey: "capViolations"
     },
     {
       title: "Bulk Transactions",
@@ -87,7 +105,8 @@ export default function AdminDashboard() {
       href: "/admin/fa-summary",
       icon: <CheckCircle className="w-6 h-6" />,
       color: "bg-teal-500",
-      section: "freeagency"
+      section: "freeagency",
+      statKey: "activeBids"
     },
     {
       title: "FA Monitor",
@@ -95,7 +114,8 @@ export default function AdminDashboard() {
       href: "/admin/fa-monitor",
       icon: <BarChart3 className="w-6 h-6" />,
       color: "bg-cyan-500",
-      section: "freeagency"
+      section: "freeagency",
+      statKey: "activeBids"
     },
     {
       title: "Transaction History",
@@ -103,7 +123,8 @@ export default function AdminDashboard() {
       href: "/admin/history",
       icon: <FileText className="w-6 h-6" />,
       color: "bg-green-600",
-      section: "freeagency"
+      section: "freeagency",
+      statKey: "totalTransactions"
     },
     
     // System Admin Section
@@ -113,7 +134,8 @@ export default function AdminDashboard() {
       href: "/admin/upgrade-summary",
       icon: <TrendingUp className="w-6 h-6" />,
       color: "bg-green-500",
-      section: "system"
+      section: "system",
+      statKey: "pendingUpgrades"
     },
     {
       title: "Player Aliases",
@@ -257,7 +279,22 @@ export default function AdminDashboard() {
                             {tool.icon}
                           </div>
                           <div className="flex-1">
-                            <CardTitle className="text-white text-lg">{tool.title}</CardTitle>
+                            <div className="flex items-center justify-between gap-2">
+                              <CardTitle className="text-white text-lg">{tool.title}</CardTitle>
+                              {tool.statKey && (
+                                <div>
+                                  {isLoading ? (
+                                    <Skeleton className="h-6 w-8 rounded-full" />
+                                  ) : (
+                                    stats && stats[tool.statKey] > 0 && (
+                                      <Badge variant="secondary" className="bg-slate-700 text-white">
+                                        {stats[tool.statKey]}
+                                      </Badge>
+                                    )
+                                  )}
+                                </div>
+                              )}
+                            </div>
                           </div>
                         </div>
                       </CardHeader>
