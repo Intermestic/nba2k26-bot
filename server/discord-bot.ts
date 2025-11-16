@@ -1140,6 +1140,44 @@ export async function startDiscordBot(token: string) {
         return;
       }
       
+      // Check for badge lookup command: !badge <abbreviation> or !badge list
+      if (message.content.trim().toLowerCase().startsWith('!badge')) {
+        const parts = message.content.trim().split(/\s+/);
+        
+        if (parts.length === 1) {
+          await message.reply('❌ Usage: !badge <abbreviation> or !badge list');
+          return;
+        }
+        
+        const query = parts[1].toLowerCase();
+        
+        try {
+          if (query === 'list') {
+            const { listAllBadges } = await import('./badge-lookup-handler');
+            const result = await listAllBadges();
+            
+            if (result.success && result.embed) {
+              await message.reply({ embeds: [result.embed] });
+            } else {
+              await message.reply(result.message || '❌ Failed to list badges');
+            }
+          } else {
+            const { lookupBadge } = await import('./badge-lookup-handler');
+            const result = await lookupBadge(query);
+            
+            if (result.success && result.embed) {
+              await message.reply({ embeds: [result.embed] });
+            } else {
+              await message.reply(result.message || '❌ Failed to look up badge');
+            }
+          }
+        } catch (error) {
+          console.error('[Badge Lookup] Command failed:', error);
+          await message.reply('❌ Failed to look up badge. Check logs for details.');
+        }
+        return;
+      }
+      
       await handleBidMessage(message);
     } else if (message.channelId === TRADE_CHANNEL_ID) {
       // Handle new trade embeds for voting

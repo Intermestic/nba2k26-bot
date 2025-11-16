@@ -22,12 +22,13 @@ export default function UpgradeSummary() {
   const [, navigate] = useLocation();
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
   const [expandedTeams, setExpandedTeams] = useState<Set<string>>(new Set());
-  const [confirmAction, setConfirmAction] = useState<"approve" | "reject" | null>(null);
+  const [confirmAction, setConfirmAction] = useState<"approve" | "reject" | "revert" | null>(null);
 
   const { data: upgrades, isLoading, refetch } = trpc.upgrades.getAllUpgrades.useQuery();
   const bulkApproveMutation = trpc.upgrades.bulkApprove.useMutation();
   const bulkRejectMutation = trpc.upgrades.bulkReject.useMutation();
   const revertMutation = trpc.upgrades.revertUpgrade.useMutation();
+  const bulkRevertMutation = trpc.upgrades.bulkRevert.useMutation();
 
   // Group upgrades by team
   const upgradesByTeam = upgrades?.reduce((acc: any, upgrade: any) => {
@@ -61,9 +62,11 @@ export default function UpgradeSummary() {
     setSelectedIds(newSelected);
   };
 
-  const toggleTeamSelection = (team: string) => {
+  const toggleTeamSelection = (team: string, status?: string) => {
     const teamUpgrades = upgradesByTeam?.[team] || [];
-    const teamIds = teamUpgrades.filter((u: any) => u.status === "pending").map((u: any) => u.id);
+    const teamIds = status 
+      ? teamUpgrades.filter((u: any) => u.status === status).map((u: any) => u.id)
+      : teamUpgrades.filter((u: any) => u.status === "pending").map((u: any) => u.id);
     const allSelected = teamIds.every((id: number) => selectedIds.has(id));
 
     const newSelected = new Set(selectedIds);
@@ -75,7 +78,7 @@ export default function UpgradeSummary() {
     setSelectedIds(newSelected);
   };
 
-  const handleBulkAction = async (action: "approve" | "reject") => {
+  const handleBulkAction = async (action: "approve" | "reject" | "revert") => {
     if (selectedIds.size === 0) {
       toast.error("No upgrades selected");
       return;
@@ -86,9 +89,12 @@ export default function UpgradeSummary() {
       if (action === "approve") {
         const result = await bulkApproveMutation.mutateAsync({ requestIds: ids });
         toast.success(`Approved ${result.successCount} upgrades`);
-      } else {
+      } else if (action === "reject") {
         const result = await bulkRejectMutation.mutateAsync({ requestIds: ids });
         toast.success(`Rejected ${result.successCount} upgrades`);
+      } else if (action === "revert") {
+        const result = await bulkRevertMutation.mutateAsync({ requestIds: ids });
+        toast.success(`Reverted ${result.successCount} upgrades`);
       }
       setSelectedIds(new Set());
       setConfirmAction(null);
@@ -195,6 +201,14 @@ export default function UpgradeSummary() {
             >
               Reject Selected ({selectedIds.size})
             </Button>
+            <Button
+              onClick={() => setConfirmAction("revert")}
+              variant="outline"
+              className="bg-slate-600 hover:bg-slate-700 text-white border-slate-600"
+            >
+              <RotateCcw className="w-4 h-4 mr-2" />
+              Revert Selected ({selectedIds.size})
+            </Button>
           </div>
         )}
 
@@ -223,13 +237,38 @@ export default function UpgradeSummary() {
                           <Badge className="bg-yellow-600">{teamPendingCount} pending</Badge>
                         )}
                       </div>
-                      {teamPendingCount > 0 && (
-                        <Checkbox
-                          checked={allSelected}
-                          onCheckedChange={() => toggleTeamSelection(team)}
-                          onClick={(e) => e.stopPropagation()}
-                        />
-                      )}
+                      <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
+                        {teamPendingCount > 0 && (
+                          <Checkbox
+                            checked={allSelected}
+                            onCheckedChange={() => toggleTeamSelection(team)}
+                            title="Select all pending"
+                          />
+                        )}
+                        {teamUpgrades.filter((u: any) => u.status === "approved" || u.status === "rejected").length > 0 && (
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="text-slate-400 hover:text-white"
+                            onClick={() => {
+                              const processedIds = teamUpgrades
+                                .filter((u: any) => u.status === "approved" || u.status === "rejected")
+                                .map((u: any) => u.id);
+                              const allProcessedSelected = processedIds.every((id: number) => selectedIds.has(id));
+                              const newSelected = new Set(selectedIds);
+                              if (allProcessedSelected) {
+                                processedIds.forEach((id: number) => newSelected.delete(id));
+                              } else {
+                                processedIds.forEach((id: number) => newSelected.add(id));
+                              }
+                              setSelectedIds(newSelected);
+                            }}
+                            title="Select all approved/rejected"
+                          >
+                            <RotateCcw className="w-3 h-3" />
+                          </Button>
+                        )}
+                      </div>
                     </div>
                   </CardHeader>
 
@@ -252,7 +291,7 @@ export default function UpgradeSummary() {
                               key={upgrade.id}
                               className="flex items-start gap-4 p-4 bg-slate-900 rounded-lg"
                             >
-                              {upgrade.status === "pending" && (
+                              {(upgrade.status === "pending" || upgrade.status === "approved" || upgrade.status === "rejected") && (
                                 <Checkbox
                                   checked={selectedIds.has(upgrade.id)}
                                   onCheckedChange={() => toggleSelection(upgrade.id)}
@@ -342,11 +381,12 @@ export default function UpgradeSummary() {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
-              {confirmAction === "approve" ? "Approve" : "Reject"} {selectedIds.size} Upgrades?
+              {confirmAction === "approve" ? "Approve" : confirmAction === "reject" ? "Reject" : "Revert"} {selectedIds.size} Upgrades?
             </AlertDialogTitle>
             <AlertDialogDescription>
-              This action will {confirmAction === "approve" ? "approve" : "reject"} the selected upgrade requests.
-              {confirmAction === "approve" && " Approved upgrades will be posted to the Discord log channel."}
+              {confirmAction === "approve" && `This action will approve the selected upgrade requests. Approved upgrades will be posted to the Discord log channel.`}
+              {confirmAction === "reject" && `This action will reject the selected upgrade requests.`}
+              {confirmAction === "revert" && `This action will revert the selected upgrades back to pending status. Discord reactions will be removed and approved upgrades will be removed from player_upgrades table.`}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

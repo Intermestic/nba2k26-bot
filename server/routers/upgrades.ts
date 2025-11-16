@@ -194,6 +194,90 @@ export const upgradesRouter = router({
     }),
 
   /**
+   * Bulk revert approved or rejected upgrades back to pending
+   */
+  bulkRevert: publicProcedure
+    .input(z.object({
+      requestIds: z.array(z.number()),
+    }))
+    .mutation(async ({ input }) => {
+      const db = await getDb();
+      if (!db) throw new Error("Database not available");
+
+      let successCount = 0;
+      let failCount = 0;
+
+      for (const requestId of input.requestIds) {
+        try {
+          // Get the request
+          const requests = await db
+            .select()
+            .from(upgradeRequests)
+            .where(eq(upgradeRequests.id, requestId));
+
+          if (requests.length === 0) {
+            failCount++;
+            continue;
+          }
+
+          const request = requests[0];
+
+          // Only allow reverting approved or rejected upgrades
+          if (request.status !== "approved" && request.status !== "rejected") {
+            failCount++;
+            continue;
+          }
+
+          // Update status back to pending
+          await db
+            .update(upgradeRequests)
+            .set({
+              status: "pending",
+              approvedAt: null,
+              approvedBy: null,
+            })
+            .where(eq(upgradeRequests.id, requestId));
+
+          // Remove from player_upgrades if it was approved
+          if (request.status === "approved") {
+            await db
+              .delete(playerUpgrades)
+              .where(eq(playerUpgrades.requestId, requestId));
+          }
+
+          // Remove Discord reactions
+          try {
+            const client = getDiscordClient();
+            if (client && client.isReady()) {
+              const channel = await client.channels.fetch(request.channelId) as TextChannel;
+              if (channel) {
+                const message = await channel.messages.fetch(request.messageId);
+                if (message) {
+                  // Remove both ✅ and ❌ reactions
+                  await message.reactions.cache.get('✅')?.users.remove(client.user!.id);
+                  await message.reactions.cache.get('❌')?.users.remove(client.user!.id);
+                }
+              }
+            }
+          } catch (error) {
+            console.error('[Bulk Revert] Failed to remove Discord reaction:', error);
+          }
+
+          successCount++;
+        } catch (error) {
+          console.error('[Bulk Revert] Failed to revert upgrade:', error);
+          failCount++;
+        }
+      }
+
+      return {
+        successCount,
+        failCount,
+        message: `Reverted ${successCount} upgrades${failCount > 0 ? `, ${failCount} failed` : ''}`
+      };
+    }),
+
+  /**
    * Revert an approved or rejected upgrade back to pending
    */
   revertUpgrade: publicProcedure

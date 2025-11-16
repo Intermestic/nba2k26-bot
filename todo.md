@@ -1822,3 +1822,28 @@ Badge abbreviations (SS, PTZ, CHL, SSS, LR) not matching database requirements -
 - [x] Store Discord message ID with each upgrade request (already exists in schema)
 - [x] Add Discord reaction handler for ✅ on upgrade messages (already exists in discord-bot.ts)
 - [x] Update approval mutation to add ✅ reaction and post to log channel
+
+
+## CURRENT TASK: Badge Lookup Command & Bulk Revert
+
+### Feature 1: !badge Discord Command
+- [x] Create badge lookup handler function
+- [x] Query badge_abbreviations and badge_requirements tables
+- [x] Format response with full name, description, and requirements
+- [x] Add command to Discord bot message handler
+- [ ] Test with various badge abbreviations (SS, PTZ, CHL, etc.)
+
+### Feature 2: Bulk Revert Functionality
+- [x] Add "Select All" checkbox for approved/rejected upgrades
+- [x] Add bulk revert button in upgrade summary header
+- [x] Create bulkRevert TRPC mutation
+- [x] Remove Discord reactions for all selected upgrades
+- [x] Delete from player_upgrades table if approved
+- [x] Update status to pending for all selected upgrades
+- [x] Show success/error feedback with count
+
+### Phase 3: Test & Checkpoint
+- [x] Test !badge command with multiple abbreviations
+- [x] Test bulk revert with multiple upgrades
+- [x] Verify Discord reactions removed
+- [ ] Save checkpoint
