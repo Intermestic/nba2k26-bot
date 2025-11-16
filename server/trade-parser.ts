@@ -1,6 +1,7 @@
 import { getDb } from './db';
 import { players, matchLogs } from '../drizzle/schema';
 import { extract } from 'fuzzball';
+import { validateTeamName } from './team-validator';
 
 /**
  * Parsed trade structure
@@ -457,9 +458,15 @@ export async function resolveTradePlayer(parsedTrade: ParsedTrade): Promise<{
   const team1Players: Array<{ id: string; name: string; overall: number }> = [];
   const team2Players: Array<{ id: string; name: string; overall: number }> = [];
   
+  // Normalize team names to match database (case-insensitive)
+  const normalizedTeam1 = validateTeamName(parsedTrade.team1) || parsedTrade.team1;
+  const normalizedTeam2 = validateTeamName(parsedTrade.team2) || parsedTrade.team2;
+  
+  console.log(`[Trade Parser] Normalized teams: "${parsedTrade.team1}" → "${normalizedTeam1}", "${parsedTrade.team2}" → "${normalizedTeam2}"`);
+  
   // Resolve team 1 players (filter by team1 roster)
   for (const playerName of parsedTrade.team1Players) {
-    const player = await findPlayerByFuzzyName(playerName, parsedTrade.team1, 'trade');
+    const player = await findPlayerByFuzzyName(playerName, normalizedTeam1, 'trade');
     if (player) {
       team1Players.push({ id: player.id, name: player.name, overall: player.overall });
     } else {
@@ -469,7 +476,7 @@ export async function resolveTradePlayer(parsedTrade: ParsedTrade): Promise<{
   
   // Resolve team 2 players (filter by team2 roster)
   for (const playerName of parsedTrade.team2Players) {
-    const player = await findPlayerByFuzzyName(playerName, parsedTrade.team2, 'trade');
+    const player = await findPlayerByFuzzyName(playerName, normalizedTeam2, 'trade');
     if (player) {
       team2Players.push({ id: player.id, name: player.name, overall: player.overall });
     } else {

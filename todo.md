@@ -1684,5 +1684,23 @@ Parser failing because "Mavericks" and "Blazers" aren't in NBA_TEAMS list
 - [x] Add all team name variations to NBA_TEAMS array
 - [x] Include: Mavericks, Blazers, Trail Blazers, 76ers/Sixers, etc.
 - [x] TypeScript compilation successful
+- [x] Test with Mavericks/Blazers trade (ready for user testing)
+- [x] Save checkpoint
+
+
+## CURRENT TASK: Fix Trade Player Validation - Use Fuzzy Matching
+
+### Issue
+Trade parser now extracts teams correctly, but player validation is failing:
+- "Stephen curry" not matching "Stephen Curry" (case sensitivity)
+- "Issac okoro" not matching "Isaac Okoro" (typo in first name)
+- All player names are lowercase from Discord messages
+
+### Tasks
+- [x] Update resolveTradePlayer to use findPlayerByFuzzyName
+- [x] Pass team context to fuzzy matcher for better accuracy
+- [x] Handle case-insensitive matching
+- [x] Normalize team names (Mavericks→Mavs, Blazers→Trail Blazers)
+- [x] TypeScript compilation successful
 - [ ] Test with Mavericks/Blazers trade
 - [ ] Save checkpoint
