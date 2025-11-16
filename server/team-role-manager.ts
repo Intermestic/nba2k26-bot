@@ -160,10 +160,21 @@ export async function syncTeamRoles(client: Client): Promise<void> {
           continue;
         }
         
+        // Check if this is a new role assignment (user didn't have the role before)
+        const isNewAssignment = !member.roles.cache.has(role.id);
+        
         // Assign role if not already assigned
-        if (!member.roles.cache.has(role.id)) {
+        if (isNewAssignment) {
           await member.roles.add(role);
           console.log(`[Team Roles] Assigned ${teamName} role to ${member.user.tag}`);
+          
+          // Post welcome message to team channel for new assignments
+          try {
+            const { postWelcomeMessage } = await import('./team-welcome-message');
+            await postWelcomeMessage(client, teamName, userId, member.user.username);
+          } catch (error) {
+            console.error(`[Team Roles] Error posting welcome message for ${teamName}:`, error);
+          }
         }
         
         // Remove other team roles from this member
