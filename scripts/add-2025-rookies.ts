@@ -80,13 +80,11 @@ async function addRookies() {
   let updated = 0;
 
   for (const rookie of rookies2025) {
-    const playerId = rookie.name.toLowerCase().replace(/[^a-z0-9]/g, '-');
-    
-    // Check if player exists
-    const existing = await db.select().from(players).where(eq(players.id, playerId));
+    // Check if player exists by NAME (not ID)
+    const existing = await db.select().from(players).where(eq(players.name, rookie.name));
     
     if (existing.length > 0) {
-      // Update existing player
+      // Update existing player using their actual ID
       await db.update(players)
         .set({
           height: rookie.height,
@@ -95,7 +93,7 @@ async function addRookies() {
           draftYear: 2025,
           updatedAt: new Date(),
         })
-        .where(eq(players.id, playerId));
+        .where(eq(players.id, existing[0].id));
       updated++;
       console.log(`✓ Updated: ${rookie.name} (${rookie.overall} OVR)`);
     } else {

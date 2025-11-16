@@ -1387,4 +1387,40 @@ Build comprehensive admin dashboard for managing Discord bot configuration, comm
 - [x] Position badge at top-right, below overall rating (top-14 right-2)
 - [x] Keep gold gradient styling
 - [x] Test visibility on multiple rookies
+- [x] Save checkpoint
+
+
+## CURRENT TASK: Fix Duplicate Players from Rookie Import
+
+### Issue
+- Rookie import script created duplicate entries instead of updating existing players
+- Database has 2+ entries for each rookie (one with isRookie=1, one without)
+- Frontend loads wrong duplicate, so badges don't show on published site
+
+### Root Cause
+- Script used INSERT instead of UPDATE
+- Should have matched by name and updated existing records
+
+### Tasks
+- [x] Delete all duplicate rookie entries (keep originals)
+- [x] Re-run script with UPDATE logic instead of INSERT
+- [x] Verify no duplicates remain (59 rookies with isRookie=1)
+- [ ] Test rookie badges on published site
+- [ ] Save checkpoint
+
+
+## CURRENT TASK: Fix Missing Rookie Badges & Identify New Players
+
+### Issues
+1. Kasparas Jakučionis (alias Jakucionis) - rookie but no badge showing
+2. Walter Clayton Jr - rookie but no badge showing
+3. Player count increased from 643 to 648 - identify the 5 new players
+
+### Tasks
+- [x] Check database for Kasparas Jakučionis entries (both spellings)
+- [x] Check database for Walter Clayton Jr entries  
+- [x] Identify which 5 players were added (Kasparas, Walter, Egor, Hugo, Liam)
+- [x] Fix rookie data for missing badges (all 5 updated)
+- [x] Remove duplicate entries (deleted 5 duplicates)
+- [x] Verify player count back to 643 and rookie count at 59
 - [ ] Save checkpoint
