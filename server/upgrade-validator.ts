@@ -1,5 +1,5 @@
 import { getDb } from './db';
-import { badgeRequirements } from '../drizzle/schema';
+import { badgeRequirements, badgeAbbreviations } from '../drizzle/schema';
 import { eq, and } from 'drizzle-orm';
 import type { ParsedUpgrade } from './upgrade-parser';
 
@@ -91,19 +91,30 @@ async function validateBadgeUpgrade(
     return { valid: false, errors, ruleViolations };
   }
   
+  // Step 1: Look up full badge name from abbreviation
+  const abbreviationLookup = await db
+    .select()
+    .from(badgeAbbreviations)
+    .where(eq(badgeAbbreviations.abbreviation, upgrade.badgeName));
+  
+  const fullBadgeName = abbreviationLookup.length > 0 
+    ? abbreviationLookup[0].fullName 
+    : upgrade.badgeName; // Fallback to original if not found
+  
+  // Step 2: Look up requirements using full badge name
   const requirements = await db
     .select()
     .from(badgeRequirements)
     .where(
       and(
-        eq(badgeRequirements.badgeName, upgrade.badgeName),
+        eq(badgeRequirements.badgeName, fullBadgeName),
         eq(badgeRequirements.tier, upgrade.toLevel as any) // Cast to satisfy TypeScript
       )
     );
   
   if (requirements.length === 0) {
     // No requirements found - this is a warning, not an error
-    ruleViolations.push(`No requirements found for ${upgrade.badgeName} ${upgrade.toLevel}. Admin review required.`);
+    ruleViolations.push(`No requirements found for ${fullBadgeName} (${upgrade.badgeName}) ${upgrade.toLevel}. Admin review required.`);
     return { valid: true, errors, ruleViolations };
   }
   

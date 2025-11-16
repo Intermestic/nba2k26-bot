@@ -1,0 +1,49 @@
+{
+  "query": "SELECT * FROM badge_requirements WHERE badgeName LIKE '%SS%' OR badgeName LIKE '%Shot%'",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT * FROM badge_requirements WHERE badgeName LIKE '%SS%' OR badgeName LIKE '%Shot%'",
+  "rows": [
+    {
+      "id": "43",
+      "badgeName": "Set Shot Specialist",
+      "tier": "bronze",
+      "attribute1": "Mid-Range Shot",
+      "threshold1": "65",
+      "attribute2": "Three-Point Shot",
+      "threshold2": "65",
+      "attribute3": "NULL",
+      "threshold3": "NULL",
+      "createdAt": "2025-11-16 21:42:59",
+      "updatedAt": "2025-11-16 21:42:59"
+    },
+    {
+      "id": "44",
+      "badgeName": "Set Shot Specialist",
+      "tier": "silver",
+      "attribute1": "Mid-Range Shot",
+      "threshold1": "78",
+      "attribute2": "Three-Point Shot",
+      "threshold2": "78",
+      "attribute3": "NULL",
+      "threshold3": "NULL",
+      "createdAt": "2025-11-16 21:42:59",
+      "updatedAt": "2025-11-16 21:42:59"
+    },
+    {
+      "id": "45",
+      "badgeName": "Set Shot Specialist",
+      "tier": "gold",
+      "attribute1": "Mid-Range Shot",
+      "threshold1": "89",
+      "attribute2": "Three-Point Shot",
+      "threshold2": "89",
+      "attribute3": "NULL",
+      "threshold3": "NULL",
+      "createdAt": "2025-11-16 21:43:00",
+      "updatedAt": "2025-11-16 21:43:00"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tbadgeName\ttier\tattribute1\tthreshold1\tattribute2\tthreshold2\tattribute3\tthreshold3\tcreatedAt\tupdatedAt\n43\tSet Shot Specialist\tbronze\tMid-Range Shot\t65\tThree-Point Shot\t65\tNULL\tNULL\t2025-11-16 21:42:59\t2025-11-16 21:42:59\n44\tSet Shot Specialist\tsilver\tMid-Range Shot\t78\tThree-Point Shot\t78\tNULL\tNULL\t2025-11-16 21:42:59\t2025-11-16 21:42:59\n45\tSet Shot Specialist\tgold\tMid-Range Shot\t89\tThree-Point Shot\t89\tNULL\tNULL\t2025-11-16 21:43:00\t2025-11-16 21:43:00\n",
+  "stderr": "",
+  "execution_time_ms": 1525
+}

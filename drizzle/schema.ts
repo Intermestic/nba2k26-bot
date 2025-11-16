@@ -588,7 +588,7 @@ export const badgeAbbreviations = mysqlTable("badge_abbreviations", {
   id: int("id").autoincrement().primaryKey(),
   abbreviation: varchar("abbreviation", { length: 10 }).notNull().unique(), // Short form (e.g., "SS", "LIM")
   fullName: varchar("fullName", { length: 100 }).notNull(), // Full badge name (e.g., "Set Shot", "Limitless Range")
-  category: varchar("category", { length: 50 }), // Badge category (shooting, finishing, playmaking, defense)
+  category: text("category"), // Badge category or description
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
