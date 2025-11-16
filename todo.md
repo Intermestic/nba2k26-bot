@@ -1738,4 +1738,15 @@ Upgrade messages posted in team channels (e.g., team-wizards) are not being proc
 - [x] Use card-based layout with icons and descriptions
 - [x] Set as default page when clicking /admin
 - [x] Update App.tsx routes
+- [x] Save checkpoint
+
+
+## CURRENT TASK: Reorganize Admin Dashboard Sections
+
+### Requirements
+- [x] Group 21 tools into 3 sections: Team Management, Free Agency, System Admin
+- [x] Team Management: Team Assignments, Team Management (roster), Cap Compliance, Bulk Transactions
+- [x] Free Agency: FA Coins, FA History, FA Window Summary, FA Monitor, Transactions
+- [x] System Admin: Upgrade Requests, Player Aliases, Bot Management, Custom Commands, Welcome/Goodbye, Reaction Roles, Analytics, Server Logs, Upgrade History, Validation Rules, Match Logs, Discord Integration, Transaction History
+- [x] Add section headers with visual separation
 - [ ] Save checkpoint
