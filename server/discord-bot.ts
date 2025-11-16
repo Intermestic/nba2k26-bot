@@ -461,7 +461,7 @@ async function handleBidMessage(message: Message) {
   team = validatedTeam;
   
   // Validate drop player if specified (verify they're on the user's team)
-  let dropPlayerValidated: { id: string; name: string; team: string; overall: number } | null = null;
+  let dropPlayerValidated: { id: string; name: string; team: string; overall: number; salaryCap?: number | null } | null = null;
   
   if (parsedBid.dropPlayer) {
     // Validate drop player exists (no team context yet, no FA filter)
@@ -673,11 +673,13 @@ async function handleBidMessage(message: Message) {
     
     // Subtract dropped player if present (use already-validated drop player)
     if (dropPlayerValidated) {
-      projectedTotal -= (dropPlayerValidated.overall); // Use overall for cap calculation
+      const dropPlayerCap = dropPlayerValidated.salaryCap || dropPlayerValidated.overall;
+      projectedTotal -= dropPlayerCap;
     }
     
-    // Add signed player
-    projectedTotal += player.overall;
+    // Add signed player (use salaryCap if available, otherwise overall)
+    const signPlayerCap = player.salaryCap || player.overall;
+    projectedTotal += signPlayerCap;
     
     const CAP_LIMIT = 1098;
     const capDiff = projectedTotal - CAP_LIMIT;

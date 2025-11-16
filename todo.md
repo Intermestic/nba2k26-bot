@@ -820,4 +820,27 @@ Thunder and Clippers teams exist in database despite strict 28-team enforcement
 - [x] Test database constraints (application-level validation working)
 - [x] Verify team assignments are complete (27/28 teams assigned, accessible via admin UI)
 - [x] Test monitoring dashboard (no TypeScript errors, dev server running)
+- [x] Save checkpoint
+
+
+## BUG: Projected Cap Math Wrong in Discord Bid Confirmation
+
+### Issue
+Discord bid confirmation shows incorrect projected cap calculation:
+- Shows: "252/1098 (-846)"
+- Should show: Correct total OVR after transaction and cap remaining
+
+### Example
+Cut: Ajay Mitchell (79 OVR)
+Sign: Jaylen Nowell (70 OVR)
+Shows: 252/1098 (-846) ❌
+Should show: [correct calculation based on roster]
+
+### Tasks
+- [x] Find projected cap calculation in Discord bot code (line 671-682)
+- [x] Analyze the math logic (inconsistent use of salaryCap vs overall)
+- [x] Fix calculation to show correct values (use salaryCap || overall consistently)
+- [x] Updated dropPlayerValidated type to include salaryCap
+- [x] Updated findPlayerByFuzzyName return type and all returns to include salaryCap
+- [x] Test with sample transaction (TypeScript errors resolved, dev server running)
 - [ ] Save checkpoint

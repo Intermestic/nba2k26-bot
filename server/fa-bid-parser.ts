@@ -86,7 +86,7 @@ export async function findPlayerByFuzzyName(
   teamContext?: string,
   filterFreeAgents?: boolean,
   context: string = 'fa_bid'
-): Promise<{ id: string; name: string; team: string; overall: number } | null> {
+): Promise<{ id: string; name: string; team: string; overall: number; salaryCap?: number | null } | null> {
   const db = await getDb();
   if (!db) return null;
   
@@ -205,7 +205,8 @@ export async function findPlayerByFuzzyName(
           id: player.id,
           name: player.name,
           team: player.team || 'Free Agent',
-          overall: player.overall
+          overall: player.overall,
+          salaryCap: player.salaryCap
         };
       } else {
         console.log(`[Player Matcher] WARNING: Alias matched "${canonicalName}" but player not found in database!`);
@@ -310,7 +311,8 @@ export async function findPlayerByFuzzyName(
               id: player.id,
               name: player.name,
               team: player.team || 'Free Agent',
-              overall: player.overall
+              overall: player.overall,
+              salaryCap: player.salaryCap
             };
           }
         }
@@ -331,7 +333,8 @@ export async function findPlayerByFuzzyName(
         id: player.id,
         name: player.name,
         team: player.team || 'Free Agent',
-        overall: player.overall
+        overall: player.overall,
+        salaryCap: player.salaryCap
       };
     }
   }
