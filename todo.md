@@ -1687,4 +1687,24 @@ Upgrade messages posted in team channels (e.g., team-wizards) are not being proc
 - [ ] Test admin approval with ✅
 - [ ] Verify Discord log post
 - [ ] Test admin dashboard navigation
+- [x] Save checkpoint
+
+
+## CURRENT TASK: Import Badge Requirements from Excel
+
+### Phase 1: Read Excel Files
+- [x] Read Challenger_Requirements.xlsx
+- [x] Read HoF_Upgrades_Master_WithGlossary_Final.xlsx
+- [x] Extract badge names, tiers, and attribute requirements
+- [x] Map badge abbreviations to full names
+
+### Phase 2: Populate Database
+- [x] Create seed script to insert badge requirements
+- [x] Insert into badge_requirements table (123 requirements)
+- [x] Insert into badge_abbreviations table (40 abbreviations)
+- [x] Run seed script successfully
+
+### Phase 3: Test
+- [ ] Test upgrade validation with real badge data
+- [ ] Verify attribute thresholds work correctly
 - [ ] Save checkpoint
