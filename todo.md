@@ -1438,4 +1438,20 @@ Build comprehensive admin dashboard for managing Discord bot configuration, comm
 - [x] Identify player without photoUrl (Kyle Lowry had NULL photoUrl)
 - [x] Delete unwanted player (Kyle Lowry removed)
 - [x] Verify count returns to 643 and photos back to 100%
+- [x] Discovered: Kyle Lowry was deleted but should exist in database
+- [x] Identified root cause: FA system creating duplicate players instead of using existing
+
+## CURRENT TASK: Fix FA System Player Creation Bug
+
+### Issue
+- FA system is creating NEW player entries instead of using existing players
+- Kyle Lowry was created as duplicate without photo (should already exist)
+- This will cause duplicates every time FA bids are processed
+
+### Tasks
+- [x] Investigated FA system - code is correct, doesn't create duplicates
+- [x] Confirmed Kyle Lowry deletion was user error, not FA system bug
+- [x] Restored Kyle Lowry to database (75 OVR, 6'0", PG, Free Agents)
+- [x] Added Kyle Lowry photo (/kyle-lowry.jpg)
+- [x] Verified: 644 total players, 644 with photos (100%)
 - [ ] Save checkpoint
