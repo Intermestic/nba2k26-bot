@@ -30,6 +30,9 @@ interface Player {
   playerPageUrl?: string | null;
   badgeCount?: number | null;
   salaryCap?: number | null;
+  isRookie?: number;
+  draftYear?: number | null;
+  height?: string | null;
 }
 
 export default function Home() {
@@ -510,6 +513,12 @@ export default function Home() {
                       size="lg"
                       className="w-full h-full rounded-none group-hover:scale-110 transition-transform duration-300"
                     />
+                    {/* Rookie Badge */}
+                    {player.isRookie === 1 && (
+                      <div className="absolute top-2 left-10 bg-gradient-to-br from-yellow-400 to-orange-500 text-black px-2 py-1 rounded text-xs font-bold shadow-lg">
+                        ROOKIE
+                      </div>
+                    )}
                     <div className="absolute top-2 right-2 bg-black/70 text-white px-2 py-1 rounded text-sm font-bold">
                       {player.overall}
                     </div>

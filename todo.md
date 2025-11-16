@@ -1352,4 +1352,25 @@ Build comprehensive admin dashboard for managing Discord bot configuration, comm
 - [x] Test rookie badge display on player cards (gold badges showing correctly)
 - [x] Verify rookie filtering works (isRookie field in database)
 - [x] Test player search includes rookies (all 59 rookies added)
+- [x] Save final checkpoint
+
+
+## CURRENT TASK: Add Rookie Badges to Home Page
+
+### Phase 1: Find and Update Home Page Player Cards
+- [x] Locate home page player card component (Home.tsx)
+- [x] Add rookie badge to player photo (top-left corner)
+- [x] Match styling from RosterCard component (gold gradient from-yellow-400 to-orange-500)
+- [x] Update Player interface to include isRookie, draftYear, height fields
+
+### Phase 2: Update Player Queries
+- [x] Check if home page player query includes isRookie field (uses .select() = all fields)
+- [x] Check if home page player query includes draftYear field (uses .select() = all fields)
+- [x] Update TRPC query if fields are missing (not needed, already returns all)
+- [x] Verify data flows to frontend correctly (schema includes all rookie fields)
+
+### Phase 3: Testing and Delivery
+- [x] Test rookie badges appear on home page (gold badges showing correctly)
+- [x] Verify all 59 rookies show badges (visible in player grid)
+- [x] Test on different screen sizes (responsive grid layout)
 - [ ] Save final checkpoint
