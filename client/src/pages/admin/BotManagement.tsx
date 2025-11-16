@@ -1057,6 +1057,91 @@ function AutomationTab() {
           </div>
         </div>
 
+        {/* Live Preview Section */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold">Live Preview</h3>
+          <p className="text-sm text-muted-foreground">See how bot messages will look with your current settings</p>
+          
+          <div className="space-y-4">
+            {/* FA Batch Confirmation Preview */}
+            <div className="bg-[#313338] rounded-lg p-4 space-y-3">
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 rounded-full bg-[#5865F2] flex items-center justify-center text-white font-bold flex-shrink-0">
+                  BOT
+                </div>
+                <div className="flex-1 space-y-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-white font-semibold">NBA 2K Bot</span>
+                    <span className="bg-[#5865F2] text-white text-xs px-1.5 py-0.5 rounded">BOT</span>
+                    <span className="text-[#949BA4] text-xs">Today at 12:00 PM</span>
+                  </div>
+                  <div className="bg-[#2B2D31] border-l-4 border-[#FAA61A] rounded p-3">
+                    <div className="text-[#FAA61A] font-semibold mb-2">⚠️ Batch Processing Preview</div>
+                    <div className="text-[#DBDEE1] text-sm space-y-1">
+                      <p><strong>42 transactions ready to process</strong></p>
+                      <p className="mt-2">React with <span className="text-2xl">{formData.confirm_emoji}</span> within <strong>{Math.round(parseInt(formData.fa_confirm_timeout) / 1000)} seconds</strong> to confirm and execute.</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 mt-2">
+                    <div className="bg-[#2B2D31] hover:bg-[#35373C] rounded px-2 py-1 flex items-center gap-1 cursor-pointer">
+                      <span className="text-xl">{formData.confirm_emoji}</span>
+                      <span className="text-[#949BA4] text-xs">1</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Retry Preview */}
+            <div className="bg-[#313338] rounded-lg p-4 space-y-3">
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 rounded-full bg-[#5865F2] flex items-center justify-center text-white font-bold flex-shrink-0">
+                  BOT
+                </div>
+                <div className="flex-1 space-y-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-white font-semibold">NBA 2K Bot</span>
+                    <span className="bg-[#5865F2] text-white text-xs px-1.5 py-0.5 rounded">BOT</span>
+                    <span className="text-[#949BA4] text-xs">Today at 12:05 PM</span>
+                  </div>
+                  <div className="bg-[#2B2D31] border-l-4 border-[#ED4245] rounded p-3">
+                    <div className="text-[#ED4245] font-semibold mb-2">❌ Batch Complete with Failures</div>
+                    <div className="text-[#DBDEE1] text-sm space-y-1">
+                      <p><strong>Success:</strong> 38 transactions</p>
+                      <p><strong>Failed:</strong> 4 transactions</p>
+                      <p className="mt-2">React with <span className="text-2xl">{formData.retry_emoji}</span> within <strong>{Math.round(parseInt(formData.retry_timeout) / 1000 / 60)} minutes</strong> to retry failed transactions.</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 mt-2">
+                    <div className="bg-[#2B2D31] hover:bg-[#35373C] rounded px-2 py-1 flex items-center gap-1 cursor-pointer">
+                      <span className="text-xl">{formData.retry_emoji}</span>
+                      <span className="text-[#949BA4] text-xs">0</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Trigger Example */}
+            <div className="bg-[#313338] rounded-lg p-4">
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 rounded-full bg-[#57F287] flex items-center justify-center text-2xl flex-shrink-0">
+                  👤
+                </div>
+                <div className="flex-1 space-y-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-white font-semibold">GM_Lakers</span>
+                    <span className="text-[#949BA4] text-xs">Today at 11:59 AM</span>
+                  </div>
+                  <div className="text-[#DBDEE1] text-sm">
+                    React with <span className="text-2xl">{formData.trigger_emoji}</span> to start FA batch processing
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Save Button */}
         <div className="flex justify-end pt-4 border-t">
           <Button onClick={handleSave} disabled={updateConfig.isPending}>

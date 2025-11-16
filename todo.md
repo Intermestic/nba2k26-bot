@@ -1303,4 +1303,24 @@ Build comprehensive admin dashboard for managing Discord bot configuration, comm
 - [x] Test template edit with multiple templates (bug fixed)
 - [x] Test webhook settings save/load (UI working)
 - [x] Test emoji picker functionality (inputs working)
+- [x] Save final checkpoint
+
+
+## CURRENT TASK: Live Preview Panel for Bot Messages
+
+### Phase 1: Design Discord-Style Message Preview
+- [x] Create DiscordMessagePreview component with bot avatar and styling
+- [x] Design preview for FA batch confirmation message
+- [x] Design preview for retry message
+- [x] Add Discord-themed styling (dark background, message bubbles)
+
+### Phase 2: Add Live Preview to Automation Tab
+- [x] Add preview panel section below emoji inputs
+- [x] Wire preview to update when emoji values change (real-time via formData)
+- [x] Show multiple message scenarios (batch, retry, trigger)
+- [x] Add real-time timeout display in preview messages
+
+### Phase 3: Testing and Delivery
+- [x] Test preview with different emoji combinations (working perfectly)
+- [x] Verify preview updates instantly on input change (real-time updates confirmed)
 - [ ] Save final checkpoint
