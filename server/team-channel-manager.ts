@@ -5,6 +5,9 @@
 
 import { Client, ChannelType, PermissionFlagsBits, CategoryChannel, TextChannel, Role } from 'discord.js';
 import { validateTeamName } from './team-validator.js';
+import { getDb } from './db.js';
+import { players, teamCoins } from '../drizzle/schema.js';
+import { eq, sql } from 'drizzle-orm';
 
 // Configuration
 const TEAM_CHANNELS_CATEGORY_NAME = 'Team Channels';
@@ -23,6 +26,44 @@ const ALL_TEAMS = [
  */
 function getChannelName(teamName: string): string {
   return `team-${teamName.toLowerCase().replace(/\s+/g, '-')}`;
+}
+
+/**
+ * Get roster summary for a team
+ */
+async function getRosterSummary(teamName: string): Promise<string> {
+  try {
+    const db = await getDb();
+    if (!db) {
+      return `${teamName} team channel`;
+    }
+
+    // Get player count and total OVR
+    const teamPlayers = await db
+      .select({
+        count: sql<number>`count(*)`,
+        totalOvr: sql<number>`sum(${players.overall})`
+      })
+      .from(players)
+      .where(eq(players.team, teamName));
+
+    const playerCount = teamPlayers[0]?.count || 0;
+    const totalOvr = teamPlayers[0]?.totalOvr || 0;
+
+    // Get FA coins
+    const coins = await db
+      .select()
+      .from(teamCoins)
+      .where(eq(teamCoins.team, teamName));
+
+    const coinsRemaining = coins[0]?.coinsRemaining || 0;
+    const maxCoins = (teamName === 'Nuggets' || teamName === 'Hawks') ? 115 : 100;
+
+    return `${teamName}: ${playerCount} players, ${totalOvr} total OVR, ${coinsRemaining}/${maxCoins} FA coins`;
+  } catch (error) {
+    console.error(`[Team Channels] Error getting roster summary for ${teamName}:`, error);
+    return `${teamName} team channel`;
+  }
 }
 
 /**
@@ -63,6 +104,7 @@ async function createOrUpdateTeamChannel(
 ): Promise<TextChannel | null> {
   try {
     const channelName = getChannelName(teamName);
+    const rosterSummary = await getRosterSummary(teamName);
 
     // Check if channel already exists
     let channel: TextChannel | null = guild.channels.cache.find(
@@ -75,7 +117,7 @@ async function createOrUpdateTeamChannel(
         name: channelName,
         type: ChannelType.GuildText,
         parent: category.id,
-        topic: `Private channel for ${teamName} team members`,
+        topic: rosterSummary,
         reason: `Team channel for ${teamName}`,
         permissionOverwrites: [
           {
@@ -95,7 +137,7 @@ async function createOrUpdateTeamChannel(
           },
         ],
       });
-      console.log(`[Team Channels] Created channel: ${channelName}`);
+      console.log(`[Team Channels] Created channel: ${channelName} with topic: ${rosterSummary}`);
     } else {
       // Update existing channel permissions
       await channel.permissionOverwrites.set([
@@ -119,6 +161,11 @@ async function createOrUpdateTeamChannel(
       // Move to category if not already there
       if (channel.parentId !== category.id) {
         await channel.setParent(category.id);
+      }
+      
+      // Update topic with roster summary
+      if (channel.topic !== rosterSummary) {
+        await channel.setTopic(rosterSummary);
       }
 
       console.log(`[Team Channels] Updated channel: ${channelName}`);

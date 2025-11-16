@@ -1021,4 +1021,21 @@ Sort all team channels alphabetically within the "Team Channels" category for ea
 - [x] Update syncTeamChannels to process teams in alphabetical order
 - [x] Set channel position based on alphabetical index
 - [x] TypeScript compilation successful (no errors)
+- [x] Save checkpoint
+
+
+## CURRENT TASK: Custom Channel Topics with Roster Summary
+
+### Goal
+Add custom topics to each team channel showing roster summary (e.g., "Lakers: 14 players, 1090 total OVR, 9 FA coins")
+
+### Tasks
+- [x] Import database connection in team-channel-manager
+- [x] Fetch player data grouped by team (count and sum OVR)
+- [x] Fetch team coins data
+- [x] Calculate roster statistics (player count, total OVR)
+- [x] Format topic string with team stats
+- [x] Update channel.setTopic() with roster summary
+- [x] Update both new and existing channels with topics
+- [x] TypeScript compilation successful (no errors)
 - [ ] Save checkpoint
