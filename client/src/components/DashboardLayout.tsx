@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/sidebar";
 import { APP_LOGO, APP_TITLE, getLoginUrl } from "@/const";
 import { useIsMobile } from "@/hooks/useMobile";
-import { LayoutDashboard, LogOut, PanelLeft, Users, DollarSign, AlertTriangle, History, FileText, Shield, Activity, Terminal, UserPlus, Smile, BarChart3, ScrollText } from "lucide-react";
+import { LayoutDashboard, LogOut, PanelLeft, Users, DollarSign, AlertTriangle, History, FileText, Shield, Activity, Terminal, UserPlus, Smile, BarChart3, ScrollText, TrendingUp } from "lucide-react";
 import { CSSProperties, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { DashboardLayoutSkeleton } from './DashboardLayoutSkeleton';
@@ -51,6 +51,7 @@ const menuSections = [
       { icon: Activity, label: "FA Monitor", path: "/admin/fa-monitor" },
       { icon: History, label: "FA History", path: "/admin/fa-history" },
       { icon: FileText, label: "Transactions", path: "/admin/transactions" },
+      { icon: TrendingUp, label: "Upgrade History", path: "/admin/upgrade-history" },
     ],
   },
   {

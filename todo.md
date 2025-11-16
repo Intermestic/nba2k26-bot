@@ -1765,7 +1765,7 @@ Trade parser now extracts teams correctly, but player validation is failing:
 - [x] Admin approval workflow (😀 → ✅)
 - [x] Public upgrade log channel posting
 - [ ] Test in Discord
-- [ ] Save checkpoint
+- [x] Save checkpoint
 
 ### How It Works
 1. User posts upgrade request in team channel (e.g., "5gm upgrade: Suggs SS +1 to silver midrange 87, 3pt 91")
@@ -1781,3 +1781,18 @@ Trade parser now extracts teams correctly, but player validation is failing:
 - server/upgrade-validator.ts - Validates attribute gates and league rules
 - server/upgrade-handler.ts - Discord message and reaction handlers
 - drizzle/schema.ts - Added 4 new tables (badge_requirements, badge_abbreviations, upgrade_requests, player_upgrades)
+
+
+## NEW: Upgrade History Admin Page
+
+### Features to Implement
+- [x] Create TRPC router for upgrade queries (getAllUpgrades, getUpgradeStats)
+- [x] Build admin page at /admin/upgrade-history
+- [x] Add filterable table (team, player, badge, status, date)
+- [x] Add sortable columns (date, player, badge level, game number)
+- [x] Display statistics (total upgrades, by team, by badge type)
+- [x] Add status indicators (pending, approved, rejected)
+- [x] Include CSV export functionality
+- [x] Add navigation link to admin sidebar
+- [x] Test filtering and sorting
+- [x] Save checkpoint
