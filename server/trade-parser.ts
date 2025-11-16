@@ -14,13 +14,38 @@ export interface ParsedTrade {
 
 /**
  * NBA team names for fuzzy matching
+ * Includes all common variations to maximize parsing success
  */
 const NBA_TEAMS = [
-  '76ers', 'Bucks', 'Bulls', 'Cavaliers', 'Celtics', 'Grizzlies',
-  'Hawks', 'Heat', 'Hornets', 'Jazz', 'Kings', 'Knicks', 'Lakers', 'Magic',
-  'Mavs', 'Mavericks', 'Nets', 'Nuggets', 'Pacers', 'Pelicans', 'Pistons',
-  'Raptors', 'Rockets', 'Spurs', 'Suns', 'Timberwolves', 'Trailblazers',
-  'Warriors', 'Wizards'
+  // Include both short and full names for teams
+  '76ers', 'Sixers',
+  'Blazers', 'Trail Blazers', 'Trailblazers',
+  'Bucks',
+  'Bulls',
+  'Cavaliers', 'Cavs',
+  'Celtics',
+  'Grizzlies',
+  'Hawks',
+  'Heat',
+  'Hornets',
+  'Jazz',
+  'Kings',
+  'Knicks',
+  'Lakers',
+  'Magic',
+  'Mavericks', 'Mavs',
+  'Nets',
+  'Nuggets',
+  'Pacers',
+  'Pelicans',
+  'Pistons',
+  'Raptors',
+  'Rockets',
+  'Spurs',
+  'Suns',
+  'Timberwolves', 'Wolves',
+  'Warriors',
+  'Wizards'
 ];
 
 /**

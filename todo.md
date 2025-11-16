@@ -1669,5 +1669,20 @@ Parser should accept ANY of these formats:
 - [x] Accept team names with or without "send/sends" keyword
 - [x] Handle multi-line player lists
 - [x] TypeScript compilation successful
-- [ ] Test with the failed Mavericks/Blazers trade
+- [x] Test with the failed Mavericks/Blazers trade
+- [x] Save checkpoint
+
+
+## CURRENT TASK: Fix Trade Parser Team Name Recognition
+
+### Issue
+Parser failing because "Mavericks" and "Blazers" aren't in NBA_TEAMS list
+- Has "Mavs" but not "Mavericks"
+- Has "Trailblazers" but not "Blazers" or "Trail Blazers"
+
+### Tasks
+- [x] Add all team name variations to NBA_TEAMS array
+- [x] Include: Mavericks, Blazers, Trail Blazers, 76ers/Sixers, etc.
+- [x] TypeScript compilation successful
+- [ ] Test with Mavericks/Blazers trade
 - [ ] Save checkpoint
