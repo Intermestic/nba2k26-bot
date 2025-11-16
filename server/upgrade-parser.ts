@@ -208,10 +208,13 @@ export async function getBadgeRequirements(badgeName: string, level: 'bronze' | 
   
   const levelKey = level === 'bronze' ? 'bronzeMin' : level === 'silver' ? 'silverMin' : 'goldMin';
   
-  return filtered.map(req => ({
+  const results = filtered.map(req => ({
     attribute: req.attribute,
     minValue: req[levelKey] || 0,
     minHeight: req.minHeight || undefined,
     maxHeight: req.maxHeight || undefined
   }));
+  
+  // Filter out requirements with 0 value (means this level doesn't exist for this badge)
+  return results.filter(r => r.minValue > 0);
 }

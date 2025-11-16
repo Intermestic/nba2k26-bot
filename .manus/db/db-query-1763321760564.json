@@ -1,0 +1,9 @@
+{
+  "query": "UPDATE badge_requirements SET minHeight = '5''9', maxHeight = '6''11' WHERE badgeName = 'CHALLENGER';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute UPDATE badge_requirements SET minHeight = '5''9', maxHeight = '6''11' WHERE badgeName = 'CHALLENGER';",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 1552
+}

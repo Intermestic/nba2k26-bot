@@ -1,0 +1,9 @@
+{
+  "query": "INSERT INTO badge_requirements (badgeName, category, attribute, bronzeMin, silverMin, goldMin, minHeight, maxHeight) VALUES ('CHALLENGER', 'Defense', 'Perimeter Defense', 71, 82, 92, NULL, NULL);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute INSERT INTO badge_requirements (badgeName, category, attribute, bronzeMin, silverMin, goldMin, minHeight, maxHeight) VALUES ('CHALLENGER', 'Defense', 'Perimeter Defense', 71, 82, 92, NULL, NULL);",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 1561
+}

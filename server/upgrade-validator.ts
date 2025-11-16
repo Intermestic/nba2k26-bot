@@ -41,7 +41,16 @@ export async function validateUpgradeRequest(
   const reqs = await getBadgeRequirements(upgrade.badgeName, upgrade.toLevel);
   
   if (reqs.length === 0) {
-    errors.push(`No requirements found for ${upgrade.badgeName} at ${upgrade.toLevel} level`);
+    errors.push(`❌ **No Requirements Found**`);
+    errors.push('');
+    errors.push(`Badge **${upgrade.badgeName}** at **${upgrade.toLevel}** level has no requirements in the database.`);
+    errors.push('');
+    errors.push('**Possible reasons:**');
+    errors.push('• Badge name might be misspelled or abbreviated incorrectly');
+    errors.push('• This badge level might not exist in the requirements table');
+    errors.push('• This badge may not be upgradeable to this level');
+    errors.push('');
+    errors.push('**Tip:** Check the badge requirements spreadsheet or contact admin.');
     return {
       valid: false,
       errors,
@@ -100,7 +109,7 @@ export async function validateUpgradeRequest(
     };
   });
   
-  // Height check
+  // Height check (informational only - does not fail validation)
   let heightCheck: ValidationResult['heightCheck'] = undefined;
   if (reqs[0].minHeight && reqs[0].maxHeight && playerHeight) {
     const heightMet = isHeightInRange(playerHeight, reqs[0].minHeight, reqs[0].maxHeight);
@@ -111,16 +120,16 @@ export async function validateUpgradeRequest(
       met: heightMet
     };
     
-    if (!heightMet) {
-      errors.push(`• Height: **${playerHeight}** (need ${reqs[0].minHeight} - ${reqs[0].maxHeight}) ❌`);
-    }
+    // Height is informational only - don't add to errors
+    // Admin will review height requirements manually
   }
   
   // Check league rules
   const ruleChecks = await checkLeagueRules(upgrade, team);
   ruleViolations.push(...ruleChecks);
   
-  const allRequirementsMet = requirementChecks.every(r => r.met) && (!heightCheck || heightCheck.met);
+  // Only check attribute requirements, not height (height is informational)
+  const allRequirementsMet = requirementChecks.every(r => r.met);
   
   return {
     valid: allRequirementsMet && errors.length === 0,
@@ -230,7 +239,8 @@ export function formatValidationMessage(
     }
     
     if (validation.heightCheck) {
-      lines.push(`• Height: **${validation.heightCheck.playerHeight}** ✅`);
+      const heightStatus = validation.heightCheck.met ? '✅' : '⚠️';
+      lines.push(`• Height: **${validation.heightCheck.playerHeight}** ${heightStatus} (requirement: ${validation.heightCheck.minHeight} - ${validation.heightCheck.maxHeight})`);
     }
   } else {
     lines.push('❌ **Upgrade Request Rejected**');

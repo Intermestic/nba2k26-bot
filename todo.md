@@ -1809,3 +1809,31 @@ Trade parser now extracts teams correctly, but player validation is failing:
 - [x] Include player stats (total upgrades, badges earned, etc.)
 - [x] Test dialog functionality
 - [x] Save checkpoint
+
+
+## NEW: Show Badge Requirements in Validation Errors
+
+### Issue
+When upgrade validation fails, error message says "No requirements found" but doesn't show what the actual requirements are.
+
+### Tasks
+- [x] Update upgrade-validator.ts to include requirements in error messages
+- [x] Show required attributes with their threshold values
+- [x] Display height requirements if applicable
+- [x] Format error message to be clear and actionable
+- [x] Added missing CHALLENGER badge requirements to database
+- [x] Test with various failed validations
+- [x] Save checkpoint
+
+
+## NEW: Height Requirements Display Only
+
+### Issue
+Bot should display height requirements but NOT reject upgrades based on height - height is informational only for admin review.
+
+### Tasks
+- [x] Update upgrade-validator.ts to remove height from validation errors
+- [x] Keep height check in validation result but don't fail validation
+- [x] Display height requirement in success message as informational note
+- [x] Test with height-restricted badges
+- [x] Save checkpoint

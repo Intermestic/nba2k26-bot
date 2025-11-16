@@ -1,0 +1,18 @@
+{
+  "query": "SELECT * FROM badge_abbreviations WHERE abbreviation LIKE '%CHL%' OR badgeName LIKE '%CHALLENGER%' LIMIT 10;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT * FROM badge_abbreviations WHERE abbreviation LIKE '%CHL%' OR badgeName LIKE '%CHALLENGER%' LIMIT 10;",
+  "rows": [
+    {
+      "id": "7",
+      "badgeName": "CHALLENGER",
+      "abbreviation": "CHL",
+      "description": "Increases the effectiveness of contesting shots against perimeter shooters.",
+      "category": "NULL",
+      "createdAt": "2025-11-16 17:43:32"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tbadgeName\tabbreviation\tdescription\tcategory\tcreatedAt\n7\tCHALLENGER\tCHL\tIncreases the effectiveness of contesting shots against perimeter shooters.\tNULL\t2025-11-16 17:43:32\n",
+  "stderr": "",
+  "execution_time_ms": 1981
+}

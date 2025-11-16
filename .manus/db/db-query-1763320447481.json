@@ -1,0 +1,18 @@
+{
+  "query": "SELECT ba.abbreviation, ba.badgeName, br.attribute, br.bronzeMin, br.silverMin, br.goldMin FROM badge_abbreviations ba LEFT JOIN badge_requirements br ON ba.badgeName = br.badgeName WHERE ba.abbreviation = 'CHL';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT ba.abbreviation, ba.badgeName, br.attribute, br.bronzeMin, br.silverMin, br.goldMin FROM badge_abbreviations ba LEFT JOIN badge_requirements br ON ba.badgeName = br.badgeName WHERE ba.abbreviation = 'CHL';",
+  "rows": [
+    {
+      "abbreviation": "CHL",
+      "badgeName": "CHALLENGER",
+      "attribute": "NULL",
+      "bronzeMin": "NULL",
+      "silverMin": "NULL",
+      "goldMin": "NULL"
+    }
+  ],
+  "messages": [],
+  "stdout": "abbreviation\tbadgeName\tattribute\tbronzeMin\tsilverMin\tgoldMin\nCHL\tCHALLENGER\tNULL\tNULL\tNULL\tNULL\n",
+  "stderr": "",
+  "execution_time_ms": 1520
+}
