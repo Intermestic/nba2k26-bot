@@ -16,10 +16,10 @@ export interface ParsedTrade {
  * NBA team names for fuzzy matching
  */
 const NBA_TEAMS = [
-  '76ers', 'Bucks', 'Bulls', 'Cavaliers', 'Celtics', 'Clippers', 'Grizzlies',
+  '76ers', 'Bucks', 'Bulls', 'Cavaliers', 'Celtics', 'Grizzlies',
   'Hawks', 'Heat', 'Hornets', 'Jazz', 'Kings', 'Knicks', 'Lakers', 'Magic',
   'Mavs', 'Mavericks', 'Nets', 'Nuggets', 'Pacers', 'Pelicans', 'Pistons',
-  'Raptors', 'Rockets', 'Spurs', 'Suns', 'Thunder', 'Timberwolves', 'Trailblazers',
+  'Raptors', 'Rockets', 'Spurs', 'Suns', 'Timberwolves', 'Trailblazers',
   'Warriors', 'Wizards'
 ];
 

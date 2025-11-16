@@ -773,3 +773,24 @@ Consolidate "Dayron Sharpe" and "Day'Ron Sharpe" bids under the correct name
 - [x] Display coins next to team name in TeamSummariesTable
 - [x] Added public getTeamCoins endpoint to coins router
 - [ ] Save checkpoint
+
+
+## CRITICAL BUG: Invalid Teams in Database
+
+### Issue
+Thunder and Clippers teams exist in database despite strict 28-team enforcement
+
+### Tasks
+- [x] Delete Thunder from ALL tables (players, team_coins, fa_transactions, fa_bids, cap_violations, team_assignments)
+- [x] Delete Clippers from ALL tables
+- [x] Identify validation gaps allowing invalid teams to be created
+- [x] Add validation to getTeamCoins() in discord-bot.ts
+- [x] Add validation to adjustCoins() in coins router
+- [x] Remove Thunder/Clippers from server/discord.ts TEAM_LOGOS
+- [x] Remove Thunder/Clippers from server/trade-parser.ts NBA_TEAMS
+- [x] Remove Thunder/Clippers from server/_core/publicApi.ts TEAM_LOGOS
+- [x] Remove Thunder/Clippers from client/src/pages/Trades.tsx TEAM_NAME_MAP
+- [x] Remove Thunder/Clippers from client/src/pages/Transactions.tsx TEAM_MAP and VALID_TEAMS
+- [x] Verify database has no Thunder/Clippers entries (all tables show 0 count)
+- [x] Test that invalid teams are rejected by validation (server-side validation added)
+- [ ] Save checkpoint

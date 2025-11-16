@@ -113,6 +113,12 @@ async function getTeamCoins(team: string): Promise<{ coinsRemaining: number }> {
   const db = await getDb();
   if (!db) throw new Error('Database connection failed');
   
+  // Validate team name before proceeding
+  const { isValidTeam } = await import('./team-validator');
+  if (!isValidTeam(team)) {
+    throw new Error(`Invalid team name: ${team}. Only the 28 league teams + Free Agents are allowed.`);
+  }
+  
   // Check if team coins record exists
   const existing = await db.select().from(teamCoins).where(eq(teamCoins.team, team));
   

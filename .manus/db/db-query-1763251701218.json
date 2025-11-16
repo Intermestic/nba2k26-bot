@@ -1,0 +1,34 @@
+{
+  "query": "\nSELECT table_name, count FROM (\n  SELECT 'players' as table_name, COUNT(*) as count FROM players WHERE team IN ('Thunder', 'Clippers')\n  UNION ALL\n  SELECT 'team_coins', COUNT(*) FROM team_coins WHERE team IN ('Thunder', 'Clippers')\n  UNION ALL\n  SELECT 'fa_transactions', COUNT(*) FROM fa_transactions WHERE team IN ('Thunder', 'Clippers')\n  UNION ALL\n  SELECT 'fa_bids', COUNT(*) FROM fa_bids WHERE team IN ('Thunder', 'Clippers')\n  UNION ALL\n  SELECT 'cap_violations', COUNT(*) FROM cap_violations WHERE team IN ('Thunder', 'Clippers')\n  UNION ALL\n  SELECT 'team_assignments', COUNT(*) FROM team_assignments WHERE team IN ('Thunder', 'Clippers')\n) as counts;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute \nSELECT table_name, count FROM (\n  SELECT 'players' as table_name, COUNT(*) as count FROM players WHERE team IN ('Thunder', 'Clippers')\n  UNION ALL\n  SELECT 'team_coins', COUNT(*) FROM team_coins WHERE team IN ('Thunder', 'Clippers')\n  UNION ALL\n  SELECT 'fa_transactions', COUNT(*) FROM fa_transactions WHERE team IN ('Thunder', 'Clippers')\n  UNION ALL\n  SELECT 'fa_bids', COUNT(*) FROM fa_bids WHERE team IN ('Thunder', 'Clippers')\n  UNION ALL\n  SELECT 'cap_violations', COUNT(*) FROM cap_violations WHERE team IN ('Thunder', 'Clippers')\n  UNION ALL\n  SELECT 'team_assignments', COUNT(*) FROM team_assignments WHERE team IN ('Thunder', 'Clippers')\n) as counts;\n",
+  "rows": [
+    {
+      "table_name": "fa_bids",
+      "count": "0"
+    },
+    {
+      "table_name": "cap_violations",
+      "count": "0"
+    },
+    {
+      "table_name": "fa_transactions",
+      "count": "0"
+    },
+    {
+      "table_name": "team_coins",
+      "count": "2"
+    },
+    {
+      "table_name": "players",
+      "count": "0"
+    },
+    {
+      "table_name": "team_assignments",
+      "count": "0"
+    }
+  ],
+  "messages": [],
+  "stdout": "table_name\tcount\nfa_bids\t0\ncap_violations\t0\nfa_transactions\t0\nteam_coins\t2\nplayers\t0\nteam_assignments\t0\n",
+  "stderr": "",
+  "execution_time_ms": 1541
+}

@@ -8,11 +8,11 @@ const TEAM_MAP: Record<string, string> = {
   "Charlotte Hornets": "Hornets", "Chicago Bulls": "Bulls", "Cleveland Cavaliers": "Cavaliers",
   "Dallas Mavericks": "Mavericks", "Denver Nuggets": "Nuggets", "Detroit Pistons": "Pistons",
   "Golden State Warriors": "Warriors", "Houston Rockets": "Rockets", "Indiana Pacers": "Pacers",
-  "LA Clippers": "Clippers", "Los Angeles Clippers": "Clippers", "Los Angeles Lakers": "Lakers",
+  "Los Angeles Lakers": "Lakers",
   "LA Lakers": "Lakers", "Memphis Grizzlies": "Grizzlies", "Miami Heat": "Heat",
   "Milwaukee Bucks": "Bucks", "Minnesota Timberwolves": "Timberwolves",
   "New Orleans Pelicans": "Pelicans", "New York Knicks": "Knicks",
-  "Oklahoma City Thunder": "Thunder", "Orlando Magic": "Magic",
+  "Orlando Magic": "Magic",
   "Philadelphia 76ers": "Sixers", "Philadelphia Sixers": "Sixers", "Phoenix Suns": "Suns",
   "Portland Trail Blazers": "Trail Blazers", "Sacramento Kings": "Kings",
   "San Antonio Spurs": "Spurs", "Toronto Raptors": "Raptors", "Utah Jazz": "Jazz",
@@ -21,18 +21,17 @@ const TEAM_MAP: Record<string, string> = {
   "Hawks": "Hawks", "Celtics": "Celtics", "Nets": "Nets", "Hornets": "Hornets",
   "Bulls": "Bulls", "Cavaliers": "Cavaliers", "Mavericks": "Mavericks", "Nuggets": "Nuggets",
   "Pistons": "Pistons", "Warriors": "Warriors", "Rockets": "Rockets", "Pacers": "Pacers",
-  "Clippers": "Clippers", "Lakers": "Lakers", "Grizzlies": "Grizzlies", "Heat": "Heat",
-  "Bucks": "Bucks", "Timberwolves": "Timberwolves", "Pelicans": "Pelicans", "Knicks": "Knicks",
-  "Thunder": "Thunder", "Magic": "Magic", "Sixers": "Sixers", "Suns": "Suns",
+  "Lakers": "Lakers", "Grizzlies": "Grizzlies", "Heat": "Heat", "Bucks": "Bucks", "Timberwolves": "Timberwolves", "Pelicans": "Pelicans", "Knicks": "Knicks",
+  "Magic": "Magic", "Sixers": "Sixers", "Suns": "Suns",
   "Trail Blazers": "Trail Blazers", "Blazers": "Trail Blazers", "Kings": "Kings",
   "Spurs": "Spurs", "Raptors": "Raptors", "Jazz": "Jazz", "Wizards": "Wizards"
 };
 
 // Valid NBA teams (28 teams)
 const VALID_TEAMS = [
-  "Hawks", "Celtics", "Nets", "Hornets", "Bulls", "Cavaliers", "Mavericks", "Nuggets",
-  "Pistons", "Warriors", "Rockets", "Pacers", "Clippers", "Lakers", "Grizzlies", "Heat",
-  "Bucks", "Timberwolves", "Pelicans", "Knicks", "Thunder", "Magic", "Sixers", "Suns",
+  "Hawks", "Celtics", "Nets", "Hornets", "Bulls", "Cavaliers", "Mavs", "Nuggets",
+  "Pistons", "Warriors", "Rockets", "Pacers", "Lakers", "Grizzlies", "Heat",
+  "Bucks", "Timberwolves", "Pelicans", "Knicks", "Magic", "Sixers", "Suns",
   "Trail Blazers", "Kings", "Spurs", "Raptors", "Jazz", "Wizards"
 ];
 

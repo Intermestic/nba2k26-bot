@@ -76,6 +76,12 @@ export const coinsRouter = router({
       const db = await getDb();
       if (!db) throw new Error("Database connection failed");
 
+      // Validate team name
+      const { isValidTeam } = await import('../team-validator');
+      if (!isValidTeam(input.team)) {
+        throw new Error(`Invalid team name: ${input.team}. Only the 28 league teams + Free Agents are allowed.`);
+      }
+
       // Get current coins
       const existing = await db.select().from(teamCoins).where(eq(teamCoins.team, input.team));
 
