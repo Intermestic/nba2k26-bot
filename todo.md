@@ -843,4 +843,21 @@ Should show: [correct calculation based on roster]
 - [x] Updated dropPlayerValidated type to include salaryCap
 - [x] Updated findPlayerByFuzzyName return type and all returns to include salaryCap
 - [x] Test with sample transaction (TypeScript errors resolved, dev server running)
+- [x] Save checkpoint
+
+
+## Feature: Sortable Transaction History
+
+### Requirements
+- Make transaction history table columns sortable
+- Support sorting by: Date, Team, Player, Action, Bid Amount, Coins Remaining
+- Add visual indicators for sort direction (ascending/descending)
+- Persist sort state during session
+
+### Tasks
+- [x] Add sorting state management to History page (sortField, sortDirection state)
+- [x] Add sort indicators to column headers (ArrowUp, ArrowDown, ArrowUpDown icons)
+- [x] Implement sort logic for all columns (Player, From, To, Type, Admin, Date)
+- [x] Converted card layout to sortable table format
+- [x] Test sorting functionality (no TypeScript errors, dev server running)
 - [ ] Save checkpoint

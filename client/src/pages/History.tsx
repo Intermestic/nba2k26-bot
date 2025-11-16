@@ -5,12 +5,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Link, useLocation } from "wouter";
-import { Home, Users, Search, ArrowRight, Download } from "lucide-react";
+import { Home, Users, Search, ArrowRight, Download, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
 
 export default function History() {
   const { user, isAuthenticated } = useAuth();
   const [, setLocation] = useLocation();
   const [searchTerm, setSearchTerm] = useState("");
+  const [sortField, setSortField] = useState<'date' | 'player' | 'fromTeam' | 'toTeam' | 'type' | 'admin'>('date');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
 
   // Redirect if not admin
   if (isAuthenticated && user?.role !== "admin") {
@@ -41,6 +43,20 @@ export default function History() {
     );
   }
 
+  const toggleSort = (field: typeof sortField) => {
+    if (sortField === field) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortDirection('asc');
+    }
+  };
+
+  const getSortIcon = (field: typeof sortField) => {
+    if (sortField !== field) return <ArrowUpDown className="w-4 h-4" />;
+    return sortDirection === 'asc' ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />;
+  };
+
   const filteredTransactions = transactions?.filter(t => {
     if (!searchTerm) return true;
     const term = searchTerm.toLowerCase();
@@ -50,6 +66,33 @@ export default function History() {
       t.toTeam.toLowerCase().includes(term) ||
       t.adminName?.toLowerCase().includes(term)
     );
+  });
+
+  const sortedTransactions = filteredTransactions?.sort((a, b) => {
+    let comparison = 0;
+    
+    switch (sortField) {
+      case 'date':
+        comparison = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+        break;
+      case 'player':
+        comparison = a.playerName.localeCompare(b.playerName);
+        break;
+      case 'fromTeam':
+        comparison = (a.fromTeam || 'Free Agent').localeCompare(b.fromTeam || 'Free Agent');
+        break;
+      case 'toTeam':
+        comparison = a.toTeam.localeCompare(b.toTeam);
+        break;
+      case 'type':
+        comparison = a.transactionType.localeCompare(b.transactionType);
+        break;
+      case 'admin':
+        comparison = (a.adminName || 'Unknown').localeCompare(b.adminName || 'Unknown');
+        break;
+    }
+    
+    return sortDirection === 'asc' ? comparison : -comparison;
   });
 
   const exportToCSV = () => {
@@ -144,50 +187,119 @@ export default function History() {
           </CardContent>
         </Card>
 
-        {/* Transactions List */}
+        {/* Transactions Table */}
         <Card className="bg-slate-800/50 border-slate-700">
           <CardHeader>
             <CardTitle className="text-white">
-              Recent Transactions ({filteredTransactions?.length || 0})
+              Recent Transactions ({sortedTransactions?.length || 0})
             </CardTitle>
           </CardHeader>
           <CardContent>
             {isLoading ? (
               <div className="text-center py-8 text-slate-400">Loading transactions...</div>
-            ) : filteredTransactions && filteredTransactions.length > 0 ? (
-              <div className="space-y-2">
-                {filteredTransactions.map((transaction) => (
-                  <div
-                    key={transaction.id}
-                    className="flex flex-col md:flex-row md:items-center justify-between p-4 bg-slate-900 rounded border border-slate-700 gap-2"
-                  >
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="font-medium text-white">{transaction.playerName}</span>
-                        <span className={`text-xs px-2 py-0.5 rounded ${
-                          transaction.transactionType === "trade" 
-                            ? "bg-blue-900/50 text-blue-300"
-                            : "bg-green-900/50 text-green-300"
-                        }`}>
-                          {transaction.transactionType}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2 text-sm">
-                        <span className="text-slate-400">{transaction.fromTeam || "Free Agent"}</span>
-                        <ArrowRight className="w-3 h-3 text-slate-500" />
-                        <span className="text-green-400">{transaction.toTeam}</span>
-                      </div>
-                    </div>
-                    <div className="text-right text-sm">
-                      <div className="text-slate-400">
-                        {transaction.adminName || "Unknown"}
-                      </div>
-                      <div className="text-slate-500 text-xs">
-                        {new Date(transaction.createdAt).toLocaleString()}
-                      </div>
-                    </div>
-                  </div>
-                ))}
+            ) : sortedTransactions && sortedTransactions.length > 0 ? (
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b border-slate-700">
+                      <th className="text-left p-3">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => toggleSort('player')}
+                          className="text-slate-300 hover:text-white hover:bg-slate-700 -ml-3"
+                        >
+                          Player {getSortIcon('player')}
+                        </Button>
+                      </th>
+                      <th className="text-left p-3">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => toggleSort('fromTeam')}
+                          className="text-slate-300 hover:text-white hover:bg-slate-700 -ml-3"
+                        >
+                          From {getSortIcon('fromTeam')}
+                        </Button>
+                      </th>
+                      <th className="text-left p-3">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => toggleSort('toTeam')}
+                          className="text-slate-300 hover:text-white hover:bg-slate-700 -ml-3"
+                        >
+                          To {getSortIcon('toTeam')}
+                        </Button>
+                      </th>
+                      <th className="text-left p-3">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => toggleSort('type')}
+                          className="text-slate-300 hover:text-white hover:bg-slate-700 -ml-3"
+                        >
+                          Type {getSortIcon('type')}
+                        </Button>
+                      </th>
+                      <th className="text-left p-3">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => toggleSort('admin')}
+                          className="text-slate-300 hover:text-white hover:bg-slate-700 -ml-3"
+                        >
+                          Admin {getSortIcon('admin')}
+                        </Button>
+                      </th>
+                      <th className="text-left p-3">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => toggleSort('date')}
+                          className="text-slate-300 hover:text-white hover:bg-slate-700 -ml-3"
+                        >
+                          Date {getSortIcon('date')}
+                        </Button>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {sortedTransactions.map((transaction) => (
+                      <tr
+                        key={transaction.id}
+                        className="border-b border-slate-700/50 hover:bg-slate-700/30 transition-colors"
+                      >
+                        <td className="p-3">
+                          <span className="font-medium text-white">{transaction.playerName}</span>
+                        </td>
+                        <td className="p-3">
+                          <span className="text-slate-400">{transaction.fromTeam || "Free Agent"}</span>
+                        </td>
+                        <td className="p-3">
+                          <span className="text-green-400">{transaction.toTeam}</span>
+                        </td>
+                        <td className="p-3">
+                          <span className={`text-xs px-2 py-1 rounded ${
+                            transaction.transactionType === "trade" 
+                              ? "bg-blue-900/50 text-blue-300"
+                              : "bg-green-900/50 text-green-300"
+                          }`}>
+                            {transaction.transactionType}
+                          </span>
+                        </td>
+                        <td className="p-3">
+                          <span className="text-slate-400">{transaction.adminName || "Unknown"}</span>
+                        </td>
+                        <td className="p-3">
+                          <span className="text-slate-500 text-sm">
+                            {new Date(transaction.createdAt).toLocaleString()}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             ) : (
               <div className="text-center py-8 text-slate-400">
