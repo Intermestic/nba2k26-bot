@@ -964,4 +964,16 @@ Monitor message 1130885281508233316 in channel 860782989280935966 for team affil
 - [x] Add automatic sync when message is edited
 - [x] Integrate with discord-bot.ts initialization
 - [x] Test implementation (TypeScript compilation successful, no errors)
+- [x] Save checkpoint
+
+
+## CURRENT TASK: Enable Team Role Hoisting
+
+### Goal
+Configure team roles to be displayed separately in Discord member list (hoisted) for better visibility of team affiliations
+
+### Tasks
+- [x] Update getOrCreateTeamRole to set hoist: true for new roles
+- [x] Add logic to update existing roles to enable hoisting
+- [x] Test compilation (no TypeScript errors)
 - [ ] Save checkpoint

@@ -90,10 +90,18 @@ async function getOrCreateTeamRole(
       role = await guild.roles.create({
         name: teamName,
         color,
+        hoist: true, // Display role members separately in member list
         reason: 'Auto-created team role',
         mentionable: true,
       });
       console.log(`[Team Roles] Created role: ${teamName}`);
+    } else if (!role.hoist) {
+      // Update existing role to enable hoisting
+      await role.edit({
+        hoist: true,
+        reason: 'Enable role hoisting for member list display',
+      });
+      console.log(`[Team Roles] Updated role ${teamName} to enable hoisting`);
     }
     
     return role;
