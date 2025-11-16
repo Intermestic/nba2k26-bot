@@ -1801,4 +1801,24 @@ Badge abbreviations (SS, PTZ, CHL, SSS, LR) not matching database requirements -
 - [x] Updated upgrade-validator.ts to look up abbreviations before checking requirements
 - [x] Verified database has correct mappings (CHL→CHALLENGER, SS→SHIFTY SHOOTER, etc.)
 - [x] All badge upgrades now properly validate with requirements
-- [ ] Save checkpoint
+- [x] Save checkpoint
+
+
+## CURRENT TASK: Upgrade Summary Page Enhancements
+
+### Navigation & UI Improvements
+- [x] Add "Back to Homepage" button to upgrade summary page header
+- [x] Add "Revert" button for each approved/rejected upgrade to undo the action
+- [x] Verify individual Accept/Reject buttons work correctly on each upgrade
+
+### Discord Integration
+- [x] Admin can react with ✅ on Discord upgrade post to approve and push to log channel (existing in discord-bot.ts + upgrade-handler.ts)
+- [x] Web UI approval triggers ✅ reaction on original Discord message (implemented in upgrades.ts)
+- [x] Web UI approval posts upgrade to Discord log channel (implemented in upgrades.ts)
+- [x] Sync approval status between Discord and web UI (both update database + Discord)
+
+### Backend Changes
+- [x] Add revert mutation to upgrades TRPC router
+- [x] Store Discord message ID with each upgrade request (already exists in schema)
+- [x] Add Discord reaction handler for ✅ on upgrade messages (already exists in discord-bot.ts)
+- [x] Update approval mutation to add ✅ reaction and post to log channel

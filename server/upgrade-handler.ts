@@ -160,6 +160,14 @@ export async function handleUpgradeApproval(message: Message, adminUser: any) {
     }
   }
   
+  // Add ✅ reaction to original message (green check)
+  try {
+    await message.react('✅');
+    console.log('[Upgrade Handler] Added ✅ reaction to approved upgrade message');
+  } catch (error) {
+    console.error('[Upgrade Handler] Failed to add ✅ reaction:', error);
+  }
+  
   // Post to upgrade log channel
   const logChannel = await message.client.channels.fetch(UPGRADE_LOG_CHANNEL_ID);
   if (logChannel && 'send' in logChannel) {

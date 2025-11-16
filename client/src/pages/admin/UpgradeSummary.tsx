@@ -15,9 +15,11 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { CheckCircle, XCircle, Clock, ChevronDown, ChevronRight } from "lucide-react";
+import { CheckCircle, XCircle, Clock, ChevronDown, ChevronRight, Home, RotateCcw } from "lucide-react";
+import { useLocation } from "wouter";
 
 export default function UpgradeSummary() {
+  const [, navigate] = useLocation();
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
   const [expandedTeams, setExpandedTeams] = useState<Set<string>>(new Set());
   const [confirmAction, setConfirmAction] = useState<"approve" | "reject" | null>(null);
@@ -25,6 +27,7 @@ export default function UpgradeSummary() {
   const { data: upgrades, isLoading, refetch } = trpc.upgrades.getAllUpgrades.useQuery();
   const bulkApproveMutation = trpc.upgrades.bulkApprove.useMutation();
   const bulkRejectMutation = trpc.upgrades.bulkReject.useMutation();
+  const revertMutation = trpc.upgrades.revertUpgrade.useMutation();
 
   // Group upgrades by team
   const upgradesByTeam = upgrades?.reduce((acc: any, upgrade: any) => {
@@ -131,10 +134,22 @@ export default function UpgradeSummary() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Upgrade Summary</h1>
-          <p className="text-slate-400">
-            {pendingCount} pending upgrades across {teamCount} teams
-          </p>
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h1 className="text-3xl font-bold text-white mb-2">Upgrade Summary</h1>
+              <p className="text-slate-400">
+                {pendingCount} pending upgrades across {teamCount} teams
+              </p>
+            </div>
+            <Button
+              onClick={() => navigate("/")}
+              variant="outline"
+              className="bg-slate-800 border-slate-700 hover:bg-slate-700 text-white"
+            >
+              <Home className="w-4 h-4 mr-2" />
+              Back to Homepage
+            </Button>
+          </div>
         </div>
 
         {/* Stats */}
@@ -289,6 +304,26 @@ export default function UpgradeSummary() {
                                     Reject
                                   </Button>
                                 </div>
+                              )}
+                              {(upgrade.status === "approved" || upgrade.status === "rejected") && (
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="bg-slate-600 hover:bg-slate-700 text-white border-slate-600"
+                                  onClick={async () => {
+                                    try {
+                                      await revertMutation.mutateAsync({ requestId: upgrade.id });
+                                      toast.success("Upgrade reverted to pending");
+                                      refetch();
+                                    } catch (error) {
+                                      toast.error("Failed to revert upgrade");
+                                      console.error(error);
+                                    }
+                                  }}
+                                >
+                                  <RotateCcw className="w-3 h-3 mr-1" />
+                                  Revert
+                                </Button>
                               )}
                             </div>
                           );

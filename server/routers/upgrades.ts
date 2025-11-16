@@ -3,6 +3,9 @@ import { z } from "zod";
 import { getDb } from "../db";
 import { upgradeRequests, playerUpgrades } from "../../drizzle/schema";
 import { eq } from "drizzle-orm";
+import { getDiscordClient } from "../discord-bot";
+import { TextChannel, EmbedBuilder } from "discord.js";
+import { getConfig } from "../bot-config-loader";
 
 export const upgradesRouter = router({
   /**
@@ -66,6 +69,59 @@ export const upgradesRouter = router({
               gameNumber: request.gameNumber,
               requestId: request.id,
             });
+          }
+
+          // Add ✅ reaction to original Discord message
+          try {
+            const client = getDiscordClient();
+            if (client && client.isReady()) {
+              const channel = await client.channels.fetch(request.channelId) as TextChannel;
+              if (channel) {
+                const message = await channel.messages.fetch(request.messageId);
+                if (message) {
+                  await message.react("✅");
+                }
+              }
+            }
+          } catch (error) {
+            console.error("[Upgrades] Failed to add ✅ reaction:", error);
+          }
+
+          // Post to Discord upgrade log channel
+          try {
+            const client = getDiscordClient();
+            const upgradeLogChannelId = await getConfig("upgrade_log_channel_id");
+            if (client && client.isReady() && upgradeLogChannelId) {
+              const logChannel = await client.channels.fetch(upgradeLogChannelId) as TextChannel;
+              if (logChannel) {
+                let attributesDisplay = "";
+                if (request.attributes) {
+                  try {
+                    const attrs = JSON.parse(request.attributes as string);
+                    attributesDisplay = Object.entries(attrs).map(([k, v]) => `${k}: ${v}`).join(", ");
+                  } catch (e) {
+                    // Ignore parse errors
+                  }
+                }
+
+                await logChannel.send({
+                  embeds: [{
+                    title: "✅ Upgrade Approved",
+                    color: 0x00ff00,
+                    fields: [
+                      { name: "Player", value: request.playerName, inline: true },
+                      { name: "Team", value: request.team, inline: true },
+                      { name: "Badge", value: `${request.badgeName} → ${request.toLevel}`, inline: true },
+                      ...(attributesDisplay ? [{ name: "Attributes", value: attributesDisplay, inline: false }] : []),
+                      ...(request.gameNumber ? [{ name: "Game", value: `${request.gameNumber}GM`, inline: true }] : []),
+                    ],
+                    timestamp: new Date().toISOString(),
+                  }],
+                });
+              }
+            }
+          } catch (error) {
+            console.error("[Upgrades] Failed to post to log channel:", error);
           }
 
           successCount++;
@@ -135,5 +191,78 @@ export const upgradesRouter = router({
         .where(eq(playerUpgrades.playerId, input.playerId));
 
       return upgrades;
+    }),
+
+  /**
+   * Revert an approved or rejected upgrade back to pending
+   */
+  revertUpgrade: publicProcedure
+    .input(z.object({
+      requestId: z.number(),
+    }))
+    .mutation(async ({ input }) => {
+      const db = await getDb();
+      if (!db) throw new Error("Database not available");
+
+      try {
+        // Get the request
+        const requests = await db
+          .select()
+          .from(upgradeRequests)
+          .where(eq(upgradeRequests.id, input.requestId));
+
+        if (requests.length === 0) {
+          throw new Error("Upgrade request not found");
+        }
+
+        const request = requests[0];
+
+        // Only allow reverting approved or rejected upgrades
+        if (request.status !== "approved" && request.status !== "rejected") {
+          throw new Error("Can only revert approved or rejected upgrades");
+        }
+
+        // Update status back to pending
+        await db
+          .update(upgradeRequests)
+          .set({
+            status: "pending",
+            approvedAt: null,
+            approvedBy: null,
+          })
+          .where(eq(upgradeRequests.id, input.requestId));
+
+        // Remove from player_upgrades if it was approved
+        if (request.status === "approved") {
+          await db
+            .delete(playerUpgrades)
+            .where(eq(playerUpgrades.requestId, input.requestId));
+        }
+
+        // Remove ✅ reaction from Discord message if present
+        try {
+          const client = getDiscordClient();
+          if (client && client.isReady()) {
+            const channel = await client.channels.fetch(request.channelId) as TextChannel;
+            if (channel) {
+              const message = await channel.messages.fetch(request.messageId);
+              if (message) {
+                const botReactions = message.reactions.cache.filter(r => r.me);
+                const reactionsArray = Array.from(botReactions.values());
+                for (const reaction of reactionsArray) {
+                  await reaction.users.remove(client.user!.id);
+                }
+              }
+            }
+          }
+        } catch (error) {
+          console.error("[Upgrades] Failed to remove reactions:", error);
+        }
+
+        return { success: true };
+      } catch (error) {
+        console.error(`[Upgrades] Failed to revert request ${input.requestId}:`, error);
+        throw error;
+      }
     }),
 });
