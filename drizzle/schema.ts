@@ -275,3 +275,54 @@ export const teamRoleChanges = mysqlTable("team_role_changes", {
 
 export type TeamRoleChange = typeof teamRoleChanges.$inferSelect;
 export type InsertTeamRoleChange = typeof teamRoleChanges.$inferInsert;
+
+/**
+ * Bot Configuration table - stores general bot settings
+ */
+export const botConfig = mysqlTable("bot_config", {
+  id: int("id").autoincrement().primaryKey(),
+  key: varchar("key", { length: 100 }).notNull().unique(), // Config key (e.g., "fa_bidding_enabled")
+  value: text("value").notNull(), // Config value (JSON string for complex values)
+  description: text("description"), // Human-readable description
+  category: varchar("category", { length: 50 }), // Category for grouping (e.g., "features", "channels")
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  updatedBy: int("updatedBy"), // Reference to users.id
+});
+
+export type BotConfig = typeof botConfig.$inferSelect;
+export type InsertBotConfig = typeof botConfig.$inferInsert;
+
+/**
+ * Message Templates table - stores customizable bot messages
+ */
+export const messageTemplates = mysqlTable("message_templates", {
+  id: int("id").autoincrement().primaryKey(),
+  key: varchar("key", { length: 100 }).notNull().unique(), // Template key (e.g., "welcome_message")
+  content: text("content").notNull(), // Message content (supports Discord markdown)
+  description: text("description"), // What this template is used for
+  category: varchar("category", { length: 50 }), // Category (e.g., "welcome", "notifications", "commands")
+  variables: text("variables"), // JSON array of available variables (e.g., ["teamName", "userId"])
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  updatedBy: int("updatedBy"), // Reference to users.id
+});
+
+export type MessageTemplate = typeof messageTemplates.$inferSelect;
+export type InsertMessageTemplate = typeof messageTemplates.$inferInsert;
+
+/**
+ * Bot Commands table - stores custom command configuration
+ */
+export const botCommands = mysqlTable("bot_commands", {
+  id: int("id").autoincrement().primaryKey(),
+  command: varchar("command", { length: 100 }).notNull().unique(), // Command trigger (e.g., "!sync-team-roles")
+  description: text("description").notNull(), // What the command does
+  enabled: boolean("enabled").default(true).notNull(), // Whether command is active
+  responseTemplate: text("responseTemplate"), // Response message template
+  permissions: varchar("permissions", { length: 50 }), // Required permissions (e.g., "admin", "user")
+  category: varchar("category", { length: 50 }), // Category (e.g., "admin", "team", "fa")
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  updatedBy: int("updatedBy"), // Reference to users.id
+});
+
+export type BotCommand = typeof botCommands.$inferSelect;
+export type InsertBotCommand = typeof botCommands.$inferInsert;

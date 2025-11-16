@@ -9,6 +9,7 @@ import { capViolationsRouter } from "./routers/cap-violations";
 import { playerAliasesRouter } from "./routers/player-aliases";
 import { teamAssignmentsRouter } from "./routers/team-assignments";
 import { matchLogsRouter } from "./routers/match-logs";
+import { botManagementRouter } from "./routers/botManagement";
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -44,6 +45,9 @@ export const appRouter = router({
   
   // Match logs for fuzzy matching analysis
   matchLogs: matchLogsRouter,
+  
+  // Bot management and configuration
+  botManagement: botManagementRouter,
 });
 
 export type AppRouter = typeof appRouter;

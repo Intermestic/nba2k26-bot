@@ -4,13 +4,35 @@
  */
 
 import { Client, TextChannel, ChannelType } from 'discord.js';
+import { getTemplate, replaceVariables } from './bot-config-loader.js';
 
 const GUILD_ID = '860782751656837140';
 
 /**
  * Get the welcome message content for a team
+ * Now uses database template instead of hardcoded message
  */
-function getWelcomeMessage(teamName: string, userId: string): string {
+async function getWelcomeMessage(teamName: string, userId: string, username: string): Promise<string> {
+  // Try to load from database
+  const template = await getTemplate('welcome_message');
+  
+  if (template) {
+    // Replace variables in template
+    return replaceVariables(template, {
+      teamName,
+      userId,
+      username,
+    });
+  }
+  
+  // Fallback to hardcoded message if template not found
+  return getDefaultWelcomeMessage(teamName, userId);
+}
+
+/**
+ * Default welcome message (fallback)
+ */
+function getDefaultWelcomeMessage(teamName: string, userId: string): string {
   return `<@${userId}> **Welcome to ${teamName}!**
 
 This is your private team channel. Ask questions, post upgrades, and report issues here.
@@ -96,7 +118,7 @@ export async function postWelcomeMessage(
     }
 
     // Post welcome message
-    const message = getWelcomeMessage(teamName, userId);
+    const message = await getWelcomeMessage(teamName, userId, username);
     await channel.send(message);
     
     console.log(`[Welcome Message] ✅ Posted welcome to ${channelName} for ${username}`);

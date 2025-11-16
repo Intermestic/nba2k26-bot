@@ -1108,4 +1108,63 @@ Post automated welcome message to team channels when new users are assigned team
 - [x] Pass client to logTeamRoleChange for message posting
 - [x] TypeScript compilation successful (no errors)
 - [x] Verify server running and ready to post welcome messages
+- [x] Save checkpoint
+
+
+## CURRENT TASK: Bot Management Dashboard
+
+### Goal
+Build comprehensive admin dashboard for managing Discord bot configuration, commands, messages, and settings without code changes
+
+### Features Required
+1. **Message Templates Management**
+   - Welcome messages
+   - Command responses
+   - Notification templates
+   - Error messages
+
+2. **Command Management**
+   - Enable/disable commands
+   - Update command triggers and responses
+   - Add/remove custom commands
+   - Set command permissions
+
+3. **Notification Settings**
+   - Configure event notifications
+   - Set notification channels
+   - Toggle notification types
+
+4. **Channel Configuration**
+   - Map channels for bot functions
+   - Update channel IDs dynamically
+
+5. **Feature Toggles**
+   - Enable/disable bot features
+   - FA bidding, trade voting, role sync, etc.
+
+6. **Audit Log**
+   - View configuration changes
+   - Track bot actions
+
+### Tasks
+- [x] Design database schema (botConfig, messageTemplates, botCommands)
+- [x] Create migration for new tables (pnpm db:push)
+- [x] Build TRPC API endpoints for CRUD operations (botManagement router)
+- [x] Add router to app router
+- [x] Create admin dashboard page (/admin/bot-management)
+- [x] Build UI for message template editor (with dialog)
+- [x] Build UI for command management (with toggle and dialog)
+- [x] Build UI for configuration settings (with dialog)
+- [x] Add navigation link in Admin.tsx
+- [x] TypeScript compilation successful
+- [x] Create bot-config-loader module with caching
+- [x] Update team-welcome-message to use database templates
+- [x] Add initializeDefaults() to create default configs on bot startup
+- [x] Implement cache system (1 minute TTL)
+- [x] Add variable replacement function for templates
+- [x] Test Configuration tab (empty, Add Config button works)
+- [x] Test Message Templates tab (welcome_message created, edit dialog works)
+- [x] Test Commands tab (2 commands created, toggles work)
+- [x] Verify edit functionality for templates
+- [x] Confirm database integration working
 - [ ] Save checkpoint

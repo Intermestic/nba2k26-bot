@@ -784,9 +784,16 @@ export async function startDiscordBot(token: string) {
     ]
   });
   
-  client.on('ready', async () => {
-    console.log(`[Discord Bot] Logged in as ${client?.user?.tag}`);
-    console.log(`[Discord Bot] Monitoring FA channel: ${FA_CHANNEL_ID}`);
+  client.once('ready', async () => {
+    console.log(`[Discord Bot] Logged in as ${client!.user?.tag}!`);
+    
+    // Initialize default configurations
+    try {
+      const { initializeDefaults } = await import('./bot-config-loader.js');
+      await initializeDefaults();
+    } catch (error) {
+      console.error('[Discord Bot] Failed to initialize default configs:', error);
+    }   console.log(`[Discord Bot] Monitoring FA channel: ${FA_CHANNEL_ID}`);
     console.log(`[Discord Bot] React with ⚡ to trigger transaction processing`);
     
     // Bid data was manually seeded, no import needed

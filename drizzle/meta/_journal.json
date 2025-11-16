@@ -141,6 +141,13 @@
       "when": 1763286183955,
       "tag": "0019_legal_blink",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "5",
+      "when": 1763288112562,
+      "tag": "0020_salty_zaladane",
+      "breakpoints": true
     }
   ]
 }
