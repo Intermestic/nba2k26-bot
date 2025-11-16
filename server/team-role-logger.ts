@@ -3,7 +3,7 @@
  * Tracks when users gain or lose team roles in Discord
  */
 
-import { GuildMember, PartialGuildMember } from 'discord.js';
+import { GuildMember, PartialGuildMember, Client } from 'discord.js';
 import { getDb } from './db.js';
 import { teamRoleChanges } from '../drizzle/schema.js';
 
@@ -27,7 +27,8 @@ function isTeamRole(roleName: string): boolean {
  */
 export async function logTeamRoleChange(
   oldMember: GuildMember | PartialGuildMember,
-  newMember: GuildMember | PartialGuildMember
+  newMember: GuildMember | PartialGuildMember,
+  client?: Client
 ): Promise<void> {
   try {
     // Get old and new role names
@@ -63,6 +64,16 @@ export async function logTeamRoleChange(
         action: 'added',
       });
       console.log(`[Team Role Logger] ✅ ${username} gained ${teamName} role`);
+      
+      // Post welcome message to team channel
+      if (client) {
+        try {
+          const { postWelcomeMessage } = await import('./team-welcome-message.js');
+          await postWelcomeMessage(client, teamName, userId, username);
+        } catch (error) {
+          console.error(`[Team Role Logger] Failed to post welcome message for ${teamName}:`, error);
+        }
+      }
     }
 
     // Log removed roles

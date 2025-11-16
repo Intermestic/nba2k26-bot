@@ -866,7 +866,7 @@ export async function startDiscordBot(token: string) {
       if (!oldMember.roles || !newMember.roles) return;
       
       const { logTeamRoleChange } = await import('./team-role-logger');
-      await logTeamRoleChange(oldMember, newMember);
+      await logTeamRoleChange(oldMember, newMember, client!);
     } catch (error) {
       console.error('[Team Role Logger] Error logging role change:', error);
     }

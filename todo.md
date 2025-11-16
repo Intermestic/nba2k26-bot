@@ -1077,4 +1077,35 @@ Log when users gain or lose team roles to track team membership changes over tim
 - [x] Handle PartialGuildMember types
 - [x] TypeScript compilation successful (no errors)
 - [x] Verify server running and monitoring role changes
+- [x] Save checkpoint
+
+
+## CURRENT TASK: Team Channel Welcome Messages
+
+### Goal
+Post automated welcome message to team channels when new users are assigned team roles
+
+### Tasks
+- [ ] Create welcome message template with all sections (FA/Trades, Upgrades, Competition, Rosters, Shortcuts)
+- [ ] Create function to post welcome message to team channel
+- [ ] Integrate with team-role-logger to trigger on role additions
+- [ ] Mention the user in the welcome message
+- [ ] Test welcome message posting
+- [ ] Save checkpoint
+
+
+## CURRENT TASK: Implement Team Channel Welcome Messages
+
+### Goal
+Post automated welcome message to team channels when new users are assigned team roles
+
+### Tasks
+- [x] Create welcome message function with refined Version 3 content
+- [x] Replace [TEAM] placeholder with actual team name
+- [x] Mention the user in the welcome message (@userId)
+- [x] Get team channel by name (team-{teamname})
+- [x] Integrate with team-role-logger to trigger on role additions
+- [x] Pass client to logTeamRoleChange for message posting
+- [x] TypeScript compilation successful (no errors)
+- [x] Verify server running and ready to post welcome messages
 - [ ] Save checkpoint
