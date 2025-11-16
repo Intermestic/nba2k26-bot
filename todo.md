@@ -1727,4 +1727,15 @@ Upgrade messages posted in team channels (e.g., team-wizards) are not being proc
 - [x] Add logic to parse attribute stat increases (+X stat to value)
 - [x] Update validator to handle both badge and stat upgrade types
 - [ ] Test with example message from user
+- [x] Save checkpoint
+
+
+## CURRENT TASK: Create Admin Landing Page
+
+### Requirements
+- [x] Create admin dashboard landing page with navigation cards
+- [x] Include all management features: Dashboard, Team Assignments, FA Coins, Cap Compliance, FA History, Transactions, Player Aliases, Upgrades
+- [x] Use card-based layout with icons and descriptions
+- [x] Set as default page when clicking /admin
+- [x] Update App.tsx routes
 - [ ] Save checkpoint

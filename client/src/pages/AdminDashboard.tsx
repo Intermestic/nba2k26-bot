@@ -32,12 +32,12 @@ export default function AdminDashboard() {
     {
       title: "Team Management",
       description: "Assign players to teams and manage rosters",
-      href: "/admin",
+      href: "/admin/roster",
       icon: <Users className="w-6 h-6" />,
       color: "bg-blue-500",
     },
     {
-      title: "Upgrade Summary",
+      title: "Upgrade Requests",
       description: "Review and approve pending badge upgrades",
       href: "/admin/upgrade-summary",
       icon: <TrendingUp className="w-6 h-6" />,
@@ -60,7 +60,7 @@ export default function AdminDashboard() {
     {
       title: "Cap Compliance",
       description: "Monitor salary cap violations and alerts",
-      href: "/admin/cap-compliance",
+      href: "/admin/cap",
       icon: <AlertTriangle className="w-6 h-6" />,
       color: "bg-red-500",
     },

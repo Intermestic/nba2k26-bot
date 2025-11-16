@@ -31,9 +31,9 @@ function Router() {
   return (
     <Switch>
       <Route path={"/"} component={Home} />
-      <Route path={"/admin/dashboard"} component={AdminDashboard} />
+      <Route path={"/admin"} component={AdminDashboard} />
       <Route path={"/admin/upgrade-summary"} component={UpgradeSummary} />
-      <Route path={"/admin"} component={Admin} />
+      <Route path={"/admin/roster"} component={Admin} />
       <Route path={"/admin/transactions"} component={Transactions} />
       <Route path={"/admin/history"} component={History} />
       <Route path={"/admin/discord"} component={DiscordIntegration} />
