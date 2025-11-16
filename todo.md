@@ -924,3 +924,12 @@ When a user bids on multiple players and cuts a player they're already bidding o
 - [ ] Insert correct bids into database
 - [ ] Trigger FA status update
 - [ ] Verify status shows all players with correct highest bidders
+
+
+## Feature: Hide Stats Cards from Regular Users
+
+### Tasks
+- [x] Add admin check to Home page
+- [x] Wrap stats cards in conditional render (only show if admin)
+- [x] Test with regular user account (stats hidden successfully)
+- [ ] Save checkpoint

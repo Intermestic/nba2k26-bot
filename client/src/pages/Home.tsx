@@ -303,9 +303,10 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Stats */}
-      <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      {/* Stats - Admin Only */}
+      {user?.role === 'admin' && (
+        <div className="container mx-auto px-4 py-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           <Card className="bg-slate-800/50 border-slate-700">
             <CardContent className="p-6">
               <div className="text-3xl font-bold text-white">{stats.total}</div>
@@ -330,9 +331,12 @@ export default function Home() {
               <div className="text-sm text-slate-400">Filtered</div>
             </CardContent>
           </Card>
+          </div>
         </div>
+      )}
 
-        {/* All Teams Overview Table */}
+      {/* All Teams Overview Table */}
+      <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <TeamSummariesTable 
             summaries={teamSummaries} 
