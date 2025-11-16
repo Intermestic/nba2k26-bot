@@ -16,6 +16,7 @@ import { reactionRolesRouter } from "./routers/reactionRoles";
 import { analyticsRouter } from "./routers/analytics";
 import { serverLogsRouter } from "./routers/serverLogs";
 import { upgradesRouter } from "./routers/upgrades";
+import { validationRulesRouter } from "./routers/validation-rules";
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -72,6 +73,9 @@ export const appRouter = router({
   
   // Upgrade requests
   upgrades: upgradesRouter,
+  
+  // Validation rules
+  validationRules: validationRulesRouter,
 });
 
 export type AppRouter = typeof appRouter;

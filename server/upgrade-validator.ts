@@ -1,5 +1,5 @@
 import { getDb } from './db';
-import { badgeRequirements, playerUpgrades, players } from '../drizzle/schema';
+import { badgeRequirements, playerUpgrades, players, validationRules } from '../drizzle/schema';
 import { ParsedUpgrade, getBadgeRequirements } from './upgrade-parser';
 import { findPlayerByFuzzyName } from './trade-parser';
 
@@ -160,11 +160,16 @@ function isHeightInRange(playerHeight: string, minHeight: string, maxHeight: str
 
 /**
  * Check league rules: back-to-back, +6 limit, no added badges
+ * Rules are now configurable via database
  */
 async function checkLeagueRules(upgrade: ParsedUpgrade, team: string): Promise<string[]> {
   const violations: string[] = [];
   const db = await getDb();
   if (!db) return violations;
+  
+  // Load validation rules from database
+  const rules = await db.select().from(validationRules);
+  const ruleMap = new Map(rules.map(r => [r.ruleKey, r]));
   
   // Find player in database
   const player = await findPlayerByFuzzyName(upgrade.playerName, team, 'upgrade');
@@ -179,32 +184,35 @@ async function checkLeagueRules(upgrade: ParsedUpgrade, team: string): Promise<s
   
   const history = allUpgrades.filter(u => u.playerId === player.id);
   
-  // Rule 1: Back-to-back upgrades
-  // Check if this player had an upgrade in the last game
-  if (upgrade.gameNumber && history.length > 0) {
+  // Rule 1: Back-to-back upgrades (configurable)
+  const backToBackRule = ruleMap.get('back_to_back_upgrades');
+  if (backToBackRule && backToBackRule.enabled === 1 && upgrade.gameNumber && history.length > 0) {
     const lastUpgrade = history[history.length - 1];
     if (lastUpgrade.gameNumber && upgrade.gameNumber - lastUpgrade.gameNumber === 1) {
       violations.push(`⚠️ **Back-to-Back Upgrade**: ${upgrade.playerName} was upgraded at game ${lastUpgrade.gameNumber}`);
     }
   }
   
-  // Rule 2: +6 limit
-  // Count total badge level increases (bronze=1, silver=2, gold=3)
-  const levelValues = { none: 0, bronze: 1, silver: 2, gold: 3 };
-  const totalIncrease = history.reduce((sum, h) => {
-    const increase = levelValues[h.toLevel] - levelValues[h.fromLevel];
-    return sum + increase;
-  }, 0);
-  
-  const thisIncrease = levelValues[upgrade.toLevel] - levelValues[upgrade.fromLevel];
-  
-  if (totalIncrease + thisIncrease > 6) {
-    violations.push(`⚠️ **+6 Limit Exceeded**: ${upgrade.playerName} has +${totalIncrease} already, this would make +${totalIncrease + thisIncrease}`);
+  // Rule 2: Badge level limit (configurable)
+  const badgeLimitRule = ruleMap.get('badge_level_limit');
+  if (badgeLimitRule && badgeLimitRule.enabled === 1) {
+    const limit = badgeLimitRule.numericValue || 6;
+    const levelValues = { none: 0, bronze: 1, silver: 2, gold: 3 };
+    const totalIncrease = history.reduce((sum, h) => {
+      const increase = levelValues[h.toLevel] - levelValues[h.fromLevel];
+      return sum + increase;
+    }, 0);
+    
+    const thisIncrease = levelValues[upgrade.toLevel] - levelValues[upgrade.fromLevel];
+    
+    if (totalIncrease + thisIncrease > limit) {
+      violations.push(`⚠️ **+${limit} Limit Exceeded**: ${upgrade.playerName} has +${totalIncrease} already, this would make +${totalIncrease + thisIncrease}`);
+    }
   }
   
-  // Rule 3: No added badges
-  // Check if this is a new badge (fromLevel = 'none')
-  if (upgrade.fromLevel === 'none') {
+  // Rule 3: No new badges (configurable)
+  const noNewBadgesRule = ruleMap.get('no_new_badges');
+  if (noNewBadgesRule && noNewBadgesRule.enabled === 1 && upgrade.fromLevel === 'none') {
     const existingBadges = history.filter(h => h.badgeName === upgrade.badgeName);
     if (existingBadges.length === 0) {
       violations.push(`⚠️ **New Badge Added**: ${upgrade.badgeName} is not in ${upgrade.playerName}'s current badge list`);

@@ -642,3 +642,22 @@ export const playerUpgrades = mysqlTable("player_upgrades", {
 
 export type PlayerUpgrade = typeof playerUpgrades.$inferSelect;
 export type InsertPlayerUpgrade = typeof playerUpgrades.$inferInsert;
+
+/**
+ * Validation Rules table - configurable upgrade validation rules
+ */
+export const validationRules = mysqlTable("validation_rules", {
+  id: int("id").autoincrement().primaryKey(),
+  ruleKey: varchar("ruleKey", { length: 100 }).notNull().unique(), // Unique identifier (e.g., "back_to_back", "badge_level_limit")
+  ruleName: varchar("ruleName", { length: 255 }).notNull(), // Human-readable name
+  description: text("description"), // Explanation of what the rule does
+  ruleType: mysqlEnum("ruleType", ["boolean", "numeric", "text"]).notNull(), // Type of rule value
+  enabled: int("enabled").default(1).notNull(), // 1 = enabled, 0 = disabled
+  numericValue: int("numericValue"), // For numeric rules (e.g., +6 limit)
+  textValue: text("textValue"), // For text-based rules
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type ValidationRule = typeof validationRules.$inferSelect;
+export type InsertValidationRule = typeof validationRules.$inferInsert;

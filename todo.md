@@ -1837,3 +1837,26 @@ Bot should display height requirements but NOT reject upgrades based on height -
 - [x] Display height requirement in success message as informational note
 - [x] Test with height-restricted badges
 - [x] Save checkpoint
+
+
+## NEW: Configurable Validation Rules System
+
+### Goal
+Create admin UI to manage upgrade validation rules without code changes. Pre-populate with existing rules.
+
+### Existing Rules to Migrate
+1. **Back-to-back upgrades** - Player cannot upgrade in consecutive games
+2. **+6 badge level limit** - Total badge level increases cannot exceed +6
+3. **No new badges** - Cannot add badges that player doesn't already have
+
+### Tasks
+- [x] Create validation_rules database table
+- [x] Add migration script to pre-populate existing rules
+- [x] Create TRPC router for rules CRUD operations
+- [x] Build admin page at /admin/validation-rules
+- [x] Add rule enable/disable toggles
+- [x] Add numeric value editors (e.g., +6 limit)
+- [x] Update upgrade-validator.ts to read from database
+- [x] Add navigation link to admin sidebar
+- [x] Test rule modifications
+- [x] Save checkpoint

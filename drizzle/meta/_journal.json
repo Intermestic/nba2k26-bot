@@ -183,6 +183,13 @@
       "when": 1763314930921,
       "tag": "0025_red_power_man",
       "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "5",
+      "when": 1763322188386,
+      "tag": "0026_flimsy_deathbird",
+      "breakpoints": true
     }
   ]
 }

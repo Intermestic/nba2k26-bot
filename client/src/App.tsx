@@ -24,6 +24,7 @@ import ReactionRoles from "./pages/ReactionRoles";
 import Analytics from "./pages/Analytics";
 import ServerLogs from "./pages/ServerLogs";
 import UpgradeHistory from "./pages/UpgradeHistory";
+import ValidationRules from "./pages/ValidationRules";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -49,6 +50,7 @@ function Router() {
       <Route path={"/admin/analytics"} component={Analytics} />
       <Route path={"/admin/logs"} component={ServerLogs} />
       <Route path={"/admin/upgrade-history"} component={UpgradeHistory} />
+      <Route path={"/admin/validation-rules"} component={ValidationRules} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />
