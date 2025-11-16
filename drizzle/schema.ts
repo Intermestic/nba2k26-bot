@@ -1,4 +1,4 @@
-import { int, mysqlEnum, mysqlTable, text, timestamp, varchar, boolean } from "drizzle-orm/mysql-core";
+import { int, mysqlEnum, mysqlTable, text, timestamp, varchar, boolean, json } from "drizzle-orm/mysql-core";
 
 /**
  * Core user table backing auth flow.
@@ -97,6 +97,24 @@ export const teamCoins = mysqlTable("team_coins", {
 
 export type TeamCoins = typeof teamCoins.$inferSelect;
 export type InsertTeamCoins = typeof teamCoins.$inferInsert;
+
+/**
+ * Upgrade templates table - reusable upgrade patterns
+ */
+export const upgradeTemplates = mysqlTable("upgrade_templates", {
+  id: int("id").autoincrement().primaryKey(),
+  name: varchar("name", { length: 100 }).notNull().unique(), // Template name (e.g., "rookie-package")
+  displayName: varchar("displayName", { length: 255 }).notNull(), // Display name (e.g., "Rookie Package")
+  description: text("description"), // Template description
+  category: varchar("category", { length: 50 }).notNull(), // Category (rookie, offensive, defensive, playmaking)
+  upgrades: json("upgrades").notNull(), // Array of upgrade objects: [{badge: "SS", tier: "Bronze", attributes: "83 3pt"}]
+  createdBy: int("createdBy"), // Reference to users.id
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type UpgradeTemplate = typeof upgradeTemplates.$inferSelect;
+export type InsertUpgradeTemplate = typeof upgradeTemplates.$inferInsert;
 
 /**
  * FA transaction history - logs all bot-processed FA transactions

@@ -1,8 +1,9 @@
 import { z } from "zod";
-import { router, protectedProcedure } from "../_core/trpc";
+import { router, protectedProcedure, adminProcedure } from "../_core/trpc";
 import { getDb } from "../db";
 import { upgradeRequests, playerUpgrades, badgeRequirements } from "../../drizzle/schema";
-import { eq, and, desc, sql, like } from "drizzle-orm";
+import { eq, and, desc, sql, like, inArray } from "drizzle-orm";
+import { getDiscordClient } from "../discord-bot";
 
 export const upgradesRouter = router({
   // Get all upgrade requests with filters
@@ -35,6 +36,8 @@ export const upgradesRouter = router({
           approvedAt: upgradeRequests.approvedAt,
           validationErrors: upgradeRequests.validationErrors,
           ruleViolations: upgradeRequests.ruleViolations,
+          gameNumber: upgradeRequests.gameNumber,
+          requestedByName: upgradeRequests.requestedByName,
         })
         .from(upgradeRequests)
         .orderBy(desc(upgradeRequests.createdAt))
@@ -158,5 +161,133 @@ export const upgradesRouter = router({
       }
 
       return filtered;
+    }),
+
+  // Bulk approve upgrades
+  bulkApprove: adminProcedure
+    .input(
+      z.object({
+        requestIds: z.array(z.number()).min(1),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const db = await getDb();
+      if (!db) throw new Error("Database not available");
+
+      const UPGRADE_LOG_CHANNEL_ID = process.env.UPGRADE_LOG_CHANNEL_ID || '1149106208498790500';
+
+      // Fetch the requests to approve
+      const allRequests = await db.select().from(upgradeRequests);
+      const requests = allRequests.filter(r => input.requestIds.includes(r.id) && r.status === 'pending');
+
+      if (requests.length === 0) {
+        return { success: false, message: "No pending requests found", approved: 0 };
+      }
+
+      // Update all requests to approved
+      await db
+        .update(upgradeRequests)
+        .set({
+          status: 'approved',
+          approvedBy: ctx.user.id.toString(),
+          approvedAt: new Date(),
+        })
+        .where(inArray(upgradeRequests.id, input.requestIds));
+
+      // Add to player_upgrades table
+      for (const request of requests) {
+        if (request.playerId) {
+          await db.insert(playerUpgrades).values({
+            playerId: request.playerId,
+            playerName: request.playerName,
+            badgeName: request.badgeName,
+            fromLevel: request.fromLevel as "none" | "bronze" | "silver" | "gold",
+            toLevel: request.toLevel as "bronze" | "silver" | "gold",
+            upgradeType: request.fromLevel === "none" ? "new_badge" : "badge_level",
+            gameNumber: request.gameNumber || null,
+            requestId: request.id,
+          });
+        }
+      }
+
+      // Post to upgrade log channel
+      try {
+        const client = getDiscordClient();
+        if (client && client.isReady()) {
+          const logChannel = await client.channels.fetch(UPGRADE_LOG_CHANNEL_ID);
+          if (logChannel && 'send' in logChannel) {
+            for (const request of requests) {
+              const logEmbed = {
+                color: 0x00ff00,
+                title: '✅ Badge Upgrade Approved',
+                fields: [
+                  { name: 'Player', value: request.playerName, inline: true },
+                  { name: 'Team', value: request.team, inline: true },
+                  { name: 'Badge', value: `${request.badgeName} (${request.fromLevel} → ${request.toLevel})`, inline: false },
+                  { name: 'Approved By', value: ctx.user.name || 'Admin', inline: true },
+                  { name: 'Requested By', value: request.requestedByName || 'Unknown', inline: true },
+                ],
+                timestamp: new Date().toISOString(),
+              };
+
+              if (request.attributes) {
+                try {
+                  const attrs = JSON.parse(request.attributes);
+                  const attrText = Object.entries(attrs).map(([k, v]) => `${k}: ${v}`).join(', ');
+                  logEmbed.fields.push({ name: 'Attributes', value: attrText, inline: false });
+                } catch (e) {
+                  // Skip if attributes can't be parsed
+                }
+              }
+
+              await logChannel.send({ embeds: [logEmbed] });
+            }
+          }
+        }
+      } catch (error) {
+        console.error('[Bulk Approve] Error posting to Discord:', error);
+      }
+
+      return {
+        success: true,
+        message: `Approved ${requests.length} upgrade(s)`,
+        approved: requests.length,
+      };
+    }),
+
+  // Bulk reject upgrades
+  bulkReject: adminProcedure
+    .input(
+      z.object({
+        requestIds: z.array(z.number()).min(1),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const db = await getDb();
+      if (!db) throw new Error("Database not available");
+
+      // Fetch the requests to reject
+      const allRequests = await db.select().from(upgradeRequests);
+      const requests = allRequests.filter(r => input.requestIds.includes(r.id) && r.status === 'pending');
+
+      if (requests.length === 0) {
+        return { success: false, message: "No pending requests found", rejected: 0 };
+      }
+
+      // Update all requests to rejected
+      await db
+        .update(upgradeRequests)
+        .set({
+          status: 'rejected',
+          approvedBy: ctx.user.id.toString(),
+          approvedAt: new Date(),
+        })
+        .where(inArray(upgradeRequests.id, input.requestIds));
+
+      return {
+        success: true,
+        message: `Rejected ${requests.length} upgrade(s)`,
+        rejected: requests.length,
+      };
     }),
 });

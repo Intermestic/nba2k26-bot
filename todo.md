@@ -1902,3 +1902,77 @@ Result: CHL upgrade checked for Suggs instead of Giddey
 - [x] Update validation and database logic for batch processing
 - [x] Test with various multi-player formats
 - [x] Save checkpoint
+
+
+## CURRENT TASK: Upgrade Template System
+
+### Goal
+Implement reusable upgrade templates allowing users to apply common upgrade patterns via Discord commands
+
+### Phase 1: Database Schema
+- [ ] Create upgrade_templates table (id, name, description, category, upgrades JSON, createdBy, createdAt)
+- [ ] Add indexes for name and category
+- [ ] Push schema changes
+
+### Phase 2: TRPC Router
+- [ ] Create templates router with CRUD endpoints
+- [ ] getAll (with optional category filter)
+- [ ] getById
+- [ ] create (admin only)
+- [ ] update (admin only)
+- [ ] delete (admin only)
+- [ ] getCategories (return unique categories)
+
+### Phase 3: Admin UI
+- [ ] Create /admin/upgrade-templates page
+- [ ] Display templates in categorized sections
+- [ ] Add create template dialog (name, description, category, upgrade list)
+- [ ] Add edit template dialog
+- [ ] Add delete confirmation
+- [ ] Show template preview with example player
+
+### Phase 4: Discord Command
+- [ ] Add !template command handler
+- [ ] Parse: !template <template-name> <player-name>
+- [ ] Fetch template from database
+- [ ] Replace player name in template
+- [ ] Post formatted upgrade message to channel
+- [ ] Process through existing upgrade validation system
+
+### Phase 5: Testing
+- [ ] Create test templates (rookie-package, sharpshooter, defensive-specialist)
+- [ ] Test !template command in Discord
+- [ ] Verify upgrades process correctly
+- [ ] Save checkpoint
+
+
+## CURRENT TASK: Upgrade Summary Dashboard
+
+### Goal
+Create admin dashboard showing pending upgrades grouped by team with bulk approve/reject actions
+
+### Phase 1: Backend - Bulk Actions
+- [x] Add bulkApprove endpoint to upgrades router (accepts array of request IDs)
+- [x] Add bulkReject endpoint to upgrades router (accepts array of request IDs)
+- [x] Update upgrade_requests status for all selected IDs
+- [x] Post approved upgrades to public log channel
+- [x] Return success/failure counts
+
+### Phase 2: Frontend - Upgrade Summary UI
+- [x] Create /admin/upgrade-summary page
+- [x] Fetch all pending upgrades via TRPC
+- [x] Group upgrades by team (collapsible sections)
+- [x] Show upgrade details: player, badge, tier, attributes, game number
+- [x] Add checkboxes for selecting multiple upgrades
+- [x] Add "Select All" checkbox per team
+- [x] Add bulk action buttons: Approve Selected, Reject Selected
+- [x] Show confirmation dialog before bulk actions
+- [x] Display success/failure toast notifications
+
+### Phase 3: Testing
+- [ ] Test bulk approve with multiple upgrades
+- [ ] Test bulk reject with multiple upgrades
+- [ ] Verify Discord messages posted for approved upgrades
+- [x] Code compiled successfully
+- [x] UI built and route added
+- [ ] Save checkpoint
