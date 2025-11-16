@@ -832,6 +832,29 @@ export async function startDiscordBot(token: string) {
     } catch (error) {
       console.error('[Window Close] Failed to schedule summaries:', error);
     }
+    
+    // Initialize team role manager
+    try {
+      const { syncTeamRoles } = await import('./team-role-manager');
+      await syncTeamRoles(client!);
+      console.log('[Team Roles] Initial role sync complete');
+    } catch (error) {
+      console.error('[Team Roles] Failed to initialize:', error);
+    }
+  });
+  
+  // Monitor message updates for team role sync
+  client.on('messageUpdate', async (oldMessage, newMessage) => {
+    try {
+      // Check if this is the team message being updated
+      if (newMessage.id === '1130885281508233316' && newMessage.channelId === '860782989280935966') {
+        console.log('[Team Roles] Team message updated, syncing roles...');
+        const { syncTeamRoles } = await import('./team-role-manager');
+        await syncTeamRoles(client!);
+      }
+    } catch (error) {
+      console.error('[Team Roles] Error handling message update:', error);
+    }
   });
   
   // Monitor all messages for FA bids and commands
@@ -954,6 +977,20 @@ export async function startDiscordBot(token: string) {
         } catch (error) {
           console.error('[Rollback] Command failed:', error);
           await message.reply('❌ Failed to rollback batch. Check logs for details.');
+        }
+        return;
+      }
+      
+      // Check for team role sync command
+      if (message.content.trim().toLowerCase() === '!sync-team-roles') {
+        try {
+          await message.reply('🔄 Syncing team roles...');
+          const { syncTeamRoles } = await import('./team-role-manager');
+          await syncTeamRoles(client!);
+          await message.reply('✅ Team roles synced successfully!');
+        } catch (error) {
+          console.error('[Team Roles] Sync command failed:', error);
+          await message.reply('❌ Failed to sync team roles. Check logs for details.');
         }
         return;
       }

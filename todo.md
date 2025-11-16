@@ -946,4 +946,22 @@ Trade parser failing on valid trades like "Rockets send ... Knicks ..." format. 
 - [x] Add manual trade correction instructions when parsing fails
 - [x] Provide clear format example in error message
 - [x] Test with failing example (Rockets/Knicks trade) - parser fix verified
+- [x] Save checkpoint
+
+
+## CURRENT TASK: Discord Team Role Assignment System
+
+### Goal
+Monitor message 1130885281508233316 in channel 860782989280935966 for team affiliations and automatically assign Discord roles based on team names
+
+### Tasks
+- [x] Fetch and analyze message content to understand format
+- [x] Design role assignment logic based on message structure
+- [x] Implement bot functionality to parse team affiliations from message
+- [x] Create team roles automatically if they don't exist (with team colors)
+- [x] Assign roles to users mentioned in the message
+- [x] Add command to manually sync roles (!sync-team-roles)
+- [x] Add automatic sync when message is edited
+- [x] Integrate with discord-bot.ts initialization
+- [x] Test implementation (TypeScript compilation successful, no errors)
 - [ ] Save checkpoint
