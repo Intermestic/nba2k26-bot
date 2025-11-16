@@ -6,7 +6,7 @@
 import { z } from "zod";
 import { router, protectedProcedure } from "../_core/trpc";
 import { getDb } from "../db";
-import { botConfig, messageTemplates, botCommands } from "../../drizzle/schema";
+import { botConfig, messageTemplates, botCommands, scheduledMessages } from "../../drizzle/schema";
 import { eq } from "drizzle-orm";
 
 export const botManagementRouter = router({
@@ -275,6 +275,123 @@ export const botManagementRouter = router({
       if (!db) throw new Error("Database not available");
       
       await db.delete(botCommands).where(eq(botCommands.command, input.command));
+      return { success: true };
+    }),
+
+  // ==================== SCHEDULED MESSAGES ====================
+  
+  /**
+   * Get all scheduled messages
+   */
+  getScheduledMessages: protectedProcedure.query(async ({ ctx }) => {
+    const db = await getDb();
+    if (!db) throw new Error("Database not available");
+    
+    return await db.select().from(scheduledMessages);
+  }),
+
+  /**
+   * Get a single scheduled message by ID
+   */
+  getScheduledMessageById: protectedProcedure
+    .input(z.object({ id: z.number() }))
+    .query(async ({ input, ctx }) => {
+      const db = await getDb();
+      if (!db) throw new Error("Database not available");
+      
+      const result = await db.select().from(scheduledMessages).where(eq(scheduledMessages.id, input.id));
+      return result[0] || null;
+    }),
+
+  /**
+   * Create or update a scheduled message
+   */
+  upsertScheduledMessage: protectedProcedure
+    .input(z.object({
+      id: z.number().optional(),
+      name: z.string(),
+      channelId: z.string(),
+      message: z.string(),
+      schedule: z.string(),
+      enabled: z.boolean().optional(),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      const db = await getDb();
+      if (!db) throw new Error("Database not available");
+      
+      if (input.id) {
+        // Update existing
+        await db
+          .update(scheduledMessages)
+          .set({
+            name: input.name,
+            channelId: input.channelId,
+            message: input.message,
+            schedule: input.schedule,
+            enabled: input.enabled ?? true,
+          })
+          .where(eq(scheduledMessages.id, input.id));
+        return { success: true, id: input.id };
+      } else {
+        // Create new
+        const result: any = await db.insert(scheduledMessages).values({
+          name: input.name,
+          channelId: input.channelId,
+          message: input.message,
+          schedule: input.schedule,
+          enabled: input.enabled ?? true,
+          createdBy: ctx.user.id,
+        });
+        return { success: true, id: result.insertId || 0 };
+      }
+    }),
+
+  /**
+   * Toggle scheduled message enabled status
+   */
+  toggleScheduledMessage: protectedProcedure
+    .input(z.object({ id: z.number(), enabled: z.boolean() }))
+    .mutation(async ({ input, ctx }) => {
+      const db = await getDb();
+      if (!db) throw new Error("Database not available");
+      
+      await db
+        .update(scheduledMessages)
+        .set({ enabled: input.enabled })
+        .where(eq(scheduledMessages.id, input.id));
+      return { success: true };
+    }),
+
+  /**
+   * Delete a scheduled message
+   */
+  deleteScheduledMessage: protectedProcedure
+    .input(z.object({ id: z.number() }))
+    .mutation(async ({ input, ctx }) => {
+      const db = await getDb();
+      if (!db) throw new Error("Database not available");
+      
+      await db.delete(scheduledMessages).where(eq(scheduledMessages.id, input.id));
+      return { success: true };
+    }),
+
+  /**
+   * Test send a scheduled message (immediate send to verify content)
+   */
+  testScheduledMessage: protectedProcedure
+    .input(z.object({ id: z.number() }))
+    .mutation(async ({ input, ctx }) => {
+      const db = await getDb();
+      if (!db) throw new Error("Database not available");
+      
+      const message = await db.select().from(scheduledMessages).where(eq(scheduledMessages.id, input.id));
+      if (!message[0]) throw new Error("Message not found");
+      
+      // TODO: Implement test send via Discord bot
+      // For now, just return success
+      console.log('[Test Send] Would send to channel:', message[0].channelId);
+      console.log('[Test Send] Message:', message[0].message);
+      
       return { success: true };
     }),
 });

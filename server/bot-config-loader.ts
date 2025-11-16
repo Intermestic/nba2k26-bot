@@ -213,6 +213,120 @@ Seeding: **60% activity, 40% record**. Top 16 teams seeded 1-16 regardless of co
       });
     }
 
+    // Add trade notification templates
+    const tradeApprovedTemplate = await db.select().from(messageTemplates).where(eq(messageTemplates.key, 'trade_approved'));
+    if (tradeApprovedTemplate.length === 0) {
+      await db.insert(messageTemplates).values({
+        key: 'trade_approved',
+        content: '✅ **TRADE APPROVED** (7+ votes)\n\nThe trade has been approved by the Trade Committee and will be processed shortly.',
+        description: 'Message posted when a trade reaches 7 approval votes',
+        category: 'trades',
+        variables: JSON.stringify([]),
+      });
+    }
+
+    const tradeRejectedTemplate = await db.select().from(messageTemplates).where(eq(messageTemplates.key, 'trade_rejected'));
+    if (tradeRejectedTemplate.length === 0) {
+      await db.insert(messageTemplates).values({
+        key: 'trade_rejected',
+        content: '❌ **TRADE REJECTED** (5+ downvotes)\n\nThe trade has been rejected by the Trade Committee.',
+        description: 'Message posted when a trade reaches 5 rejection votes',
+        category: 'trades',
+        variables: JSON.stringify([]),
+      });
+    }
+
+    // Add FA bid templates
+    const bidConfirmationTemplate = await db.select().from(messageTemplates).where(eq(messageTemplates.key, 'bid_confirmation'));
+    if (bidConfirmationTemplate.length === 0) {
+      await db.insert(messageTemplates).values({
+        key: 'bid_confirmation',
+        content: '✅ **Bid Confirmed**\n\n**Cut:** {cutPlayer} ({cutOVR} OVR)\n**Sign:** {signPlayer} ({signOVR} OVR)\n**Bid:** ${bidAmount}\n**Team:** {teamName}\n\n{bidStatus}\n\n**Projected Cap:** {capStatus} {projectedTotal}/1098',
+        description: 'Confirmation message sent when a user places a valid FA bid',
+        category: 'fa',
+        variables: JSON.stringify(['cutPlayer', 'cutOVR', 'signPlayer', 'signOVR', 'bidAmount', 'teamName', 'bidStatus', 'capStatus', 'projectedTotal']),
+      });
+    }
+
+    const bidOutbidTemplate = await db.select().from(messageTemplates).where(eq(messageTemplates.key, 'bid_outbid'));
+    if (bidOutbidTemplate.length === 0) {
+      await db.insert(messageTemplates).values({
+        key: 'bid_outbid',
+        content: '⚠️ **You\'ve Been Outbid!**\n\n**Player:** {playerName}\n**Your Bid:** ${yourBid}\n**New High Bid:** ${newBid}\n**Current Leader:** {leaderName}\n\nYou have **{timeRemaining}** remaining to place a higher bid.',
+        description: 'DM sent to users when they are outbid on a player',
+        category: 'fa',
+        variables: JSON.stringify(['playerName', 'yourBid', 'newBid', 'leaderName', 'timeRemaining']),
+      });
+    }
+
+    const bidWonTemplate = await db.select().from(messageTemplates).where(eq(messageTemplates.key, 'bid_won'));
+    if (bidWonTemplate.length === 0) {
+      await db.insert(messageTemplates).values({
+        key: 'bid_won',
+        content: '🏆 **Congratulations!**\n\nYou won the bid for **{playerName}** with a bid of **${bidAmount}**!\n\nThe player will be added to your roster shortly.',
+        description: 'DM sent to users when they win a FA bid',
+        category: 'fa',
+        variables: JSON.stringify(['playerName', 'bidAmount']),
+      });
+    }
+
+    const bidLostTemplate = await db.select().from(messageTemplates).where(eq(messageTemplates.key, 'bid_lost'));
+    if (bidLostTemplate.length === 0) {
+      await db.insert(messageTemplates).values({
+        key: 'bid_lost',
+        content: '❌ **Bid Unsuccessful**\n\nYour bid for **{playerName}** (${yourBid}) was not the highest bid.\n\n**Winner:** {winnerName} (${winningBid})',
+        description: 'DM sent to users when they lose a FA bid',
+        category: 'fa',
+        variables: JSON.stringify(['playerName', 'yourBid', 'winnerName', 'winningBid']),
+      });
+    }
+
+    // Add cap violation templates
+    const capAlertTemplate = await db.select().from(messageTemplates).where(eq(messageTemplates.key, 'cap_alert'));
+    if (capAlertTemplate.length === 0) {
+      await db.insert(messageTemplates).values({
+        key: 'cap_alert',
+        content: '⚠️ **CAP VIOLATION ALERT**\n\nYour team **{teamName}** is currently over the cap:\n\n**Total Overall:** {totalOVR}/1098 (+{overAmount})\n**Roster Size:** {rosterSize}/14\n\n**Suggested Drops:**\n{suggestedDrops}\n\nPlease reduce your roster to get back under the cap.',
+        description: 'DM sent to team owners when they exceed the 1098 OVR cap',
+        category: 'cap',
+        variables: JSON.stringify(['teamName', 'totalOVR', 'overAmount', 'rosterSize', 'suggestedDrops']),
+      });
+    }
+
+    const capResolvedTemplate = await db.select().from(messageTemplates).where(eq(messageTemplates.key, 'cap_resolved'));
+    if (capResolvedTemplate.length === 0) {
+      await db.insert(messageTemplates).values({
+        key: 'cap_resolved',
+        content: '✅ **Cap Compliance Restored**\n\nYour team **{teamName}** is now back under the cap:\n\n**Total Overall:** {totalOVR}/1098\n**Roster Size:** {rosterSize}/14\n\nGreat work!',
+        description: 'DM sent to team owners when they get back under cap after violation',
+        category: 'cap',
+        variables: JSON.stringify(['teamName', 'totalOVR', 'rosterSize']),
+      });
+    }
+
+    // Add general notification templates
+    const rosterUpdateTemplate = await db.select().from(messageTemplates).where(eq(messageTemplates.key, 'roster_update'));
+    if (rosterUpdateTemplate.length === 0) {
+      await db.insert(messageTemplates).values({
+        key: 'roster_update',
+        content: '📊 **Roster Update**\n\n{updateDetails}',
+        description: 'General roster update notification',
+        category: 'notifications',
+        variables: JSON.stringify(['updateDetails']),
+      });
+    }
+
+    const windowCloseTemplate = await db.select().from(messageTemplates).where(eq(messageTemplates.key, 'window_close'));
+    if (windowCloseTemplate.length === 0) {
+      await db.insert(messageTemplates).values({
+        key: 'window_close',
+        content: '🔒 **Bidding Window Closed**\n\nThe {windowId} bidding window has closed.\n\n**Total Winning Bids:** {totalBids}\n**Total Coins Committed:** ${totalCoins}\n\nProcessing transactions now...',
+        description: 'Message posted when FA bidding window closes',
+        category: 'fa',
+        variables: JSON.stringify(['windowId', 'totalBids', 'totalCoins']),
+      });
+    }
+
     console.log('[Config Loader] Default configurations initialized');
   } catch (error) {
     console.error('[Config Loader] Error initializing defaults:', error);

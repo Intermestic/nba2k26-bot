@@ -1030,10 +1030,29 @@ export async function startDiscordBot(token: string) {
       // Check for team role sync command
       if (message.content.trim().toLowerCase() === '!sync-team-roles') {
         try {
+          // Check if command is enabled
+          const { isCommandEnabled, getCommand, replaceVariables } = await import('./bot-config-loader.js');
+          const enabled = await isCommandEnabled('!sync-team-roles');
+          if (!enabled) {
+            await message.reply('❌ This command is currently disabled.');
+            return;
+          }
+
           await message.reply('🔄 Syncing team roles...');
-          const { syncTeamRoles } = await import('./team-role-manager');
-          await syncTeamRoles(client!);
-          await message.reply('✅ Team roles synced successfully!');
+          const { syncTeamRoles } = await import('./team-role-manager.js');
+          const result: any = await syncTeamRoles(client!);
+          
+          // Get custom response template from database
+          const commandConfig = await getCommand('!sync-team-roles');
+          const responseTemplate = commandConfig?.responseTemplate || '✅ Team roles synced successfully!';
+          
+          // Replace variables if any
+          const response = replaceVariables(responseTemplate, {
+            roleCount: result?.roleCount?.toString() || '0',
+            memberCount: result?.memberCount?.toString() || '0'
+          });
+          
+          await message.reply(response);
         } catch (error) {
           console.error('[Team Roles] Sync command failed:', error);
           await message.reply('❌ Failed to sync team roles. Check logs for details.');
@@ -1044,10 +1063,28 @@ export async function startDiscordBot(token: string) {
       // Check for team channel sync command
       if (message.content.trim().toLowerCase() === '!sync-team-channels') {
         try {
+          // Check if command is enabled
+          const { isCommandEnabled, getCommand, replaceVariables } = await import('./bot-config-loader.js');
+          const enabled = await isCommandEnabled('!sync-team-channels');
+          if (!enabled) {
+            await message.reply('❌ This command is currently disabled.');
+            return;
+          }
+
           await message.reply('🔄 Syncing team channels...');
-          const { syncTeamChannels } = await import('./team-channel-manager');
-          await syncTeamChannels(client!);
-          await message.reply('✅ Team channels synced successfully!');
+          const { syncTeamChannels } = await import('./team-channel-manager.js');
+          const result: any = await syncTeamChannels(client!);
+          
+          // Get custom response template from database
+          const commandConfig = await getCommand('!sync-team-channels');
+          const responseTemplate = commandConfig?.responseTemplate || '✅ Team channels synced successfully!';
+          
+          // Replace variables if any
+          const response = replaceVariables(responseTemplate, {
+            channelCount: result?.channelCount?.toString() || '0'
+          });
+          
+          await message.reply(response);
         } catch (error) {
           console.error('[Team Channels] Sync command failed:', error);
           await message.reply('❌ Failed to sync team channels. Check logs for details.');

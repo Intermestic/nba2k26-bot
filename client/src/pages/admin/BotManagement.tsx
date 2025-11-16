@@ -24,7 +24,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Pencil, Trash2, Plus, Save, X } from "lucide-react";
+import { Pencil, Trash2, Plus, Save, X, Clock, Send, Calendar } from "lucide-react";
 
 export default function BotManagement() {
   const [activeTab, setActiveTab] = useState("config");
@@ -33,6 +33,7 @@ export default function BotManagement() {
   const [configDialog, setConfigDialog] = useState<{ open: boolean; key?: string }>({ open: false });
   const [templateDialog, setTemplateDialog] = useState<{ open: boolean; key?: string }>({ open: false });
   const [commandDialog, setCommandDialog] = useState<{ open: boolean; command?: string }>({ open: false });
+  const [scheduleDialog, setScheduleDialog] = useState<{ open: boolean; id?: number }>({ open: false });
 
   return (
     <div className="container py-8">
@@ -44,10 +45,11 @@ export default function BotManagement() {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="config">Configuration</TabsTrigger>
           <TabsTrigger value="templates">Message Templates</TabsTrigger>
           <TabsTrigger value="commands">Commands</TabsTrigger>
+          <TabsTrigger value="scheduled">Scheduled Messages</TabsTrigger>
         </TabsList>
 
         <TabsContent value="config" className="mt-6">
@@ -70,6 +72,13 @@ export default function BotManagement() {
             onAdd={() => setCommandDialog({ open: true })}
           />
         </TabsContent>
+
+        <TabsContent value="scheduled" className="mt-6">
+          <ScheduledMessagesTab 
+            onEdit={(id) => setScheduleDialog({ open: true, id })}
+            onAdd={() => setScheduleDialog({ open: true })}
+          />
+        </TabsContent>
       </Tabs>
 
       {/* Dialogs */}
@@ -87,6 +96,11 @@ export default function BotManagement() {
         open={commandDialog.open}
         commandName={commandDialog.command}
         onClose={() => setCommandDialog({ open: false })}
+      />
+      <ScheduledMessageDialog 
+        open={scheduleDialog.open}
+        messageId={scheduleDialog.id}
+        onClose={() => setScheduleDialog({ open: false })}
       />
     </div>
   );
@@ -663,6 +677,255 @@ function CommandDialog({ open, commandName, onClose }: { open: boolean; commandN
             Cancel
           </Button>
           <Button onClick={handleSubmit} disabled={upsertCommand.isPending}>
+            <Save className="w-4 h-4 mr-2" />
+            Save
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+// ==================== SCHEDULED MESSAGES TAB ====================
+
+function ScheduledMessagesTab({ onEdit, onAdd }: { onEdit: (id: number) => void; onAdd: () => void }) {
+  const { data: messages, isLoading, refetch } = trpc.botManagement.getScheduledMessages.useQuery();
+  const toggleMessage = trpc.botManagement.toggleScheduledMessage.useMutation({
+    onSuccess: () => {
+      toast.success("Schedule updated");
+      refetch();
+    },
+  });
+  const deleteMessage = trpc.botManagement.deleteScheduledMessage.useMutation({
+    onSuccess: () => {
+      toast.success("Scheduled message deleted");
+      refetch();
+    },
+  });
+  const testMessage = trpc.botManagement.testScheduledMessage.useMutation({
+    onSuccess: () => {
+      toast.success("Test message sent");
+    },
+    onError: () => {
+      toast.error("Failed to send test message");
+    },
+  });
+
+  if (isLoading) {
+    return <div className="text-center py-8 text-muted-foreground">Loading scheduled messages...</div>;
+  }
+
+  return (
+    <Card>
+      <CardHeader>
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle className="flex items-center gap-2">
+              <Clock className="w-5 h-5" />
+              Scheduled Messages
+            </CardTitle>
+            <CardDescription>Automate recurring messages to Discord channels</CardDescription>
+          </div>
+          <Button onClick={onAdd}>
+            <Plus className="w-4 h-4 mr-2" />
+            Add Schedule
+          </Button>
+        </div>
+      </CardHeader>
+      <CardContent>
+        {!messages || messages.length === 0 ? (
+          <div className="text-center py-8 text-muted-foreground">
+            <Calendar className="w-12 h-12 mx-auto mb-4 opacity-50" />
+            <p>No scheduled messages yet</p>
+            <p className="text-sm">Create your first scheduled message to automate Discord notifications</p>
+          </div>
+        ) : (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Name</TableHead>
+                <TableHead>Channel ID</TableHead>
+                <TableHead>Schedule</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Last Run</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {messages.map((msg) => (
+                <TableRow key={msg.id}>
+                  <TableCell className="font-medium">{msg.name}</TableCell>
+                  <TableCell className="font-mono text-sm">{msg.channelId}</TableCell>
+                  <TableCell className="text-sm">{msg.schedule}</TableCell>
+                  <TableCell>
+                    <Switch
+                      checked={msg.enabled}
+                      onCheckedChange={(checked) => toggleMessage.mutate({ id: msg.id, enabled: checked })}
+                    />
+                  </TableCell>
+                  <TableCell className="text-sm text-muted-foreground">
+                    {msg.lastRun ? new Date(msg.lastRun).toLocaleString() : 'Never'}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <div className="flex items-center justify-end gap-2">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => testMessage.mutate({ id: msg.id })}
+                        title="Send test message"
+                      >
+                        <Send className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => onEdit(msg.id)}
+                      >
+                        <Pencil className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => {
+                          if (confirm('Delete this scheduled message?')) {
+                            deleteMessage.mutate({ id: msg.id });
+                          }
+                        }}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
+function ScheduledMessageDialog({ open, messageId, onClose }: { open: boolean; messageId?: number; onClose: () => void }) {
+  const [formData, setFormData] = useState({
+    name: "",
+    channelId: "",
+    message: "",
+    schedule: "daily",
+    enabled: true,
+  });
+
+  const { data: existingMessage } = trpc.botManagement.getScheduledMessageById.useQuery(
+    { id: messageId! },
+    { enabled: !!messageId }
+  );
+
+  const upsertMessage = trpc.botManagement.upsertScheduledMessage.useMutation({
+    onSuccess: () => {
+      toast.success(messageId ? "Schedule updated" : "Schedule created");
+      onClose();
+    },
+  });
+
+  // Load existing data
+  if (existingMessage && formData.name === "") {
+    setFormData({
+      name: existingMessage.name,
+      channelId: existingMessage.channelId,
+      message: existingMessage.message,
+      schedule: existingMessage.schedule,
+      enabled: existingMessage.enabled,
+    });
+  }
+
+  const handleSubmit = () => {
+    if (!formData.name || !formData.channelId || !formData.message || !formData.schedule) {
+      toast.error("All fields are required");
+      return;
+    }
+    upsertMessage.mutate({ ...formData, id: messageId });
+  };
+
+  const schedulePresets = [
+    { value: "daily", label: "Daily at noon ET" },
+    { value: "weekly", label: "Weekly (Monday noon ET)" },
+    { value: "bidding_window", label: "Before bidding windows (11:50 AM/PM ET)" },
+    { value: "custom", label: "Custom cron expression" },
+  ];
+
+  return (
+    <Dialog open={open} onOpenChange={onClose}>
+      <DialogContent className="max-w-3xl">
+        <DialogHeader>
+          <DialogTitle>{messageId ? "Edit Scheduled Message" : "Add Scheduled Message"}</DialogTitle>
+          <DialogDescription>
+            Configure automated messages to be sent to Discord channels on a schedule
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-4">
+          <div>
+            <Label htmlFor="name">Name *</Label>
+            <Input
+              id="name"
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              placeholder="e.g., Daily FA Reminder"
+            />
+          </div>
+          <div>
+            <Label htmlFor="channelId">Discord Channel ID *</Label>
+            <Input
+              id="channelId"
+              value={formData.channelId}
+              onChange={(e) => setFormData({ ...formData, channelId: e.target.value })}
+              placeholder="e.g., 1095812920056762510"
+              className="font-mono"
+            />
+            <p className="text-xs text-muted-foreground mt-1">
+              Right-click a channel in Discord (with Developer Mode enabled) and select "Copy ID"
+            </p>
+          </div>
+          <div>
+            <Label htmlFor="message">Message Content *</Label>
+            <Textarea
+              id="message"
+              value={formData.message}
+              onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+              placeholder="Your message here (supports Discord markdown)"
+              rows={6}
+              className="font-mono text-sm"
+            />
+          </div>
+          <div>
+            <Label htmlFor="schedule">Schedule *</Label>
+            <select
+              id="schedule"
+              value={formData.schedule}
+              onChange={(e) => setFormData({ ...formData, schedule: e.target.value })}
+              className="w-full h-10 px-3 rounded-md border border-input bg-background"
+            >
+              {schedulePresets.map((preset) => (
+                <option key={preset.value} value={preset.value}>
+                  {preset.label}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Switch
+              id="enabled"
+              checked={formData.enabled}
+              onCheckedChange={(checked) => setFormData({ ...formData, enabled: checked })}
+            />
+            <Label htmlFor="enabled">Schedule Enabled</Label>
+          </div>
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={onClose}>
+            <X className="w-4 h-4 mr-2" />
+            Cancel
+          </Button>
+          <Button onClick={handleSubmit} disabled={upsertMessage.isPending}>
             <Save className="w-4 h-4 mr-2" />
             Save
           </Button>

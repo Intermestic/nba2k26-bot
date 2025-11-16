@@ -326,3 +326,23 @@ export const botCommands = mysqlTable("bot_commands", {
 
 export type BotCommand = typeof botCommands.$inferSelect;
 export type InsertBotCommand = typeof botCommands.$inferInsert;
+
+/**
+ * Scheduled Messages table - stores recurring automated messages
+ */
+export const scheduledMessages = mysqlTable("scheduled_messages", {
+  id: int("id").autoincrement().primaryKey(),
+  name: varchar("name", { length: 100 }).notNull(), // Human-readable name
+  channelId: varchar("channelId", { length: 64 }).notNull(), // Discord channel ID
+  message: text("message").notNull(), // Message content (supports Discord markdown)
+  schedule: varchar("schedule", { length: 100 }).notNull(), // Cron expression or schedule type
+  enabled: boolean("enabled").default(true).notNull(), // Whether schedule is active
+  lastRun: timestamp("lastRun"), // Last execution time
+  nextRun: timestamp("nextRun"), // Next scheduled execution
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  createdBy: int("createdBy"), // Reference to users.id
+});
+
+export type ScheduledMessage = typeof scheduledMessages.$inferSelect;
+export type InsertScheduledMessage = typeof scheduledMessages.$inferInsert;

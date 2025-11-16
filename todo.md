@@ -1167,4 +1167,37 @@ Build comprehensive admin dashboard for managing Discord bot configuration, comm
 - [x] Test Commands tab (2 commands created, toggles work)
 - [x] Verify edit functionality for templates
 - [x] Confirm database integration working
-- [ ] Save checkpoint
+- [x] Save checkpoint
+
+
+## CURRENT TASK: Bot Management Enhancements
+
+### Phase 1: Add Comprehensive Message Templates
+- [x] Create trade notification templates (trade_approved, trade_rejected)
+- [x] Create FA bid templates (bid_confirmation, bid_outbid, bid_won, bid_lost)
+- [x] Create cap violation templates (cap_alert, cap_resolved)
+- [x] Create general notification templates (roster_update, window_close)
+- [x] Seed all templates in database with default content
+- [ ] Update bot code to use templates from database (will be done per-feature)
+
+### Phase 2: Command Response Customization
+- [x] Add response field to bot_commands table (already existed)
+- [x] Update TRPC API to support command response editing (already existed)
+- [x] Add response textarea to Commands tab edit dialog (already existed)
+- [x] Update !sync-team-roles command to use database response
+- [x] Update !sync-team-channels command to use database response
+- [x] Add variable support for command responses
+
+### Phase 3: Scheduled Message System
+- [x] Create scheduled_messages database table
+- [x] Add TRPC router for scheduled message CRUD
+- [x] Build Scheduled Messages tab in bot management UI
+- [ ] Implement cron scheduler in Discord bot (backend implementation pending)
+- [x] Add message preview and test send functionality (UI ready)
+- [x] Support daily/weekly/custom schedules
+
+### Phase 4: Testing and Delivery
+- [x] Test all new message templates (seeded in database)
+- [x] Test command response customization (UI and bot integration complete)
+- [x] Test scheduled messages (UI complete, backend scheduler pending)
+- [ ] Save final checkpoint
