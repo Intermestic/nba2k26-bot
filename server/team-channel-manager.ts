@@ -152,11 +152,14 @@ export async function syncTeamChannels(client: Client): Promise<void> {
       return;
     }
 
-    // Process each team
+    // Process each team in alphabetical order
     let successCount = 0;
     let failCount = 0;
+    
+    const sortedTeams = [...ALL_TEAMS].sort();
 
-    for (const teamName of ALL_TEAMS) {
+    for (let i = 0; i < sortedTeams.length; i++) {
+      const teamName = sortedTeams[i];
       try {
         // Get team role
         const role = guild.roles.cache.find((r: Role) => r.name === teamName);
@@ -169,6 +172,8 @@ export async function syncTeamChannels(client: Client): Promise<void> {
         // Create or update channel
         const channel = await createOrUpdateTeamChannel(guild, teamName, role, category);
         if (channel) {
+          // Set channel position based on alphabetical order
+          await channel.setPosition(i);
           successCount++;
         } else {
           failCount++;
