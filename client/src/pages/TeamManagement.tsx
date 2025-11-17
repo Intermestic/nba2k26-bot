@@ -20,7 +20,7 @@ interface Player {
   photoUrl?: string | null;
 }
 
-export default function Admin() {
+export default function TeamManagement() {
   const { user, isAuthenticated } = useAuth();
   const [, setLocation] = useLocation();
   const [searchTerm, setSearchTerm] = useState("");
