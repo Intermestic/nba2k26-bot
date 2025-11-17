@@ -608,6 +608,7 @@ export const upgradeRequests = mysqlTable("upgrade_requests", {
   toLevel: mysqlEnum("toLevel", ["bronze", "silver", "gold"]).notNull(), // Requested level
   attributes: text("attributes"), // JSON string of attributes (e.g., {"3pt": 83, "pd": 88})
   gameNumber: int("gameNumber"), // Game number when upgrade was earned (e.g., 5)
+  upgradeType: varchar("upgradeType", { length: 50 }), // Upgrade type: Global, Welcome, 5-Game Badge, 7-Game Attribute, Rookie, OG, Superstar Pack, Activity Bonus
   requestedBy: varchar("requestedBy", { length: 64 }).notNull(), // Discord user ID
   requestedByName: varchar("requestedByName", { length: 255 }), // Discord username
   team: varchar("team", { length: 100 }).notNull(), // Team name

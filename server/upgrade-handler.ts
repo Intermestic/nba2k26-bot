@@ -1,6 +1,7 @@
 import type { Message } from 'discord.js';
 import { parseUpgradeRequests } from './upgrade-parser';
 import { validateUpgradeRequest, formatValidationMessage } from './upgrade-validator';
+import { validateUpgradeRules } from './upgrade-rules-validator';
 import { getDb } from './db';
 import { upgradeRequests, players, playerUpgrades } from '../drizzle/schema';
 import { findPlayerByFuzzyName } from './trade-parser';
@@ -56,8 +57,16 @@ export async function handleUpgradeRequest(message: Message, teamName: string) {
       }
     }
     
-    // Validate the upgrade request
+    // Validate the upgrade request (badge requirements)
     const validation = await validateUpgradeRequest(parsed, teamName, playerHeight, message.author.id);
+    
+    // Validate against upgrade rules system
+    const rulesValidation = await validateUpgradeRules(parsed, teamName, message.author.id);
+    
+    // Merge validation results
+    validation.errors.push(...rulesValidation.errors);
+    validation.ruleViolations.push(...rulesValidation.warnings);
+    validation.valid = validation.valid && rulesValidation.valid;
     
     results.push({ upgrade: parsed, validation, playerHeight });
     

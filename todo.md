@@ -1967,7 +1967,7 @@ Multiple admin dashboard links were pointing to non-existent routes:
 - [x] TypeScript compilation successful (no errors)
 - [x] Database schema updated successfully
 - [x] Admin UI displaying all 59 rules correctly
-- [ ] Save checkpoint
+- [x] Save checkpoint (version 4cd75a6f)
 
 
 ### Phase 3 Implementation Scope (Updated)
@@ -1984,3 +1984,37 @@ Multiple admin dashboard links were pointing to non-existent routes:
 - [x] Per-upgrade limits (Welcome +5/+4, etc.)
 - [x] Created comprehensive validation engine (upgrade-rules-validator.ts)
 - [x] Updated playerUpgrades schema with statName, statIncrease, newStatValue, metadata, createdAt fields
+
+
+## CURRENT TASK: Discord Integration & Upgrade History Dashboard
+
+### Task 1: Integrate validation into Discord bot
+- [x] Update upgrade-handler.ts to call validateUpgradeRules()
+- [x] Add upgrade type detection from Discord message context
+- [x] Show validation errors/warnings in Discord responses
+- [x] Store upgradeType in upgrade_requests table
+- [x] Test validation with real Discord messages
+
+### Task 2: Add upgrade type selector to admin UI
+- [x] Add upgradeType dropdown to UpgradeSummary page
+- [x] Add upgradeType field to upgrade_requests schema
+- [x] Update bulkApprove/bulkReject to include upgradeType
+- [x] Show upgrade type badges on each upgrade card
+- [x] Allow filtering by upgrade type
+
+### Task 3: Create upgrade history dashboard
+- [x] Create UpgradeHistoryDashboard.tsx page
+- [x] Add TRPC endpoints for upgrade history queries (using existing getAllUpgrades)
+- [x] Implement filters: player, upgrade type, status
+- [x] Show statistics: total upgrades, +6 violations, back-to-back count
+- [x] Add CSV export functionality
+- [x] Display upgrade breakdown by type and top players
+- [x] Show comprehensive upgrade table with all details
+
+### Task 4: Testing and checkpoint
+- [x] Test Discord validation with all upgrade types
+- [x] Verify +6 limits are enforced correctly
+- [x] Test back-to-back detection
+- [x] Verify admin UI upgrade type selector
+- [x] Test upgrade history filters and statistics
+- [x] Save checkpoint

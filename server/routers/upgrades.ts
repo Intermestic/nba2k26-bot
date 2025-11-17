@@ -25,6 +25,7 @@ export const upgradesRouter = router({
   bulkApprove: publicProcedure
     .input(z.object({
       requestIds: z.array(z.number()),
+      upgradeType: z.string().optional(),
     }))
     .mutation(async ({ input }) => {
       const db = await getDb();
@@ -54,6 +55,7 @@ export const upgradesRouter = router({
             .set({
               status: "approved",
               approvedAt: new Date(),
+              upgradeType: input.upgradeType || request.upgradeType || "Global",
             })
             .where(eq(upgradeRequests.id, requestId));
 
@@ -143,6 +145,7 @@ export const upgradesRouter = router({
   bulkReject: publicProcedure
     .input(z.object({
       requestIds: z.array(z.number()),
+      upgradeType: z.string().optional(),
     }))
     .mutation(async ({ input }) => {
       const db = await getDb();
@@ -153,11 +156,20 @@ export const upgradesRouter = router({
 
       for (const requestId of input.requestIds) {
         try {
+          // Get the request to preserve existing upgradeType
+          const requests = await db
+            .select()
+            .from(upgradeRequests)
+            .where(eq(upgradeRequests.id, requestId));
+          
+          const request = requests[0];
+          
           await db
             .update(upgradeRequests)
             .set({
               status: "rejected",
               approvedAt: new Date(),
+              upgradeType: input.upgradeType || request?.upgradeType || "Global",
             })
             .where(eq(upgradeRequests.id, requestId));
 

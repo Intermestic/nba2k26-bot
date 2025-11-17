@@ -15,7 +15,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { CheckCircle, XCircle, Clock, ChevronDown, ChevronRight, Home, RotateCcw } from "lucide-react";
+import { CheckCircle, XCircle, Clock, ChevronDown, ChevronRight, Home, RotateCcw, Filter } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useLocation } from "wouter";
 
 export default function UpgradeSummary() {
@@ -23,6 +24,8 @@ export default function UpgradeSummary() {
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
   const [expandedTeams, setExpandedTeams] = useState<Set<string>>(new Set());
   const [confirmAction, setConfirmAction] = useState<"approve" | "reject" | "revert" | null>(null);
+  const [upgradeType, setUpgradeType] = useState<string>("Global");
+  const [filterType, setFilterType] = useState<string>("all");
 
   const { data: upgrades, isLoading, refetch } = trpc.upgrades.getAllUpgrades.useQuery();
   const bulkApproveMutation = trpc.upgrades.bulkApprove.useMutation();
@@ -30,16 +33,22 @@ export default function UpgradeSummary() {
   const revertMutation = trpc.upgrades.revertUpgrade.useMutation();
   const bulkRevertMutation = trpc.upgrades.bulkRevert.useMutation();
 
+  // Filter upgrades by type
+  const filteredUpgrades = upgrades?.filter((u: any) => {
+    if (filterType === "all") return true;
+    return u.upgradeType === filterType;
+  });
+
   // Group upgrades by team
-  const upgradesByTeam = upgrades?.reduce((acc: any, upgrade: any) => {
+  const upgradesByTeam = filteredUpgrades?.reduce((acc: any, upgrade: any) => {
     if (!acc[upgrade.team]) {
       acc[upgrade.team] = [];
     }
     acc[upgrade.team].push(upgrade);
     return acc;
-  }, {} as Record<string, typeof upgrades>);
+  }, {} as Record<string, typeof filteredUpgrades>);
 
-  const pendingCount = upgrades?.filter((u: any) => u.status === "pending").length || 0;
+  const pendingCount = filteredUpgrades?.filter((u: any) => u.status === "pending").length || 0;
   const teamCount = upgradesByTeam ? Object.keys(upgradesByTeam).length : 0;
 
   const toggleTeam = (team: string) => {
@@ -87,10 +96,10 @@ export default function UpgradeSummary() {
     try {
       const ids = Array.from(selectedIds);
       if (action === "approve") {
-        const result = await bulkApproveMutation.mutateAsync({ requestIds: ids });
-        toast.success(`Approved ${result.successCount} upgrades`);
+        const result = await bulkApproveMutation.mutateAsync({ requestIds: ids, upgradeType });
+        toast.success(`Approved ${result.successCount} upgrades as ${upgradeType}`);
       } else if (action === "reject") {
-        const result = await bulkRejectMutation.mutateAsync({ requestIds: ids });
+        const result = await bulkRejectMutation.mutateAsync({ requestIds: ids, upgradeType });
         toast.success(`Rejected ${result.successCount} upgrades`);
       } else if (action === "revert") {
         const result = await bulkRevertMutation.mutateAsync({ requestIds: ids });
@@ -186,9 +195,55 @@ export default function UpgradeSummary() {
           </Card>
         </div>
 
+        {/* Upgrade Type Selector & Filters */}
+        <div className="mb-6 flex gap-4 items-center">
+          <div className="flex items-center gap-2">
+            <label className="text-sm text-slate-400">Upgrade Type:</label>
+            <Select value={upgradeType} onValueChange={setUpgradeType}>
+              <SelectTrigger className="w-[200px] bg-slate-800 border-slate-700 text-white">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="bg-slate-800 border-slate-700">
+                <SelectItem value="Global">Global</SelectItem>
+                <SelectItem value="Welcome">Welcome</SelectItem>
+                <SelectItem value="5-Game Badge">5-Game Badge</SelectItem>
+                <SelectItem value="7-Game Attribute">7-Game Attribute</SelectItem>
+                <SelectItem value="Rookie">Rookie</SelectItem>
+                <SelectItem value="OG">OG</SelectItem>
+                <SelectItem value="Superstar Pack">Superstar Pack</SelectItem>
+                <SelectItem value="Activity Bonus">Activity Bonus</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          
+          <div className="flex items-center gap-2">
+            <Filter className="w-4 h-4 text-slate-400" />
+            <label className="text-sm text-slate-400">Filter:</label>
+            <Select value={filterType} onValueChange={setFilterType}>
+              <SelectTrigger className="w-[180px] bg-slate-800 border-slate-700 text-white">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="bg-slate-800 border-slate-700">
+                <SelectItem value="all">All Types</SelectItem>
+                <SelectItem value="Global">Global</SelectItem>
+                <SelectItem value="Welcome">Welcome</SelectItem>
+                <SelectItem value="5-Game Badge">5-Game Badge</SelectItem>
+                <SelectItem value="7-Game Attribute">7-Game Attribute</SelectItem>
+                <SelectItem value="Rookie">Rookie</SelectItem>
+                <SelectItem value="OG">OG</SelectItem>
+                <SelectItem value="Superstar Pack">Superstar Pack</SelectItem>
+                <SelectItem value="Activity Bonus">Activity Bonus</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
         {/* Bulk Actions */}
         {selectedIds.size > 0 && (
-          <div className="mb-6 flex gap-4">
+          <div className="mb-6 flex gap-4 items-center">
+            <div className="text-sm text-slate-400 mr-2">
+              Will be marked as: <span className="text-white font-semibold">{upgradeType}</span>
+            </div>
             <Button
               onClick={() => setConfirmAction("approve")}
               className="bg-green-600 hover:bg-green-700"
@@ -302,6 +357,11 @@ export default function UpgradeSummary() {
                                   {getStatusIcon(upgrade.status)}
                                   <span className="font-semibold text-white">{upgrade.playerName}</span>
                                   {getStatusBadge(upgrade.status)}
+                                  {upgrade.upgradeType && (
+                                    <Badge variant="outline" className="text-xs bg-blue-900/30 border-blue-700 text-blue-300">
+                                      {upgrade.upgradeType}
+                                    </Badge>
+                                  )}
                                 </div>
                                 <div className="text-sm text-slate-400">
                                   <span className="font-mono">{upgrade.badgeName}</span>
