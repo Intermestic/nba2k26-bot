@@ -1,0 +1,160 @@
+{
+  "query": "SELECT \n  team,\n  COUNT(*) as player_count,\n  SUM(overall) as total_cap\nFROM players \nGROUP BY team \nORDER BY total_cap DESC",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT \n  team,\n  COUNT(*) as player_count,\n  SUM(overall) as total_cap\nFROM players \nGROUP BY team \nORDER BY total_cap DESC",
+  "rows": [
+    {
+      "team": "Free Agents",
+      "player_count": "251",
+      "total_cap": "17967"
+    },
+    {
+      "team": "Celtics",
+      "player_count": "14",
+      "total_cap": "1098"
+    },
+    {
+      "team": "Rockets",
+      "player_count": "14",
+      "total_cap": "1098"
+    },
+    {
+      "team": "Jazz",
+      "player_count": "14",
+      "total_cap": "1098"
+    },
+    {
+      "team": "Spurs",
+      "player_count": "14",
+      "total_cap": "1097"
+    },
+    {
+      "team": "Lakers",
+      "player_count": "14",
+      "total_cap": "1097"
+    },
+    {
+      "team": "Bulls",
+      "player_count": "14",
+      "total_cap": "1096"
+    },
+    {
+      "team": "Knicks",
+      "player_count": "14",
+      "total_cap": "1096"
+    },
+    {
+      "team": "Bucks",
+      "player_count": "14",
+      "total_cap": "1096"
+    },
+    {
+      "team": "Wizards",
+      "player_count": "14",
+      "total_cap": "1096"
+    },
+    {
+      "team": "Raptors",
+      "player_count": "14",
+      "total_cap": "1095"
+    },
+    {
+      "team": "Nuggets",
+      "player_count": "14",
+      "total_cap": "1093"
+    },
+    {
+      "team": "Sixers",
+      "player_count": "14",
+      "total_cap": "1092"
+    },
+    {
+      "team": "Heat",
+      "player_count": "14",
+      "total_cap": "1092"
+    },
+    {
+      "team": "Warriors",
+      "player_count": "14",
+      "total_cap": "1092"
+    },
+    {
+      "team": "Hawks",
+      "player_count": "14",
+      "total_cap": "1092"
+    },
+    {
+      "team": "Grizzlies",
+      "player_count": "14",
+      "total_cap": "1091"
+    },
+    {
+      "team": "Timberwolves",
+      "player_count": "14",
+      "total_cap": "1090"
+    },
+    {
+      "team": "Pacers",
+      "player_count": "14",
+      "total_cap": "1089"
+    },
+    {
+      "team": "Trail Blazers",
+      "player_count": "14",
+      "total_cap": "1088"
+    },
+    {
+      "team": "Nets",
+      "player_count": "14",
+      "total_cap": "1088"
+    },
+    {
+      "team": "Suns",
+      "player_count": "14",
+      "total_cap": "1085"
+    },
+    {
+      "team": "Cavaliers",
+      "player_count": "14",
+      "total_cap": "1084"
+    },
+    {
+      "team": "Magic",
+      "player_count": "14",
+      "total_cap": "1084"
+    },
+    {
+      "team": "Mavs",
+      "player_count": "14",
+      "total_cap": "1083"
+    },
+    {
+      "team": "Hornets",
+      "player_count": "14",
+      "total_cap": "1078"
+    },
+    {
+      "team": "Kings",
+      "player_count": "14",
+      "total_cap": "1076"
+    },
+    {
+      "team": "Pistons",
+      "player_count": "14",
+      "total_cap": "1074"
+    },
+    {
+      "team": "Pelicans",
+      "player_count": "14",
+      "total_cap": "1059"
+    },
+    {
+      "team": "NULL",
+      "player_count": "1",
+      "total_cap": "73"
+    }
+  ],
+  "messages": [],
+  "stdout": "team\tplayer_count\ttotal_cap\nFree Agents\t251\t17967\nCeltics\t14\t1098\nRockets\t14\t1098\nJazz\t14\t1098\nSpurs\t14\t1097\nLakers\t14\t1097\nBulls\t14\t1096\nKnicks\t14\t1096\nBucks\t14\t1096\nWizards\t14\t1096\nRaptors\t14\t1095\nNuggets\t14\t1093\nSixers\t14\t1092\nHeat\t14\t1092\nWarriors\t14\t1092\nHawks\t14\t1092\nGrizzlies\t14\t1091\nTimberwolves\t14\t1090\nPacers\t14\t1089\nTrail Blazers\t14\t1088\nNets\t14\t1088\nSuns\t14\t1085\nCavaliers\t14\t1084\nMagic\t14\t1084\nMavs\t14\t1083\nHornets\t14\t1078\nKings\t14\t1076\nPistons\t14\t1074\nPelicans\t14\t1059\nNULL\t1\t73\n",
+  "stderr": "",
+  "execution_time_ms": 1543
+}

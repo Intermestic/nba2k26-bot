@@ -3,8 +3,8 @@ import { Client, GatewayIntentBits, Partials } from 'discord.js';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 import { getDb } from './db';
 import { validateTeamName } from './team-validator';
-import { players, teamCoins, faTransactions } from '../drizzle/schema';
-import { eq, sql } from 'drizzle-orm';
+import { players, teamCoins, faTransactions, faBids } from '../drizzle/schema';
+import { eq, sql, and } from 'drizzle-orm';
 import { extract } from 'fuzzball';
 import { handleTradeMessage } from './trade-handler';
 import { getConfig } from './bot-config-loader.js';
@@ -700,7 +700,85 @@ async function handleBidMessage(message: Message) {
     confirmationMessage += `🏆 **You're the first bidder!**`;
   }
   
-  await message.reply(confirmationMessage);
+  const confirmationReply = await message.reply(confirmationMessage);
+  
+  // Add ❌ reaction for admin override
+  try {
+    await confirmationReply.react('❌');
+    
+    // Create reaction collector for admin override
+    const filter = (reaction: any, user: any) => {
+      return reaction.emoji.name === '❌' && !user.bot;
+    };
+    
+    const collector = confirmationReply.createReactionCollector({ 
+      filter, 
+      time: 24 * 60 * 60 * 1000 // 24 hours
+    });
+    
+    collector.on('collect', async (reaction: any, user: any) => {
+      try {
+        // Check if user is admin (has Administrator permission or is server owner)
+        const guild = confirmationReply.guild;
+        if (!guild) return;
+        
+        const member = await guild.members.fetch(user.id);
+        const isAdmin = member.permissions.has('Administrator') || guild.ownerId === user.id;
+        
+        if (!isAdmin) {
+          console.log(`[FA Bids] ⚠️ Non-admin ${user.username} tried to reject bid`);
+          return;
+        }
+        
+        // Delete the bid from database
+        const db = await getDb();
+        if (!db) return;
+        
+        const deletedBids = await db
+          .delete(faBids)
+          .where(
+            and(
+              eq(faBids.playerId, player.id),
+              eq(faBids.bidderName, message.author.username)
+            )
+          );
+        
+        console.log(`[FA Bids] 🛑 Admin ${user.username} rejected bid for ${player.name} by ${message.author.username}`);
+        
+        // Edit the confirmation message to show rejection
+        await confirmationReply.edit(
+          confirmationMessage + 
+          `\n\n❌ **BID REJECTED BY ADMIN**\n` +
+          `Rejected by: ${user.username}\n` +
+          `This bid has been removed from the system.`
+        );
+        
+        // Send DM to bidder
+        try {
+          const bidder = await client?.users.fetch(message.author.id);
+          if (bidder) {
+            await bidder.send(
+              `❌ **Your FA Bid Was Rejected**\n\n` +
+              `**Player**: ${player.name}\n` +
+              `**Your bid**: $${parsedBid.bidAmount}\n` +
+              `**Team**: ${team}\n\n` +
+              `Your bid has been manually rejected by an administrator.\n` +
+              `Please contact the league admins if you have questions.`
+            );
+          }
+        } catch (dmError) {
+          console.error(`[FA Bids] Failed to send rejection DM:`, dmError);
+        }
+        
+        // Stop collecting reactions
+        collector.stop();
+      } catch (error) {
+        console.error('[FA Bids] Error processing admin rejection:', error);
+      }
+    });
+  } catch (reactionError) {
+    console.error('[FA Bids] Failed to add reaction:', reactionError);
+  }
   
   // Send DM notification to previous highest bidder if they were outbid
   if (bidResult.previousHighestBidder && client) {

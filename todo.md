@@ -1,5 +1,43 @@
 # NBA 2K26 Player Database - TODO
 
+## COMPLETED: Admin Bid Override Feature ✅
+
+### Feature Implemented
+- Admins can manually reject any FA bid directly from Discord
+- React with ❌ emoji on bid confirmation message to reject
+- Deletes bid from database and notifies the user
+
+### Implementation Details
+1. ✅ Added ❌ reaction to all bid confirmation messages
+2. ✅ Created reaction collector with 24-hour window
+3. ✅ Permission check: Administrator role or server owner
+4. ✅ Deletes bid from fa_bids table when admin reacts
+5. ✅ Edits confirmation message to show "BID REJECTED BY ADMIN"
+6. ✅ Sends DM notification to original bidder
+7. ✅ Logs admin action for audit trail
+8. ✅ Non-admins cannot reject bids (silently ignored)
+
+### Tasks Completed
+- [x] Add reaction collector to bid confirmation messages
+- [x] Check if reactor has admin permissions (role or owner)
+- [x] Delete bid from fa_bids table when admin reacts with ❌
+- [x] Send confirmation message to admin (via message edit)
+- [x] Send DM notification to original bidder explaining rejection
+- [x] Add logging for audit trail
+- [x] Fix TypeScript imports (faBids, and)
+- [x] Save checkpoint
+
+### Usage
+1. User places FA bid → bot sends confirmation message with ❌ reaction
+2. Admin clicks ❌ reaction on the confirmation message
+3. Bot verifies admin permissions
+4. Bot deletes bid from database
+5. Bot edits message to show rejection + admin name
+6. Bot sends DM to bidder explaining rejection
+7. Reaction collector stops
+
+---
+
 ## COMPLETED: Fix FA Bid Cap Calculation Bug ✅
 
 ### Issue Fixed
