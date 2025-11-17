@@ -578,7 +578,8 @@ async function handleBidMessage(message: Message) {
   const validation = await validateBidCoins(
     message.author.username,
     team,
-    parsedBid.bidAmount
+    parsedBid.bidAmount,
+    player.name  // Exclude existing bids on this player (will be replaced)
   );
   
   if (!validation.valid) {

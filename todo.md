@@ -1,29 +1,28 @@
 # NBA 2K26 Player Database - TODO
 
-## COMPLETED: Add Player Upgrade History Viewer to Main Page ✅
+## COMPLETED: Fix FA Bid Team Detection ✅
 
 All phases completed and checkpoint saved.
 
 ---
 
-## CURRENT TASK: Fix FA Bid Team Detection
+## CURRENT TASK: Fix Duplicate Bid Handling
 
 ### Issue
-FA bid parser incorrectly identifies "Free Agents" as the bidding team instead of the actual team (Hornets). This causes false "over cap" rejections because it checks Free Agents' cap status instead of the bidding team's cap status.
+When a team submits a new bid for the same player they're already bidding on, the system treats it as an additional commitment instead of replacing the old bid. This causes coin validation to fail because it counts both bids (e.g., Lakers bidding $31 then $46 on Miles McBride = $77 total instead of just $46).
 
-### Phase 1: Investigate FA bid team detection logic
-- [x] Review fa-bid-parser.ts to understand current team detection
-- [x] Check how teamAssignments table is being used
-- [x] Identify where Discord role-based team detection should be applied
+### Phase 1: Investigate bid recording and coin validation logic
+- [x] Review recordBid function in fa-bid-parser.ts
+- [x] Check how validateBidCoins calculates current commitments
+- [x] Identify where duplicate bids should be cancelled
 
-### Phase 2: Update FA bid parser to use Discord role-based team detection
-- [x] Update parseFABid function to prioritize Discord role team assignment
-- [x] Ensure teamAssignments table lookup by Discord user ID
-- [x] Remove fallback to dropped player's team for team detection
-- [x] Update cap validation to use correct bidding team
+### Phase 2: Update recordBid to cancel previous bids on same player
+- [x] Add logic to delete previous bids by same team on same player
+- [x] Ensure only the latest bid counts toward coin commitments
+- [x] Update validateBidCoins to exclude cancelled bids
 
-### Phase 3: Test and verify fix with Hornets bid scenario
-- [x] Test with Hornets bid: "Cut Carlton carrington sign miles McBride bid 56"
-- [x] Verify bot correctly identifies Hornets as bidding team
-- [x] Verify cap check runs against Hornets roster (not Free Agents)
+### Phase 3: Test and verify fix with Lakers scenario
+- [x] Test Lakers bidding $31 on Miles McBride
+- [x] Test Lakers updating bid to $46 on same player
+- [x] Verify only $46 counts toward coin commitment (not $77)
 - [x] Save checkpoint
