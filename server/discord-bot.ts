@@ -705,9 +705,11 @@ async function handleBidMessage(message: Message) {
   // Add ❌ reaction for admin override
   try {
     await confirmationReply.react('❌');
+    console.log('[FA Bids] ✅ Added ❌ reaction for admin override');
     
     // Create reaction collector for admin override
     const filter = (reaction: any, user: any) => {
+      console.log(`[FA Bids] 🔍 Reaction detected: ${reaction.emoji.name} by ${user.username} (bot: ${user.bot})`);
       return reaction.emoji.name === '❌' && !user.bot;
     };
     
@@ -716,19 +718,20 @@ async function handleBidMessage(message: Message) {
       time: 24 * 60 * 60 * 1000 // 24 hours
     });
     
+    console.log('[FA Bids] 🎯 Reaction collector created for message ID:', confirmationReply.id);
+    
     collector.on('collect', async (reaction: any, user: any) => {
+      console.log(`[FA Bids] 🎉 Collector triggered! User: ${user.username} (ID: ${user.id}), Emoji: ${reaction.emoji.name}`);
       try {
-        // Check if user is admin (has Administrator permission or is server owner)
-        const guild = confirmationReply.guild;
-        if (!guild) return;
+        // Check if user is the authorized admin (hardcoded user ID)
+        const AUTHORIZED_ADMIN_ID = '679275787664359435';
         
-        const member = await guild.members.fetch(user.id);
-        const isAdmin = member.permissions.has('Administrator') || guild.ownerId === user.id;
-        
-        if (!isAdmin) {
-          console.log(`[FA Bids] ⚠️ Non-admin ${user.username} tried to reject bid`);
+        if (user.id !== AUTHORIZED_ADMIN_ID) {
+          console.log(`[FA Bids] ⚠️ Unauthorized user ${user.username} (${user.id}) tried to reject bid`);
           return;
         }
+        
+        console.log(`[FA Bids] ✅ Authorized admin ${user.username} is rejecting bid`);
         
         // Delete the bid from database
         const db = await getDb();
@@ -775,6 +778,10 @@ async function handleBidMessage(message: Message) {
       } catch (error) {
         console.error('[FA Bids] Error processing admin rejection:', error);
       }
+    });
+    
+    collector.on('end', (collected) => {
+      console.log(`[FA Bids] Collector ended. Total reactions collected: ${collected.size}`);
     });
   } catch (reactionError) {
     console.error('[FA Bids] Failed to add reaction:', reactionError);

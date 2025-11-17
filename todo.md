@@ -100,3 +100,41 @@ All phases completed and checkpoint saved.
 - All bot systems initialize correctly (FA monitoring, overcap roles, trade voting, etc.)
 - Roster message sorting change: `aOverCap - bOverCap` (ascending) instead of `bOverCap - aOverCap` (descending)
 - This puts teams under cap first, over-cap teams at bottom
+
+
+---
+
+## TODO: Debug Admin Bid Override Feature
+
+### Issue Reported
+- User tested admin override (reacting with ❌) but nothing happened
+- Need to investigate why reaction collector isn't triggering
+
+### Tasks
+- [x] Check Discord bot logs for reaction events
+- [x] Verify reaction collector is actually created
+- [x] Check if bot has GUILD_MESSAGE_REACTIONS intent enabled (✅ confirmed)
+- [x] Verify bot has permission to add reactions
+- [x] Check if reaction collector filter is correct
+- [x] Add debug logging to reaction collector (✅ added comprehensive logging)
+- [ ] Test with actual FA bid in Discord (waiting for user to test)
+- [ ] Fix any issues found (pending test results)
+- [ ] Save checkpoint
+
+
+---
+
+## TODO: Restrict Admin Override to Specific User
+
+### Requirement
+- Admin override (❌ reaction) should ONLY work for user ID: 679275787664359435
+- Remove Administrator permission check
+- Replace with hardcoded user ID check
+
+### Tasks
+- [x] Update permission check in discord-bot.ts
+- [x] Remove guild.ownerId check
+- [x] Remove Administrator permission check
+- [x] Add hardcoded user ID check: user.id === '679275787664359435'
+- [ ] Test that only this user can reject bids
+- [ ] Save checkpoint
