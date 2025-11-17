@@ -206,6 +206,25 @@ export const upgradesRouter = router({
     }),
 
   /**
+   * Get upgrade requests by player name
+   */
+  getByPlayer: publicProcedure
+    .input(z.object({
+      playerName: z.string(),
+    }))
+    .query(async ({ input }) => {
+      const db = await getDb();
+      if (!db) throw new Error("Database not available");
+
+      const requests = await db
+        .select()
+        .from(upgradeRequests)
+        .where(eq(upgradeRequests.playerName, input.playerName));
+
+      return requests;
+    }),
+
+  /**
    * Bulk revert approved or rejected upgrades back to pending
    */
   bulkRevert: publicProcedure
