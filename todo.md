@@ -30,27 +30,28 @@ All phases completed and checkpoint saved.
 ## COMPLETED: Update Minimum Rating to 70 OVR ✅
 All phases completed and checkpoint saved.
 
+## COMPLETED: Add Manual Bid Cancellation Feature ✅
+All phases completed and checkpoint saved.
+
+## COMPLETED: Cancel Jazz's Last Bid ✅
+All phases completed and checkpoint saved.
+
 ---
 
-## CURRENT TASK: Add Manual Bid Cancellation Feature
+## CURRENT TASK: Fix Trade Parser for Discord Formats
 
 ### Goal
-Allow admins to manually cancel individual bids from the FA Coins admin page
+Fix trade parser to handle Discord trade messages with separator lines (--) and comma-separated player lists
+
+### Issues
+- Parser treats "--" separator lines as player names
+- Comma-separated player lists aren't being split properly
+- Extra whitespace around player names needs trimming
 
 ### Tasks
-- [x] Add cancelBid mutation to coins TRPC router
-- [x] Add "Cancel Bid" button to FA transaction history table
-- [x] Implement confirmation dialog for bid cancellation
-- [x] Update UI to refresh after cancellation
-- [x] Test cancellation functionality
-
-## CURRENT TASK: Cancel Jazz's Last Bid
-
-### Goal
-Manually cancel Jazz's most recent FA bid
-
-### Tasks
-- [x] Query Jazz's most recent bid from database
-- [x] Cancel the bid using SQL DELETE
-- [x] Verify bid is removed from active bids
-- [x] Save checkpoint
+- [x] Update trade parser to filter out separator lines (---, ==, etc.)
+- [x] Add comma-based player splitting for comma-separated lists
+- [x] Add whitespace trimming for all player names
+- [x] Test with Wizards/Hornets trade (Mikal Bridges, Sion James for Trae Young, Paul Reed)
+- [x] Test with Mavericks/Hornets trade (Rudy Gobert, Alex Caruso, Jose Alvarado for Jaylen Brown, Justin Champagnie, Haywood Highsmith)
+- [ ] Save checkpoint
