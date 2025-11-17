@@ -654,21 +654,35 @@ async function handleBidMessage(message: Message) {
       .from(players)
       .where(eq(players.team, team));
     
-    const currentTotal = teamPlayers.reduce((sum, p) => sum + (p.salaryCap || p.overall), 0);
+    const currentTotal = teamPlayers.reduce((sum, p) => sum + p.overall, 0);
     let projectedTotal = currentTotal;
     
     // Subtract dropped player if present (use already-validated drop player)
     if (dropPlayerValidated) {
-      const dropPlayerCap = dropPlayerValidated.salaryCap || dropPlayerValidated.overall;
-      projectedTotal -= dropPlayerCap;
+      projectedTotal -= dropPlayerValidated.overall;
     }
     
-    // Add signed player (use salaryCap if available, otherwise overall)
-    const signPlayerCap = player.salaryCap || player.overall;
-    projectedTotal += signPlayerCap;
+    // Add signed player
+    projectedTotal += player.overall;
     
     const CAP_LIMIT = 1098;
     const capDiff = projectedTotal - CAP_LIMIT;
+    
+    // HARD-CODED RULE: Reject any bid that would put team over cap
+    if (projectedTotal > CAP_LIMIT) {
+      await message.reply(
+        `❌ **Bid Rejected - Would Exceed Cap**\n\n` +
+        `**Cut**: ${dropPlayerValidated ? `${dropPlayerValidated.name} (${dropPlayerValidated.overall} OVR)` : 'None'}\n` +
+        `**Sign**: ${player.name} (${player.overall} OVR)\n` +
+        `**Team**: ${team}\n\n` +
+        `**Current cap**: ${currentTotal}/${CAP_LIMIT}\n` +
+        `**Projected cap**: 🔴 ${projectedTotal}/${CAP_LIMIT} (+${capDiff})\n\n` +
+        `⚠️ **Teams cannot sign players that would take them over the ${CAP_LIMIT} cap limit.**\n\n` +
+        `To make this signing, you must first drop a player with a higher overall rating.`
+      );
+      return;
+    }
+    
     const capStatus = capDiff > 0 ? `(+${capDiff})` : capDiff < 0 ? `(${capDiff})` : '(At Cap)';
     const emoji = capDiff > 0 ? '🔴' : capDiff < 0 ? '🟢' : '🟡';
     

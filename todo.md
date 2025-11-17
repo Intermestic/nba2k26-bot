@@ -1,5 +1,29 @@
 # NBA 2K26 Player Database - TODO
 
+## COMPLETED: Fix FA Bid Cap Calculation Bug ✅
+
+### Issue Fixed
+- Jazz at 1098 cap, cutting KPJ (76), signing Ayo (77) = 1099 (OVER CAP)
+- Bot was showing "Projected cap: 🟢 242/1098 (-856)" - WRONG!
+- Root cause: Code was using `salaryCap` field (169) instead of `overall` field (1098)
+
+### Solution Applied
+1. ✅ Fixed cap calculation to use ONLY `overall` field (removed salaryCap)
+2. ✅ Added hard-coded validation: reject if projectedTotal > 1098
+3. ✅ Added clear error message explaining cap violation
+4. ✅ Tested: Jazz scenario correctly calculates 1099 and will be rejected
+
+### Tasks Completed
+- [x] Investigate cap calculation in discord-bot.ts bid confirmation
+- [x] Find where 242 is coming from (was using salaryCap instead of overall)
+- [x] Fix projected cap formula: current - dropped + signed (using overall only)
+- [x] Add hard-coded validation: reject if projectedCap > 1098
+- [x] Test with Jazz scenario (1098 - 76 + 77 = 1099, correctly rejects)
+- [x] Verify error message explains why bid was rejected
+- [x] Save checkpoint
+
+---
+
 ## COMPLETED: Fix FA Bid Parser Regex Bug ✅
 All phases completed and checkpoint saved.
 
