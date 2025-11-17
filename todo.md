@@ -1876,3 +1876,32 @@ Multiple admin dashboard links were pointing to non-existent routes:
 - [x] Dev server running without errors
 - [x] All admin dashboard links now functional
 - [x] Save checkpoint
+
+
+## TODO: Make Validation Rules Page Dynamic with Database Integration
+
+### Phase 1: Analyze Current Implementation
+- [x] Review ValidationRules.tsx current static implementation
+- [x] Check if validation_rules table exists in database schema
+- [x] Review upgrade-validator.ts to understand how rules are currently used
+
+### Phase 2: Create TRPC Router
+- [x] Create validationRules TRPC router with endpoints:
+  - [x] getAll - Fetch all validation rules
+  - [x] getById - Fetch single rule
+  - [x] create - Create new rule
+  - [x] update - Update existing rule
+  - [x] delete - Delete rule
+- [x] Register router in server/routers.ts
+
+### Phase 3: Update Frontend
+- [x] Replace static rules with TRPC query in ValidationRules.tsx
+- [x] Add edit dialog for modifying rules
+- [x] Add create dialog for new rules
+- [x] Add delete confirmation
+- [x] Add loading states and error handling
+
+### Phase 4: Test & Checkpoint
+- [x] Test CRUD operations
+- [x] Verify TypeScript compilation
+- [ ] Save checkpoint
