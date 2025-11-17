@@ -1,0 +1,9 @@
+{
+  "query": "ALTER TABLE player_upgrades\n  MODIFY COLUMN badgeName VARCHAR(100) NULL,\n  MODIFY COLUMN fromLevel ENUM('none', 'bronze', 'silver', 'gold') NULL,\n  MODIFY COLUMN toLevel ENUM('bronze', 'silver', 'gold') NULL;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute ALTER TABLE player_upgrades\n  MODIFY COLUMN badgeName VARCHAR(100) NULL,\n  MODIFY COLUMN fromLevel ENUM('none', 'bronze', 'silver', 'gold') NULL,\n  MODIFY COLUMN toLevel ENUM('bronze', 'silver', 'gold') NULL;",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 1769
+}

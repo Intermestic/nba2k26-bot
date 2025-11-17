@@ -11,7 +11,7 @@ export const validationRulesRouter = router({
     const db = await getDb();
     if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database not available" });
     
-    const rules = await db.select().from(validationRules).orderBy(validationRules.ruleName);
+    const rules = await db.select().from(validationRules).orderBy(validationRules.ruleType);
     return rules;
   }),
 
@@ -29,16 +29,27 @@ export const validationRulesRouter = router({
       return rule[0];
     }),
 
+  // Get rules by upgrade type
+  getByType: publicProcedure
+    .input(z.object({ ruleType: z.string() }))
+    .query(async ({ input }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database not available" });
+      
+      const rules = await db.select().from(validationRules).where(eq(validationRules.ruleType, input.ruleType));
+      return rules;
+    }),
+
   // Create new validation rule (admin only)
   create: protectedProcedure
     .input(
       z.object({
-        ruleName: z.string().min(1).max(100),
-        ruleType: z.enum(["game_requirement", "attribute_check", "badge_limit", "cooldown"]),
-        enabled: z.boolean().default(true),
+        name: z.string().min(1).max(255),
+        description: z.string().min(1),
+        ruleType: z.string().min(1).max(100),
+        category: z.string().min(1).max(100),
+        enabled: z.number().min(0).max(1).default(1),
         config: z.string(), // JSON string
-        errorMessage: z.string().optional(),
-        severity: z.enum(["error", "warning"]).default("error"),
       })
     )
     .mutation(async ({ input, ctx }) => {
@@ -56,10 +67,7 @@ export const validationRulesRouter = router({
         throw new TRPCError({ code: "BAD_REQUEST", message: "Invalid JSON in config field" });
       }
 
-      const result = await db.insert(validationRules).values({
-        ...input,
-        createdBy: ctx.user.id,
-      });
+      const result = await db.insert(validationRules).values(input);
 
       return { success: true, id: Number((result as any).insertId) };
     }),
@@ -69,12 +77,12 @@ export const validationRulesRouter = router({
     .input(
       z.object({
         id: z.number(),
-        ruleName: z.string().min(1).max(100).optional(),
-        ruleType: z.enum(["game_requirement", "attribute_check", "badge_limit", "cooldown"]).optional(),
-        enabled: z.boolean().optional(),
+        name: z.string().min(1).max(255).optional(),
+        description: z.string().min(1).optional(),
+        ruleType: z.string().min(1).max(100).optional(),
+        category: z.string().min(1).max(100).optional(),
+        enabled: z.number().min(0).max(1).optional(),
         config: z.string().optional(), // JSON string
-        errorMessage: z.string().optional(),
-        severity: z.enum(["error", "warning"]).optional(),
       })
     )
     .mutation(async ({ input, ctx }) => {
@@ -118,7 +126,7 @@ export const validationRulesRouter = router({
 
   // Toggle enabled status (admin only)
   toggleEnabled: protectedProcedure
-    .input(z.object({ id: z.number(), enabled: z.boolean() }))
+    .input(z.object({ id: z.number(), enabled: z.number().min(0).max(1) }))
     .mutation(async ({ input, ctx }) => {
       if (ctx.user.role !== "admin") {
         throw new TRPCError({ code: "FORBIDDEN", message: "Admin access required" });

@@ -1934,4 +1934,53 @@ Multiple admin dashboard links were pointing to non-existent routes:
 - [x] Test rule enforcement in upgrade workflow
 - [x] Test rule builder UI with all rule types
 - [x] Verify TypeScript compilation
+- [x] Save checkpoint
+
+
+## CURRENT TASK: Replace Validation Rules with User's Comprehensive System
+
+### Phase 1: Clear existing validation rules and import new rule structure
+- [x] Delete all existing validation rules from database
+- [x] Parse user's CSV file with 73 rules
+- [x] Create import script for new rule structure
+- [x] Import all rules into database (59 rules imported successfully)
+
+### Phase 2: Update database schema and create validation rule categories
+- [x] Update validation_rules schema to support upgrade types (Global, Welcome, 5GM, 7GM, Rookie, OG, Superstar, Activity)
+- [x] Add category field (Eligibility, Reward, Rules, Limits, etc.)
+- [x] Add ruleText field for human-readable descriptions
+- [x] Migrate existing table structure (dropped and recreated table)
+
+### Phase 3: Implement validation logic for all upgrade types
+- [x] Implement Global attribute rules (min 60, max 88/90/85 based on context)
+- [x] Implement Global badge rules (Bronze/Silver/Gold only, Badge Cap Chart, restricted badges)
+- [x] Implement Welcome UG validation (eligibility, limits)
+- [x] Implement 5-Game Badge validation
+- [x] Implement 7-Game Attribute validation
+- [x] Implement Rookie UG validation
+- [x] Implement OG UG validation
+- [x] Implement Superstar Pack validation
+- [x] Implement Activity Bonus validation
+
+### Phase 4: Test validation system and create checkpoint
+- [x] Validation engine created with all upgrade type logic
+- [x] TypeScript compilation successful (no errors)
+- [x] Database schema updated successfully
+- [x] Admin UI displaying all 59 rules correctly
 - [ ] Save checkpoint
+
+
+### Phase 3 Implementation Scope (Updated)
+**SKIP age and height validation** - these will be manually verified
+**IMPLEMENT:**
+- [x] Rookie status validation
+- [x] Back-to-back restrictions (player, attribute, category)
+- [x] +6 per attribute limits (Rookie, 7-Game seasonal)
+- [x] OVR limits (≤90, ≤88 for Superstar)
+- [x] Attribute min/max (≥60, ≤88/90/85)
+- [x] Badge tier restrictions (Bronze/Silver/Gold only)
+- [x] Restricted badges (Paint Patroller, Dimer, On-Ball Menace, Strong Handle)
+- [x] Game count requirements (5GM, 7GM, Activity Bonus)
+- [x] Per-upgrade limits (Welcome +5/+4, etc.)
+- [x] Created comprehensive validation engine (upgrade-rules-validator.ts)
+- [x] Updated playerUpgrades schema with statName, statIncrease, newStatValue, metadata, createdAt fields

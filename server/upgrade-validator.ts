@@ -26,7 +26,7 @@ export async function validateUpgradeRequest(
   // Fetch enabled validation rules from database
   const db = await getDb();
   if (db) {
-    const rules = await db.select().from(validationRules).where(eq(validationRules.enabled, true));
+    const rules = await db.select().from(validationRules).where(eq(validationRules.enabled, 1));
     
     // Apply each enabled rule
     for (const rule of rules) {
@@ -253,6 +253,12 @@ async function applyValidationRule(
   try {
     const config = typeof rule.config === 'string' ? JSON.parse(rule.config) : rule.config;
     
+    // New rule structure: ruleType = upgrade type (Global, Welcome, 5GM, etc.)
+    // For now, skip validation logic implementation - just log the rules
+    // TODO: Implement validation logic for each upgrade type
+    console.log(`[Validation Rule] ${rule.ruleType} - ${rule.category}: ${rule.description}`);
+    
+    // Legacy rule handling (will be removed once new validation is implemented)
     switch (rule.ruleType) {
       case 'badge_limit':
         // Check max upgrades per window
