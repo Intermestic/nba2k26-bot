@@ -492,9 +492,20 @@ async function handleBidMessage(message: Message) {
       return;
     }
     
-    team = dropPlayerValidated.team || 'Unknown';
+    // Verify drop player is on the user's team (or is a free agent)
+    const dropPlayerTeam = dropPlayerValidated.team;
+    const isDropPlayerOnUserTeam = dropPlayerTeam === team || dropPlayerTeam === 'Free Agents' || dropPlayerTeam === 'Free Agent' || !dropPlayerTeam;
     
-    // Validate team name using team-validator
+    if (!isDropPlayerOnUserTeam) {
+      console.log(`[FA Bids] Cannot cut ${dropPlayerValidated.name} - they are on ${dropPlayerTeam}, not ${team}`);
+      await message.reply(
+        `❌ **Invalid Drop Player**: ${dropPlayerValidated.name} is not on your roster.\n\n` +
+        `They are currently on the **${dropPlayerTeam}** roster. You can only cut players from your own team.`
+      );
+      return;
+    }
+    
+    // Validate team name using team-validator (keep user's team, don't overwrite)
     const { validateTeamName } = await import('./team-validator');
     const validatedTeam = validateTeamName(team);
     
