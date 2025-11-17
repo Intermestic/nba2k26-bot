@@ -24,29 +24,33 @@ All phases completed and checkpoint saved.
 ## COMPLETED: Fix Team Detection Bug in FA Bids ✅
 All phases completed and checkpoint saved.
 
+## COMPLETED: Create !fa70 Command ✅
+All phases completed and checkpoint saved.
+
+## COMPLETED: Update Minimum Rating to 70 OVR ✅
+All phases completed and checkpoint saved.
+
 ---
 
-## CURRENT TASK: Create !fa70 Command
+## CURRENT TASK: Add Manual Bid Cancellation Feature
 
 ### Goal
-Create Discord command to show all free agents with 70 OVR or below (eligible for over-cap teams)
+Allow admins to manually cancel individual bids from the FA Coins admin page
 
 ### Tasks
-- [x] Design command structure and response format
-- [x] Implement !fa70 command in discord-bot.ts
-- [x] Query database for free agents <= 70 OVR
-- [x] Format response with player names and OVR ratings
-- [x] Test command in Discord
-- [ ] Save checkpoint
+- [x] Add cancelBid mutation to coins TRPC router
+- [x] Add "Cancel Bid" button to FA transaction history table
+- [x] Implement confirmation dialog for bid cancellation
+- [x] Update UI to refresh after cancellation
+- [x] Test cancellation functionality
 
-## CURRENT TASK: Update Minimum Rating to 70 OVR
+## CURRENT TASK: Cancel Jazz's Last Bid
 
-### Issue
-Players showing as 68-69 OVR should all be 70 OVR (minimum rating floor)
+### Goal
+Manually cancel Jazz's most recent FA bid
 
 ### Tasks
-- [x] Query database to find all players below 70 OVR
-- [x] Update all players below 70 OVR to exactly 70 OVR
-- [x] Verify updates applied correctly
-- [x] Test !fa70 command to confirm all players show 70 OVR
-- [ ] Save checkpoint
+- [x] Query Jazz's most recent bid from database
+- [x] Cancel the bid using SQL DELETE
+- [x] Verify bid is removed from active bids
+- [x] Save checkpoint

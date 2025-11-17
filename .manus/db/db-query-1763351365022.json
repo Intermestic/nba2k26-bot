@@ -1,0 +1,24 @@
+{
+  "query": "SELECT * FROM fa_bids WHERE team = 'Jazz' ORDER BY createdAt DESC LIMIT 1;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT * FROM fa_bids WHERE team = 'Jazz' ORDER BY createdAt DESC LIMIT 1;",
+  "rows": [
+    {
+      "id": "630005",
+      "playerId": "P0146",
+      "playerName": "Ayo Dosunmu",
+      "bidderDiscordId": "836929618404704316",
+      "bidderName": ".wooman",
+      "team": "Jazz",
+      "bidAmount": "20",
+      "windowId": "2025-11-16-PM",
+      "messageId": "1439814505986129951",
+      "createdAt": "2025-11-17 03:08:52",
+      "updatedAt": "2025-11-17 03:08:52",
+      "dropPlayer": "johnny furphy"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tplayerId\tplayerName\tbidderDiscordId\tbidderName\tteam\tbidAmount\twindowId\tmessageId\tcreatedAt\tupdatedAt\tdropPlayer\n630005\tP0146\tAyo Dosunmu\t836929618404704316\t.wooman\tJazz\t20\t2025-11-16-PM\t1439814505986129951\t2025-11-17 03:08:52\t2025-11-17 03:08:52\tjohnny furphy\n",
+  "stderr": "",
+  "execution_time_ms": 1706
+}
