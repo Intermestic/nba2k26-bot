@@ -54,4 +54,20 @@ Fix trade parser to handle Discord trade messages with separator lines (--) and 
 - [x] Add whitespace trimming for all player names
 - [x] Test with Wizards/Hornets trade (Mikal Bridges, Sion James for Trae Young, Paul Reed)
 - [x] Test with Mavericks/Hornets trade (Rudy Gobert, Alex Caruso, Jose Alvarado for Jaylen Brown, Justin Champagnie, Haywood Highsmith)
+- [x] Save checkpoint
+
+## Fix Team Name Normalization in Trade Validation
+
+### Goal
+Fix trade validation to normalize team names (Mavericks → Mavs) before player lookup
+
+### Issue
+- Parser extracts "Mavericks" from trade message
+- Database stores team as "Mavs"
+- Player lookup fails because team names don't match
+
+### Tasks
+- [x] Add team name normalization function to map aliases (Mavericks → Mavs)
+- [x] Update trade validation to normalize team names before player lookup
+- [x] Test with Mavericks/Hornets trade
 - [ ] Save checkpoint

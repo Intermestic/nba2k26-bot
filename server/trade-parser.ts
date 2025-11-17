@@ -441,6 +441,26 @@ export async function findPlayerByFuzzyName(name: string, teamFilter?: string, c
 }
 
 /**
+ * Normalize team names to match database values
+ * Maps common aliases to canonical team names
+ */
+function normalizeTeamName(teamName: string): string {
+  const TEAM_ALIASES: Record<string, string> = {
+    'mavericks': 'Mavs',
+    'trailblazers': 'Trailblazers',
+    'timberwolves': 'Timberwolves'
+  };
+  
+  const normalized = TEAM_ALIASES[teamName.toLowerCase()];
+  if (normalized) {
+    console.log(`[Team Normalization] "${teamName}" → "${normalized}"`);
+    return normalized;
+  }
+  
+  return teamName;
+}
+
+/**
  * Validate and resolve all players in a trade
  */
 export async function resolveTradePlayer(parsedTrade: ParsedTrade): Promise<{
@@ -455,9 +475,13 @@ export async function resolveTradePlayer(parsedTrade: ParsedTrade): Promise<{
   const team1Players: Array<{ id: string; name: string; overall: number }> = [];
   const team2Players: Array<{ id: string; name: string; overall: number }> = [];
   
+  // Normalize team names before lookup
+  const normalizedTeam1 = normalizeTeamName(parsedTrade.team1);
+  const normalizedTeam2 = normalizeTeamName(parsedTrade.team2);
+  
   // Resolve team 1 players (filter by team1 roster)
   for (const playerName of parsedTrade.team1Players) {
-    const player = await findPlayerByFuzzyName(playerName, parsedTrade.team1, 'trade');
+    const player = await findPlayerByFuzzyName(playerName, normalizedTeam1, 'trade');
     if (player) {
       team1Players.push({ id: player.id, name: player.name, overall: player.overall });
     } else {
@@ -467,7 +491,7 @@ export async function resolveTradePlayer(parsedTrade: ParsedTrade): Promise<{
   
   // Resolve team 2 players (filter by team2 roster)
   for (const playerName of parsedTrade.team2Players) {
-    const player = await findPlayerByFuzzyName(playerName, parsedTrade.team2, 'trade');
+    const player = await findPlayerByFuzzyName(playerName, normalizedTeam2, 'trade');
     if (player) {
       team2Players.push({ id: player.id, name: player.name, overall: player.overall });
     } else {
