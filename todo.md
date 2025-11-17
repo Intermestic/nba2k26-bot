@@ -9,34 +9,35 @@ All phases completed and checkpoint saved.
 ## COMPLETED: Fix FA Bid Parser Regex Bug ✅
 All phases completed and checkpoint saved.
 
+## COMPLETED: Create Comprehensive Test Suite for FA Bid Parser ✅
+All phases completed and checkpoint saved.
+
 ---
 
-## CURRENT TASK: Create Comprehensive Test Suite for FA Bid Parser
+## CURRENT TASK: Create Fuzzy Name Matching Test Suite
 
 ### Goal
-Build a comprehensive test suite using Vitest to validate the FA bid parser regex logic against all edge cases and prevent future regressions.
+Build comprehensive test suite for fuzzy name matching system covering typos, nicknames, team context, aliases, and all matching strategies.
 
-### Phase 1: Design test cases covering all edge cases and scenarios
-- [x] List edge cases: names with acquisition keywords (Saddiq, Addison, Signor)
-- [x] List bid format variations (with/without bid keyword, standalone numbers)
-- [x] List error scenarios (missing player, invalid format, no acquisition keyword)
-- [x] List special cases (multiple spaces, case variations, punctuation)
+### Phase 1: Analyze fuzzy matching implementation and design test cases
+- [ ] Review findPlayerByFuzzyName function and all matching strategies
+- [ ] Identify test scenarios for each strategy (aliases, team-aware, phonetic, league-wide)
+- [ ] Design test cases for typos, nicknames, special characters, team context
 
-### Phase 2: Implement test suite with Vitest framework
-- [x] Create test file: server/__tests__/fa-bid-parser.test.ts
-- [x] Set up Vitest configuration if needed
-- [x] Write test cases for valid bid formats
-- [x] Write test cases for edge cases with special player names
-- [x] Write test cases for error scenarios (should return null)
-- [x] Write test cases for bid amount extraction
+### Phase 2: Implement fuzzy matching test suite with all strategies
+- [x] Create fuzzy-name-matching.test.ts file
+- [x] Implement alias matching tests (special characters, Jr/Sr variants, sound-alikes)
+- [x] Implement team-aware matching tests (roster context, threshold differences)
+- [x] Implement phonetic matching tests (sound-alike names)
+- [x] Implement league-wide fuzzy matching tests (typos, partial names)
+- [x] Test filterFreeAgents parameter functionality
 
-### Phase 3: Run tests and verify all cases pass
-- [x] Run test suite with `pnpm test`
-- [x] Fix any failing tests
-- [x] Ensure 100% test coverage for parseBidMessage function
-- [x] Add test documentation
+### Phase 3: Run tests and verify coverage
+- [x] Run test suite and fix any failures
+- [x] Verify all matching strategies are tested
+- [x] Add edge cases and boundary conditions
 
-### Phase 4: Document test suite and save checkpoint
-- [x] Add README section explaining how to run tests
-- [x] Document test coverage and edge cases covered
-- [x] Save checkpoint with test suite
+### Phase 4: Document fuzzy matching tests and save checkpoint
+- [x] Update README with fuzzy matching test documentation
+- [x] Document matching strategies and thresholds
+- [ ] Save checkpoint
