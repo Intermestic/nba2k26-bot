@@ -492,33 +492,17 @@ async function handleBidMessage(message: Message) {
       return;
     }
     
-    team = dropPlayerValidated.team || 'Unknown';
-    
-    // Validate team name using team-validator
-    const { validateTeamName } = await import('./team-validator');
-    const validatedTeam = validateTeamName(team);
-    
-    if (!validatedTeam) {
-      console.log(`[FA Bids] Invalid team detected: ${team}`);
-      
-      // Get suggestions for similar team names
-      const { VALID_TEAMS } = await import('./team-validator');
-      const { extract } = await import('fuzzball');
-      const suggestions = extract(team, VALID_TEAMS as unknown as string[], { limit: 3 });
-      
-      const suggestionText = suggestions.length > 0
-        ? `\n\n**Did you mean?**\n${suggestions.map(s => `• ${s[0]} (${s[1]}% match)`).join('\n')}`
-        : '';
-      
+    // Validate that the dropped player is actually on the user's team
+    if (dropPlayerValidated.team !== team && dropPlayerValidated.team !== 'Free Agent' && dropPlayerValidated.team !== 'Free Agents') {
+      console.log(`[FA Bids] Drop player ${dropPlayerValidated.name} is on ${dropPlayerValidated.team}, but user is on ${team}`);
       await message.reply(
-        `❌ **Invalid Team**: "${team}" is not a valid team name.${suggestionText}\n\n` +
-        `💡 **Tip**: Check the team name spelling. The bot recognizes aliases like "76ers" → "Sixers", "Blazers" → "Trail Blazers".`
+        `❌ **Invalid Drop Player**: ${dropPlayerValidated.name} is not on your team.\n\n` +
+        `**Your team**: ${team}\n` +
+        `**Player's team**: ${dropPlayerValidated.team}\n\n` +
+        `💡 **Tip**: You can only cut players from your own roster.`
       );
       return;
     }
-    
-    // Use validated canonical team name
-    team = validatedTeam;
   } else {
     // No drop player specified - cannot determine team
     await message.reply(
