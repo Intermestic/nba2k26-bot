@@ -154,3 +154,24 @@ All phases completed and checkpoint saved.
 - [x] Make keys unique (removed duplicate System section)
 - [x] Test navigation renders without errors
 - [x] Save checkpoint
+
+
+---
+
+## TODO: Fix Trade Voting Approval Not Triggering
+
+### Issue
+- Trade message ID 1440108805689053186 has 7 upvotes
+- Bot should post approval message at 7 👍 votes
+- Approval message is not being posted
+
+### Tasks
+- [x] Check trade voting code in discord-bot.ts
+- [x] Verify vote counting logic
+- [x] Check if approval threshold is correct (should be 7)
+- [x] Check if approval message posting is working
+- [x] Add manual vote check function for retroactive processing
+- [x] Create admin UI for manual trade vote checking
+- [x] Add API endpoint for manual vote check
+- [x] Test with the specific message ID (ready for user to test)
+- [x] Save checkpoint

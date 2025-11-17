@@ -914,6 +914,94 @@ function CommandDialog({ open, commandName, onClose }: { open: boolean; commandN
   );
 }
 
+// ==================== MANUAL TRADE VOTE CHECK ====================
+
+function ManualTradeVoteCheck() {
+  const [messageId, setMessageId] = useState('');
+  const [isChecking, setIsChecking] = useState(false);
+  const [result, setResult] = useState<{ success: boolean; message: string; upvotes?: number; downvotes?: number } | null>(null);
+  
+  const checkVotes = trpc.botManagement.manuallyCheckTradeVotes.useMutation({
+    onSuccess: (data) => {
+      setResult(data);
+      setIsChecking(false);
+      if (data.success) {
+        toast.success(data.message);
+      } else {
+        toast.error(data.message);
+      }
+    },
+    onError: (error) => {
+      setIsChecking(false);
+      toast.error(`Error: ${error.message}`);
+    },
+  });
+  
+  const handleCheck = () => {
+    if (!messageId.trim()) {
+      toast.error('Please enter a message ID');
+      return;
+    }
+    setIsChecking(true);
+    setResult(null);
+    checkVotes.mutate({ messageId: messageId.trim() });
+  };
+  
+  return (
+    <div className="space-y-4">
+      <h3 className="text-lg font-semibold">Manual Trade Vote Check</h3>
+      <p className="text-sm text-muted-foreground">
+        Manually check and process votes for a trade message. Use this when the bot was offline and missed vote threshold.
+      </p>
+      
+      <div className="flex gap-2">
+        <div className="flex-1">
+          <Label htmlFor="trade_message_id">Trade Message ID</Label>
+          <Input
+            id="trade_message_id"
+            value={messageId}
+            onChange={(e) => setMessageId(e.target.value)}
+            placeholder="1440108805689053186"
+            className="font-mono"
+          />
+        </div>
+        <div className="flex items-end">
+          <Button 
+            onClick={handleCheck} 
+            disabled={isChecking || !messageId.trim()}
+          >
+            {isChecking ? 'Checking...' : 'Check Votes'}
+          </Button>
+        </div>
+      </div>
+      
+      {result && (
+        <div className={`p-4 rounded-lg border ${
+          result.success 
+            ? 'bg-green-50 border-green-200 dark:bg-green-950 dark:border-green-800' 
+            : 'bg-red-50 border-red-200 dark:bg-red-950 dark:border-red-800'
+        }`}>
+          <div className="flex items-start gap-2">
+            {result.success ? (
+              <CheckCircle2 className="w-5 h-5 text-green-600 dark:text-green-400 mt-0.5" />
+            ) : (
+              <XCircle className="w-5 h-5 text-red-600 dark:text-red-400 mt-0.5" />
+            )}
+            <div className="flex-1">
+              <p className="font-medium">{result.message}</p>
+              {result.upvotes !== undefined && result.downvotes !== undefined && (
+                <p className="text-sm mt-1">
+                  Current votes: {result.upvotes} 👍, {result.downvotes} 👎
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ==================== AUTOMATION TAB ====================
 
 function AutomationTab() {
@@ -1141,6 +1229,9 @@ function AutomationTab() {
             </div>
           </div>
         </div>
+
+        {/* Manual Trade Vote Check */}
+        <ManualTradeVoteCheck />
 
         {/* Save Button */}
         <div className="flex justify-end pt-4 border-t">

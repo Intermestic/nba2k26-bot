@@ -478,16 +478,105 @@ async function sendVoteReminders(client: Client) {
 }
 
 /**
+ * Manually check and process votes for a specific message
+ * Used for retroactive vote counting when bot was offline
+ */
+export async function manuallyCheckTradeVotes(client: Client, messageId: string): Promise<{ success: boolean; message: string; upvotes?: number; downvotes?: number }> {
+  try {
+    console.log(`[Trade Voting] Manual check requested for message ${messageId}`);
+    
+    // Get the trade channel
+    const channel = await client.channels.fetch(TRADE_CHANNEL_ID);
+    if (!channel || !channel.isTextBased()) {
+      return { success: false, message: 'Trade channel not found or not text-based' };
+    }
+    
+    // Fetch the message
+    const message = await (channel as any).messages.fetch(messageId);
+    if (!message) {
+      return { success: false, message: 'Message not found' };
+    }
+    
+    // Check if message has embeds (is a trade post)
+    if (message.embeds.length === 0) {
+      return { success: false, message: 'Message is not a trade post (no embeds)' };
+    }
+    
+    // Check if already processed
+    const voteData = activeVotes.get(messageId);
+    if (voteData && voteData.processed) {
+      return { success: false, message: 'Trade already processed' };
+    }
+    
+    // Initialize vote tracking if not exists
+    if (!voteData) {
+      activeVotes.set(messageId, {
+        upvotes: 0,
+        downvotes: 0,
+        voters: new Set(),
+        messageId: messageId,
+        processed: false,
+        createdAt: new Date()
+      });
+    }
+    
+    // Count current votes
+    const upReaction = message.reactions.cache.get('👍');
+    const downReaction = message.reactions.cache.get('👎');
+    
+    let upvotes = 0;
+    let downvotes = 0;
+    
+    // Count upvotes from Trade Committee members
+    if (upReaction) {
+      const users = await upReaction.users.fetch();
+      for (const [userId, user] of users) {
+        if (user.bot) continue;
+        if (await hasTradeCommitteeRole(upReaction, userId)) {
+          upvotes++;
+        }
+      }
+    }
+    
+    // Count downvotes from Trade Committee members
+    if (downReaction) {
+      const users = await downReaction.users.fetch();
+      for (const [userId, user] of users) {
+        if (user.bot) continue;
+        if (await hasTradeCommitteeRole(downReaction, userId)) {
+          downvotes++;
+        }
+      }
+    }
+    
+    console.log(`[Trade Voting] Manual check results: ${upvotes} 👍, ${downvotes} 👎`);
+    
+    // Check if threshold reached
+    if (downvotes >= REJECTION_THRESHOLD) {
+      await processVoteResult(message, upvotes, downvotes, false);
+      return { success: true, message: `Trade rejected with ${downvotes} downvotes`, upvotes, downvotes };
+    } else if (upvotes >= APPROVAL_THRESHOLD) {
+      await processVoteResult(message, upvotes, downvotes, true);
+      return { success: true, message: `Trade approved with ${upvotes} upvotes`, upvotes, downvotes };
+    } else {
+      return { success: true, message: `Vote in progress: ${upvotes} 👍, ${downvotes} 👎 (need ${APPROVAL_THRESHOLD} 👍 or ${REJECTION_THRESHOLD} 👎)`, upvotes, downvotes };
+    }
+    
+  } catch (error) {
+    console.error('[Trade Voting] Error in manual check:', error);
+    return { success: false, message: `Error: ${error instanceof Error ? error.message : 'Unknown error'}` };
+  }
+}
+
+/**
  * Initialize trade voting system
  */
 export function initializeTradeVoting(client: Client) {
   console.log('[Trade Voting] Trade voting system initialized');
   console.log(`[Trade Voting] Monitoring channel: ${TRADE_CHANNEL_ID}`);
   console.log(`[Trade Voting] Required role: ${TRADE_COMMITTEE_ROLE}`);
-  console.log(`[Trade Voting] Approval threshold: ${APPROVAL_THRESHOLD} 👍`);
-  console.log(`[Trade Voting] Rejection threshold: ${REJECTION_THRESHOLD} 👎`);
   
-  // Schedule hourly reminders
+  // Start reminder scheduler - send reminders every hour
   setInterval(() => {
     sendVoteReminders(client);
   }, 60 * 60 * 1000); // Every hour

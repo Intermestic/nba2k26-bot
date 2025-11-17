@@ -459,4 +459,32 @@ export const botManagementRouter = router({
         successRate: Math.round(successRate * 10) / 10, // Round to 1 decimal
       };
     }),
+
+  /**
+   * Manually check and process trade votes
+   */
+  manuallyCheckTradeVotes: protectedProcedure
+    .input(z.object({ messageId: z.string() }))
+    .mutation(async ({ input, ctx }) => {
+      try {
+        // Import the trade voting module
+        const { manuallyCheckTradeVotes } = await import('../trade-voting');
+        const { getDiscordClient } = await import('../discord-bot');
+        
+        const client = getDiscordClient();
+        if (!client) {
+          return { success: false, message: 'Discord bot is not connected' };
+        }
+        
+        // Call the manual check function
+        const result = await manuallyCheckTradeVotes(client, input.messageId);
+        return result;
+      } catch (error) {
+        console.error('[Bot Management] Error in manual trade vote check:', error);
+        return {
+          success: false,
+          message: error instanceof Error ? error.message : 'Unknown error occurred'
+        };
+      }
+    }),
 });
