@@ -17,14 +17,20 @@ All phases completed and checkpoint saved.
 
 ---
 
-## CURRENT TASK: Fix Admin Dashboard Landing Page
+## COMPLETED: Fix Admin Dashboard Landing Page ✅
+All phases completed and checkpoint saved.
 
-### Issue
-Admin dashboard landing page with all management tool categories disappeared.
+---
+
+## CURRENT TASK: Fix FA Bid Validation Bugs
+
+### Issues
+1. Cap calculation showing wrong total (244/1098 instead of actual team total)
+2. Over-cap teams can sign 70+ OVR players (should be restricted to 70 OVR max)
 
 ### Tasks
-- [x] Investigate App.tsx routing for /admin route
-- [x] Check if AdminDashboard component exists
-- [x] Verify route configuration
-- [x] Test all admin navigation links
-- [x] Save checkpoint
+- [x] Investigate cap calculation in fa-bid-parser.ts
+- [x] Fix projected cap calculation to use correct team total
+- [x] Verify over-cap validation logic for 70 OVR restriction
+- [x] Test with Jazz bid scenario (Cut Furphy 70, Sign Dosunmu 77)
+- [ ] Save checkpoint

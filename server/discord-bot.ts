@@ -144,8 +144,8 @@ async function isTeamOverCap(team: string): Promise<boolean> {
   // Get all players on team
   const teamPlayers = await db.select().from(players).where(eq(players.team, team));
   
-  // Calculate total cap (use salaryCap if set, otherwise use overall)
-  const totalCap = teamPlayers.reduce((sum, p) => sum + (p.salaryCap || p.overall), 0);
+  // Calculate total cap using overall rating
+  const totalCap = teamPlayers.reduce((sum, p) => sum + p.overall, 0);
   
   return totalCap > 1098;
 }
@@ -566,22 +566,42 @@ async function handleBidMessage(message: Message) {
     return;
   }
   
-  // Check if team is over cap and trying to sign 71+ OVR player
-  const { isTeamOverCap } = await import('./cap-violation-alerts');
-  const overCap = await isTeamOverCap(team);
+  // Check if team would be over cap after this transaction
+  // Calculate projected cap: current total - dropped player + signed player
+  const teamPlayers = await db.select().from(players).where(eq(players.team, team));
+  const currentTotal = teamPlayers.reduce((sum, p) => sum + p.overall, 0);
+  let projectedTotal = currentTotal;
   
-  if (overCap && player.overall > 70) {
-    console.log(`[FA Bids] ❌ Over-cap restriction: ${team} cannot sign ${player.name} (${player.overall} OVR)`);
+  // Subtract dropped player if present
+  if (dropPlayerValidated) {
+    projectedTotal -= dropPlayerValidated.overall;
+  }
+  
+  // Add signed player
+  projectedTotal += player.overall;
+  
+  const CAP_LIMIT = 1098;
+  const wouldBeOverCap = projectedTotal > CAP_LIMIT;
+  
+  // If transaction would put team over cap and player is 71+ OVR, reject
+  if (wouldBeOverCap && player.overall > 70) {
+    const capDiff = projectedTotal - CAP_LIMIT;
+    console.log(`[FA Bids] ❌ Over-cap restriction: ${team} would be ${capDiff} over cap after signing ${player.name} (${player.overall} OVR)`);
     await message.reply(
       `❌ **Over-Cap Restriction**
 
 ` +
-      `${team} is currently **over the 1098 overall cap** and cannot sign players with **71+ overall rating**.
+      `This transaction would put ${team} **${capDiff} over the 1098 overall cap**.
 
 ` +
-      `**Player**: ${player.name} (${player.overall} OVR)
+      `**Current Total**: ${currentTotal}
 ` +
-      `**Restriction**: Over-cap teams may only sign players with **70 or lower overall** to reduce cap burden.
+      `**After Transaction**: ${projectedTotal} (${capDiff > 0 ? '+' + capDiff : capDiff})
+` +
+      `**Player**: ${player.name} (${player.overall} OVR)
+
+` +
+      `**Restriction**: Teams at or over cap may only sign players with **70 or lower overall** to reduce cap burden.
 
 ` +
       `💡 **Tip**: Focus on signing lower-rated players (≤70 OVR) to get back under the cap limit.`
@@ -669,17 +689,17 @@ async function handleBidMessage(message: Message) {
       .from(players)
       .where(eq(players.team, team));
     
-    const currentTotal = teamPlayers.reduce((sum, p) => sum + (p.salaryCap || p.overall), 0);
+    const currentTotal = teamPlayers.reduce((sum, p) => sum + p.overall, 0);
     let projectedTotal = currentTotal;
     
     // Subtract dropped player if present (use already-validated drop player)
     if (dropPlayerValidated) {
-      const dropPlayerCap = dropPlayerValidated.salaryCap || dropPlayerValidated.overall;
+      const dropPlayerCap = dropPlayerValidated.overall;
       projectedTotal -= dropPlayerCap;
     }
     
-    // Add signed player (use salaryCap if available, otherwise overall)
-    const signPlayerCap = player.salaryCap || player.overall;
+    // Add signed player
+    const signPlayerCap = player.overall;
     projectedTotal += signPlayerCap;
     
     const CAP_LIMIT = 1098;
