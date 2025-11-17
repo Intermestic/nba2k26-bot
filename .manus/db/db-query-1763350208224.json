@@ -1,0 +1,15 @@
+{
+  "query": "SELECT COUNT(*) as count, MIN(overall) as min_ovr, MAX(overall) as max_ovr FROM players;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT COUNT(*) as count, MIN(overall) as min_ovr, MAX(overall) as max_ovr FROM players;",
+  "rows": [
+    {
+      "count": "644",
+      "min_ovr": "70",
+      "max_ovr": "98"
+    }
+  ],
+  "messages": [],
+  "stdout": "count\tmin_ovr\tmax_ovr\n644\t70\t98\n",
+  "stderr": "",
+  "execution_time_ms": 1548
+}

@@ -38,3 +38,15 @@ Create Discord command to show all free agents with 70 OVR or below (eligible fo
 - [x] Format response with player names and OVR ratings
 - [x] Test command in Discord
 - [ ] Save checkpoint
+
+## CURRENT TASK: Update Minimum Rating to 70 OVR
+
+### Issue
+Players showing as 68-69 OVR should all be 70 OVR (minimum rating floor)
+
+### Tasks
+- [x] Query database to find all players below 70 OVR
+- [x] Update all players below 70 OVR to exactly 70 OVR
+- [x] Verify updates applied correctly
+- [x] Test !fa70 command to confirm all players show 70 OVR
+- [ ] Save checkpoint
