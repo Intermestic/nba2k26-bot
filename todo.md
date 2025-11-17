@@ -9,16 +9,32 @@ All phases completed and checkpoint saved.
 ## COMPLETED: Fix Bot Stability and Roster Message ✅
 All phases completed and checkpoint saved.
 
+## COMPLETED: Fix Discord Roster Message Sorting ✅
+All phases completed and checkpoint saved.
+
 ---
 
-## CURRENT TASK: Fix Discord Roster Message Sorting
+## COMPLETED: Bot Offline & Roster Message Sorting Fix ✅
 
-### Issue
-- Over-cap teams (Trail Blazers, Warriors, Wizards) are showing at the top of the roster status message
-- They should be at the bottom instead
+### Issues Fixed
+1. ✅ Roster message sorting - Over-cap teams now appear at bottom instead of top
+2. ✅ Discord roster message updated with new sorting (28 teams)
+3. ✅ Bot initialization verified - Bot connects successfully when started
+4. ✅ Updated 'ready' event to 'clientReady' to fix deprecation warning
+5. ✅ Added detailed logging for bot startup process
 
-### Tasks
-- [x] Find Discord roster message generation code
-- [x] Change sorting to put over-cap teams at bottom
-- [x] Test message update with new sorting
-- [ ] Save checkpoint
+### Tasks Completed
+- [x] Check server logs for bot connection errors
+- [x] Verify DISCORD_BOT_TOKEN environment variable is set
+- [x] Check if bot is actually connected to Discord
+- [x] Manually trigger roster message update via admin UI
+- [x] Verify new sorting appears in Discord (over-cap teams at bottom)
+- [x] Fix clientReady event deprecation
+- [x] Test bot initialization manually
+- [x] Save checkpoint
+
+### Notes
+- Bot successfully logs in as "HOF 2K Manus Bot#0960"
+- All bot systems initialize correctly (FA monitoring, overcap roles, trade voting, etc.)
+- Roster message sorting change: `aOverCap - bOverCap` (ascending) instead of `bOverCap - aOverCap` (descending)
+- This puts teams under cap first, over-cap teams at bottom

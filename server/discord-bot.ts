@@ -770,7 +770,7 @@ export async function startDiscordBot(token: string) {
     ]
   });
   
-  client.once('ready', async () => {
+  client.once('clientReady', async () => {
     console.log(`[Discord Bot] Logged in as ${client!.user?.tag}!`);
     
     // Initialize default configurations

@@ -73,15 +73,21 @@ async function startServer() {
 
   // Start Discord bot if token is available
   const botToken = process.env.DISCORD_BOT_TOKEN;
+  console.log('[Discord Bot] Checking for DISCORD_BOT_TOKEN...', botToken ? 'Found' : 'Not found');
   if (botToken) {
     try {
+      console.log('[Discord Bot] Attempting to start bot...');
       await startDiscordBot(botToken);
-      console.log('[Discord Bot] Started successfully');
+      console.log('[Discord Bot] ✅ Started successfully');
     } catch (error) {
-      console.error('[Discord Bot] Failed to start:', error);
+      console.error('[Discord Bot] ❌ Failed to start:', error);
+      if (error instanceof Error) {
+        console.error('[Discord Bot] Error details:', error.message);
+        console.error('[Discord Bot] Stack trace:', error.stack);
+      }
     }
   } else {
-    console.log('[Discord Bot] DISCORD_BOT_TOKEN not found, bot will not start');
+    console.log('[Discord Bot] ⚠️  DISCORD_BOT_TOKEN not found, bot will not start');
   }
 }
 
