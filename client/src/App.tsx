@@ -23,23 +23,13 @@ import WelcomeGoodbye from "./pages/WelcomeGoodbye";
 import ReactionRoles from "./pages/ReactionRoles";
 import Analytics from "./pages/Analytics";
 import ServerLogs from "./pages/ServerLogs";
-import AdminDashboard from "./pages/AdminDashboard";
-import UpgradeSummary from "./pages/admin/UpgradeSummary";
-import UpgradeHistory from "./pages/admin/UpgradeHistory";
-import UpgradeHistoryDashboard from "./pages/admin/UpgradeHistoryDashboard";
-import ValidationRules from "./pages/admin/ValidationRules";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
   return (
     <Switch>
       <Route path={"/"} component={Home} />
-      <Route path={"/admin"} component={AdminDashboard} />
-      <Route path={"/admin/upgrade-summary"} component={UpgradeSummary} />
-      <Route path={"/admin/upgrade-history"} component={UpgradeHistory} />
-      <Route path={"/admin/upgrade-dashboard"} component={UpgradeHistoryDashboard} />
-      <Route path={"/admin/validation-rules"} component={ValidationRules} />
-      <Route path={"/admin/roster"} component={Admin} />
+      <Route path={"/admin"} component={Admin} />
       <Route path={"/admin/transactions"} component={Transactions} />
       <Route path={"/admin/history"} component={History} />
       <Route path={"/admin/discord"} component={DiscordIntegration} />

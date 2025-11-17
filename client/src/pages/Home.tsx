@@ -5,7 +5,7 @@ import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
-import { Download, Search, Filter, Shield, Check, History } from "lucide-react";
+import { Download, Search, Filter, Shield, Check } from "lucide-react";
 import { Link } from "wouter";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PlayerAvatar } from "@/components/PlayerAvatar";
@@ -16,7 +16,6 @@ import { TeamRosterSummary } from "@/components/TeamRosterSummary";
 import { TeamSummariesTable } from "@/components/TeamSummariesTable";
 import RosterCard from "@/components/RosterCard";
 import { TeamAssignmentDialog } from "@/components/TeamAssignmentDialog";
-import { PlayerUpgradeHistoryDialog } from "@/components/PlayerUpgradeHistoryDialog";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Pencil, Trash2 } from "lucide-react";
@@ -49,7 +48,6 @@ export default function Home() {
   const [showRosterCard, setShowRosterCard] = useState(false);
   const [showTeamAssignment, setShowTeamAssignment] = useState(false);
   const [editingPlayer, setEditingPlayer] = useState<Player | null>(null);
-  const [viewingUpgradesPlayer, setViewingUpgradesPlayer] = useState<Player | null>(null);
   const [playerForm, setPlayerForm] = useState({
     id: "",
     name: "",
@@ -547,13 +545,6 @@ export default function Home() {
                           View Details →
                         </a>
                       )}
-                      <button
-                        onClick={() => setViewingUpgradesPlayer(player)}
-                        className="text-xs text-purple-400 hover:text-purple-300 inline-flex items-center gap-1"
-                      >
-                        <History className="w-3 h-3" />
-                        Upgrades
-                      </button>
                       {user?.role === "admin" && (
                         <button
                           onClick={() => handleEditPlayer(player)}
@@ -721,13 +712,6 @@ export default function Home() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
-      {/* Player Upgrade History Dialog */}
-      <PlayerUpgradeHistoryDialog
-        playerName={viewingUpgradesPlayer?.name || null}
-        open={viewingUpgradesPlayer !== null}
-        onClose={() => setViewingUpgradesPlayer(null)}
-      />
 
       {/* Footer */}
       <footer className="border-t border-slate-700 bg-slate-900/50 mt-12">

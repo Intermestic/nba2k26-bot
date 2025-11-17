@@ -492,17 +492,33 @@ async function handleBidMessage(message: Message) {
       return;
     }
     
-    // Validate that the dropped player is actually on the user's team
-    if (dropPlayerValidated.team !== team && dropPlayerValidated.team !== 'Free Agent' && dropPlayerValidated.team !== 'Free Agents') {
-      console.log(`[FA Bids] Drop player ${dropPlayerValidated.name} is on ${dropPlayerValidated.team}, but user is on ${team}`);
+    team = dropPlayerValidated.team || 'Unknown';
+    
+    // Validate team name using team-validator
+    const { validateTeamName } = await import('./team-validator');
+    const validatedTeam = validateTeamName(team);
+    
+    if (!validatedTeam) {
+      console.log(`[FA Bids] Invalid team detected: ${team}`);
+      
+      // Get suggestions for similar team names
+      const { VALID_TEAMS } = await import('./team-validator');
+      const { extract } = await import('fuzzball');
+      const suggestions = extract(team, VALID_TEAMS as unknown as string[], { limit: 3 });
+      
+      const suggestionText = suggestions.length > 0
+        ? `\n\n**Did you mean?**\n${suggestions.map(s => `• ${s[0]} (${s[1]}% match)`).join('\n')}`
+        : '';
+      
       await message.reply(
-        `❌ **Invalid Drop Player**: ${dropPlayerValidated.name} is not on your team.\n\n` +
-        `**Your team**: ${team}\n` +
-        `**Player's team**: ${dropPlayerValidated.team}\n\n` +
-        `💡 **Tip**: You can only cut players from your own roster.`
+        `❌ **Invalid Team**: "${team}" is not a valid team name.${suggestionText}\n\n` +
+        `💡 **Tip**: Check the team name spelling. The bot recognizes aliases like "76ers" → "Sixers", "Blazers" → "Trail Blazers".`
       );
       return;
     }
+    
+    // Use validated canonical team name
+    team = validatedTeam;
   } else {
     // No drop player specified - cannot determine team
     await message.reply(
@@ -578,8 +594,7 @@ async function handleBidMessage(message: Message) {
   const validation = await validateBidCoins(
     message.author.username,
     team,
-    parsedBid.bidAmount,
-    player.name  // Exclude existing bids on this player (will be replaced)
+    parsedBid.bidAmount
   );
   
   if (!validation.valid) {
@@ -1125,44 +1140,6 @@ export async function startDiscordBot(token: string) {
         return;
       }
       
-      // Check for badge lookup command: !badge <abbreviation> or !badge list
-      if (message.content.trim().toLowerCase().startsWith('!badge')) {
-        const parts = message.content.trim().split(/\s+/);
-        
-        if (parts.length === 1) {
-          await message.reply('❌ Usage: !badge <abbreviation> or !badge list');
-          return;
-        }
-        
-        const query = parts[1].toLowerCase();
-        
-        try {
-          if (query === 'list') {
-            const { listAllBadges } = await import('./badge-lookup-handler');
-            const result = await listAllBadges();
-            
-            if (result.success && result.embed) {
-              await message.reply({ embeds: [result.embed] });
-            } else {
-              await message.reply(result.message || '❌ Failed to list badges');
-            }
-          } else {
-            const { lookupBadge } = await import('./badge-lookup-handler');
-            const result = await lookupBadge(query);
-            
-            if (result.success && result.embed) {
-              await message.reply({ embeds: [result.embed] });
-            } else {
-              await message.reply(result.message || '❌ Failed to look up badge');
-            }
-          }
-        } catch (error) {
-          console.error('[Badge Lookup] Command failed:', error);
-          await message.reply('❌ Failed to look up badge. Check logs for details.');
-        }
-        return;
-      }
-      
       await handleBidMessage(message);
     } else if (message.channelId === TRADE_CHANNEL_ID) {
       // Handle new trade embeds for voting
@@ -1171,29 +1148,6 @@ export async function startDiscordBot(token: string) {
         await handleNewTradeEmbed(message);
       } catch (error) {
         console.error('[Trade Voting] Error handling new trade embed:', error);
-      }
-    } else {
-      // Check if message is in a team channel (e.g., team-wizards, team-lakers)
-      const channel = message.channel;
-      if (channel && 'name' in channel && channel.name && channel.name.startsWith('team-')) {
-        // Extract team name from channel name (e.g., "team-wizards" -> "Wizards")
-        const teamName = channel.name.substring(5).split('-').map(word => 
-          word.charAt(0).toUpperCase() + word.slice(1)
-        ).join(' ');
-        
-        // Validate and normalize team name
-        const { validateTeamName } = await import('./team-validator');
-        const validatedTeam = validateTeamName(teamName);
-        
-        if (validatedTeam) {
-          // Try to handle as upgrade request
-          try {
-            const { handleUpgradeRequest } = await import('./upgrade-handler');
-            await handleUpgradeRequest(message, validatedTeam);
-          } catch (error) {
-            console.error('[Upgrade Handler] Error processing upgrade request:', error);
-          }
-        }
       }
     }
   });
@@ -1220,34 +1174,6 @@ export async function startDiscordBot(token: string) {
         console.error('[Trade Voting] Error handling reaction add:', error);
       }
       return;
-    }
-    
-    // Handle upgrade approval (✅ on messages with 😀)
-    if (reaction.emoji.name === '✅') {
-      const message = reaction.message.partial ? await reaction.message.fetch() : reaction.message;
-      
-      // Check if message has 😀 reaction (indicates valid upgrade request)
-      const hasValidUpgrade = message.reactions.cache.some(r => r.emoji.name === '😀');
-      if (hasValidUpgrade) {
-        try {
-          // Check if user is admin
-          const guild = message.guild;
-          if (!guild) return;
-          
-          const member = await guild.members.fetch(user.id);
-          const { isAdmin, handleUpgradeApproval } = await import('./upgrade-handler');
-          
-          if (!isAdmin(member)) {
-            console.log(`[Upgrade Handler] Non-admin user ${user.tag} attempted to approve upgrade`);
-            return;
-          }
-          
-          await handleUpgradeApproval(message, user);
-        } catch (error) {
-          console.error('[Upgrade Handler] Error handling upgrade approval:', error);
-        }
-        return;
-      }
     }
     
     // Process lightning bolt emoji (⚡) or exclamation emoji (❗) for manual processing

@@ -32,16 +32,14 @@ export function parseBidMessage(message: string): ParsedBid | null {
   
   // Step A: Identify cut player (optional)
   let dropPlayer: string | undefined;
-  // Match everything after cut/drop/waive until we hit sign/add/pickup
-  const cutPattern = /\b(cut|drop|waive)\s+(.+?)(?:\s+(?:sign|add|pickup))/i;
+  const cutPattern = /\b(cut|drop|waive)\s+([^.\n,]+?)(?=\s*(?:sign|add|pickup|bid|\d|$))/i;
   const cutMatch = message.match(cutPattern);
   if (cutMatch) {
     dropPlayer = cutMatch[2].trim();
   }
   
   // Step B: Identify signed player (required)
-  // Match everything after sign/add/pickup until we hit bid, a number, or end of string
-  const signPattern = /\b(sign|add|pickup)\s+(.+?)(?:\s+(?:bid|\d+)|$)/i;
+  const signPattern = /\b(sign|add|pickup)\s+([^.\n,]+?)(?=\s*(?:bid|\d|$))/i;
   const signMatch = message.match(signPattern);
   
   if (!signMatch) {
@@ -733,8 +731,7 @@ export async function importBidsFromStatusMessage(messageContent: string, window
 export async function validateBidCoins(
   bidderName: string,
   team: string,
-  newBidAmount: number,
-  playerName?: string  // Optional: exclude existing bids on this player
+  newBidAmount: number
 ): Promise<{
   valid: boolean;
   available: number;
@@ -771,12 +768,7 @@ export async function validateBidCoins(
   // Get all current active bids for this bidder
   const window = getCurrentBiddingWindow();
   const currentBids = await getActiveBids(window.windowId);
-  let bidderBids = currentBids.filter(bid => bid.bidderName === bidderName);
-  
-  // Exclude existing bid on the same player (will be replaced, not added)
-  if (playerName) {
-    bidderBids = bidderBids.filter(bid => bid.playerName.toLowerCase() !== playerName.toLowerCase());
-  }
+  const bidderBids = currentBids.filter(bid => bid.bidderName === bidderName);
   
   // Calculate total commitment
   const currentCommitment = bidderBids.reduce((sum: number, bid: any) => sum + bid.bidAmount, 0);

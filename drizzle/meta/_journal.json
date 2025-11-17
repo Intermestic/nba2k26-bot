@@ -176,20 +176,6 @@
       "when": 1763304525319,
       "tag": "0024_medical_firestar",
       "breakpoints": true
-    },
-    {
-      "idx": 25,
-      "version": "5",
-      "when": 1763328044214,
-      "tag": "0025_familiar_shriek",
-      "breakpoints": true
-    },
-    {
-      "idx": 26,
-      "version": "5",
-      "when": 1763334794466,
-      "tag": "0026_young_owl",
-      "breakpoints": true
     }
   ]
 }
