@@ -1,28 +1,30 @@
 # NBA 2K26 Player Database - TODO
 
 ## COMPLETED: Fix FA Bid Team Detection ✅
+All phases completed and checkpoint saved.
 
+## COMPLETED: Fix Duplicate Bid Handling ✅
 All phases completed and checkpoint saved.
 
 ---
 
-## CURRENT TASK: Fix Duplicate Bid Handling
+## CURRENT TASK: Fix FA Bid Parser Regex Bug
 
 ### Issue
-When a team submits a new bid for the same player they're already bidding on, the system treats it as an additional commitment instead of replacing the old bid. This causes coin validation to fail because it counts both bids (e.g., Lakers bidding $31 then $46 on Miles McBride = $77 total instead of just $46).
+The FA bid parser incorrectly extracts only the first character of drop player names when the name contains acquisition keywords. Example: "Cut Saddiq bey sign Christian Koloko" extracts "S" instead of "Saddiq bey" because "addiq" in "Saddiq" matches the lookahead for "add" keyword.
 
-### Phase 1: Investigate bid recording and coin validation logic
-- [x] Review recordBid function in fa-bid-parser.ts
-- [x] Check how validateBidCoins calculates current commitments
-- [x] Identify where duplicate bids should be cancelled
+### Phase 1: Diagnose regex pattern issue in parseBidMessage
+- [x] Identify that cutPattern uses non-greedy match (+?)
+- [x] Confirm bug: "Cut Saddiq bey" extracts "S" instead of "Saddiq bey"
+- [x] Root cause: "addiq" in "Saddiq" matches lookahead for "add" keyword
 
-### Phase 2: Update recordBid to cancel previous bids on same player
-- [x] Add logic to delete previous bids by same team on same player
-- [x] Ensure only the latest bid counts toward coin commitments
-- [x] Update validateBidCoins to exclude cancelled bids
+### Phase 2: Fix cutPattern regex to use greedy matching
+- [x] Update cutPattern to use greedy match (+) instead of non-greedy (+?)
+- [x] Update signPattern similarly to prevent same issue
+- [x] Test regex with problematic names (Saddiq, Addison, etc.)
 
-### Phase 3: Test and verify fix with Lakers scenario
-- [x] Test Lakers bidding $31 on Miles McBride
-- [x] Test Lakers updating bid to $46 on same player
-- [x] Verify only $46 counts toward coin commitment (not $77)
+### Phase 3: Test fix with problematic player names and save checkpoint
+- [x] Test "Cut Saddiq bey sign Christian Koloko"
+- [x] Test other edge cases with acquisition keywords in names
+- [x] Verify parser correctly extracts full player names
 - [x] Save checkpoint

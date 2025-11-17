@@ -32,14 +32,16 @@ export function parseBidMessage(message: string): ParsedBid | null {
   
   // Step A: Identify cut player (optional)
   let dropPlayer: string | undefined;
-  const cutPattern = /\b(cut|drop|waive)\s+([^.\n,]+?)(?=\s*(?:sign|add|pickup|bid|\d|$))/i;
+  // Match everything after cut/drop/waive until we hit sign/add/pickup
+  const cutPattern = /\b(cut|drop|waive)\s+(.+?)(?:\s+(?:sign|add|pickup))/i;
   const cutMatch = message.match(cutPattern);
   if (cutMatch) {
     dropPlayer = cutMatch[2].trim();
   }
   
   // Step B: Identify signed player (required)
-  const signPattern = /\b(sign|add|pickup)\s+([^.\n,]+?)(?=\s*(?:bid|\d|$))/i;
+  // Match everything after sign/add/pickup until we hit bid, a number, or end of string
+  const signPattern = /\b(sign|add|pickup)\s+(.+?)(?:\s+(?:bid|\d+)|$)/i;
   const signMatch = message.match(signPattern);
   
   if (!signMatch) {
