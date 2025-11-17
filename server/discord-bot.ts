@@ -1017,6 +1017,89 @@ export async function startDiscordBot(token: string) {
         return;
       }
       
+      // Check for !fa70 command to show free agents with 70 OVR or below
+      if (message.content.trim().toLowerCase() === '!fa70') {
+        try {
+          const db = await getDb();
+          if (!db) {
+            await message.reply('❌ Database not available.');
+            return;
+          }
+          
+          // Query for free agents with 70 OVR or below
+          const freeAgents = await db
+            .select()
+            .from(players)
+            .where(
+              sql`(${players.team} IS NULL OR ${players.team} = 'Free Agent' OR ${players.team} = 'Free Agents') AND ${players.overall} <= 70`
+            )
+            .orderBy(sql`${players.overall} DESC, ${players.name} ASC`);
+          
+          if (freeAgents.length === 0) {
+            await message.reply('📋 No free agents with 70 OVR or below available.');
+            return;
+          }
+          
+          // Group by OVR rating
+          const grouped = new Map<number, string[]>();
+          for (const player of freeAgents) {
+            const ovr = player.overall;
+            if (!grouped.has(ovr)) {
+              grouped.set(ovr, []);
+            }
+            grouped.get(ovr)!.push(player.name);
+          }
+          
+          // Build response message
+          let response = `**🏀 Free Agents (70 OVR or Below)**\n\n`;
+          response += `*Eligible for over-cap teams*\n`;
+          response += `Total: **${freeAgents.length}** players\n\n`;
+          
+          // Sort by OVR descending
+          const sortedOvrs = Array.from(grouped.keys()).sort((a, b) => b - a);
+          
+          for (const ovr of sortedOvrs) {
+            const playerNames = grouped.get(ovr)!;
+            response += `**${ovr} OVR** (${playerNames.length}): ${playerNames.join(', ')}\n`;
+          }
+          
+          // Split into multiple messages if too long (Discord limit is 2000 chars)
+          if (response.length > 2000) {
+            const chunks: string[] = [];
+            let currentChunk = `**🏀 Free Agents (70 OVR or Below)**\n\n*Eligible for over-cap teams*\nTotal: **${freeAgents.length}** players\n\n`;
+            
+            for (const ovr of sortedOvrs) {
+              const playerNames = grouped.get(ovr)!;
+              const line = `**${ovr} OVR** (${playerNames.length}): ${playerNames.join(', ')}\n`;
+              
+              if (currentChunk.length + line.length > 1900) {
+                chunks.push(currentChunk);
+                currentChunk = line;
+              } else {
+                currentChunk += line;
+              }
+            }
+            
+            if (currentChunk.length > 0) {
+              chunks.push(currentChunk);
+            }
+            
+            // Send all chunks
+            for (const chunk of chunks) {
+              await message.reply(chunk);
+            }
+          } else {
+            await message.reply(response);
+          }
+          
+          console.log(`[FA70 Command] Displayed ${freeAgents.length} free agents to ${message.author.username}`);
+        } catch (error) {
+          console.error('[FA70 Command] Failed:', error);
+          await message.reply('❌ Failed to fetch free agents. Check logs for details.');
+        }
+        return;
+      }
+      
       // Check for manual overcap role update command
       if (message.content.trim().toLowerCase() === '!updateovercap') {
         try {
