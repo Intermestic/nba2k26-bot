@@ -136,5 +136,21 @@ All phases completed and checkpoint saved.
 - [x] Remove guild.ownerId check
 - [x] Remove Administrator permission check
 - [x] Add hardcoded user ID check: user.id === '679275787664359435'
-- [ ] Test that only this user can reject bids
-- [ ] Save checkpoint
+- [x] Test that only this user can reject bids
+- [x] Save checkpoint
+
+
+---
+
+## TODO: Fix Duplicate System Keys in Admin Navigation
+
+### Issue
+- React warning: "Encountered two children with the same key, `System`"
+- Occurs on /admin/fa-history page
+- Duplicate keys in navigation sidebar causing React reconciliation issues
+
+### Tasks
+- [x] Find all navigation items with "System" key
+- [x] Make keys unique (removed duplicate System section)
+- [x] Test navigation renders without errors
+- [x] Save checkpoint

@@ -62,12 +62,6 @@ const menuSections = [
       { icon: BarChart3, label: "Analytics", path: "/admin/analytics" },
     ],
   },
-  {
-    label: "System",
-    items: [
-      { icon: Users, label: "Player Aliases", path: "/admin/player-aliases" },
-    ],
-  },
 ];
 
 const SIDEBAR_WIDTH_KEY = "sidebar-width";
