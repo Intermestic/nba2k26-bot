@@ -6,21 +6,19 @@ All phases completed and checkpoint saved.
 ## COMPLETED: Fix Trade Parser (Separators, Commas, Team Names) ✅
 All phases completed and checkpoint saved.
 
+## COMPLETED: Fix Bot Stability and Roster Message ✅
+All phases completed and checkpoint saved.
+
 ---
 
-## CURRENT TASK: Fix Bot Stability and Roster Message
+## CURRENT TASK: Fix Discord Roster Message Sorting
 
-### Issues
-- Bot keeps going offline (connection drops)
-- Roster status message shows incorrect data (0 over-cap teams, missing teams)
-- Message content doesn't match actual team cap status
+### Issue
+- Over-cap teams (Trail Blazers, Warriors, Wizards) are showing at the top of the roster status message
+- They should be at the bottom instead
 
 ### Tasks
-- [x] Check server logs for bot disconnection errors
-- [x] Investigate Discord API connection stability
-- [x] Fix roster status message query to show all teams
-- [x] Fix over-cap team count calculation
-- [x] Add bot reconnection logic with exponential backoff
-- [x] Add error handling for Discord API rate limits
-- [x] Test roster message auto-update after transactions
+- [x] Find Discord roster message generation code
+- [x] Change sorting to put over-cap teams at bottom
+- [x] Test message update with new sorting
 - [ ] Save checkpoint

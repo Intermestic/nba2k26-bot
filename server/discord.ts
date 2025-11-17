@@ -39,10 +39,11 @@ export async function getTeamSummaries(): Promise<TeamSummary[]> {
   return Array.from(summaries.entries())
     .map(([team, data]) => ({ team, ...data }))
     .sort((a, b) => {
-      // Sort by over-cap amount (descending), then by team name
+      // Sort by over-cap amount (ascending), then by team name
+      // This puts teams under cap first, then over-cap teams at the bottom
       const aOverCap = Math.max(0, a.totalOverall - OVERALL_CAP_LIMIT);
       const bOverCap = Math.max(0, b.totalOverall - OVERALL_CAP_LIMIT);
-      if (aOverCap !== bOverCap) return bOverCap - aOverCap;
+      if (aOverCap !== bOverCap) return aOverCap - bOverCap; // Changed from bOverCap - aOverCap
       return a.team.localeCompare(b.team);
     });
 }
