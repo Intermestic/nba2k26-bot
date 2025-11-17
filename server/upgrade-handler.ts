@@ -57,7 +57,7 @@ export async function handleUpgradeRequest(message: Message, teamName: string) {
     }
     
     // Validate the upgrade request
-    const validation = await validateUpgradeRequest(parsed, teamName, playerHeight);
+    const validation = await validateUpgradeRequest(parsed, teamName, playerHeight, message.author.id);
     
     results.push({ upgrade: parsed, validation, playerHeight });
     

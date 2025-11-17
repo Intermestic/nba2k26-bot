@@ -12,6 +12,7 @@ import { Settings, Plus, Pencil, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
+import RuleBuilder from "@/components/RuleBuilder";
 
 export default function ValidationRules() {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -294,13 +295,11 @@ export default function ValidationRules() {
               </Select>
             </div>
             <div>
-              <Label htmlFor="config">Configuration (JSON)</Label>
-              <Textarea
-                id="config"
-                value={formData.config}
-                onChange={(e) => setFormData({ ...formData, config: e.target.value })}
-                placeholder='{"maxUpgrades": 6, "windowType": "fa"}'
-                rows={4}
+              <Label>Configuration</Label>
+              <RuleBuilder
+                ruleType={formData.ruleType}
+                config={formData.config}
+                onChange={(config) => setFormData({ ...formData, config })}
               />
             </div>
             <div>
@@ -380,12 +379,11 @@ export default function ValidationRules() {
               </Select>
             </div>
             <div>
-              <Label htmlFor="editConfig">Configuration (JSON)</Label>
-              <Textarea
-                id="editConfig"
-                value={formData.config}
-                onChange={(e) => setFormData({ ...formData, config: e.target.value })}
-                rows={4}
+              <Label>Configuration</Label>
+              <RuleBuilder
+                ruleType={formData.ruleType}
+                config={formData.config}
+                onChange={(config) => setFormData({ ...formData, config })}
               />
             </div>
             <div>

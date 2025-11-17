@@ -1,6 +1,6 @@
 import { getDb } from './db';
-import { badgeRequirements, badgeAbbreviations } from '../drizzle/schema';
-import { eq, and } from 'drizzle-orm';
+import { badgeRequirements, badgeAbbreviations, validationRules, upgradeRequests, playerUpgrades } from '../drizzle/schema';
+import { eq, and, desc } from 'drizzle-orm';
 import type { ParsedUpgrade } from './upgrade-parser';
 
 export interface ValidationResult {
@@ -17,10 +17,28 @@ export interface ValidationResult {
 export async function validateUpgradeRequest(
   upgrade: ParsedUpgrade,
   teamName: string,
-  playerHeight?: string
+  playerHeight?: string,
+  discordUserId?: string
 ): Promise<ValidationResult> {
   const errors: string[] = [];
   const ruleViolations: string[] = [];
+  
+  // Fetch enabled validation rules from database
+  const db = await getDb();
+  if (db) {
+    const rules = await db.select().from(validationRules).where(eq(validationRules.enabled, true));
+    
+    // Apply each enabled rule
+    for (const rule of rules) {
+      const ruleResult = await applyValidationRule(rule, upgrade, teamName, discordUserId, db);
+      if (ruleResult.errors.length > 0) {
+        errors.push(...ruleResult.errors);
+      }
+      if (ruleResult.warnings.length > 0) {
+        ruleViolations.push(...ruleResult.warnings);
+      }
+    }
+  }
   
   // Handle stat upgrades differently
   if (upgrade.upgradeType === "stat") {
@@ -217,4 +235,137 @@ export function formatValidationMessage(upgrade: ParsedUpgrade, validation: Vali
 
 function capitalize(str: string): string {
   return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+/**
+ * Apply a validation rule to an upgrade request
+ */
+async function applyValidationRule(
+  rule: any,
+  upgrade: ParsedUpgrade,
+  teamName: string,
+  discordUserId: string | undefined,
+  db: any
+): Promise<{ errors: string[]; warnings: string[] }> {
+  const errors: string[] = [];
+  const warnings: string[] = [];
+  
+  try {
+    const config = typeof rule.config === 'string' ? JSON.parse(rule.config) : rule.config;
+    
+    switch (rule.ruleType) {
+      case 'badge_limit':
+        // Check max upgrades per window
+        if (rule.ruleName === 'max_upgrades_per_window' && config.maxUpgrades) {
+          const recentUpgrades = await db
+            .select()
+            .from(upgradeRequests)
+            .where(
+              and(
+                eq(upgradeRequests.team, teamName),
+                eq(upgradeRequests.status, 'pending')
+              )
+            );
+          
+          if (recentUpgrades.length >= config.maxUpgrades) {
+            if (rule.severity === 'error') {
+              errors.push(rule.errorMessage || `Maximum ${config.maxUpgrades} upgrades per window exceeded`);
+            } else {
+              warnings.push(rule.errorMessage || `Team has ${recentUpgrades.length} pending upgrades`);
+            }
+          }
+        }
+        
+        // Check duplicate badges
+        if (rule.ruleName === 'allow_duplicate_badges' && !config.allowDuplicates && upgrade.badgeName) {
+          const existingBadges = await db
+            .select()
+            .from(playerUpgrades)
+            .where(
+              and(
+                eq(playerUpgrades.playerName, upgrade.playerName),
+                eq(playerUpgrades.badgeName, upgrade.badgeName)
+              )
+            );
+          
+          if (existingBadges.length > 0) {
+            if (rule.severity === 'error') {
+              errors.push(rule.errorMessage || `Player already has ${upgrade.badgeName} badge`);
+            } else {
+              warnings.push(rule.errorMessage || `Duplicate badge detected: ${upgrade.badgeName}`);
+            }
+          }
+        }
+        
+        // Auto-approve bronze badges
+        if (rule.ruleName === 'auto_approve_bronze' && config.autoApprove && upgrade.toLevel === 'bronze') {
+          warnings.push('Bronze badge - eligible for auto-approval');
+        }
+        break;
+      
+      case 'cooldown':
+        // Check upgrade cooldown period
+        if (rule.ruleName === 'upgrade_cooldown_period' && config.cooldownHours && config.perPlayer) {
+          const cooldownMs = config.cooldownHours * 60 * 60 * 1000;
+          const cutoffTime = new Date(Date.now() - cooldownMs);
+          
+          const recentPlayerUpgrades = await db
+            .select()
+            .from(upgradeRequests)
+            .where(
+              and(
+                eq(upgradeRequests.playerName, upgrade.playerName),
+                eq(upgradeRequests.team, teamName)
+              )
+            )
+            .orderBy(desc(upgradeRequests.createdAt))
+            .limit(1);
+          
+          if (recentPlayerUpgrades.length > 0) {
+            const lastUpgrade = recentPlayerUpgrades[0];
+            if (lastUpgrade.createdAt && new Date(lastUpgrade.createdAt) > cutoffTime) {
+              const hoursRemaining = Math.ceil((new Date(lastUpgrade.createdAt).getTime() + cooldownMs - Date.now()) / (60 * 60 * 1000));
+              if (rule.severity === 'error') {
+                errors.push(rule.errorMessage || `Must wait ${hoursRemaining} more hours before next upgrade for ${upgrade.playerName}`);
+              } else {
+                warnings.push(`Recent upgrade for ${upgrade.playerName} (${hoursRemaining}h ago)`);
+              }
+            }
+          }
+        }
+        break;
+      
+      case 'attribute_check':
+        // Check minimum attributes required
+        if (rule.ruleName === 'min_attributes_required' && config.minAttributes && upgrade.upgradeType === 'badge') {
+          const attrCount = upgrade.attributes ? Object.keys(upgrade.attributes).length : 0;
+          if (attrCount < config.minAttributes) {
+            if (rule.severity === 'error') {
+              errors.push(rule.errorMessage || `At least ${config.minAttributes} attributes required (got ${attrCount})`);
+            } else {
+              warnings.push(`Only ${attrCount} attributes provided (recommended: ${config.minAttributes})`);
+            }
+          }
+        }
+        break;
+      
+      case 'game_requirement':
+        // Check if screenshot proof is required
+        if (rule.ruleName === 'require_match_proof' && config.requireScreenshot) {
+          if (!upgrade.gameNumber) {
+            if (rule.severity === 'error') {
+              errors.push(rule.errorMessage || 'Screenshot proof is required for badge upgrade requests');
+            } else {
+              warnings.push('No game number specified - verify screenshot proof was provided');
+            }
+          }
+        }
+        break;
+    }
+  } catch (error) {
+    console.error(`[Validation Rule] Error applying rule ${rule.ruleName}:`, error);
+    warnings.push(`Failed to apply rule: ${rule.ruleName}`);
+  }
+  
+  return { errors, warnings };
 }

@@ -1904,4 +1904,34 @@ Multiple admin dashboard links were pointing to non-existent routes:
 ### Phase 4: Test & Checkpoint
 - [x] Test CRUD operations
 - [x] Verify TypeScript compilation
+- [x] Save checkpoint
+
+
+## NEW TASK: Validation Rules Integration & Visual Rule Builder
+
+### Phase 1: Analyze Current System
+- [x] Review upgrade-validator.ts logic
+- [x] Review upgrade-handler.ts workflow
+- [x] Identify integration points for database rules
+
+### Phase 2: Integrate Validation Rules
+- [x] Update upgrade-validator.ts to fetch rules from database
+- [x] Implement rule enforcement logic for each rule type
+- [x] Add rule violation tracking and reporting
+- [x] Update upgrade-handler.ts to use new validation
+- [ ] Test validation with Discord messages
+
+### Phase 3: Visual Rule Builder UI
+- [x] Design rule builder component structure
+- [x] Create rule type selector with templates
+- [x] Build dynamic form fields based on rule type
+- [x] Add JSON preview panel
+- [x] Implement validation for rule configs
+- [ ] Add rule testing/simulation feature
+- [x] Integrate builder into ValidationRules page
+
+### Phase 4: Test & Checkpoint
+- [x] Test rule enforcement in upgrade workflow
+- [x] Test rule builder UI with all rule types
+- [x] Verify TypeScript compilation
 - [ ] Save checkpoint
