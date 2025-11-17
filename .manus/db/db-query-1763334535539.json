@@ -1,0 +1,330 @@
+{
+  "query": "SELECT * FROM badge_abbreviations LIMIT 50",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT * FROM badge_abbreviations LIMIT 50",
+  "rows": [
+    {
+      "id": "41",
+      "abbreviation": "AW",
+      "fullName": "Aerial Wizard",
+      "category": "NULL",
+      "createdAt": "2025-11-16 21:42:41",
+      "updatedAt": "2025-11-16 21:42:41"
+    },
+    {
+      "id": "42",
+      "abbreviation": "ANK",
+      "fullName": "Ankle Assassin",
+      "category": "NULL",
+      "createdAt": "2025-11-16 21:42:41",
+      "updatedAt": "2025-11-16 21:42:41"
+    },
+    {
+      "id": "43",
+      "abbreviation": "BO",
+      "fullName": "Bail Out",
+      "category": "NULL",
+      "createdAt": "2025-11-16 21:42:41",
+      "updatedAt": "2025-11-16 21:42:41"
+    },
+    {
+      "id": "44",
+      "abbreviation": "BXB",
+      "fullName": "Boxout Beast",
+      "category": "NULL",
+      "createdAt": "2025-11-16 21:42:41",
+      "updatedAt": "2025-11-16 21:42:41"
+    },
+    {
+      "id": "45",
+      "abbreviation": "BST",
+      "fullName": "Break Starter",
+      "category": "NULL",
+      "createdAt": "2025-11-16 21:42:42",
+      "updatedAt": "2025-11-16 21:42:42"
+    },
+    {
+      "id": "46",
+      "abbreviation": "BW",
+      "fullName": "Brick Wall",
+      "category": "NULL",
+      "createdAt": "2025-11-16 21:42:42",
+      "updatedAt": "2025-11-16 21:42:42"
+    },
+    {
+      "id": "47",
+      "abbreviation": "CHL",
+      "fullName": "Challenger",
+      "category": "NULL",
+      "createdAt": "2025-11-16 21:42:42",
+      "updatedAt": "2025-11-16 21:42:42"
+    },
+    {
+      "id": "48",
+      "abbreviation": "DE",
+      "fullName": "Deadeye",
+      "category": "NULL",
+      "createdAt": "2025-11-16 21:42:42",
+      "updatedAt": "2025-11-16 21:42:42"
+    },
+    {
+      "id": "49",
+      "abbreviation": "DIM",
+      "fullName": "Dimer",
+      "category": "NULL",
+      "createdAt": "2025-11-16 21:42:43",
+      "updatedAt": "2025-11-16 21:42:43"
+    },
+    {
+      "id": "50",
+      "abbreviation": "FG",
+      "fullName": "Float Game",
+      "category": "NULL",
+      "createdAt": "2025-11-16 21:42:43",
+      "updatedAt": "2025-11-16 21:42:43"
+    },
+    {
+      "id": "51",
+      "abbreviation": "GLV",
+      "fullName": "Glove",
+      "category": "NULL",
+      "createdAt": "2025-11-16 21:42:43",
+      "updatedAt": "2025-11-16 21:42:43"
+    },
+    {
+      "id": "52",
+      "abbreviation": "HFD",
+      "fullName": "Handles For Days",
+      "category": "NULL",
+      "createdAt": "2025-11-16 21:42:43",
+      "updatedAt": "2025-11-16 21:42:43"
+    },
+    {
+      "id": "53",
+      "abbreviation": "HFL",
+      "fullName": "High–Flying Denier",
+      "category": "NULL",
+      "createdAt": "2025-11-16 21:42:43",
+      "updatedAt": "2025-11-16 21:42:43"
+    },
+    {
+      "id": "54",
+      "abbreviation": "HS",
+      "fullName": "Hook Specialist",
+      "category": "NULL",
+      "createdAt": "2025-11-16 21:42:44",
+      "updatedAt": "2025-11-16 21:42:44"
+    },
+    {
+      "id": "55",
+      "abbreviation": "IE",
+      "fullName": "Immovable Enforcer",
+      "category": "NULL",
+      "createdAt": "2025-11-16 21:42:44",
+      "updatedAt": "2025-11-16 21:42:44"
+    },
+    {
+      "id": "56",
+      "abbreviation": "INT",
+      "fullName": "Interceptor",
+      "category": "NULL",
+      "createdAt": "2025-11-16 21:42:44",
+      "updatedAt": "2025-11-16 21:42:44"
+    },
+    {
+      "id": "57",
+      "abbreviation": "LMM",
+      "fullName": "Layup Mixmaster",
+      "category": "NULL",
+      "createdAt": "2025-11-16 21:42:44",
+      "updatedAt": "2025-11-16 21:42:44"
+    },
+    {
+      "id": "58",
+      "abbreviation": "LL",
+      "fullName": "Lightning Launch",
+      "category": "NULL",
+      "createdAt": "2025-11-16 21:42:44",
+      "updatedAt": "2025-11-16 21:42:44"
+    },
+    {
+      "id": "59",
+      "abbreviation": "LR",
+      "fullName": "Limitless Range",
+      "category": "NULL",
+      "createdAt": "2025-11-16 21:42:45",
+      "updatedAt": "2025-11-16 21:42:45"
+    },
+    {
+      "id": "60",
+      "abbreviation": "MM",
+      "fullName": "Mini Marksman",
+      "category": "NULL",
+      "createdAt": "2025-11-16 21:42:45",
+      "updatedAt": "2025-11-16 21:42:45"
+    },
+    {
+      "id": "61",
+      "abbreviation": "OBP",
+      "fullName": "Off-Ball Pest",
+      "category": "NULL",
+      "createdAt": "2025-11-16 21:42:45",
+      "updatedAt": "2025-11-16 21:42:45"
+    },
+    {
+      "id": "62",
+      "abbreviation": "OBM",
+      "fullName": "On-Ball Menace",
+      "category": "NULL",
+      "createdAt": "2025-11-16 21:42:45",
+      "updatedAt": "2025-11-16 21:42:45"
+    },
+    {
+      "id": "63",
+      "abbreviation": "PP",
+      "fullName": "Paint Patroller",
+      "category": "NULL",
+      "createdAt": "2025-11-16 21:42:46",
+      "updatedAt": "2025-11-16 21:42:46"
+    },
+    {
+      "id": "64",
+      "abbreviation": "PPR",
+      "fullName": "Paint Prodigy",
+      "category": "NULL",
+      "createdAt": "2025-11-16 21:42:46",
+      "updatedAt": "2025-11-16 21:42:46"
+    },
+    {
+      "id": "65",
+      "abbreviation": "PKD",
+      "fullName": "Pick Dodger",
+      "category": "NULL",
+      "createdAt": "2025-11-16 21:42:46",
+      "updatedAt": "2025-11-16 21:42:46"
+    },
+    {
+      "id": "66",
+      "abbreviation": "PF",
+      "fullName": "Physical Finisher",
+      "category": "NULL",
+      "createdAt": "2025-11-16 21:42:46",
+      "updatedAt": "2025-11-16 21:42:46"
+    },
+    {
+      "id": "67",
+      "abbreviation": "POG",
+      "fullName": "Pogo Stick",
+      "category": "NULL",
+      "createdAt": "2025-11-16 21:42:46",
+      "updatedAt": "2025-11-16 21:42:46"
+    },
+    {
+      "id": "68",
+      "abbreviation": "PFP",
+      "fullName": "Post Fade Phenom",
+      "category": "NULL",
+      "createdAt": "2025-11-16 21:42:47",
+      "updatedAt": "2025-11-16 21:42:47"
+    },
+    {
+      "id": "69",
+      "abbreviation": "PL",
+      "fullName": "Post Lockdown",
+      "category": "NULL",
+      "createdAt": "2025-11-16 21:42:47",
+      "updatedAt": "2025-11-16 21:42:47"
+    },
+    {
+      "id": "70",
+      "abbreviation": "PPO",
+      "fullName": "Post Powerhouse",
+      "category": "NULL",
+      "createdAt": "2025-11-16 21:42:47",
+      "updatedAt": "2025-11-16 21:42:47"
+    },
+    {
+      "id": "71",
+      "abbreviation": "PUP",
+      "fullName": "Post-Up Poet",
+      "category": "NULL",
+      "createdAt": "2025-11-16 21:42:47",
+      "updatedAt": "2025-11-16 21:42:47"
+    },
+    {
+      "id": "72",
+      "abbreviation": "PTZ",
+      "fullName": "Posterizer",
+      "category": "NULL",
+      "createdAt": "2025-11-16 21:42:47",
+      "updatedAt": "2025-11-16 21:42:47"
+    },
+    {
+      "id": "73",
+      "abbreviation": "REB",
+      "fullName": "Rebound Chaser",
+      "category": "NULL",
+      "createdAt": "2025-11-16 21:42:48",
+      "updatedAt": "2025-11-16 21:42:48"
+    },
+    {
+      "id": "74",
+      "abbreviation": "RU",
+      "fullName": "Rise Up",
+      "category": "NULL",
+      "createdAt": "2025-11-16 21:42:48",
+      "updatedAt": "2025-11-16 21:42:48"
+    },
+    {
+      "id": "75",
+      "abbreviation": "SSS",
+      "fullName": "Set Shot Specialist",
+      "category": "NULL",
+      "createdAt": "2025-11-16 21:42:48",
+      "updatedAt": "2025-11-16 21:42:48"
+    },
+    {
+      "id": "76",
+      "abbreviation": "SS",
+      "fullName": "Shifty Shooter",
+      "category": "NULL",
+      "createdAt": "2025-11-16 21:42:48",
+      "updatedAt": "2025-11-16 21:42:48"
+    },
+    {
+      "id": "77",
+      "abbreviation": "SOF",
+      "fullName": "Slippery Off-Ball",
+      "category": "NULL",
+      "createdAt": "2025-11-16 21:42:49",
+      "updatedAt": "2025-11-16 21:42:49"
+    },
+    {
+      "id": "78",
+      "abbreviation": "SH",
+      "fullName": "Strong Handle",
+      "category": "NULL",
+      "createdAt": "2025-11-16 21:42:49",
+      "updatedAt": "2025-11-16 21:42:49"
+    },
+    {
+      "id": "79",
+      "abbreviation": "UNP",
+      "fullName": "Unpluckable",
+      "category": "NULL",
+      "createdAt": "2025-11-16 21:42:49",
+      "updatedAt": "2025-11-16 21:42:49"
+    },
+    {
+      "id": "80",
+      "abbreviation": "VV",
+      "fullName": "Versatile Visionary",
+      "category": "NULL",
+      "createdAt": "2025-11-16 21:42:49",
+      "updatedAt": "2025-11-16 21:42:49"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tabbreviation\tfullName\tcategory\tcreatedAt\tupdatedAt\n41\tAW\tAerial Wizard\tNULL\t2025-11-16 21:42:41\t2025-11-16 21:42:41\n42\tANK\tAnkle Assassin\tNULL\t2025-11-16 21:42:41\t2025-11-16 21:42:41\n43\tBO\tBail Out\tNULL\t2025-11-16 21:42:41\t2025-11-16 21:42:41\n44\tBXB\tBoxout Beast\tNULL\t2025-11-16 21:42:41\t2025-11-16 21:42:41\n45\tBST\tBreak Starter\tNULL\t2025-11-16 21:42:42\t2025-11-16 21:42:42\n46\tBW\tBrick Wall\tNULL\t2025-11-16 21:42:42\t2025-11-16 21:42:42\n47\tCHL\tChallenger\tNULL\t2025-11-16 21:42:42\t2025-11-16 21:42:42\n48\tDE\tDeadeye\tNULL\t2025-11-16 21:42:42\t2025-11-16 21:42:42\n49\tDIM\tDimer\tNULL\t2025-11-16 21:42:43\t2025-11-16 21:42:43\n50\tFG\tFloat Game\tNULL\t2025-11-16 21:42:43\t2025-11-16 21:42:43\n51\tGLV\tGlove\tNULL\t2025-11-16 21:42:43\t2025-11-16 21:42:43\n52\tHFD\tHandles For Days\tNULL\t2025-11-16 21:42:43\t2025-11-16 21:42:43\n53\tHFL\tHigh–Flying Denier\tNULL\t2025-11-16 21:42:43\t2025-11-16 21:42:43\n54\tHS\tHook Specialist\tNULL\t2025-11-16 21:42:44\t2025-11-16 21:42:44\n55\tIE\tImmovable Enforcer\tNULL\t2025-11-16 21:42:44\t2025-11-16 21:42:44\n56\tINT\tInterceptor\tNULL\t2025-11-16 21:42:44\t2025-11-16 21:42:44\n57\tLMM\tLayup Mixmaster\tNULL\t2025-11-16 21:42:44\t2025-11-16 21:42:44\n58\tLL\tLightning Launch\tNULL\t2025-11-16 21:42:44\t2025-11-16 21:42:44\n59\tLR\tLimitless Range\tNULL\t2025-11-16 21:42:45\t2025-11-16 21:42:45\n60\tMM\tMini Marksman\tNULL\t2025-11-16 21:42:45\t2025-11-16 21:42:45\n61\tOBP\tOff-Ball Pest\tNULL\t2025-11-16 21:42:45\t2025-11-16 21:42:45\n62\tOBM\tOn-Ball Menace\tNULL\t2025-11-16 21:42:45\t2025-11-16 21:42:45\n63\tPP\tPaint Patroller\tNULL\t2025-11-16 21:42:46\t2025-11-16 21:42:46\n64\tPPR\tPaint Prodigy\tNULL\t2025-11-16 21:42:46\t2025-11-16 21:42:46\n65\tPKD\tPick Dodger\tNULL\t2025-11-16 21:42:46\t2025-11-16 21:42:46\n66\tPF\tPhysical Finisher\tNULL\t2025-11-16 21:42:46\t2025-11-16 21:42:46\n67\tPOG\tPogo Stick\tNULL\t2025-11-16 21:42:46\t2025-11-16 21:42:46\n68\tPFP\tPost Fade Phenom\tNULL\t2025-11-16 21:42:47\t2025-11-16 21:42:47\n69\tPL\tPost Lockdown\tNULL\t2025-11-16 21:42:47\t2025-11-16 21:42:47\n70\tPPO\tPost Powerhouse\tNULL\t2025-11-16 21:42:47\t2025-11-16 21:42:47\n71\tPUP\tPost-Up Poet\tNULL\t2025-11-16 21:42:47\t2025-11-16 21:42:47\n72\tPTZ\tPosterizer\tNULL\t2025-11-16 21:42:47\t2025-11-16 21:42:47\n73\tREB\tRebound Chaser\tNULL\t2025-11-16 21:42:48\t2025-11-16 21:42:48\n74\tRU\tRise Up\tNULL\t2025-11-16 21:42:48\t2025-11-16 21:42:48\n75\tSSS\tSet Shot Specialist\tNULL\t2025-11-16 21:42:48\t2025-11-16 21:42:48\n76\tSS\tShifty Shooter\tNULL\t2025-11-16 21:42:48\t2025-11-16 21:42:48\n77\tSOF\tSlippery Off-Ball\tNULL\t2025-11-16 21:42:49\t2025-11-16 21:42:49\n78\tSH\tStrong Handle\tNULL\t2025-11-16 21:42:49\t2025-11-16 21:42:49\n79\tUNP\tUnpluckable\tNULL\t2025-11-16 21:42:49\t2025-11-16 21:42:49\n80\tVV\tVersatile Visionary\tNULL\t2025-11-16 21:42:49\t2025-11-16 21:42:49\n",
+  "stderr": "",
+  "execution_time_ms": 1605
+}

@@ -1,72 +1,76 @@
-import { router, protectedProcedure } from "../_core/trpc";
-import { getDb } from "../db";
-import { players, faBids, capViolations, faTransactions, teamAssignments } from "../../drizzle/schema";
-import { eq, and, ne, sql } from "drizzle-orm";
+import { router, publicProcedure } from '../_core/trpc';
+import { getDb } from '../db';
+import { 
+  upgradeRequests, 
+  faBids, 
+  capViolations, 
+  players, 
+  faTransactions,
+  teamAssignments 
+} from '../../drizzle/schema';
+import { eq, count, and, sql } from 'drizzle-orm';
 
 export const dashboardRouter = router({
-  getStats: protectedProcedure.query(async () => {
+  /**
+   * Get dashboard statistics for admin cards
+   */
+  getStats: publicProcedure.query(async () => {
     const db = await getDb();
     if (!db) {
-      throw new Error("Database not available");
+      throw new Error('Database not available');
     }
 
-    // Get active bids count (current window)
-    const now = new Date();
-    const hour = now.getHours();
-    const isPM = hour >= 12;
-    const dateStr = now.toISOString().split("T")[0];
-    const windowId = `${dateStr}-${isPM ? "PM" : "AM"}`;
+    // Count pending upgrade requests
+    const pendingUpgrades = await db
+      .select({ count: count() })
+      .from(upgradeRequests)
+      .where(eq(upgradeRequests.status, 'pending'));
 
-    const activeBidsResult = await db
-      .select({ count: sql<number>`count(distinct ${faBids.playerName})` })
-      .from(faBids)
-      .where(eq(faBids.windowId, windowId));
-    const activeBids = Number(activeBidsResult[0]?.count || 0);
+    // Count active FA bids (all bids in faBids table are considered active)
+    const activeBids = await db
+      .select({ count: count() })
+      .from(faBids);
 
-    // Get unresolved cap violations count
-    const capViolationsResult = await db
-      .select({ count: sql<number>`count(*)` })
+    // Count cap violations
+    const violations = await db
+      .select({ count: count() })
       .from(capViolations)
       .where(eq(capViolations.resolved, 0));
-    const capViolationsCount = Number(capViolationsResult[0]?.count || 0);
 
-    // Get total players count
-    const totalPlayersResult = await db
-      .select({ count: sql<number>`count(*)` })
+    // Count total players
+    const totalPlayers = await db
+      .select({ count: count() })
       .from(players);
-    const totalPlayers = Number(totalPlayersResult[0]?.count || 0);
 
-    // Get total teams count (excluding Free Agents)
-    const totalTeamsResult = await db
-      .select({ count: sql<number>`count(distinct ${players.team})` })
+    // Count total teams (players with non-null team, excluding "Free Agents")
+    const totalTeams = await db
+      .selectDistinct({ team: players.team })
       .from(players)
       .where(
         and(
-          ne(players.team, "Free Agents"),
-          ne(players.team, "Free Agent")
+          sql`${players.team} IS NOT NULL`,
+          sql`${players.team} != 'Free Agents'`
         )
       );
-    const totalTeams = Number(totalTeamsResult[0]?.count || 0);
 
-    // Get total FA transactions count
-    const totalTransactionsResult = await db
-      .select({ count: sql<number>`count(*)` })
+    // Count total transactions
+    const totalTransactions = await db
+      .select({ count: count() })
       .from(faTransactions);
-    const totalTransactions = Number(totalTransactionsResult[0]?.count || 0);
 
-    // Get total team assignments count
-    const totalAssignmentsResult = await db
-      .select({ count: sql<number>`count(*)` })
+    // Count team assignments
+    const totalAssignments = await db
+      .select({ count: count() })
       .from(teamAssignments);
-    const totalAssignments = Number(totalAssignmentsResult[0]?.count || 0);
 
     return {
-      activeBids,
-      capViolations: capViolationsCount,
-      totalPlayers,
-      totalTeams,
-      totalTransactions,
-      totalAssignments,
+      pendingUpgrades: pendingUpgrades[0]?.count || 0,
+      activeBids: activeBids[0]?.count || 0,
+      capViolations: violations[0]?.count || 0,
+      totalPlayers: totalPlayers[0]?.count || 0,
+      totalTeams: totalTeams.length || 0,
+      totalTransactions: totalTransactions[0]?.count || 0,
+      totalAssignments: totalAssignments[0]?.count || 0,
     };
   }),
 });

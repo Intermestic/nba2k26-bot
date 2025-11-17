@@ -6,10 +6,12 @@ import { ENV } from './_core/env';
 let _db: ReturnType<typeof drizzle> | null = null;
 
 // Lazily create the drizzle instance so local tooling can run without a DB.
+// Drizzle with mysql2 string URL automatically creates a connection pool with reconnection
 export async function getDb() {
   if (!_db && process.env.DATABASE_URL) {
     try {
       _db = drizzle(process.env.DATABASE_URL);
+      console.log('[Database] Connection pool created');
     } catch (error) {
       console.warn("[Database] Failed to connect:", error);
       _db = null;

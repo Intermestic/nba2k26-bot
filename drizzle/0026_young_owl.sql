@@ -1,0 +1,1 @@
+ALTER TABLE `badge_abbreviations` MODIFY COLUMN `category` text;

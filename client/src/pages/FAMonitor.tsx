@@ -6,27 +6,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import DashboardLayout from "@/components/DashboardLayout";
-import { RefreshCw, AlertCircle, CheckCircle, Clock, DollarSign, X } from "lucide-react";
-import { toast } from "sonner";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import { RefreshCw, AlertCircle, CheckCircle, Clock, DollarSign } from "lucide-react";
 import { format } from "date-fns";
 
 export default function FAMonitor() {
   const { user, isAuthenticated } = useAuth();
   const [teamFilter, setTeamFilter] = useState("");
   const [refreshKey, setRefreshKey] = useState(0);
-  const [bidToCancel, setBidToCancel] = useState<number | null>(null);
-  
-  const utils = trpc.useUtils();
 
   const { data: recentBids, isLoading: bidsLoading } = trpc.coins.getAllBids.useQuery(undefined, {
     refetchInterval: 10000, // Refresh every 10 seconds
@@ -38,24 +24,6 @@ export default function FAMonitor() {
   });
 
   const { data: recentTransactions } = trpc.coins.getTransactionHistory.useQuery();
-  
-  const cancelBidMutation = trpc.coins.cancelBid.useMutation({
-    onSuccess: () => {
-      toast.success("Bid cancelled successfully");
-      utils.coins.getAllBids.invalidate();
-      utils.coins.getAllTeamCoins.invalidate();
-      setBidToCancel(null);
-    },
-    onError: (error) => {
-      toast.error(`Failed to cancel bid: ${error.message}`);
-    },
-  });
-  
-  const handleCancelBid = () => {
-    if (bidToCancel) {
-      cancelBidMutation.mutate({ bidId: bidToCancel });
-    }
-  };
 
   if (!isAuthenticated || user?.role !== "admin") {
     return (
@@ -201,14 +169,7 @@ export default function FAMonitor() {
                         <span>{format(new Date(bid.createdAt), 'MMM d, h:mm a')}</span>
                       </div>
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setBidToCancel(bid.id)}
-                      className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
-                    >
-                      <X className="w-4 h-4" />
-                    </Button>
+                    <CheckCircle className="w-5 h-5 text-green-500" />
                   </div>
                 ))}
               </div>
@@ -271,29 +232,6 @@ export default function FAMonitor() {
           </CardContent>
         </Card>
       </div>
-      
-      {/* Cancel Bid Confirmation Dialog */}
-      <AlertDialog open={bidToCancel !== null} onOpenChange={(open) => !open && setBidToCancel(null)}>
-        <AlertDialogContent className="bg-slate-800 border-slate-700">
-          <AlertDialogHeader>
-            <AlertDialogTitle className="text-white">Cancel Bid</AlertDialogTitle>
-            <AlertDialogDescription className="text-slate-400">
-              Are you sure you want to cancel this bid? This action cannot be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel className="bg-slate-700 border-slate-600 text-white hover:bg-slate-600">
-              Cancel
-            </AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleCancelBid}
-              className="bg-red-600 hover:bg-red-700 text-white"
-            >
-              Confirm Cancel
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </DashboardLayout>
   );
 }

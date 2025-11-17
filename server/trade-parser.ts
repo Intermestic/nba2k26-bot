@@ -167,56 +167,28 @@ function parsePlayerListWithOVR(text: string): string[] {
   const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
   
   for (const line of lines) {
-    // Skip separator lines (---, ==, etc.)
-    if (/^[-=]+$/.test(line)) {
-      console.log('[Trade Parser] Skipping separator line:', line);
+    // Skip lines that are just numbers (totals like "245/33")
+    if (/^\d+\/\d+$/.test(line)) {
       continue;
     }
     
-    // Skip lines that are just numbers (totals like "245/33" or "160 (33)")
-    if (/^\d+[\s\/]?\(?\d+\)?$/.test(line)) {
-      console.log('[Trade Parser] Skipping total line:', line);
-      continue;
-    }
+    // Extract player name by removing all numbers, slashes, and parentheses
+    // This handles: "Trae young 88/16" → "Trae young"
+    //               "adem Bona75/5" → "adem Bona"
+    const playerName = line
+      .replace(/\d+\/\d+/g, '')  // Remove OVR/badges format
+      .replace(/\d+\s*\(\d+\)/g, '')  // Remove OVR (badges) format
+      .replace(/\(\d+\)/g, '')  // Remove standalone (badges)
+      .replace(/\d+/g, '')  // Remove any remaining numbers
+      .trim();
     
-    // Check if line contains comma-separated players
-    if (line.includes(',')) {
-      // Split by comma and process each player
-      const commaSeparatedPlayers = line.split(',').map(p => p.trim());
-      for (const playerText of commaSeparatedPlayers) {
-        const playerName = extractPlayerName(playerText);
-        if (playerName.length > 0) {
-          players.push(playerName);
-          console.log('[Trade Parser] Found player (comma-separated):', playerName);
-        }
-      }
-    } else {
-      // Single player per line
-      const playerName = extractPlayerName(line);
-      if (playerName.length > 0) {
-        players.push(playerName);
-        console.log('[Trade Parser] Found player:', playerName);
-      }
+    if (playerName.length > 0) {
+      players.push(playerName);
+      console.log('[Trade Parser] Found player:', playerName);
     }
   }
   
   return players;
-}
-
-/**
- * Extract player name from text by removing numbers, badges, and extra formatting
- */
-function extractPlayerName(text: string): string {
-  // Extract player name by removing all numbers, slashes, and parentheses
-  // This handles: "Trae young 88/16" → "Trae young"
-  //               "adem Bona75/5" → "adem Bona"
-  //               "Rudy Gobert 83 (12)" → "Rudy Gobert"
-  return text
-    .replace(/\d+\/\d+/g, '')  // Remove OVR/badges format (88/16)
-    .replace(/\d+\s*\(\d+\)/g, '')  // Remove OVR (badges) format (83 (12))
-    .replace(/\(\d+\)/g, '')  // Remove standalone (badges) ((12))
-    .replace(/\d+/g, '')  // Remove any remaining numbers
-    .trim();
 }
 
 /**
@@ -441,26 +413,6 @@ export async function findPlayerByFuzzyName(name: string, teamFilter?: string, c
 }
 
 /**
- * Normalize team names to match database values
- * Maps common aliases to canonical team names
- */
-function normalizeTeamName(teamName: string): string {
-  const TEAM_ALIASES: Record<string, string> = {
-    'mavericks': 'Mavs',
-    'trailblazers': 'Trailblazers',
-    'timberwolves': 'Timberwolves'
-  };
-  
-  const normalized = TEAM_ALIASES[teamName.toLowerCase()];
-  if (normalized) {
-    console.log(`[Team Normalization] "${teamName}" → "${normalized}"`);
-    return normalized;
-  }
-  
-  return teamName;
-}
-
-/**
  * Validate and resolve all players in a trade
  */
 export async function resolveTradePlayer(parsedTrade: ParsedTrade): Promise<{
@@ -475,13 +427,9 @@ export async function resolveTradePlayer(parsedTrade: ParsedTrade): Promise<{
   const team1Players: Array<{ id: string; name: string; overall: number }> = [];
   const team2Players: Array<{ id: string; name: string; overall: number }> = [];
   
-  // Normalize team names before lookup
-  const normalizedTeam1 = normalizeTeamName(parsedTrade.team1);
-  const normalizedTeam2 = normalizeTeamName(parsedTrade.team2);
-  
   // Resolve team 1 players (filter by team1 roster)
   for (const playerName of parsedTrade.team1Players) {
-    const player = await findPlayerByFuzzyName(playerName, normalizedTeam1, 'trade');
+    const player = await findPlayerByFuzzyName(playerName, parsedTrade.team1, 'trade');
     if (player) {
       team1Players.push({ id: player.id, name: player.name, overall: player.overall });
     } else {
@@ -491,7 +439,7 @@ export async function resolveTradePlayer(parsedTrade: ParsedTrade): Promise<{
   
   // Resolve team 2 players (filter by team2 roster)
   for (const playerName of parsedTrade.team2Players) {
-    const player = await findPlayerByFuzzyName(playerName, normalizedTeam2, 'trade');
+    const player = await findPlayerByFuzzyName(playerName, parsedTrade.team2, 'trade');
     if (player) {
       team2Players.push({ id: player.id, name: player.name, overall: player.overall });
     } else {

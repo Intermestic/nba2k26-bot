@@ -376,27 +376,4 @@ export const coinsRouter = router({
       return bids;
     }),
 
-  /**
-   * Cancel a bid
-   */
-  cancelBid: protectedProcedure
-    .input(z.object({
-      bidId: z.number()
-    }))
-    .mutation(async ({ ctx, input }: { ctx: any; input: { bidId: number } }) => {
-      if (ctx.user.role !== "admin") {
-        throw new Error("Admin access required");
-      }
-
-      const db = await getDb();
-      if (!db) throw new Error("Database connection failed");
-
-      const { faBids } = await import('../../drizzle/schema');
-      
-      // Delete the bid
-      await db.delete(faBids).where(eq(faBids.id, input.bidId));
-
-      return { success: true };
-    }),
-
 });

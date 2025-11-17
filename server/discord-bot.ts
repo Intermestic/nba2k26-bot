@@ -144,8 +144,8 @@ async function isTeamOverCap(team: string): Promise<boolean> {
   // Get all players on team
   const teamPlayers = await db.select().from(players).where(eq(players.team, team));
   
-  // Calculate total cap using overall rating
-  const totalCap = teamPlayers.reduce((sum, p) => sum + p.overall, 0);
+  // Calculate total cap (use salaryCap if set, otherwise use overall)
+  const totalCap = teamPlayers.reduce((sum, p) => sum + (p.salaryCap || p.overall), 0);
   
   return totalCap > 1098;
 }
@@ -492,44 +492,17 @@ async function handleBidMessage(message: Message) {
       return;
     }
     
-    // Verify drop player is on the user's team (or is a free agent)
-    const dropPlayerTeam = dropPlayerValidated.team;
-    const isDropPlayerOnUserTeam = dropPlayerTeam === team || dropPlayerTeam === 'Free Agents' || dropPlayerTeam === 'Free Agent' || !dropPlayerTeam;
-    
-    if (!isDropPlayerOnUserTeam) {
-      console.log(`[FA Bids] Cannot cut ${dropPlayerValidated.name} - they are on ${dropPlayerTeam}, not ${team}`);
+    // Validate that the dropped player is actually on the user's team
+    if (dropPlayerValidated.team !== team && dropPlayerValidated.team !== 'Free Agent' && dropPlayerValidated.team !== 'Free Agents') {
+      console.log(`[FA Bids] Drop player ${dropPlayerValidated.name} is on ${dropPlayerValidated.team}, but user is on ${team}`);
       await message.reply(
-        `❌ **Invalid Drop Player**: ${dropPlayerValidated.name} is not on your roster.\n\n` +
-        `They are currently on the **${dropPlayerTeam}** roster. You can only cut players from your own team.`
+        `❌ **Invalid Drop Player**: ${dropPlayerValidated.name} is not on your team.\n\n` +
+        `**Your team**: ${team}\n` +
+        `**Player's team**: ${dropPlayerValidated.team}\n\n` +
+        `💡 **Tip**: You can only cut players from your own roster.`
       );
       return;
     }
-    
-    // Validate team name using team-validator (keep user's team, don't overwrite)
-    const { validateTeamName } = await import('./team-validator');
-    const validatedTeam = validateTeamName(team);
-    
-    if (!validatedTeam) {
-      console.log(`[FA Bids] Invalid team detected: ${team}`);
-      
-      // Get suggestions for similar team names
-      const { VALID_TEAMS } = await import('./team-validator');
-      const { extract } = await import('fuzzball');
-      const suggestions = extract(team, VALID_TEAMS as unknown as string[], { limit: 3 });
-      
-      const suggestionText = suggestions.length > 0
-        ? `\n\n**Did you mean?**\n${suggestions.map(s => `• ${s[0]} (${s[1]}% match)`).join('\n')}`
-        : '';
-      
-      await message.reply(
-        `❌ **Invalid Team**: "${team}" is not a valid team name.${suggestionText}\n\n` +
-        `💡 **Tip**: Check the team name spelling. The bot recognizes aliases like "76ers" → "Sixers", "Blazers" → "Trail Blazers".`
-      );
-      return;
-    }
-    
-    // Use validated canonical team name
-    team = validatedTeam;
   } else {
     // No drop player specified - cannot determine team
     await message.reply(
@@ -577,42 +550,22 @@ async function handleBidMessage(message: Message) {
     return;
   }
   
-  // Check if team would be over cap after this transaction
-  // Calculate projected cap: current total - dropped player + signed player
-  const teamPlayers = await db.select().from(players).where(eq(players.team, team));
-  const currentTotal = teamPlayers.reduce((sum, p) => sum + p.overall, 0);
-  let projectedTotal = currentTotal;
+  // Check if team is over cap and trying to sign 71+ OVR player
+  const { isTeamOverCap } = await import('./cap-violation-alerts');
+  const overCap = await isTeamOverCap(team);
   
-  // Subtract dropped player if present
-  if (dropPlayerValidated) {
-    projectedTotal -= dropPlayerValidated.overall;
-  }
-  
-  // Add signed player
-  projectedTotal += player.overall;
-  
-  const CAP_LIMIT = 1098;
-  const wouldBeOverCap = projectedTotal > CAP_LIMIT;
-  
-  // If transaction would put team over cap and player is 71+ OVR, reject
-  if (wouldBeOverCap && player.overall > 70) {
-    const capDiff = projectedTotal - CAP_LIMIT;
-    console.log(`[FA Bids] ❌ Over-cap restriction: ${team} would be ${capDiff} over cap after signing ${player.name} (${player.overall} OVR)`);
+  if (overCap && player.overall > 70) {
+    console.log(`[FA Bids] ❌ Over-cap restriction: ${team} cannot sign ${player.name} (${player.overall} OVR)`);
     await message.reply(
       `❌ **Over-Cap Restriction**
 
 ` +
-      `This transaction would put ${team} **${capDiff} over the 1098 overall cap**.
+      `${team} is currently **over the 1098 overall cap** and cannot sign players with **71+ overall rating**.
 
-` +
-      `**Current Total**: ${currentTotal}
-` +
-      `**After Transaction**: ${projectedTotal} (${capDiff > 0 ? '+' + capDiff : capDiff})
 ` +
       `**Player**: ${player.name} (${player.overall} OVR)
-
 ` +
-      `**Restriction**: Teams at or over cap may only sign players with **70 or lower overall** to reduce cap burden.
+      `**Restriction**: Over-cap teams may only sign players with **70 or lower overall** to reduce cap burden.
 
 ` +
       `💡 **Tip**: Focus on signing lower-rated players (≤70 OVR) to get back under the cap limit.`
@@ -625,7 +578,8 @@ async function handleBidMessage(message: Message) {
   const validation = await validateBidCoins(
     message.author.username,
     team,
-    parsedBid.bidAmount
+    parsedBid.bidAmount,
+    player.name  // Exclude existing bids on this player (will be replaced)
   );
   
   if (!validation.valid) {
@@ -700,17 +654,17 @@ async function handleBidMessage(message: Message) {
       .from(players)
       .where(eq(players.team, team));
     
-    const currentTotal = teamPlayers.reduce((sum, p) => sum + p.overall, 0);
+    const currentTotal = teamPlayers.reduce((sum, p) => sum + (p.salaryCap || p.overall), 0);
     let projectedTotal = currentTotal;
     
     // Subtract dropped player if present (use already-validated drop player)
     if (dropPlayerValidated) {
-      const dropPlayerCap = dropPlayerValidated.overall;
+      const dropPlayerCap = dropPlayerValidated.salaryCap || dropPlayerValidated.overall;
       projectedTotal -= dropPlayerCap;
     }
     
-    // Add signed player
-    const signPlayerCap = player.overall;
+    // Add signed player (use salaryCap if available, otherwise overall)
+    const signPlayerCap = player.salaryCap || player.overall;
     projectedTotal += signPlayerCap;
     
     const CAP_LIMIT = 1098;
@@ -1017,89 +971,6 @@ export async function startDiscordBot(token: string) {
         return;
       }
       
-      // Check for !fa70 command to show free agents with 70 OVR or below
-      if (message.content.trim().toLowerCase() === '!fa70') {
-        try {
-          const db = await getDb();
-          if (!db) {
-            await message.reply('❌ Database not available.');
-            return;
-          }
-          
-          // Query for free agents with 70 OVR or below
-          const freeAgents = await db
-            .select()
-            .from(players)
-            .where(
-              sql`(${players.team} IS NULL OR ${players.team} = 'Free Agent' OR ${players.team} = 'Free Agents') AND ${players.overall} <= 70`
-            )
-            .orderBy(sql`${players.overall} DESC, ${players.name} ASC`);
-          
-          if (freeAgents.length === 0) {
-            await message.reply('📋 No free agents with 70 OVR or below available.');
-            return;
-          }
-          
-          // Group by OVR rating
-          const grouped = new Map<number, string[]>();
-          for (const player of freeAgents) {
-            const ovr = player.overall;
-            if (!grouped.has(ovr)) {
-              grouped.set(ovr, []);
-            }
-            grouped.get(ovr)!.push(player.name);
-          }
-          
-          // Build response message
-          let response = `**🏀 Free Agents (70 OVR or Below)**\n\n`;
-          response += `*Eligible for over-cap teams*\n`;
-          response += `Total: **${freeAgents.length}** players\n\n`;
-          
-          // Sort by OVR descending
-          const sortedOvrs = Array.from(grouped.keys()).sort((a, b) => b - a);
-          
-          for (const ovr of sortedOvrs) {
-            const playerNames = grouped.get(ovr)!;
-            response += `**${ovr} OVR** (${playerNames.length}): ${playerNames.join(', ')}\n`;
-          }
-          
-          // Split into multiple messages if too long (Discord limit is 2000 chars)
-          if (response.length > 2000) {
-            const chunks: string[] = [];
-            let currentChunk = `**🏀 Free Agents (70 OVR or Below)**\n\n*Eligible for over-cap teams*\nTotal: **${freeAgents.length}** players\n\n`;
-            
-            for (const ovr of sortedOvrs) {
-              const playerNames = grouped.get(ovr)!;
-              const line = `**${ovr} OVR** (${playerNames.length}): ${playerNames.join(', ')}\n`;
-              
-              if (currentChunk.length + line.length > 1900) {
-                chunks.push(currentChunk);
-                currentChunk = line;
-              } else {
-                currentChunk += line;
-              }
-            }
-            
-            if (currentChunk.length > 0) {
-              chunks.push(currentChunk);
-            }
-            
-            // Send all chunks
-            for (const chunk of chunks) {
-              await message.reply(chunk);
-            }
-          } else {
-            await message.reply(response);
-          }
-          
-          console.log(`[FA70 Command] Displayed ${freeAgents.length} free agents to ${message.author.username}`);
-        } catch (error) {
-          console.error('[FA70 Command] Failed:', error);
-          await message.reply('❌ Failed to fetch free agents. Check logs for details.');
-        }
-        return;
-      }
-      
       // Check for manual overcap role update command
       if (message.content.trim().toLowerCase() === '!updateovercap') {
         try {
@@ -1254,6 +1125,44 @@ export async function startDiscordBot(token: string) {
         return;
       }
       
+      // Check for badge lookup command: !badge <abbreviation> or !badge list
+      if (message.content.trim().toLowerCase().startsWith('!badge')) {
+        const parts = message.content.trim().split(/\s+/);
+        
+        if (parts.length === 1) {
+          await message.reply('❌ Usage: !badge <abbreviation> or !badge list');
+          return;
+        }
+        
+        const query = parts[1].toLowerCase();
+        
+        try {
+          if (query === 'list') {
+            const { listAllBadges } = await import('./badge-lookup-handler');
+            const result = await listAllBadges();
+            
+            if (result.success && result.embed) {
+              await message.reply({ embeds: [result.embed] });
+            } else {
+              await message.reply(result.message || '❌ Failed to list badges');
+            }
+          } else {
+            const { lookupBadge } = await import('./badge-lookup-handler');
+            const result = await lookupBadge(query);
+            
+            if (result.success && result.embed) {
+              await message.reply({ embeds: [result.embed] });
+            } else {
+              await message.reply(result.message || '❌ Failed to look up badge');
+            }
+          }
+        } catch (error) {
+          console.error('[Badge Lookup] Command failed:', error);
+          await message.reply('❌ Failed to look up badge. Check logs for details.');
+        }
+        return;
+      }
+      
       await handleBidMessage(message);
     } else if (message.channelId === TRADE_CHANNEL_ID) {
       // Handle new trade embeds for voting
@@ -1262,6 +1171,29 @@ export async function startDiscordBot(token: string) {
         await handleNewTradeEmbed(message);
       } catch (error) {
         console.error('[Trade Voting] Error handling new trade embed:', error);
+      }
+    } else {
+      // Check if message is in a team channel (e.g., team-wizards, team-lakers)
+      const channel = message.channel;
+      if (channel && 'name' in channel && channel.name && channel.name.startsWith('team-')) {
+        // Extract team name from channel name (e.g., "team-wizards" -> "Wizards")
+        const teamName = channel.name.substring(5).split('-').map(word => 
+          word.charAt(0).toUpperCase() + word.slice(1)
+        ).join(' ');
+        
+        // Validate and normalize team name
+        const { validateTeamName } = await import('./team-validator');
+        const validatedTeam = validateTeamName(teamName);
+        
+        if (validatedTeam) {
+          // Try to handle as upgrade request
+          try {
+            const { handleUpgradeRequest } = await import('./upgrade-handler');
+            await handleUpgradeRequest(message, validatedTeam);
+          } catch (error) {
+            console.error('[Upgrade Handler] Error processing upgrade request:', error);
+          }
+        }
       }
     }
   });
@@ -1288,6 +1220,34 @@ export async function startDiscordBot(token: string) {
         console.error('[Trade Voting] Error handling reaction add:', error);
       }
       return;
+    }
+    
+    // Handle upgrade approval (✅ on messages with 😀)
+    if (reaction.emoji.name === '✅') {
+      const message = reaction.message.partial ? await reaction.message.fetch() : reaction.message;
+      
+      // Check if message has 😀 reaction (indicates valid upgrade request)
+      const hasValidUpgrade = message.reactions.cache.some(r => r.emoji.name === '😀');
+      if (hasValidUpgrade) {
+        try {
+          // Check if user is admin
+          const guild = message.guild;
+          if (!guild) return;
+          
+          const member = await guild.members.fetch(user.id);
+          const { isAdmin, handleUpgradeApproval } = await import('./upgrade-handler');
+          
+          if (!isAdmin(member)) {
+            console.log(`[Upgrade Handler] Non-admin user ${user.tag} attempted to approve upgrade`);
+            return;
+          }
+          
+          await handleUpgradeApproval(message, user);
+        } catch (error) {
+          console.error('[Upgrade Handler] Error handling upgrade approval:', error);
+        }
+        return;
+      }
     }
     
     // Process lightning bolt emoji (⚡) or exclamation emoji (❗) for manual processing
@@ -1885,7 +1845,52 @@ export async function startDiscordBot(token: string) {
     }
   });
   
-  await client.login(token);
+  // Handle connection errors and disconnects with auto-reconnect
+  client.on('error', (error) => {
+    console.error('[Discord Bot] Client error:', error);
+  });
+
+  client.on('shardError', (error) => {
+    console.error('[Discord Bot] Shard error:', error);
+  });
+
+  client.on('shardDisconnect', (event, shardId) => {
+    console.warn(`[Discord Bot] Shard ${shardId} disconnected:`, event);
+  });
+
+  client.on('shardReconnecting', (shardId) => {
+    console.log(`[Discord Bot] Shard ${shardId} reconnecting...`);
+  });
+
+  client.on('shardResume', (shardId, replayedEvents) => {
+    console.log(`[Discord Bot] Shard ${shardId} resumed (replayed ${replayedEvents} events)`);
+  });
+
+  // Login with exponential backoff retry
+  let loginAttempts = 0;
+  const maxLoginAttempts = 5;
+  
+  async function loginWithRetry(): Promise<void> {
+    try {
+      await client!.login(token);
+      loginAttempts = 0; // Reset on success
+      console.log('[Discord Bot] Login successful');
+    } catch (error) {
+      loginAttempts++;
+      const delay = Math.min(1000 * Math.pow(2, loginAttempts), 30000); // Max 30s
+      console.error(`[Discord Bot] Login failed (attempt ${loginAttempts}/${maxLoginAttempts}):`, error);
+      
+      if (loginAttempts < maxLoginAttempts) {
+        console.log(`[Discord Bot] Retrying login in ${delay}ms...`);
+        setTimeout(loginWithRetry, delay);
+      } else {
+        console.error('[Discord Bot] Max login attempts reached. Bot will not start.');
+        throw error;
+      }
+    }
+  }
+
+  await loginWithRetry();
   
   // Set up periodic cooldown cleanup (every 5 minutes)
   setInterval(async () => {

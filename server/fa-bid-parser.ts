@@ -733,7 +733,8 @@ export async function importBidsFromStatusMessage(messageContent: string, window
 export async function validateBidCoins(
   bidderName: string,
   team: string,
-  newBidAmount: number
+  newBidAmount: number,
+  playerName?: string  // Optional: exclude existing bids on this player
 ): Promise<{
   valid: boolean;
   available: number;
@@ -770,7 +771,12 @@ export async function validateBidCoins(
   // Get all current active bids for this bidder
   const window = getCurrentBiddingWindow();
   const currentBids = await getActiveBids(window.windowId);
-  const bidderBids = currentBids.filter(bid => bid.bidderName === bidderName);
+  let bidderBids = currentBids.filter(bid => bid.bidderName === bidderName);
+  
+  // Exclude existing bid on the same player (will be replaced, not added)
+  if (playerName) {
+    bidderBids = bidderBids.filter(bid => bid.playerName.toLowerCase() !== playerName.toLowerCase());
+  }
   
   // Calculate total commitment
   const currentCommitment = bidderBids.reduce((sum: number, bid: any) => sum + bid.bidAmount, 0);
