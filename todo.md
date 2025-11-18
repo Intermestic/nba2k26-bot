@@ -594,4 +594,36 @@ Bot is sending welcome messages to team channels way too many times (multiple du
 - [x] Identify why multiple welcome messages are sent
 - [x] Add deduplication logic or flag to prevent repeat messages
 - [x] Test dev server status (no errors)
-- [ ] Save checkpoint
+- [x] Save checkpoint (version: f5e08d09)
+
+
+---
+
+## BUG: Discord Embed Field Limit Error
+
+### Issue Reported
+Error when posting Discord cap status message from Bot Management page:
+```
+Invalid Form Body
+embeds[0].fields[BASE_TYPE_MAX_LENGTH]: Must be 25 or fewer in length.
+```
+
+### Root Cause
+- Discord embeds have a HARD LIMIT of 25 fields maximum
+- We're trying to send all 28 NBA teams as individual fields
+- This exceeds Discord's limit by 3 fields
+- Previous fix (checkpoint 6bb8323c) removed the 25-field limit thinking Discord could handle more, but it cannot
+
+### Solution Options
+1. ✅ **Use first 25 teams as fields, put remaining 3 in description** (RECOMMENDED - simple and clean)
+2. Combine multiple teams per field (e.g., 2 teams per field = 14 fields)
+3. Split into two separate embeds
+4. Use description-based format instead of fields (harder to read)
+
+### Tasks
+- [x] Locate cap status message generation code in server/discord.ts
+- [x] Revert to using 25 fields max + description for remaining teams
+- [x] Ensure remaining teams still show alphabetically at the end
+- [ ] Test posting cap status message from Bot Management page (ready for user testing)
+- [ ] Verify all 28 teams appear correctly without error (ready for user testing)
+- [ ] Save checkpoint (pending user test)

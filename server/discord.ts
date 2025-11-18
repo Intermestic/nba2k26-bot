@@ -83,10 +83,14 @@ const teamLogos: Record<string, string> = {
 export function generateDiscordEmbed(summaries: TeamSummary[], websiteUrl: string) {
   const overCapTeams = summaries.filter(s => s.totalOverall > OVERALL_CAP_LIMIT).length;
   
-  // Build embed fields for ALL teams
-  // Note: Discord officially supports 25 fields max, but in practice can handle more
-  // We'll include all teams to keep them sorted together
-  const fields = summaries.map(summary => {
+  // Discord has a HARD LIMIT of 25 fields per embed
+  // We have 28 teams, so we'll put the first 25 in fields and the last 3 in description
+  const maxFields = 25;
+  const teamsInFields = summaries.slice(0, maxFields);
+  const teamsInDescription = summaries.slice(maxFields);
+  
+  // Build embed fields for first 25 teams
+  const fields = teamsInFields.map(summary => {
     const overCap = summary.totalOverall - OVERALL_CAP_LIMIT;
     const status = overCap > 0 
       ? `🔴 ${summary.totalOverall} (+${overCap})`
@@ -102,7 +106,23 @@ export function generateDiscordEmbed(summaries: TeamSummary[], websiteUrl: strin
     };
   });
   
-  const description = `**Cap Limit:** ${OVERALL_CAP_LIMIT} Total Overall\n🔴 Over Cap: ${overCapTeams} teams\n\n**View all rosters:** <https://tinyurl.com/hof2k>`;
+  // Build description with remaining teams (if any)
+  let description = `**Cap Limit:** ${OVERALL_CAP_LIMIT} Total Overall\n🔴 Over Cap: ${overCapTeams} teams\n\n`;
+  
+  if (teamsInDescription.length > 0) {
+    description += `**Additional Teams:**\n`;
+    teamsInDescription.forEach(summary => {
+      const overCap = summary.totalOverall - OVERALL_CAP_LIMIT;
+      const status = overCap > 0 
+        ? `🔴 ${summary.totalOverall} (+${overCap})`
+        : `${summary.totalOverall}`;
+      const teamUrl = `${websiteUrl}?team=${encodeURIComponent(summary.team)}`;
+      description += `• [${summary.team}](<${teamUrl}>) - (${summary.playerCount}/14) - ${status}\n`;
+    });
+    description += `\n`;
+  }
+  
+  description += `**View all rosters:** <https://tinyurl.com/hof2k>`;
   
   return {
     embeds: [{
