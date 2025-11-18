@@ -314,3 +314,30 @@ Remove webhook-based posting and have the bot post/update cap status messages di
 - [x] Added String() conversion for all numeric values
 - [x] Test the fix (error resolved, page loads successfully)
 - [x] Save checkpoint
+
+
+---
+
+## COMPLETED: Fix Infinite Loop Error in Bot Management Page (Second Occurrence) ✅
+
+### Issue Fixed
+- User reported "Maximum update depth exceeded" error when accessing Bot Management page
+- Error occurred in ConfigDialog and CommandDialog components
+- Both were calling setState directly in render phase using if statements
+- Caused infinite re-render loop
+
+### Solution Applied
+1. ✅ Identified two problematic components: ConfigDialog and CommandDialog
+2. ✅ Both had `if (existingData && formData.field === "") { setFormData(...) }` in render
+3. ✅ Moved setState logic to useEffect hooks with proper dependencies
+4. ✅ ConfigDialog: Wrapped in useEffect with [existingConfig] dependency
+5. ✅ CommandDialog: Wrapped in useEffect with [existingCommand] dependency
+6. ✅ Tested - Bot Management page now loads without errors
+
+### Tasks Completed
+- [x] Check all button components in BotManagement.tsx and AutomationTab
+- [x] Look for setState calls in render phase or useEffect without dependencies
+- [x] Identify which specific components causing the infinite loop (ConfigDialog, CommandDialog)
+- [x] Fix the logic to prevent setState in render phase (moved to useEffect)
+- [x] Test Bot Management page loads without errors
+- [x] Save checkpoint

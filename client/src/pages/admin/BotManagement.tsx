@@ -408,15 +408,17 @@ function ConfigDialog({ open, configKey, onClose }: { open: boolean; configKey?:
     },
   });
 
-  // Load existing data
-  if (existingConfig && formData.key === "") {
-    setFormData({
-      key: existingConfig.key,
-      value: existingConfig.value,
-      description: existingConfig.description || "",
-      category: existingConfig.category || "",
-    });
-  }
+  // Load existing data when it arrives
+  useEffect(() => {
+    if (existingConfig) {
+      setFormData({
+        key: existingConfig.key,
+        value: existingConfig.value,
+        description: existingConfig.description || "",
+        category: existingConfig.category || "",
+      });
+    }
+  }, [existingConfig]);
 
   const handleSubmit = () => {
     if (!formData.key || !formData.value) {
@@ -809,17 +811,19 @@ function CommandDialog({ open, commandName, onClose }: { open: boolean; commandN
     },
   });
 
-  // Load existing data
-  if (existingCommand && formData.command === "") {
-    setFormData({
-      command: existingCommand.command,
-      description: existingCommand.description,
-      enabled: existingCommand.enabled,
-      responseTemplate: existingCommand.responseTemplate || "",
-      permissions: existingCommand.permissions || "",
-      category: existingCommand.category || "",
-    });
-  }
+  // Load existing data when it arrives
+  useEffect(() => {
+    if (existingCommand) {
+      setFormData({
+        command: existingCommand.command,
+        description: existingCommand.description,
+        enabled: existingCommand.enabled,
+        responseTemplate: existingCommand.responseTemplate || "",
+        permissions: existingCommand.permissions || "",
+        category: existingCommand.category || "",
+      });
+    }
+  }, [existingCommand]);
 
   const handleSubmit = () => {
     if (!formData.command || !formData.description) {
