@@ -201,7 +201,7 @@ export async function autoUpdateDiscord(affectedTeams?: string[]) {
     const config = configs[0];
     
     // Check if auto-update is enabled and we have necessary config
-    if (!config.autoUpdateEnabled || !config.webhookUrl || !config.messageId) {
+    if (!config.autoUpdateEnabled || !config.channelId || !config.messageId) {
       return;
     }
 
@@ -218,7 +218,7 @@ export async function autoUpdateDiscord(affectedTeams?: string[]) {
       notificationTimeout = setTimeout(async () => {
         if (recentlyAffectedTeams.size >= 2) {
           try {
-            await sendBulkUpdateNotification(config.webhookUrl, Array.from(recentlyAffectedTeams));
+            await sendBulkUpdateNotification(config.channelId!, Array.from(recentlyAffectedTeams));
           } catch (err) {
             console.error('[Discord] Notification failed:', err);
           }
@@ -237,8 +237,9 @@ export async function autoUpdateDiscord(affectedTeams?: string[]) {
       }
     }
 
-    // Update Discord message
-    await updateDiscordMessage(config.webhookUrl, config.messageId, config.websiteUrl);
+    // Update Discord message using bot
+    const { updateCapStatusMessage } = await import('./discord-bot.js');
+    await updateCapStatusMessage(config.channelId, config.messageId, config.websiteUrl);
     
     // Update lastUpdated timestamp
     await db
@@ -252,59 +253,59 @@ export async function autoUpdateDiscord(affectedTeams?: string[]) {
   }
 }
 
-// Delete a Discord message
-async function deleteDiscordMessage(webhookUrl: string, messageId: string) {
-  const match = webhookUrl.match(/discord\.com\/api\/webhooks\/(\d+)\/([^/]+)/);
-  if (!match) return;
-  
-  const [, webhookId, webhookToken] = match;
-  const deleteUrl = `https://discord.com/api/webhooks/${webhookId}/${webhookToken}/messages/${messageId}`;
-  
+// Delete a Discord message using bot
+async function deleteDiscordMessage(channelId: string, messageId: string) {
   try {
-    await fetch(deleteUrl, { method: 'DELETE' });
+    const { getDiscordClient } = await import('./discord-bot.js');
+    const client = getDiscordClient();
+    if (!client || !client.isReady()) return;
+    
+    const channel = await client.channels.fetch(channelId);
+    if (!channel || !channel.isTextBased()) return;
+    
+    const message = await (channel as any).messages.fetch(messageId);
+    await message.delete();
   } catch (err) {
     console.error('[Discord] Failed to delete message:', err);
   }
 }
 
-// Send notification when 2+ teams are updated
-async function sendBulkUpdateNotification(webhookUrl: string, teams: string[]) {
+// Send notification when 2+ teams are updated using bot
+async function sendBulkUpdateNotification(channelId: string, teams: string[]) {
   const db = await getDb();
   if (!db) return;
   
-  // Delete previous notification if exists
-  const configs = await db.select().from(discordConfig).limit(1);
-  if (configs.length > 0 && configs[0].lastNotificationMessageId) {
-    await deleteDiscordMessage(webhookUrl, configs[0].lastNotificationMessageId);
+  try {
+    const { getDiscordClient } = await import('./discord-bot.js');
+    const client = getDiscordClient();
+    if (!client || !client.isReady()) return;
+    
+    // Delete previous notification if exists
+    const configs = await db.select().from(discordConfig).limit(1);
+    if (configs.length > 0 && configs[0].lastNotificationMessageId) {
+      await deleteDiscordMessage(channelId, configs[0].lastNotificationMessageId);
+    }
+    
+    const channel = await client.channels.fetch(channelId);
+    if (!channel || !channel.isTextBased()) return;
+    
+    const teamList = teams.map(t => `**${t}**`).join(', ');
+    const content = `@everyone \n\n🚨 **Bulk Transaction Alert** 🚨\n\n${teams.length} teams updated: ${teamList}\n\nCap status has been updated automatically.`;
+    
+    const message = await (channel as any).send({ content });
+    
+    // Save the new notification message ID
+    if (message.id && configs.length > 0) {
+      await db
+        .update(discordConfig)
+        .set({ lastNotificationMessageId: message.id })
+        .where(eq(discordConfig.id, configs[0].id));
+    }
+    
+    console.log(`[Discord] Sent bulk update notification for ${teams.length} teams`);
+  } catch (err) {
+    console.error('[Discord] Failed to send bulk update notification:', err);
   }
-  
-  const teamList = teams.map(t => `**${t}**`).join(', ');
-  const message = {
-    content: `@everyone \n\n🚨 **Bulk Transaction Alert** 🚨\n\n${teams.length} teams updated: ${teamList}\n\nCap status has been updated automatically.`
-  };
-  
-  const response = await fetch(webhookUrl, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(message)
-  });
-  
-  if (!response.ok) {
-    throw new Error(`Discord notification failed: ${response.status} ${response.statusText}`);
-  }
-  
-  // Save the new notification message ID
-  const responseData = await response.json();
-  if (responseData.id && configs.length > 0) {
-    await db
-      .update(discordConfig)
-      .set({ lastNotificationMessageId: responseData.id })
-      .where(eq(discordConfig.id, configs[0].id));
-  }
-  
-  console.log(`[Discord] Sent bulk update notification for ${teams.length} teams`);
 }
 
 

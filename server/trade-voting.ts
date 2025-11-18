@@ -1,4 +1,4 @@
-import { Client, Message, MessageReaction, User, PartialMessageReaction, PartialUser, EmbedBuilder } from 'discord.js';
+import { Client, Message, MessageReaction, User, PartialMessageReaction, PartialUser, EmbedBuilder, TextChannel, Collection } from 'discord.js';
 
 const TRADE_CHANNEL_ID = '1087524540634116116';
 const TRADE_COMMITTEE_ROLE = 'Trade Committee';
@@ -569,6 +569,91 @@ export async function manuallyCheckTradeVotes(client: Client, messageId: string)
 }
 
 /**
+ * Scan all trades starting from MIN_AUTO_TRACK_MESSAGE_ID for missed votes
+ * Called on bot startup to catch any trades that reached thresholds while bot was offline
+ */
+export async function scanTradesForMissedVotes(client: Client) {
+  try {
+    console.log('[Trade Voting] 🔍 Scanning for missed votes on startup...');
+    console.log(`[Trade Voting] Starting from message ID: ${MIN_AUTO_TRACK_MESSAGE_ID}`);
+    
+    const channel = await client.channels.fetch(TRADE_CHANNEL_ID);
+    if (!channel || !channel.isTextBased()) {
+      console.log('[Trade Voting] ❌ Trade channel not found or not text-based');
+      return;
+    }
+    
+    const textChannel = channel as TextChannel;
+    
+    // Fetch messages starting from MIN_AUTO_TRACK_MESSAGE_ID
+    let messagesChecked = 0;
+    let tradesProcessed = 0;
+    let lastMessageId: string | undefined = undefined;
+    
+    // Fetch messages in batches of 100 (Discord limit)
+    while (true) {
+      const options: any = { limit: 100 };
+      if (lastMessageId) {
+        options.before = lastMessageId;
+      }
+      
+      const fetchedMessages = await textChannel.messages.fetch(options);
+      
+      // Handle both single message and collection returns
+      let messages: Collection<string, Message>;
+      if (fetchedMessages instanceof Collection) {
+        messages = fetchedMessages;
+      } else {
+        // Single message returned, wrap in collection
+        messages = new Collection();
+        messages.set(fetchedMessages.id, fetchedMessages);
+      }
+      
+      if (messages.size === 0) break;
+      
+      // Process each message
+      for (const [messageId, message] of Array.from(messages.entries())) {
+        // Stop if we've gone past the minimum message ID
+        if (BigInt(messageId) < BigInt(MIN_AUTO_TRACK_MESSAGE_ID)) {
+          console.log(`[Trade Voting] ✅ Reached minimum message ID, stopping scan`);
+          console.log(`[Trade Voting] 📊 Scan complete: ${messagesChecked} messages checked, ${tradesProcessed} trades processed`);
+          return;
+        }
+        
+        messagesChecked++;
+        
+        // Check if this is a trade post (has embeds and is from a bot)
+        if (message.embeds.length > 0 && message.author.bot) {
+          console.log(`[Trade Voting] 🔍 Found trade message ${messageId}, checking votes...`);
+          
+          // Use the manual check function to process this trade
+          const result = await manuallyCheckTradeVotes(client, messageId);
+          
+          if (result.success) {
+            tradesProcessed++;
+            console.log(`[Trade Voting] ✅ ${result.message}`);
+          } else {
+            console.log(`[Trade Voting] ⚠️  ${result.message}`);
+          }
+        }
+      }
+      
+      // Update lastMessageId for next batch
+      const messagesArray = Array.from(messages.values());
+      lastMessageId = messagesArray[messagesArray.length - 1]?.id;
+      
+      // If we fetched less than 100 messages, we've reached the end
+      if (messages.size < 100) break;
+    }
+    
+    console.log(`[Trade Voting] 📊 Scan complete: ${messagesChecked} messages checked, ${tradesProcessed} trades processed`);
+    
+  } catch (error) {
+    console.error('[Trade Voting] ❌ Error scanning for missed votes:', error);
+  }
+}
+
+/**
  * Initialize trade voting system
  */
 export function initializeTradeVoting(client: Client) {
@@ -582,4 +667,9 @@ export function initializeTradeVoting(client: Client) {
   }, 60 * 60 * 1000); // Every hour
   
   console.log('[Trade Reminders] Hourly vote reminders scheduled');
+  
+  // Scan for missed votes on startup
+  scanTradesForMissedVotes(client).catch(error => {
+    console.error('[Trade Voting] Error during startup scan:', error);
+  });
 }

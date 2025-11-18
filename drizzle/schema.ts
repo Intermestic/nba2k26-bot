@@ -72,7 +72,7 @@ export type InsertTransactionHistory = typeof transactionHistory.$inferInsert;
  */
 export const discordConfig = mysqlTable("discord_config", {
   id: int("id").autoincrement().primaryKey(),
-  webhookUrl: text("webhookUrl").notNull(), // Discord webhook URL
+  channelId: varchar("channelId", { length: 64 }), // Discord channel ID for posting cap status
   messageId: varchar("messageId", { length: 64 }), // Discord message ID to update
   lastNotificationMessageId: varchar("lastNotificationMessageId", { length: 64 }), // Last notification message ID (for deletion)
   websiteUrl: text("websiteUrl").notNull(), // Website URL for team links

@@ -175,3 +175,38 @@ All phases completed and checkpoint saved.
 - [x] Add API endpoint for manual vote check
 - [x] Test with the specific message ID (ready for user to test)
 - [x] Save checkpoint
+
+
+---
+
+## TODO: Automatic Trade Vote Recovery on Bot Startup
+
+### Goal
+Scan all trades starting from message ID 1440108805689053186 when bot starts up and check if any reached voting thresholds while bot was offline
+
+### Tasks
+- [x] Create scanTradesForMissedVotes() function in trade-voting.ts
+- [x] Fetch all messages from trade channel starting at MIN_AUTO_TRACK_MESSAGE_ID (1439096316801060964)
+- [x] Filter for trade embed messages (bot-posted trades)
+- [x] For each trade, call manuallyCheckTradeVotes() to process votes
+- [x] Add function call to bot initialization in discord-bot.ts
+- [ ] Test with message ID 1440108805689053186 (ready for user to test)
+- [ ] Save checkpoint (pending test)
+
+
+---
+
+## TODO: Redesign Discord Integration to Bot-Only Approach
+
+### Goal
+Remove webhook-based posting and have the bot post/update cap status messages directly
+
+### Tasks
+- [x] Remove webhook configuration from UI and database
+- [x] Implement bot functions to post cap status messages to Discord channel
+- [x] Implement bot functions to update existing cap status messages
+- [x] Add channel ID configuration for cap status posting
+- [x] Redesign Discord integration page UI (remove webhook fields)
+- [x] Test bot posting cap status messages (UI verified, ready for user to test actual posting)
+- [x] Test bot updating cap status messages (UI verified, ready for user to test actual updating)
+- [ ] Save checkpoint

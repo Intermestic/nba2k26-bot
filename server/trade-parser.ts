@@ -70,8 +70,9 @@ export function parseTrade(message: string): ParsedTrade | null {
   // Try different parsing strategies
   
   // Strategy 1: "Team send: Player OVR (badges) ..." format (multi-line)
+  // Updated to handle cases where team name appears without "send" keyword
   const sendPattern = new RegExp(
-    `${team1}\\s+send[s]?[:\\s]+([^]+?)(?:for|${team2}\\s+send)`,
+    `${team1}\\s+send[s]?[:\\s]+([^]+?)(?:for|${team2})`,
     'is'
   );
   const sendMatch = text.match(sendPattern);
@@ -163,23 +164,28 @@ export function parseTrade(message: string): ParsedTrade | null {
 function parsePlayerListWithOVR(text: string): string[] {
   const players: string[] = [];
   
-  // Split by newlines to process each line
-  const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+  // Split by newlines AND commas to handle both formats:
+  // - Multi-line: "Player A\nPlayer B"
+  // - Comma-separated: "Player A, Player B"
+  const lines = text.split(/[\n,]/).map(l => l.trim()).filter(l => l.length > 0);
   
   for (const line of lines) {
-    // Skip lines that are just numbers (totals like "245/33")
-    if (/^\d+\/\d+$/.test(line)) {
+    // Skip lines that are just numbers and hyphens (totals like "245/33" or "159-21")
+    if (/^[\d\-\/]+$/.test(line)) {
+      console.log('[Trade Parser] Skipping total line:', line);
       continue;
     }
     
-    // Extract player name by removing all numbers, slashes, and parentheses
+    // Extract player name by removing all numbers, slashes, hyphens, and parentheses
     // This handles: "Trae young 88/16" → "Trae young"
+    //               "Jarrett Allen 84-13" → "Jarrett Allen"
     //               "adem Bona75/5" → "adem Bona"
     const playerName = line
-      .replace(/\d+\/\d+/g, '')  // Remove OVR/badges format
+      .replace(/\d+[\/\-]\d+/g, '')  // Remove OVR/badges format (both / and -)
       .replace(/\d+\s*\(\d+\)/g, '')  // Remove OVR (badges) format
       .replace(/\(\d+\)/g, '')  // Remove standalone (badges)
       .replace(/\d+/g, '')  // Remove any remaining numbers
+      .replace(/[\-\/]/g, '')  // Remove any remaining hyphens and slashes
       .trim();
     
     if (playerName.length > 0) {

@@ -2040,3 +2040,78 @@ export function getDiscordBotStatus() {
     guildId: GUILD_ID
   };
 }
+
+/**
+ * Post cap status message to Discord channel using the bot
+ */
+export async function postCapStatusToChannel(channelId: string, websiteUrl: string): Promise<{ success: boolean; messageId: string | null; teamCount: number }> {
+  if (!client || !client.isReady()) {
+    throw new Error('Discord bot is not connected');
+  }
+
+  try {
+    const { getTeamSummaries, generateDiscordEmbed } = await import('./discord.js');
+    
+    const summaries = await getTeamSummaries();
+    const embedData = generateDiscordEmbed(summaries, websiteUrl);
+    
+    const channel = await client.channels.fetch(channelId);
+    if (!channel || !channel.isTextBased()) {
+      throw new Error('Invalid channel or channel is not text-based');
+    }
+
+    // Post message with @everyone mention
+    const message = await (channel as any).send({
+      content: '@everyone',
+      embeds: embedData.embeds
+    });
+
+    console.log(`[Bot] Posted cap status to channel ${channelId}, message ID: ${message.id}`);
+    
+    return {
+      success: true,
+      messageId: message.id,
+      teamCount: summaries.length
+    };
+  } catch (error) {
+    console.error('[Bot] Failed to post cap status:', error);
+    throw error;
+  }
+}
+
+/**
+ * Update existing cap status message in Discord channel using the bot
+ */
+export async function updateCapStatusMessage(channelId: string, messageId: string, websiteUrl: string): Promise<{ success: boolean; teamCount: number }> {
+  if (!client || !client.isReady()) {
+    throw new Error('Discord bot is not connected');
+  }
+
+  try {
+    const { getTeamSummaries, generateDiscordEmbed } = await import('./discord.js');
+    
+    const summaries = await getTeamSummaries();
+    const embedData = generateDiscordEmbed(summaries, websiteUrl);
+    
+    const channel = await client.channels.fetch(channelId);
+    if (!channel || !channel.isTextBased()) {
+      throw new Error('Invalid channel or channel is not text-based');
+    }
+
+    // Fetch and update the message
+    const message = await channel.messages.fetch(messageId);
+    await message.edit({
+      embeds: embedData.embeds
+    });
+
+    console.log(`[Bot] Updated cap status message ${messageId} in channel ${channelId}`);
+    
+    return {
+      success: true,
+      teamCount: summaries.length
+    };
+  } catch (error) {
+    console.error('[Bot] Failed to update cap status:', error);
+    throw error;
+  }
+}

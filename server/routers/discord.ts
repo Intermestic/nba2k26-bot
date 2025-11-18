@@ -1,35 +1,50 @@
 import { z } from "zod";
 import { protectedProcedure, router } from "../_core/trpc";
-import { postToDiscord, updateDiscordMessage, postTeamToDiscord } from "../discord";
 import { getDb } from "../db";
 import { discordConfig } from "../../drizzle/schema";
 import { eq } from "drizzle-orm";
-import { getDiscordBotStatus } from "../discord-bot";
+import { getDiscordBotStatus, postCapStatusToChannel, updateCapStatusMessage } from "../discord-bot";
 
 export const discordRouter = router({
-  // Post new embed to Discord
+  // Post new cap status message using bot
   postCapStatus: protectedProcedure
     .input(
       z.object({
-        webhookUrl: z.string().url(),
+        channelId: z.string(),
         websiteUrl: z.string().url(),
       })
     )
-    .mutation(async ({ input, ctx }): Promise<{ success: boolean; teamCount: number }> => {
+    .mutation(async ({ input, ctx }): Promise<{ success: boolean; messageId: string | null; teamCount: number }> => {
       // Only admins can post to Discord
       if (ctx.user?.role !== "admin") {
         throw new Error("Unauthorized: Admin access required");
       }
 
-      const result = await postToDiscord(input.webhookUrl, input.websiteUrl);
+      const result = await postCapStatusToChannel(input.channelId, input.websiteUrl);
+      
+      // Save message ID to config
+      const db = await getDb();
+      if (db && result.messageId) {
+        const existing = await db.select().from(discordConfig).limit(1);
+        if (existing.length > 0) {
+          await db
+            .update(discordConfig)
+            .set({
+              messageId: result.messageId,
+              lastUpdated: new Date(),
+            })
+            .where(eq(discordConfig.id, existing[0].id));
+        }
+      }
+      
       return result;
     }),
 
-  // Update existing Discord message
+  // Update existing Discord message using bot
   updateCapStatus: protectedProcedure
     .input(
       z.object({
-        webhookUrl: z.string().url(),
+        channelId: z.string(),
         messageId: z.string(),
         websiteUrl: z.string().url(),
       })
@@ -40,11 +55,26 @@ export const discordRouter = router({
         throw new Error("Unauthorized: Admin access required");
       }
 
-      const result = await updateDiscordMessage(
-        input.webhookUrl,
+      const result = await updateCapStatusMessage(
+        input.channelId,
         input.messageId,
         input.websiteUrl
       );
+      
+      // Update last updated timestamp
+      const db = await getDb();
+      if (db) {
+        const existing = await db.select().from(discordConfig).limit(1);
+        if (existing.length > 0) {
+          await db
+            .update(discordConfig)
+            .set({
+              lastUpdated: new Date(),
+            })
+            .where(eq(discordConfig.id, existing[0].id));
+        }
+      }
+      
       return result;
     }),
 
@@ -61,34 +91,11 @@ export const discordRouter = router({
     return configs[0] || null;
   }),
 
-  // Post individual team cap status
-  postTeamCapStatus: protectedProcedure
-    .input(
-      z.object({
-        webhookUrl: z.string().url(),
-        teamName: z.string(),
-        websiteUrl: z.string().url(),
-      })
-    )
-    .mutation(async ({ input, ctx }): Promise<{ success: boolean; teamName: string; playerCount: number; totalOverall: number }> => {
-      // Only admins can post to Discord
-      if (ctx.user?.role !== "admin") {
-        throw new Error("Unauthorized: Admin access required");
-      }
-
-      const result = await postTeamToDiscord(
-        input.webhookUrl,
-        input.teamName,
-        input.websiteUrl
-      );
-      return result;
-    }),
-
   // Save Discord configuration
   saveConfig: protectedProcedure
     .input(
       z.object({
-        webhookUrl: z.string().url(),
+        channelId: z.string(),
         messageId: z.string().optional(),
         websiteUrl: z.string().url(),
         autoUpdateEnabled: z.boolean(),
@@ -109,7 +116,7 @@ export const discordRouter = router({
         await db
           .update(discordConfig)
           .set({
-            webhookUrl: input.webhookUrl,
+            channelId: input.channelId,
             messageId: input.messageId || null,
             websiteUrl: input.websiteUrl,
             autoUpdateEnabled: input.autoUpdateEnabled ? 1 : 0,
@@ -119,7 +126,7 @@ export const discordRouter = router({
       } else {
         // Insert new config
         await db.insert(discordConfig).values({
-          webhookUrl: input.webhookUrl,
+          channelId: input.channelId,
           messageId: input.messageId || null,
           websiteUrl: input.websiteUrl,
           autoUpdateEnabled: input.autoUpdateEnabled ? 1 : 0,
