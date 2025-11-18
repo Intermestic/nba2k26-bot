@@ -2024,7 +2024,11 @@ export function getDiscordClient(): Client | null {
  * Get Discord bot status
  */
 export function getDiscordBotStatus() {
+  console.log('[Discord Bot Status] Checking status...');
+  console.log('[Discord Bot Status] Client exists:', !!client);
+  
   if (!client) {
+    console.log('[Discord Bot Status] No client - returning offline');
     return {
       online: false,
       username: null,
@@ -2033,9 +2037,15 @@ export function getDiscordBotStatus() {
     };
   }
   
+  const isReady = client.isReady();
+  const username = client.user?.tag || null;
+  
+  console.log('[Discord Bot Status] client.isReady():', isReady);
+  console.log('[Discord Bot Status] client.user?.tag:', username);
+  
   return {
-    online: client.isReady(),
-    username: client.user?.tag || null,
+    online: isReady,
+    username: username,
     channelId: FA_CHANNEL_ID,
     guildId: GUILD_ID
   };

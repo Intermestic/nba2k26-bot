@@ -8,7 +8,7 @@ import Home from "./pages/Home";
 import Admin from "./pages/Admin";
 import Transactions from "./pages/Transactions";
 import History from "./pages/History";
-import DiscordIntegration from "./pages/DiscordIntegration";
+
 import CoinDashboard from "./pages/CoinDashboard";
 import CapCompliance from "./pages/CapCompliance";
 import FAHistory from "./pages/FAHistory";
@@ -42,7 +42,7 @@ function Router() {
       <Route path={"/admin/roster"} component={Admin} />
       <Route path={"/admin/transactions"} component={Transactions} />
       <Route path={"/admin/history"} component={History} />
-      <Route path={"/admin/discord"} component={DiscordIntegration} />
+
       <Route path={"/admin/coins"} component={CoinDashboard} />
       <Route path={"/admin/cap-compliance"} component={CapCompliance} />
       <Route path={"/admin/fa-history"} component={FAHistory} />

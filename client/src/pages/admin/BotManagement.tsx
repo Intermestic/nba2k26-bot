@@ -24,7 +24,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Pencil, Trash2, Plus, Save, X, Clock, Send, Calendar, Info, Copy, Eye, Edit3, Filter, BarChart3, CheckCircle2, XCircle, AlertCircle } from "lucide-react";
+import { Pencil, Trash2, Plus, Save, X, Clock, Send, Calendar, Info, Copy, Eye, Edit3, Filter, BarChart3, CheckCircle2, XCircle, AlertCircle, RefreshCw } from "lucide-react";
 
 export default function BotManagement() {
   const [activeTab, setActiveTab] = useState("config");
@@ -1002,6 +1002,202 @@ function ManualTradeVoteCheck() {
   );
 }
 
+// ==================== DISCORD CAP STATUS SECTION ====================
+
+function DiscordCapStatusSection() {
+  const [channelId, setChannelId] = useState("");
+  const [messageId, setMessageId] = useState("");
+  const [websiteUrl, setWebsiteUrl] = useState(window.location.origin);
+  const [autoUpdateEnabled, setAutoUpdateEnabled] = useState(false);
+
+  // Load existing config
+  const { data: config } = trpc.discord.getConfig.useQuery();
+
+  // Update form when config loads
+  useEffect(() => {
+    if (config) {
+      setChannelId(config.channelId || "");
+      setMessageId(config.messageId || "");
+      setWebsiteUrl(config.websiteUrl || window.location.origin);
+      setAutoUpdateEnabled(config.autoUpdateEnabled === 1);
+    }
+  }, [config]);
+
+  const saveConfigMutation = trpc.discord.saveConfig.useMutation({
+    onSuccess: () => {
+      toast.success("Configuration saved!");
+    },
+    onError: (error) => {
+      toast.error(`Failed to save: ${error.message}`);
+    },
+  });
+
+  const postMutation = trpc.discord.postCapStatus.useMutation({
+    onSuccess: (data) => {
+      toast.success(`Posted to Discord! ${data.teamCount} teams included.`);
+      if (data.messageId) {
+        setMessageId(data.messageId);
+      }
+    },
+    onError: (error) => {
+      toast.error(`Failed to post: ${error.message}`);
+    },
+  });
+
+  const updateMutation = trpc.discord.updateCapStatus.useMutation({
+    onSuccess: (data) => {
+      toast.success(`Updated Discord message! ${data.teamCount} teams included.`);
+    },
+    onError: (error) => {
+      toast.error(`Failed to update: ${error.message}`);
+    },
+  });
+
+  const handleSaveConfig = async () => {
+    if (!channelId) {
+      toast.error("Please enter a Discord channel ID");
+      return;
+    }
+
+    saveConfigMutation.mutate({
+      channelId,
+      messageId,
+      websiteUrl,
+      autoUpdateEnabled,
+    });
+  };
+
+  const handlePost = async () => {
+    if (!channelId) {
+      toast.error("Please enter a Discord channel ID");
+      return;
+    }
+
+    postMutation.mutate({ channelId, websiteUrl });
+  };
+
+  const handleUpdate = async () => {
+    if (!channelId) {
+      toast.error("Please enter a Discord channel ID");
+      return;
+    }
+
+    if (!messageId) {
+      toast.error("Please enter a message ID");
+      return;
+    }
+
+    updateMutation.mutate({ channelId, messageId, websiteUrl });
+  };
+
+  return (
+    <div className="space-y-4">
+      <h3 className="text-lg font-semibold">Discord Cap Status Updates</h3>
+      <p className="text-sm text-muted-foreground">
+        Post auto-updating team cap status messages to Discord
+      </p>
+
+      <div className="space-y-4">
+        <div>
+          <Label htmlFor="cap_channel_id">Discord Channel ID</Label>
+          <Input
+            id="cap_channel_id"
+            value={channelId}
+            onChange={(e) => setChannelId(e.target.value)}
+            placeholder="1234567890123456789"
+            className="font-mono"
+          />
+          <p className="text-xs text-muted-foreground mt-1">
+            Right-click your Discord channel → Copy Channel ID
+          </p>
+        </div>
+
+        <div>
+          <Label htmlFor="cap_website_url">Website URL</Label>
+          <Input
+            id="cap_website_url"
+            value={websiteUrl}
+            onChange={(e) => setWebsiteUrl(e.target.value)}
+            placeholder="https://your-site.manus.space"
+          />
+          <p className="text-xs text-muted-foreground mt-1">
+            Team links in the Discord embed will point to this URL
+          </p>
+        </div>
+
+        <div>
+          <Label htmlFor="cap_message_id">Message ID (for updates)</Label>
+          <Input
+            id="cap_message_id"
+            value={messageId}
+            onChange={(e) => setMessageId(e.target.value)}
+            placeholder="1234567890123456789"
+            className="font-mono"
+          />
+          <p className="text-xs text-muted-foreground mt-1">
+            Optional: Enter the message ID to update an existing message
+          </p>
+        </div>
+
+        <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg border">
+          <div>
+            <Label htmlFor="cap_auto_update" className="font-medium">Auto-Update</Label>
+            <p className="text-sm text-muted-foreground">
+              Automatically update Discord when team assignments change
+            </p>
+          </div>
+          <Switch
+            id="cap_auto_update"
+            checked={autoUpdateEnabled}
+            onCheckedChange={setAutoUpdateEnabled}
+          />
+        </div>
+
+        {autoUpdateEnabled && (
+          <div className="flex items-start gap-2 p-3 bg-green-50 border border-green-200 rounded-lg dark:bg-green-950 dark:border-green-800">
+            <CheckCircle2 className="w-5 h-5 text-green-600 dark:text-green-400 mt-0.5" />
+            <p className="text-sm text-green-700 dark:text-green-300">
+              Auto-update is enabled. Discord will refresh automatically when players are assigned to teams (max once per minute).
+            </p>
+          </div>
+        )}
+
+        <div className="flex gap-2">
+          <Button 
+            onClick={handleSaveConfig}
+            disabled={saveConfigMutation.isPending}
+            variant="outline"
+          >
+            {saveConfigMutation.isPending ? "Saving..." : "Save Config"}
+          </Button>
+          <Button
+            onClick={handlePost}
+            disabled={postMutation.isPending || !channelId}
+          >
+            <Send className="w-4 h-4 mr-2" />
+            {postMutation.isPending ? "Posting..." : "Post New Message"}
+          </Button>
+          <Button
+            onClick={handleUpdate}
+            disabled={updateMutation.isPending || !messageId || !channelId}
+            variant="secondary"
+          >
+            <RefreshCw className="w-4 h-4 mr-2" />
+            {updateMutation.isPending ? "Updating..." : "Update Existing"}
+          </Button>
+        </div>
+
+        <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg dark:bg-blue-950 dark:border-blue-800">
+          <p className="text-sm text-blue-700 dark:text-blue-300">
+            <strong>Tip:</strong> Use "Post New Message" first, then copy the message ID from Discord and paste it above. 
+            Then use "Update Existing" to refresh the same message.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ==================== AUTOMATION TAB ====================
 
 function AutomationTab() {
@@ -1232,6 +1428,9 @@ function AutomationTab() {
 
         {/* Manual Trade Vote Check */}
         <ManualTradeVoteCheck />
+
+        {/* Discord Cap Status Posting */}
+        <DiscordCapStatusSection />
 
         {/* Save Button */}
         <div className="flex justify-end pt-4 border-t">

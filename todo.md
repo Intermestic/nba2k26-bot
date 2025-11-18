@@ -209,4 +209,45 @@ Remove webhook-based posting and have the bot post/update cap status messages di
 - [x] Redesign Discord integration page UI (remove webhook fields)
 - [x] Test bot posting cap status messages (UI verified, ready for user to test actual posting)
 - [x] Test bot updating cap status messages (UI verified, ready for user to test actual updating)
+- [x] Save checkpoint
+
+
+---
+
+## TODO: Fix Discord Bot Status Not Showing Online in UI
+
+### Issue
+- Bot is connected and working (logs show bot activity)
+- UI shows "Bot Offline" with red indicator
+- "Post New Message" button is greyed out because botStatus?.online returns false
+- getDiscordBotStatus() endpoint returns online: false even though bot is connected
+
+### Tasks
+- [ ] Investigate why getDiscordBotStatus() returns online: false
+- [ ] Check if client.isReady() is returning false
+- [ ] Add logging to bot initialization and status checks
+- [ ] Fix the bot status detection logic
+- [ ] Test that the UI shows bot as online after fix
+- [ ] Verify "Post New Message" button becomes enabled
+- [ ] Save checkpoint
+
+
+---
+
+## TODO: Rebuild Discord Cap Status Posting in Bot Management Page
+
+### Issue
+- Discord Integration page shows bot as offline even though bot is connected
+- Status query returns correct data but frontend shows stale cached data
+- User wants to scrap the separate page and integrate into bot management
+
+### Tasks
+- [x] Find bot management page
+- [x] Add cap status posting section to bot management page
+- [x] Include channel ID configuration
+- [x] Include message ID field for updates
+- [x] Add "Post New Message" and "Update Existing" buttons
+- [x] Remove old Discord Integration page
+- [x] Remove Discord Integration route from admin navigation
+- [x] Test new implementation works correctly
 - [ ] Save checkpoint

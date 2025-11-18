@@ -247,14 +247,7 @@ export default function AdminDashboard() {
       color: "bg-amber-500",
       section: "system"
     },
-    {
-      title: "Discord Integration",
-      description: "Configure Discord webhook and auto-updates",
-      href: "/admin/discord",
-      icon: <MessageSquare className="w-6 h-6" />,
-      color: "bg-blue-600",
-      section: "system"
-    },
+
   ];
 
   const sections = [
