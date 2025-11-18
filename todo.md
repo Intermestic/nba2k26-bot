@@ -423,4 +423,35 @@ Bot is sending multiple "Trade Approved" messages for the same trade (seen at 2:
 - [x] Verify if approved trades are being marked in database or memory
 - [x] Add check to prevent re-processing already approved trades
 - [x] Test with existing approved trade to ensure no duplicate messages
+- [x] Save checkpoint
+
+
+## TODO: Fix Trade Parser - Missing Spaces in Player Names
+
+### Issue
+Trade parser failing on format:
+```
+Sixers send:
+jalen green 83(15)
+Gary trent77(8)
+Total: 160(23)
+
+Grizz send:
+darius garland 87(15)
+Kris Murray 73(0)
+Total: 160 (15)
+```
+
+Problems:
+1. Missing space between "trent" and "77" → "Gary trent77(8)"
+2. Team abbreviation "Grizz" instead of "Grizzlies"
+3. Lowercase player names (should still work with fuzzy matching)
+
+### Tasks
+- [x] Check trade-parser.ts for player name extraction logic
+- [x] Add regex to handle missing spaces before numbers (e.g., "trent77" → "trent 77")
+- [x] Add "Grizz" → "Grizzlies" team name mapping
+- [x] Add "Sixers" to NBA_TEAMS array for better detection
+- [x] Add filter to skip "Total:" lines from player extraction
+- [x] Test with the failing trade format
 - [ ] Save checkpoint

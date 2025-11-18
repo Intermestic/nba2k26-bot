@@ -16,11 +16,11 @@ export interface ParsedTrade {
  * NBA team names for fuzzy matching
  */
 const NBA_TEAMS = [
-  '76ers', 'Bucks', 'Bulls', 'Cavaliers', 'Celtics', 'Grizzlies',
+  '76ers', 'Bucks', 'Bulls', 'Cavaliers', 'Celtics', 'Grizzlies', 'Grizz',
   'Hawks', 'Heat', 'Hornets', 'Jazz', 'Kings', 'Knicks', 'Lakers', 'Magic',
   'Mavs', 'Mavericks', 'Nets', 'Nuggets', 'Pacers', 'Pelicans', 'Pistons',
   'Raptors', 'Rockets', 'Spurs', 'Suns', 'Timberwolves', 'Trailblazers', 'Blazers',
-  'Warriors', 'Wizards'
+  'Warriors', 'Wizards', 'Sixers'
 ];
 
 /**
@@ -35,15 +35,17 @@ function normalizeTeamName(teamName: string): string {
     'blazers': 'Trail Blazers',
     'trailblazers': 'Trail Blazers',
     'trail blazers': 'Trail Blazers',
-    'mavs': 'Mavericks',
-    'mavericks': 'Mavericks',
+    'mavs': 'Mavs',
+    'mavericks': 'Mavs',
     'nuggets': 'Nuggets',
-    '76ers': '76ers',
+    '76ers': 'Sixers',
+    'sixers': 'Sixers',
     'bucks': 'Bucks',
     'bulls': 'Bulls',
     'cavaliers': 'Cavaliers',
     'celtics': 'Celtics',
     'grizzlies': 'Grizzlies',
+    'grizz': 'Grizzlies',
     'hawks': 'Hawks',
     'heat': 'Heat',
     'hornets': 'Hornets',
@@ -221,16 +223,25 @@ function parsePlayerListWithOVR(text: string): string[] {
       continue;
     }
     
+    // Skip lines that start with "Total:" or "Total"
+    if (/^Total[:\s]/i.test(line.trim())) {
+      console.log('[Trade Parser] Skipping total line:', line);
+      continue;
+    }
+    
     // Extract player name by removing all numbers, slashes, hyphens, and parentheses
     // This handles: "Trae young 88/16" → "Trae young"
     //               "Jarrett Allen 84-13" → "Jarrett Allen"
     //               "adem Bona75/5" → "adem Bona"
-    const playerName = line
+    //               "Gary trent77(8)" → "Gary trent" (missing space before number)
+    let playerName = line
       .replace(/\d+[\/\-]\d+/g, '')  // Remove OVR/badges format (both / and -)
       .replace(/\d+\s*\(\d+\)/g, '')  // Remove OVR (badges) format
       .replace(/\(\d+\)/g, '')  // Remove standalone (badges)
+      .replace(/([a-z])(\d)/gi, '$1 $2')  // Add space before numbers (trent77 → trent 77)
       .replace(/\d+/g, '')  // Remove any remaining numbers
       .replace(/[\-\/]/g, '')  // Remove any remaining hyphens and slashes
+      .replace(/\s+/g, ' ')  // Normalize multiple spaces to single space
       .trim();
     
     if (playerName.length > 0) {
