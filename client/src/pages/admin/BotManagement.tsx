@@ -1748,16 +1748,18 @@ function ScheduledMessageDialog({ open, messageId, onClose }: { open: boolean; m
     },
   });
 
-  // Load existing data
-  if (existingMessage && formData.name === "") {
-    setFormData({
-      name: existingMessage.name,
-      channelId: existingMessage.channelId,
-      message: existingMessage.message,
-      schedule: existingMessage.schedule,
-      enabled: existingMessage.enabled,
-    });
-  }
+  // Load existing data when it arrives
+  useEffect(() => {
+    if (existingMessage) {
+      setFormData({
+        name: existingMessage.name,
+        channelId: existingMessage.channelId,
+        message: existingMessage.message,
+        schedule: existingMessage.schedule,
+        enabled: existingMessage.enabled,
+      });
+    }
+  }, [existingMessage]);
 
   const handleSubmit = () => {
     if (!formData.name || !formData.channelId || !formData.message || !formData.schedule) {

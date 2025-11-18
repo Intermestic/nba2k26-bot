@@ -250,4 +250,41 @@ Remove webhook-based posting and have the bot post/update cap status messages di
 - [x] Remove old Discord Integration page
 - [x] Remove Discord Integration route from admin navigation
 - [x] Test new implementation works correctly
+- [x] Save checkpoint
+
+
+---
+
+## TODO: Fix Automation Tab React Error
+
+### Issue
+- User clicks Automation tab in Bot Management page
+- React error #185 occurs (Minified React error)
+- Page shows "An unexpected error occurred"
+- Need to diagnose and fix the error
+
+### Tasks
+- [x] Check browser console for detailed error
+- [x] Check server logs for any backend errors
+- [x] Identify the component causing the error (dev server caching issue)
+- [x] Fix the error (restarted dev server)
+- [x] Test Automation tab loads correctly (error found)
+- [ ] Fix infinite loop error in button component
+- [ ] Save checkpoint (pending fix)
+
+---
+
+## TODO: Fix Infinite Loop Error in Bot Management Automation Tab
+
+### Issue
+- User reports "Maximum update depth exceeded" error when accessing Automation tab
+- Error occurs in a button component
+- Caused by setState being called repeatedly in render phase
+- Error message: "This can happen when a component repeatedly calls setState inside componentWillUpdate or componentDidUpdate"
+
+### Tasks
+- [x] Find the problematic button component in Automation tab (ScheduledMessageDialog)
+- [x] Identify the setState call causing the infinite loop (setFormData in render phase)
+- [x] Fix the logic to prevent setState in render phase (moved to useEffect)
+- [ ] Test Automation tab loads without errors (waiting for user confirmation)
 - [ ] Save checkpoint
