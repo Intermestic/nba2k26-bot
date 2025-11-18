@@ -229,6 +229,12 @@ function parsePlayerListWithOVR(text: string): string[] {
       continue;
     }
     
+    // Skip Discord mentions (format: <@userID> or <@>)
+    if (/<@!?\d*>/.test(line.trim())) {
+      console.log('[Trade Parser] Skipping Discord mention:', line);
+      continue;
+    }
+    
     // Extract player name by removing all numbers, slashes, hyphens, and parentheses
     // This handles: "Trae young 88/16" → "Trae young"
     //               "Jarrett Allen 84-13" → "Jarrett Allen"
@@ -244,7 +250,8 @@ function parsePlayerListWithOVR(text: string): string[] {
       .replace(/\s+/g, ' ')  // Normalize multiple spaces to single space
       .trim();
     
-    if (playerName.length > 0) {
+    // Only add non-empty player names (after trimming)
+    if (playerName.length > 0 && playerName.trim().length > 0) {
       players.push(playerName);
       console.log('[Trade Parser] Found player:', playerName);
     }

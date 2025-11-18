@@ -454,4 +454,17 @@ Problems:
 - [x] Add "Sixers" to NBA_TEAMS array for better detection
 - [x] Add filter to skip "Total:" lines from player extraction
 - [x] Test with the failing trade format
+- [x] Save checkpoint
+
+
+## TODO: Fix Trade Parser Discord Mention Extraction
+
+### Issue
+Trade parser is extracting Discord mentions `<@>` as player names instead of filtering them out. This causes validation to fail with "Player not found on Grizzlies: <@>".
+
+### Tasks
+- [x] Investigate why parser is extracting Discord mentions as player names
+- [x] Add filter to remove Discord mentions (format: <@userID> or <@>)
+- [x] Add filter to remove empty strings and whitespace-only entries
+- [x] Test with the failing trade format
 - [ ] Save checkpoint
