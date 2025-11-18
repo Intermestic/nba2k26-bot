@@ -154,19 +154,22 @@ export function parseTrade(message: string): ParsedTrade | null {
     }
   }
   
-  // Strategy 2: "Team A receives: ... Team B receives: ..."
+  // Strategy 2: "Team A receives: ... Team B receives: ..." (multi-line support)
   const receivesPattern = new RegExp(
-    `${team1Raw}\\s+(?:receives?|gets?)[:\\s]+([^\\n]+?)(?=${team2Raw}|$).*?${team2Raw}\\s+(?:receives?|gets?)[:\\s]+([^\\n]+)`,
+    `${team1Raw}\\s+(?:receives?|gets?)[:\\s]+([^]+?)(?=${team2Raw}|$).*?${team2Raw}\\s+(?:receives?|gets?)[:\\s]+([^]+?)(?:$|\\n\\n)`,
     'is'
   );
   const receivesMatch = text.match(receivesPattern);
   
   if (receivesMatch) {
+    console.log('[Trade Parser] Using "Receives" format strategy');
+    console.log('[Trade Parser] Team1 raw:', receivesMatch[1]);
+    console.log('[Trade Parser] Team2 raw:', receivesMatch[2]);
     return {
       team1: normalizeTeamName(team1Raw),
-      team1Players: parsePlayerList(receivesMatch[1]),
+      team1Players: parsePlayerListWithOVR(receivesMatch[1]),
       team2: normalizeTeamName(team2Raw),
-      team2Players: parsePlayerList(receivesMatch[2])
+      team2Players: parsePlayerListWithOVR(receivesMatch[2])
     };
   }
   

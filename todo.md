@@ -467,4 +467,25 @@ Trade parser is extracting Discord mentions `<@>` as player names instead of fil
 - [x] Add filter to remove Discord mentions (format: <@userID> or <@>)
 - [x] Add filter to remove empty strings and whitespace-only entries
 - [x] Test with the failing trade format
+- [x] Save checkpoint
+
+
+## Trade Parser - Handle "receive:" Format (Nov 17, 2025)
+
+### Issue
+Trade parser not parsing simple "Team receive: Player" format:
+```
+Wizards receive: Miles McBride 75 (8)
+Hornets receive: Sion James 76 (8)
+```
+
+### Root Cause
+Strategy 2 regex was using `[^\\n]+` which only matches single-line content. The pattern couldn't match when teams were on separate lines.
+
+### Tasks
+- [x] Check current regex patterns for "receive:" keyword
+- [x] Update pattern from `[^\\n]+` to `[^]+?` for multi-line support
+- [x] Change to use parsePlayerListWithOVR instead of parsePlayerList
+- [x] Add logging for debugging
+- [x] Test with Wizards/Hornets trade
 - [ ] Save checkpoint
