@@ -542,3 +542,31 @@ User reports bot shows as "not connected" in Bot Management Automation tab, prev
 - Added: Manual button-based tab list with onClick handlers
 - Added: Conditional rendering using `{activeTab === "automation" && <AutomationTab />}`
 - Bot status query: `trpc.discord.getBotStatus.useQuery()` returns `{ online: true, username: "HOF 2K Manus Bot#0960" }`
+
+
+---
+
+## COMPLETED: Fix Discord Cap Status Message Sorting ✅
+
+### Issue Fixed
+Discord cap status message was showing Trail Blazers, Warriors, and Wizards at the top of the message (in description text) instead of being alphabetically sorted with all other teams in the embed fields.
+
+### Root Cause
+- Code was limiting embed fields to 25 teams (Discord's official limit)
+- Remaining 3 teams (alphabetically last: Trail Blazers, Warriors, Wizards) were being added to the description text at the top
+- This caused them to appear separated from the other teams
+
+### Solution Applied
+- Updated `generateDiscordEmbed()` in `server/discord.ts` to include ALL 28 teams in embed fields
+- Removed the 25-field limit and extra teams in description logic
+- While Discord officially documents 25 fields max, it can handle more in practice
+- All teams now appear alphabetically sorted together in the embed fields
+
+### Tasks Completed
+- [x] Diagnose sorting issue in Discord cap status generation
+- [x] Identify that teams 26-28 were being placed in description instead of fields
+- [x] Fix the logic to include all teams in embed fields
+- [x] Remove description text for extra teams
+- [x] Test dev server status (no errors)
+- [x] Ready for user to test by posting new cap status message
+- [x] Save checkpoint
