@@ -1,4 +1,7 @@
 import { Client, Message, MessageReaction, User, PartialMessageReaction, PartialUser, EmbedBuilder, TextChannel, Collection } from 'discord.js';
+import { getDb } from './db.js';
+import { tradeVotes } from '../drizzle/schema.js';
+import { eq } from 'drizzle-orm';
 
 const TRADE_CHANNEL_ID = '1087524540634116116';
 const TRADE_COMMITTEE_ROLE = 'Trade Committee';
@@ -99,11 +102,24 @@ async function processVoteResult(
   approved: boolean
 ) {
   try {
-    const voteData = activeVotes.get(message.id);
-    if (!voteData || voteData.processed) return;
+    // Check if this trade vote has already been processed in the database
+    const db = await getDb();
+    if (!db) {
+      console.error('[Trade Voting] Database not available, cannot check for duplicate votes');
+      return;
+    }
     
-    // Mark as processed
-    voteData.processed = true;
+    const existingVote = await db.select().from(tradeVotes).where(eq(tradeVotes.messageId, message.id)).limit(1);
+    if (existingVote.length > 0) {
+      console.log(`[Trade Voting] Trade ${message.id} already processed at ${existingVote[0].processedAt}, skipping duplicate`);
+      return;
+    }
+    
+    const voteData = activeVotes.get(message.id);
+    if (voteData) {
+      // Mark as processed in memory
+      voteData.processed = true;
+    }
     
     const embed = new EmbedBuilder()
       .setTimestamp()
@@ -123,6 +139,17 @@ async function processVoteResult(
     
     await message.reply({ embeds: [embed] });
     console.log(`[Trade Voting] Trade ${approved ? 'approved' : 'rejected'}: ${upvotes} 👍, ${downvotes} 👎`);
+    
+    // Save to database to prevent duplicate processing
+    if (db) {
+      await db.insert(tradeVotes).values({
+      messageId: message.id,
+      upvotes,
+      downvotes,
+      approved: approved ? 1 : 0,
+      });
+      console.log(`[Trade Voting] Saved vote result to database for message ${message.id}`);
+    }
     
     // Trigger Discord cap status auto-update when trade is approved
     if (approved) {

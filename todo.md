@@ -411,3 +411,16 @@ JT Thor 70(0)
 - [x] Fix any issues found
 - [x] Test with the problematic trade message
 - [x] Save checkpoint
+
+
+## TODO: Fix Duplicate Trade Approval Messages
+
+### Issue
+Bot is sending multiple "Trade Approved" messages for the same trade (seen at 2:49 AM, 2:57 AM, 3:00 AM, 3:01 AM for Nuggets/Blazers trade). Once a trade is approved, the bot should not send approval messages again.
+
+### Tasks
+- [x] Check trade-voting.ts for approval tracking
+- [x] Verify if approved trades are being marked in database or memory
+- [x] Add check to prevent re-processing already approved trades
+- [x] Test with existing approved trade to ensure no duplicate messages
+- [ ] Save checkpoint

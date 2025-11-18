@@ -667,3 +667,18 @@ export const validationRules = mysqlTable("validation_rules", {
 
 export type ValidationRule = typeof validationRules.$inferSelect;
 export type InsertValidationRule = typeof validationRules.$inferInsert;
+
+/**
+ * Trade Votes table - tracks processed trade votes to prevent duplicate approval messages
+ */
+export const tradeVotes = mysqlTable("trade_votes", {
+  id: int("id").autoincrement().primaryKey(),
+  messageId: varchar("messageId", { length: 64 }).notNull().unique(), // Discord message ID
+  upvotes: int("upvotes").notNull().default(0), // Final upvote count
+  downvotes: int("downvotes").notNull().default(0), // Final downvote count
+  approved: int("approved").notNull(), // 1 = approved, 0 = rejected
+  processedAt: timestamp("processedAt").defaultNow().notNull(), // When vote was processed
+});
+
+export type TradeVote = typeof tradeVotes.$inferSelect;
+export type InsertTradeVote = typeof tradeVotes.$inferInsert;
