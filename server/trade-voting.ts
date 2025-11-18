@@ -123,6 +123,19 @@ async function processVoteResult(
     await message.reply({ embeds: [embed] });
     console.log(`[Trade Voting] Trade ${approved ? 'approved' : 'rejected'}: ${upvotes} 👍, ${downvotes} 👎`);
     
+    // Trigger Discord cap status auto-update when trade is approved
+    if (approved) {
+      try {
+        const { autoUpdateDiscord } = await import('./discord.js');
+        // We don't know exact teams from the message, so trigger without team list
+        autoUpdateDiscord().catch(err => 
+          console.error('[Trade Voting] Auto-update Discord failed:', err)
+        );
+      } catch (err) {
+        console.error('[Trade Voting] Failed to trigger Discord auto-update:', err);
+      }
+    }
+    
   } catch (error) {
     console.error('[Trade Voting] Error processing vote result:', error);
   }

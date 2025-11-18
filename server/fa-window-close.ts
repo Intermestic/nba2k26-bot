@@ -393,6 +393,22 @@ export async function processBidsFromSummary(message: any, processorId: string) 
     
     console.log(`[Batch Process] Completed: ${successCount} success, ${failCount} failed`);
     
+    // Trigger Discord cap status auto-update after successful FA batch processing
+    if (successCount > 0) {
+      try {
+        const { autoUpdateDiscord } = await import('./discord.js');
+        // Collect affected teams from successful results
+        const affectedTeams = Array.from(new Set(
+          results.filter(r => r.success).map(r => r.team)
+        ));
+        autoUpdateDiscord(affectedTeams).catch(err => 
+          console.error('[Batch Process] Auto-update Discord failed:', err)
+        );
+      } catch (err) {
+        console.error('[Batch Process] Failed to trigger Discord auto-update:', err);
+      }
+    }
+    
     return {
       success: true,
       results,

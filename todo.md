@@ -341,3 +341,25 @@ Remove webhook-based posting and have the bot post/update cap status messages di
 - [x] Fix the logic to prevent setState in render phase (moved to useEffect)
 - [x] Test Bot Management page loads without errors
 - [x] Save checkpoint
+
+
+---
+
+## TODO: Roll Back Automation Tab and Simplify Discord Cap Status Integration
+
+### User Request
+- Roll back Automation tab to previous functionality (remove complex scheduled messages system)
+- Find lower-resource ways to auto-populate cap status from player database into Discord
+- Simplify the Discord integration to be more lightweight
+
+### Tasks
+- [x] Review checkpoint history to find previous Automation tab version
+- [x] Identify what code needs to be rolled back (scheduled messages, analytics, etc.)
+- [x] Restore previous simpler Automation tab UI (removed all batch processing previews, emoji configs, timeouts)
+- [x] Design lightweight Discord cap status update approach (chose Option 2: auto-update on transaction with rate limiting)
+- [x] Implement simplified solution without heavy scheduled message system
+- [x] Add auto-update trigger to trade approval (trade-voting.ts)
+- [x] Add auto-update trigger to FA batch processing (fa-window-close.ts)
+- [x] Verify auto-update already exists for team assignments (player.ts)
+- [ ] Test Discord cap status updates work correctly (ready for user testing)
+- [ ] Save checkpoint with simplified system
