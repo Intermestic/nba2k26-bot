@@ -362,4 +362,17 @@ Remove webhook-based posting and have the bot post/update cap status messages di
 - [x] Add auto-update trigger to FA batch processing (fa-window-close.ts)
 - [x] Verify auto-update already exists for team assignments (player.ts)
 - [ ] Test Discord cap status updates work correctly (ready for user testing)
-- [ ] Save checkpoint with simplified system
+- [x] Save checkpoint with simplified system
+
+
+## TODO: Fix Trade Voting Re-checking Historical Messages
+
+### Issue
+Trade approval keeps re-checking ALL previous messages in the thread. Need it to only check messages AFTER 1440180026187321444.
+
+### Tasks
+- [x] Add MIN_TRADE_MESSAGE_ID constant (1440180026187321444) to trade-voting.ts
+- [x] Update manuallyCheckTradeVotes to check message.id >= MIN_TRADE_MESSAGE_ID before processing
+- [x] Update scanTradesForMissedVotes to use MIN_TRADE_MESSAGE_ID threshold
+- [x] Test that historical messages are ignored
+- [ ] Save checkpoint

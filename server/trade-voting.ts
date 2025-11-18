@@ -5,6 +5,7 @@ const TRADE_COMMITTEE_ROLE = 'Trade Committee';
 const APPROVAL_THRESHOLD = 7; // 👍 votes needed
 const REJECTION_THRESHOLD = 5; // 👎 votes needed
 const MIN_AUTO_TRACK_MESSAGE_ID = '1439096316801060964'; // Only auto-track trades after this message
+const MIN_TRADE_MESSAGE_ID = '1440180026187321444'; // Only process trades after this message (prevents re-checking historical trades)
 
 interface VoteCount {
   upvotes: number;
@@ -515,6 +516,11 @@ export async function manuallyCheckTradeVotes(client: Client, messageId: string)
       return { success: false, message: 'Message is not a trade post (no embeds)' };
     }
     
+    // Check if message is after the minimum threshold (prevent re-checking historical trades)
+    if (BigInt(messageId) < BigInt(MIN_TRADE_MESSAGE_ID)) {
+      return { success: false, message: `Message is before minimum threshold (${MIN_TRADE_MESSAGE_ID}). Only processing trades after this ID.` };
+    }
+    
     // Check if already processed
     const voteData = activeVotes.get(messageId);
     if (voteData && voteData.processed) {
@@ -588,7 +594,7 @@ export async function manuallyCheckTradeVotes(client: Client, messageId: string)
 export async function scanTradesForMissedVotes(client: Client) {
   try {
     console.log('[Trade Voting] 🔍 Scanning for missed votes on startup...');
-    console.log(`[Trade Voting] Starting from message ID: ${MIN_AUTO_TRACK_MESSAGE_ID}`);
+    console.log(`[Trade Voting] Starting from message ID: ${MIN_TRADE_MESSAGE_ID}`);
     
     const channel = await client.channels.fetch(TRADE_CHANNEL_ID);
     if (!channel || !channel.isTextBased()) {
@@ -627,7 +633,7 @@ export async function scanTradesForMissedVotes(client: Client) {
       // Process each message
       for (const [messageId, message] of Array.from(messages.entries())) {
         // Stop if we've gone past the minimum message ID
-        if (BigInt(messageId) < BigInt(MIN_AUTO_TRACK_MESSAGE_ID)) {
+        if (BigInt(messageId) < BigInt(MIN_TRADE_MESSAGE_ID)) {
           console.log(`[Trade Voting] ✅ Reached minimum message ID, stopping scan`);
           console.log(`[Trade Voting] 📊 Scan complete: ${messagesChecked} messages checked, ${tradesProcessed} trades processed`);
           return;
