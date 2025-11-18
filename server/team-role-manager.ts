@@ -10,6 +10,10 @@ import { validateTeamName } from './team-validator.js';
 const TEAM_MESSAGE_ID = '1130885281508233316';
 const TEAM_CHANNEL_ID = '860782989280935966';
 
+// Track users who have already received welcome messages
+// Format: "userId-teamName" -> true
+const welcomeMessagesSent = new Set<string>();
+
 // Team colors mapping (hex format for Discord roles)
 const TEAM_COLORS: Record<string, number> = {
   'Celtics': 0x007A33,
@@ -169,11 +173,19 @@ export async function syncTeamRoles(client: Client): Promise<void> {
           console.log(`[Team Roles] Assigned ${teamName} role to ${member.user.tag}`);
           
           // Post welcome message to team channel for new assignments
-          try {
-            const { postWelcomeMessage } = await import('./team-welcome-message');
-            await postWelcomeMessage(client, teamName, userId, member.user.username);
-          } catch (error) {
-            console.error(`[Team Roles] Error posting welcome message for ${teamName}:`, error);
+          // Only send if we haven't sent one before for this user-team combination
+          const welcomeKey = `${userId}-${teamName}`;
+          if (!welcomeMessagesSent.has(welcomeKey)) {
+            try {
+              const { postWelcomeMessage } = await import('./team-welcome-message');
+              await postWelcomeMessage(client, teamName, userId, member.user.username);
+              welcomeMessagesSent.add(welcomeKey);
+              console.log(`[Team Roles] Sent welcome message to ${member.user.tag} for ${teamName}`);
+            } catch (error) {
+              console.error(`[Team Roles] Error posting welcome message for ${teamName}:`, error);
+            }
+          } else {
+            console.log(`[Team Roles] Skipping welcome message for ${member.user.tag} (already sent for ${teamName})`);
           }
         }
         

@@ -570,3 +570,28 @@ Discord cap status message was showing Trail Blazers, Warriors, and Wizards at t
 - [x] Test dev server status (no errors)
 - [x] Ready for user to test by posting new cap status message
 - [x] Save checkpoint
+
+---
+
+## BUG: Duplicate Welcome Messages Being Sent
+
+### Issue Reported
+Bot is sending welcome messages to team channels way too many times (multiple duplicates).
+
+### Root Cause Identified
+- Welcome messages were being sent on EVERY role sync (bot startup, message edits, manual commands)
+- The `isNewAssignment` check only verified if user had the role, not if welcome was already sent
+- Any edit to team assignment message would trigger full sync and resend all welcome messages
+
+### Solution Applied
+- Added `welcomeMessagesSent` Set to track "userId-teamName" combinations
+- Only send welcome message if not already in the Set
+- Added logging to show when messages are sent vs skipped
+
+### Tasks
+- [x] Investigate team-role-manager.ts welcome message logic
+- [x] Check if welcome messages are being triggered on every role sync
+- [x] Identify why multiple welcome messages are sent
+- [x] Add deduplication logic or flag to prevent repeat messages
+- [x] Test dev server status (no errors)
+- [ ] Save checkpoint
