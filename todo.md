@@ -488,4 +488,57 @@ Strategy 2 regex was using `[^\\n]+` which only matches single-line content. The
 - [x] Change to use parsePlayerListWithOVR instead of parsePlayerList
 - [x] Add logging for debugging
 - [x] Test with Wizards/Hornets trade
+- [x] Save checkpoint
+
+
+---
+
+## TODO: Fix Bot Connection Status in Bot Management Page
+
+### Issue
+User reports bot shows as "not connected" in Bot Management Automation tab, preventing cap status messages from being posted. However, bot is visibly active and working in Discord.
+
+### Tasks
+- [ ] Check getBotStatus endpoint in botManagement router
+- [ ] Verify Discord client connection check logic
+- [ ] Check if client.isReady() is returning correct value
+- [ ] Add logging to bot status endpoint
+- [ ] Fix bot status detection logic
+- [ ] Test cap status posting from UI
 - [ ] Save checkpoint
+
+
+---
+
+## COMPLETED: Fix Bot Connection Status Display in Automation Tab ✅
+
+### Issue Fixed
+- User couldn't access Automation tab to post cap status messages
+- Error message said "bot is not connected" even though bot was active in Discord
+- Root cause: Radix UI Tabs component wasn't switching tabs at all
+- All tabs (Configuration, Templates, Commands, Scheduled Messages, Automation) were stuck showing Configuration content
+
+### Solution Applied
+1. ✅ Diagnosed that Radix UI Tabs component had a fundamental tab switching bug
+2. ✅ Replaced entire Tabs implementation with manual tab switching using React state
+3. ✅ Used conditional rendering instead of TabsContent components
+4. ✅ Wrapped AutomationTab sections (ManualTradeVoteCheck, DiscordCapStatusSection) in Card components
+5. ✅ Added bot status query to DiscordCapStatusSection
+6. ✅ Bot status now displays correctly: "Bot is online: HOF 2K Manus Bot#0960"
+7. ✅ All action buttons (Save Config, Post New Message, Update Existing) are now accessible
+
+### Tasks Completed
+- [x] Investigate why Automation tab wasn't rendering
+- [x] Discovered Radix UI Tabs component wasn't switching tabs
+- [x] Replaced Tabs with manual implementation using useState and conditional rendering
+- [x] Added bot status display to Discord Cap Status section
+- [x] Verified bot connection status shows correctly in UI
+- [x] Tested tab switching works for all tabs
+- [x] Verified Automation tab content renders properly
+- [x] Save checkpoint
+
+### Technical Details
+- Removed: `<Tabs>`, `<TabsList>`, `<TabsTrigger>`, `<TabsContent>` from @radix-ui/react-tabs
+- Added: Manual button-based tab list with onClick handlers
+- Added: Conditional rendering using `{activeTab === "automation" && <AutomationTab />}`
+- Bot status query: `trpc.discord.getBotStatus.useQuery()` returns `{ online: true, username: "HOF 2K Manus Bot#0960" }`

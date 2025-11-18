@@ -44,47 +44,71 @@ export default function BotManagement() {
         </p>
       </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-5">
-          <TabsTrigger value="config">Configuration</TabsTrigger>
-          <TabsTrigger value="templates">Message Templates</TabsTrigger>
-          <TabsTrigger value="commands">Commands</TabsTrigger>
-          <TabsTrigger value="scheduled">Scheduled Messages</TabsTrigger>
-          <TabsTrigger value="automation">Automation</TabsTrigger>
-        </TabsList>
+      {/* Manual Tab Implementation */}
+      <div className="space-y-6">
+        {/* Tab List */}
+        <div className="inline-flex h-9 w-full items-center justify-start rounded-lg bg-muted p-1 text-muted-foreground">
+          <button
+            onClick={() => setActiveTab("config")}
+            className={`inline-flex h-full flex-1 items-center justify-center gap-1.5 rounded-md px-3 py-1 text-sm font-medium transition-all ${activeTab === "config" ? "bg-background text-foreground shadow-sm" : "hover:bg-background/50"}`}
+          >
+            Configuration
+          </button>
+          <button
+            onClick={() => setActiveTab("templates")}
+            className={`inline-flex h-full flex-1 items-center justify-center gap-1.5 rounded-md px-3 py-1 text-sm font-medium transition-all ${activeTab === "templates" ? "bg-background text-foreground shadow-sm" : "hover:bg-background/50"}`}
+          >
+            Message Templates
+          </button>
+          <button
+            onClick={() => setActiveTab("commands")}
+            className={`inline-flex h-full flex-1 items-center justify-center gap-1.5 rounded-md px-3 py-1 text-sm font-medium transition-all ${activeTab === "commands" ? "bg-background text-foreground shadow-sm" : "hover:bg-background/50"}`}
+          >
+            Commands
+          </button>
+          <button
+            onClick={() => setActiveTab("scheduled")}
+            className={`inline-flex h-full flex-1 items-center justify-center gap-1.5 rounded-md px-3 py-1 text-sm font-medium transition-all ${activeTab === "scheduled" ? "bg-background text-foreground shadow-sm" : "hover:bg-background/50"}`}
+          >
+            Scheduled Messages
+          </button>
+          <button
+            onClick={() => setActiveTab("automation")}
+            className={`inline-flex h-full flex-1 items-center justify-center gap-1.5 rounded-md px-3 py-1 text-sm font-medium transition-all ${activeTab === "automation" ? "bg-background text-foreground shadow-sm" : "hover:bg-background/50"}`}
+          >
+            Automation
+          </button>
+        </div>
 
-        <TabsContent value="config" className="mt-6">
-          <ConfigTab 
-            onEdit={(key) => setConfigDialog({ open: true, key })}
-            onAdd={() => setConfigDialog({ open: true })}
-          />
-        </TabsContent>
-
-        <TabsContent value="templates" className="mt-6">
-          <TemplatesTab 
-            onEdit={(key) => setTemplateDialog({ open: true, key })}
-            onAdd={() => setTemplateDialog({ open: true })}
-          />
-        </TabsContent>
-
-        <TabsContent value="commands" className="mt-6">
-          <CommandsTab 
-            onEdit={(command) => setCommandDialog({ open: true, command })}
-            onAdd={() => setCommandDialog({ open: true })}
-          />
-        </TabsContent>
-
-        <TabsContent value="scheduled" className="mt-6">
-          <ScheduledMessagesTab 
-            onEdit={(id) => setScheduleDialog({ open: true, id })}
-            onAdd={() => setScheduleDialog({ open: true })}
-          />
-        </TabsContent>
-
-        <TabsContent value="automation" className="mt-6">
-          <AutomationTab />
-        </TabsContent>
-      </Tabs>
+        {/* Tab Content */}
+        <div className="mt-6">
+          {activeTab === "config" && (
+            <ConfigTab 
+              onEdit={(key) => setConfigDialog({ open: true, key })}
+              onAdd={() => setConfigDialog({ open: true })}
+            />
+          )}
+          {activeTab === "templates" && (
+            <TemplatesTab 
+              onEdit={(key) => setTemplateDialog({ open: true, key })}
+              onAdd={() => setTemplateDialog({ open: true })}
+            />
+          )}
+          {activeTab === "commands" && (
+            <CommandsTab 
+              onEdit={(command) => setCommandDialog({ open: true, command })}
+              onAdd={() => setCommandDialog({ open: true })}
+            />
+          )}
+          {activeTab === "scheduled" && (
+            <ScheduledMessagesTab 
+              onEdit={(id) => setScheduleDialog({ open: true, id })}
+              onAdd={() => setScheduleDialog({ open: true })}
+            />
+          )}
+          {activeTab === "automation" && <AutomationTab />}
+        </div>
+      </div>
 
       {/* Dialogs */}
       <ConfigDialog 
@@ -952,11 +976,14 @@ function ManualTradeVoteCheck() {
   };
   
   return (
-    <div className="space-y-4">
-      <h3 className="text-lg font-semibold">Manual Trade Vote Check</h3>
-      <p className="text-sm text-muted-foreground">
-        Manually check and process votes for a trade message. Use this when the bot was offline and missed vote threshold.
-      </p>
+    <Card>
+      <CardHeader>
+        <CardTitle>Manual Trade Vote Check</CardTitle>
+        <CardDescription>
+          Manually check and process votes for a trade message. Use this when the bot was offline and missed vote threshold.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
       
       <div className="flex gap-2">
         <div className="flex-1">
@@ -1002,7 +1029,8 @@ function ManualTradeVoteCheck() {
           </div>
         </div>
       )}
-    </div>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -1016,6 +1044,10 @@ function DiscordCapStatusSection() {
 
   // Load existing config
   const { data: config } = trpc.discord.getConfig.useQuery();
+  
+  // Check bot status
+  const { data: botStatus, isLoading: botStatusLoading } = trpc.discord.getBotStatus.useQuery();
+  console.log('[DiscordCapStatusSection] Bot status:', botStatus);
 
   // Update form when config loads
   useEffect(() => {
@@ -1095,13 +1127,14 @@ function DiscordCapStatusSection() {
   };
 
   return (
-    <div className="space-y-4">
-      <h3 className="text-lg font-semibold">Discord Cap Status Updates</h3>
-      <p className="text-sm text-muted-foreground">
-        Post auto-updating team cap status messages to Discord
-      </p>
-
-      <div className="space-y-4">
+    <Card>
+      <CardHeader>
+        <CardTitle>Discord Cap Status Updates</CardTitle>
+        <CardDescription>
+          Post auto-updating team cap status messages to Discord
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
         <div>
           <Label htmlFor="cap_channel_id">Discord Channel ID</Label>
           <Input
@@ -1166,6 +1199,28 @@ function DiscordCapStatusSection() {
           </div>
         )}
 
+        {/* Bot Status Indicator */}
+        {botStatusLoading ? (
+          <div className="flex items-center gap-2 p-3 bg-muted/50 rounded-lg border">
+            <RefreshCw className="w-4 h-4 animate-spin text-muted-foreground" />
+            <span className="text-sm text-muted-foreground">Checking bot status...</span>
+          </div>
+        ) : botStatus?.online ? (
+          <div className="flex items-center gap-2 p-3 bg-green-50 border border-green-200 rounded-lg dark:bg-green-950 dark:border-green-800">
+            <CheckCircle2 className="w-4 h-4 text-green-600 dark:text-green-400" />
+            <span className="text-sm text-green-700 dark:text-green-300">
+              Bot is online: <strong>{botStatus.username}</strong>
+            </span>
+          </div>
+        ) : (
+          <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-lg dark:bg-red-950 dark:border-red-800">
+            <XCircle className="w-4 h-4 text-red-600 dark:text-red-400" />
+            <span className="text-sm text-red-700 dark:text-red-300">
+              Bot is offline. Please check the bot connection.
+            </span>
+          </div>
+        )}
+
         <div className="flex gap-2">
           <Button 
             onClick={handleSaveConfig}
@@ -1176,14 +1231,14 @@ function DiscordCapStatusSection() {
           </Button>
           <Button
             onClick={handlePost}
-            disabled={postMutation.isPending || !channelId}
+            disabled={postMutation.isPending || !channelId || !botStatus?.online}
           >
             <Send className="w-4 h-4 mr-2" />
             {postMutation.isPending ? "Posting..." : "Post New Message"}
           </Button>
           <Button
             onClick={handleUpdate}
-            disabled={updateMutation.isPending || !messageId || !channelId}
+            disabled={updateMutation.isPending || !messageId || !channelId || !botStatus?.online}
             variant="secondary"
           >
             <RefreshCw className="w-4 h-4 mr-2" />
@@ -1197,8 +1252,8 @@ function DiscordCapStatusSection() {
             Then use "Update Existing" to refresh the same message.
           </p>
         </div>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 }
 
