@@ -375,4 +375,39 @@ Trade approval keeps re-checking ALL previous messages in the thread. Need it to
 - [x] Update manuallyCheckTradeVotes to check message.id >= MIN_TRADE_MESSAGE_ID before processing
 - [x] Update scanTradesForMissedVotes to use MIN_TRADE_MESSAGE_ID threshold
 - [x] Test that historical messages are ignored
-- [ ] Save checkpoint
+- [x] Save checkpoint
+
+
+---
+
+## TODO: Fix Trade Parser for Nuggets/Blazers Trade
+
+### Issue
+Trade parser couldn't parse this trade:
+```
+Nuggets send:
+Joel Embiid 90(24)
+Pascal Siamam 89(23)
+JD Davidson 70(0)
+249(47)
+
+Blazers send:
+Steph Curry 95(21)
+Miles Bridges 82(10)
+JT Thor 70(0)
+247(31)
+```
+
+### Root Causes
+1. Team name "Blazers" not mapping to "Trail Blazers" in database
+2. Player name typo "Pascal Siamam" should be "Pascal Siakam"
+3. Parser may not be handling player names with typos correctly
+
+### Tasks
+- [x] Check trade-parser.ts for team name normalization
+- [x] Verify "Blazers" → "Trail Blazers" mapping exists
+- [x] Test fuzzy matching for "Pascal Siamam" → "Pascal Siakam"
+- [x] Add debug logging to identify exact parsing failure point
+- [x] Fix any issues found
+- [x] Test with the problematic trade message
+- [x] Save checkpoint

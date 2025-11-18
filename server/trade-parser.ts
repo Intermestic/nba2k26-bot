@@ -19,9 +19,54 @@ const NBA_TEAMS = [
   '76ers', 'Bucks', 'Bulls', 'Cavaliers', 'Celtics', 'Grizzlies',
   'Hawks', 'Heat', 'Hornets', 'Jazz', 'Kings', 'Knicks', 'Lakers', 'Magic',
   'Mavs', 'Mavericks', 'Nets', 'Nuggets', 'Pacers', 'Pelicans', 'Pistons',
-  'Raptors', 'Rockets', 'Spurs', 'Suns', 'Timberwolves', 'Trailblazers',
+  'Raptors', 'Rockets', 'Spurs', 'Suns', 'Timberwolves', 'Trailblazers', 'Blazers',
   'Warriors', 'Wizards'
 ];
+
+/**
+ * Normalize team names to match database values
+ * Maps common abbreviations/variations to official team names
+ */
+function normalizeTeamName(teamName: string): string {
+  const normalized = teamName.toLowerCase();
+  
+  // Team name mappings
+  const teamMap: Record<string, string> = {
+    'blazers': 'Trail Blazers',
+    'trailblazers': 'Trail Blazers',
+    'trail blazers': 'Trail Blazers',
+    'mavs': 'Mavericks',
+    'mavericks': 'Mavericks',
+    'nuggets': 'Nuggets',
+    '76ers': '76ers',
+    'bucks': 'Bucks',
+    'bulls': 'Bulls',
+    'cavaliers': 'Cavaliers',
+    'celtics': 'Celtics',
+    'grizzlies': 'Grizzlies',
+    'hawks': 'Hawks',
+    'heat': 'Heat',
+    'hornets': 'Hornets',
+    'jazz': 'Jazz',
+    'kings': 'Kings',
+    'knicks': 'Knicks',
+    'lakers': 'Lakers',
+    'magic': 'Magic',
+    'nets': 'Nets',
+    'pacers': 'Pacers',
+    'pelicans': 'Pelicans',
+    'pistons': 'Pistons',
+    'raptors': 'Raptors',
+    'rockets': 'Rockets',
+    'spurs': 'Spurs',
+    'suns': 'Suns',
+    'timberwolves': 'Timberwolves',
+    'warriors': 'Warriors',
+    'wizards': 'Wizards'
+  };
+  
+  return teamMap[normalized] || teamName;
+}
 
 /**
  * Parse trade message to extract teams and players
@@ -63,16 +108,16 @@ export function parseTrade(message: string): ParsedTrade | null {
     return null;
   }
   
-  const team1 = uniqueTeams[0];
-  const team2 = uniqueTeams[1];
-  console.log('[Trade Parser] Team1:', team1, 'Team2:', team2);
+  const team1Raw = uniqueTeams[0];
+  const team2Raw = uniqueTeams[1];
+  console.log('[Trade Parser] Team1 (raw):', team1Raw, 'Team2 (raw):', team2Raw);
   
   // Try different parsing strategies
   
   // Strategy 1: "Team send: Player OVR (badges) ..." format (multi-line)
   // Updated to handle cases where team name appears without "send" keyword
   const sendPattern = new RegExp(
-    `${team1}\\s+send[s]?[:\\s]+([^]+?)(?:for|${team2})`,
+    `${team1Raw}\\s+send[s]?[:\\s]+([^]+?)(?:for|${team2Raw})`,
     'is'
   );
   const sendMatch = text.match(sendPattern);
@@ -80,7 +125,7 @@ export function parseTrade(message: string): ParsedTrade | null {
   if (sendMatch) {
     // Also extract team2's players - try with "send" first
     let team2Pattern = new RegExp(
-      `${team2}\\s+send[s]?[:\\s]+([^]+?)(?:$|\\n\\n)`,
+      `${team2Raw}\\s+send[s]?[:\\s]+([^]+?)(?:$|\\n\\n)`,
       'is'
     );
     let team2Match = text.match(team2Pattern);
@@ -88,7 +133,7 @@ export function parseTrade(message: string): ParsedTrade | null {
     // If no "send", try just team name followed by players
     if (!team2Match) {
       team2Pattern = new RegExp(
-        `${team2}\\s*\\n([^]+?)(?:$|\\n\\n)`,
+        `${team2Raw}\\s*\\n([^]+?)(?:$|\\n\\n)`,
         'is'
       );
       team2Match = text.match(team2Pattern);
@@ -99,9 +144,9 @@ export function parseTrade(message: string): ParsedTrade | null {
       console.log('[Trade Parser] Team1 raw:', sendMatch[1]);
       console.log('[Trade Parser] Team2 raw:', team2Match[1]);
       return {
-        team1,
+        team1: normalizeTeamName(team1Raw),
         team1Players: parsePlayerListWithOVR(sendMatch[1]),
-        team2,
+        team2: normalizeTeamName(team2Raw),
         team2Players: parsePlayerListWithOVR(team2Match[1])
       };
     }
@@ -109,43 +154,43 @@ export function parseTrade(message: string): ParsedTrade | null {
   
   // Strategy 2: "Team A receives: ... Team B receives: ..."
   const receivesPattern = new RegExp(
-    `${team1}\\s+(?:receives?|gets?)[:\\s]+([^\\n]+?)(?=${team2}|$).*?${team2}\\s+(?:receives?|gets?)[:\\s]+([^\\n]+)`,
+    `${team1Raw}\\s+(?:receives?|gets?)[:\\s]+([^\\n]+?)(?=${team2Raw}|$).*?${team2Raw}\\s+(?:receives?|gets?)[:\\s]+([^\\n]+)`,
     'is'
   );
   const receivesMatch = text.match(receivesPattern);
   
   if (receivesMatch) {
     return {
-      team1,
+      team1: normalizeTeamName(team1Raw),
       team1Players: parsePlayerList(receivesMatch[1]),
-      team2,
+      team2: normalizeTeamName(team2Raw),
       team2Players: parsePlayerList(receivesMatch[2])
     };
   }
   
-  // Strategy 2: "Team A trades ... to Team B for ..."
+  // Strategy 3: "Team A trades ... to Team B for ..."
   const tradesPattern = new RegExp(
-    `${team1}\\s+trades?\\s+([^\\n]+?)\\s+to\\s+${team2}\\s+for\\s+([^\\n]+)`,
+    `${team1Raw}\\s+trades?\\s+([^\\n]+?)\\s+to\\s+${team2Raw}\\s+for\\s+([^\\n]+)`,
     'is'
   );
   const tradesMatch = text.match(tradesPattern);
   
   if (tradesMatch) {
     return {
-      team1,
+      team1: normalizeTeamName(team1Raw),
       team1Players: parsePlayerList(tradesMatch[2]), // Team1 receives what's after "for"
-      team2,
+      team2: normalizeTeamName(team2Raw),
       team2Players: parsePlayerList(tradesMatch[1])  // Team2 receives what's after "trades"
     };
   }
   
-  // Strategy 3: Split by "for" or "and" and try to extract players
+  // Strategy 4: Split by "for" or "and" and try to extract players
   const parts = text.split(/\b(?:for|and)\b/i);
   if (parts.length >= 2) {
     return {
-      team1,
+      team1: normalizeTeamName(team1Raw),
       team1Players: parsePlayerList(parts[0]),
-      team2,
+      team2: normalizeTeamName(team2Raw),
       team2Players: parsePlayerList(parts[1])
     };
   }
@@ -256,8 +301,9 @@ export async function findPlayerByFuzzyName(name: string, teamFilter?: string, c
     
     // Filter by team if specified
     if (teamFilter) {
-      allPlayers = allPlayers.filter(p => p.team === teamFilter);
-      console.log(`[Player Matcher] Searching for: "${name}" on team "${teamFilter}" (${allPlayers.length} players)`);
+      const normalizedTeam = normalizeTeamName(teamFilter);
+      allPlayers = allPlayers.filter(p => p.team === normalizedTeam);
+      console.log(`[Player Matcher] Searching for: "${name}" on team "${teamFilter}" (normalized: "${normalizedTeam}") (${allPlayers.length} players)`);
     } else {
       console.log(`[Player Matcher] Searching for: "${name}" in ${allPlayers.length} players`);
     }
