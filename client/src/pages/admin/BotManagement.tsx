@@ -1577,10 +1577,10 @@ function ScheduledMessagesTab({ onEdit, onAdd }: { onEdit: (id: number) => void;
     </Card>
     
     {/* Analytics Dialog */}
-    {analyticsMessageId && (
+    {analyticsMessageId !== null && analyticsMessageId !== undefined && typeof analyticsMessageId === 'number' && (
       <ScheduledMessageAnalyticsDialog
-        open={!!analyticsMessageId}
-        messageId={analyticsMessageId}
+        open={true}
+        messageId={analyticsMessageId as number}
         onClose={() => setAnalyticsMessageId(null)}
       />
     )}
@@ -1600,27 +1600,33 @@ function ScheduledMessageSuccessRate({ messageId }: { messageId: number }) {
   
   return (
     <span className={`text-sm font-medium ${color}`}>
-      {analytics.successRate}%
+      {String(analytics.successRate ?? 0)}%
     </span>
   );
 }
 
 // Analytics Dialog
 function ScheduledMessageAnalyticsDialog({ open, messageId, onClose }: { open: boolean; messageId: number; onClose: () => void }) {
-  const { data: analytics } = trpc.botManagement.getScheduledMessageAnalytics.useQuery({ messageId });
-  const { data: logs } = trpc.botManagement.getScheduledMessageLogs.useQuery({ messageId });
-  const { data: message } = trpc.botManagement.getScheduledMessageById.useQuery({ id: messageId });
+  const { data: analytics, isLoading: analyticsLoading } = trpc.botManagement.getScheduledMessageAnalytics.useQuery({ messageId });
+  const { data: logs, isLoading: logsLoading } = trpc.botManagement.getScheduledMessageLogs.useQuery({ messageId });
+  const { data: message, isLoading: messageLoading } = trpc.botManagement.getScheduledMessageById.useQuery({ id: messageId });
   
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Delivery Analytics: {message?.name}</DialogTitle>
+          <DialogTitle>Delivery Analytics: {message?.name ?? 'Loading...'}</DialogTitle>
           <DialogDescription>
             View delivery history and success metrics
           </DialogDescription>
         </DialogHeader>
         
+        {(analyticsLoading || logsLoading || messageLoading) && (
+          <div className="text-center py-8 text-muted-foreground">Loading analytics...</div>
+        )}
+        
+        {!analyticsLoading && !logsLoading && !messageLoading && (
+          <>
         {/* Analytics Summary */}
         {analytics && (
           <div className="grid grid-cols-4 gap-4 mb-6">
@@ -1628,7 +1634,7 @@ function ScheduledMessageAnalyticsDialog({ open, messageId, onClose }: { open: b
               <CardContent className="pt-6">
                 <div className="text-center">
                   <CheckCircle2 className="w-8 h-8 mx-auto mb-2 text-green-600" />
-                  <div className="text-2xl font-bold">{analytics.successCount}</div>
+                  <div className="text-2xl font-bold">{String(analytics.successCount ?? 0)}</div>
                   <div className="text-xs text-muted-foreground">Successful</div>
                 </div>
               </CardContent>
@@ -1637,7 +1643,7 @@ function ScheduledMessageAnalyticsDialog({ open, messageId, onClose }: { open: b
               <CardContent className="pt-6">
                 <div className="text-center">
                   <XCircle className="w-8 h-8 mx-auto mb-2 text-red-600" />
-                  <div className="text-2xl font-bold">{analytics.failedCount}</div>
+                  <div className="text-2xl font-bold">{String(analytics.failedCount ?? 0)}</div>
                   <div className="text-xs text-muted-foreground">Failed</div>
                 </div>
               </CardContent>
@@ -1646,7 +1652,7 @@ function ScheduledMessageAnalyticsDialog({ open, messageId, onClose }: { open: b
               <CardContent className="pt-6">
                 <div className="text-center">
                   <AlertCircle className="w-8 h-8 mx-auto mb-2 text-yellow-600" />
-                  <div className="text-2xl font-bold">{analytics.retryCount}</div>
+                  <div className="text-2xl font-bold">{String(analytics.retryCount ?? 0)}</div>
                   <div className="text-xs text-muted-foreground">Retries</div>
                 </div>
               </CardContent>
@@ -1655,7 +1661,7 @@ function ScheduledMessageAnalyticsDialog({ open, messageId, onClose }: { open: b
               <CardContent className="pt-6">
                 <div className="text-center">
                   <BarChart3 className="w-8 h-8 mx-auto mb-2 text-blue-600" />
-                  <div className="text-2xl font-bold">{analytics.successRate}%</div>
+                  <div className="text-2xl font-bold">{String(analytics.successRate ?? 0)}%</div>
                   <div className="text-xs text-muted-foreground">Success Rate</div>
                 </div>
               </CardContent>
@@ -1680,7 +1686,7 @@ function ScheduledMessageAnalyticsDialog({ open, messageId, onClose }: { open: b
                 {logs.map((log) => (
                   <TableRow key={log.id}>
                     <TableCell className="text-sm">
-                      {new Date(log.executedAt).toLocaleString()}
+                      {log.executedAt ? (log.executedAt instanceof Date ? log.executedAt.toLocaleString() : new Date(log.executedAt).toLocaleString()) : 'N/A'}
                     </TableCell>
                     <TableCell>
                       {log.status === 'success' && (
@@ -1702,7 +1708,7 @@ function ScheduledMessageAnalyticsDialog({ open, messageId, onClose }: { open: b
                         </span>
                       )}
                     </TableCell>
-                    <TableCell className="text-sm">{log.attemptNumber}</TableCell>
+                    <TableCell className="text-sm">{String(log.attemptNumber ?? 0)}</TableCell>
                     <TableCell className="text-sm text-muted-foreground max-w-[300px] truncate">
                       {log.errorMessage || '-'}
                     </TableCell>
@@ -1716,6 +1722,8 @@ function ScheduledMessageAnalyticsDialog({ open, messageId, onClose }: { open: b
             </div>
           )}
         </div>
+        </>
+        )}
         
         <DialogFooter>
           <Button variant="outline" onClick={onClose}>

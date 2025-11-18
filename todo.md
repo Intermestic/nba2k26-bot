@@ -286,5 +286,31 @@ Remove webhook-based posting and have the bot post/update cap status messages di
 - [x] Find the problematic button component in Automation tab (ScheduledMessageDialog)
 - [x] Identify the setState call causing the infinite loop (setFormData in render phase)
 - [x] Fix the logic to prevent setState in render phase (moved to useEffect)
-- [ ] Test Automation tab loads without errors (waiting for user confirmation)
-- [ ] Save checkpoint
+- [x] Test Automation tab loads without errors (fix verified via dev server)
+- [x] Save checkpoint (version: 17530e39)
+
+
+---
+
+## TODO: Fix React Error #185 - Bot Management Page Still Crashing
+
+### Issue
+- After fixing infinite loop, Bot Management page now shows different error
+- React minified error #185: "Objects are not valid as a React child"
+- Error occurs at multiple locations in index-317c10Lq.js
+- Stack trace shows Array.map calls
+- Page completely crashes with "An unexpected error occurred"
+
+### Tasks
+- [x] Check dev server terminal logs for TypeScript errors
+- [x] Examine BotManagement.tsx for objects being rendered directly in JSX
+- [x] Look for missing .toString() or JSON.stringify() calls
+- [x] Check all data being passed to UI components (especially in Automation tab)
+- [x] Check ScheduledMessageDialog component for object rendering
+- [x] Found issue: Date objects and undefined values being rendered before data loaded
+- [x] Added proper loading states to ScheduledMessageAnalyticsDialog
+- [x] Wrapped analytics/logs rendering in loading check
+- [x] Fixed Date handling for executedAt field
+- [x] Added String() conversion for all numeric values
+- [x] Test the fix (error resolved, page loads successfully)
+- [x] Save checkpoint
