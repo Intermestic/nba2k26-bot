@@ -1039,6 +1039,7 @@ function ManualTradeVoteCheck() {
 function DiscordCapStatusSection() {
   const [channelId, setChannelId] = useState("");
   const [messageId, setMessageId] = useState("");
+  const [messageId2, setMessageId2] = useState("");
   const [websiteUrl, setWebsiteUrl] = useState(window.location.origin);
   const [autoUpdateEnabled, setAutoUpdateEnabled] = useState(false);
 
@@ -1054,6 +1055,7 @@ function DiscordCapStatusSection() {
     if (config) {
       setChannelId(config.channelId || "");
       setMessageId(config.messageId || "");
+      setMessageId2(config.messageId2 || "");
       setWebsiteUrl(config.websiteUrl || window.location.origin);
       setAutoUpdateEnabled(config.autoUpdateEnabled === 1);
     }
@@ -1070,9 +1072,12 @@ function DiscordCapStatusSection() {
 
   const postMutation = trpc.discord.postCapStatus.useMutation({
     onSuccess: (data) => {
-      toast.success(`Posted to Discord! ${data.teamCount} teams included.`);
+      toast.success(`Posted to Discord! ${data.teamCount} teams included (2 messages).`);
       if (data.messageId) {
         setMessageId(data.messageId);
+      }
+      if (data.messageId2) {
+        setMessageId2(data.messageId2);
       }
     },
     onError: (error) => {
@@ -1098,6 +1103,7 @@ function DiscordCapStatusSection() {
     saveConfigMutation.mutate({
       channelId,
       messageId,
+      messageId2,
       websiteUrl,
       autoUpdateEnabled,
     });
@@ -1119,11 +1125,11 @@ function DiscordCapStatusSection() {
     }
 
     if (!messageId) {
-      toast.error("Please enter a message ID");
+      toast.error("Please enter message ID for Part 1");
       return;
     }
 
-    updateMutation.mutate({ channelId, messageId, websiteUrl });
+    updateMutation.mutate({ channelId, messageId, messageId2, websiteUrl });
   };
 
   return (
@@ -1163,7 +1169,7 @@ function DiscordCapStatusSection() {
         </div>
 
         <div>
-          <Label htmlFor="cap_message_id">Message ID (for updates)</Label>
+          <Label htmlFor="cap_message_id">Message ID Part 1 (for updates)</Label>
           <Input
             id="cap_message_id"
             value={messageId}
@@ -1172,7 +1178,21 @@ function DiscordCapStatusSection() {
             className="font-mono"
           />
           <p className="text-xs text-muted-foreground mt-1">
-            Optional: Enter the message ID to update an existing message
+            Optional: Enter the first message ID to update existing messages
+          </p>
+        </div>
+
+        <div>
+          <Label htmlFor="cap_message_id2">Message ID Part 2 (for updates)</Label>
+          <Input
+            id="cap_message_id2"
+            value={messageId2}
+            onChange={(e) => setMessageId2(e.target.value)}
+            placeholder="1234567890123456789"
+            className="font-mono"
+          />
+          <p className="text-xs text-muted-foreground mt-1">
+            Optional: Enter the second message ID to update existing messages
           </p>
         </div>
 

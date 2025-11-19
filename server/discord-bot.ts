@@ -2054,7 +2054,7 @@ export function getDiscordBotStatus() {
 /**
  * Post cap status message to Discord channel using the bot
  */
-export async function postCapStatusToChannel(channelId: string, websiteUrl: string): Promise<{ success: boolean; messageId: string | null; teamCount: number }> {
+export async function postCapStatusToChannel(channelId: string, websiteUrl: string): Promise<{ success: boolean; messageId: string | null; messageId2?: string | null; teamCount: number }> {
   if (!client || !client.isReady()) {
     throw new Error('Discord bot is not connected');
   }
@@ -2070,17 +2070,25 @@ export async function postCapStatusToChannel(channelId: string, websiteUrl: stri
       throw new Error('Invalid channel or channel is not text-based');
     }
 
-    // Post message with @everyone mention
-    const message = await (channel as any).send({
+    // Post first message (Part 1/2) with @everyone mention
+    const message1 = await (channel as any).send({
       content: '@everyone',
-      embeds: embedData.embeds
+      embeds: [embedData.embeds[0]]
     });
 
-    console.log(`[Bot] Posted cap status to channel ${channelId}, message ID: ${message.id}`);
+    console.log(`[Bot] Posted cap status part 1 to channel ${channelId}, message ID: ${message1.id}`);
+    
+    // Post second message (Part 2/2) immediately after
+    const message2 = await (channel as any).send({
+      embeds: [embedData.embeds[1]]
+    });
+
+    console.log(`[Bot] Posted cap status part 2 to channel ${channelId}, message ID: ${message2.id}`);
     
     return {
       success: true,
-      messageId: message.id,
+      messageId: message1.id,
+      messageId2: message2.id,
       teamCount: summaries.length
     };
   } catch (error) {
@@ -2092,7 +2100,7 @@ export async function postCapStatusToChannel(channelId: string, websiteUrl: stri
 /**
  * Update existing cap status message in Discord channel using the bot
  */
-export async function updateCapStatusMessage(channelId: string, messageId: string, websiteUrl: string): Promise<{ success: boolean; teamCount: number }> {
+export async function updateCapStatusMessage(channelId: string, messageId: string, websiteUrl: string, messageId2?: string): Promise<{ success: boolean; teamCount: number }> {
   if (!client || !client.isReady()) {
     throw new Error('Discord bot is not connected');
   }
@@ -2108,13 +2116,22 @@ export async function updateCapStatusMessage(channelId: string, messageId: strin
       throw new Error('Invalid channel or channel is not text-based');
     }
 
-    // Fetch and update the message
-    const message = await channel.messages.fetch(messageId);
-    await message.edit({
-      embeds: embedData.embeds
+    // Fetch and update the first message (Part 1/2)
+    const message1 = await channel.messages.fetch(messageId);
+    await message1.edit({
+      embeds: [embedData.embeds[0]]
     });
 
-    console.log(`[Bot] Updated cap status message ${messageId} in channel ${channelId}`);
+    console.log(`[Bot] Updated cap status message part 1 ${messageId} in channel ${channelId}`);
+    
+    // If second message ID provided, update it too (Part 2/2)
+    if (messageId2) {
+      const message2 = await channel.messages.fetch(messageId2);
+      await message2.edit({
+        embeds: [embedData.embeds[1]]
+      });
+      console.log(`[Bot] Updated cap status message part 2 ${messageId2} in channel ${channelId}`);
+    }
     
     return {
       success: true,

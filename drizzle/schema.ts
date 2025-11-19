@@ -73,7 +73,8 @@ export type InsertTransactionHistory = typeof transactionHistory.$inferInsert;
 export const discordConfig = mysqlTable("discord_config", {
   id: int("id").autoincrement().primaryKey(),
   channelId: varchar("channelId", { length: 64 }), // Discord channel ID for posting cap status
-  messageId: varchar("messageId", { length: 64 }), // Discord message ID to update
+  messageId: varchar("messageId", { length: 64 }), // Discord message ID to update (Part 1/2)
+  messageId2: varchar("messageId2", { length: 64 }), // Discord message ID for second embed (Part 2/2)
   lastNotificationMessageId: varchar("lastNotificationMessageId", { length: 64 }), // Last notification message ID (for deletion)
   websiteUrl: text("websiteUrl").notNull(), // Website URL for team links
   autoUpdateEnabled: int("autoUpdateEnabled").default(0).notNull(), // 0 = disabled, 1 = enabled

@@ -84,61 +84,66 @@ export function generateDiscordEmbed(summaries: TeamSummary[], websiteUrl: strin
   const overCapTeams = summaries.filter(s => s.totalOverall > OVERALL_CAP_LIMIT).length;
   
   // Discord has a HARD LIMIT of 25 fields per embed
-  // We have 28 teams, so we'll put the first 25 in fields and the last 3 in description
-  const maxFields = 25;
-  const teamsInFields = summaries.slice(0, maxFields);
-  const teamsInDescription = summaries.slice(maxFields);
+  // We have 28 teams, so we'll split into two embeds: 14 teams each
+  const firstHalf = summaries.slice(0, 14);
+  const secondHalf = summaries.slice(14);
   
-  // Build embed fields for first 25 teams
-  const fields = teamsInFields.map(summary => {
-    const overCap = summary.totalOverall - OVERALL_CAP_LIMIT;
-    const status = overCap > 0 
-      ? `🔴 ${summary.totalOverall} (+${overCap})`
-      : `${summary.totalOverall}`;
-    
-    const teamUrl = `${websiteUrl}?team=${encodeURIComponent(summary.team)}`;
-    const rosterLink = `[View Roster](${teamUrl})`;
-    
-    return {
-      name: summary.team,
-      value: `${rosterLink}\n(${summary.playerCount}/14) - ${status}`,
-      inline: true
-    };
-  });
-  
-  // Build description with remaining teams (if any)
-  let description = `**Cap Limit:** ${OVERALL_CAP_LIMIT} Total Overall\n🔴 Over Cap: ${overCapTeams} teams\n\n`;
-  
-  if (teamsInDescription.length > 0) {
-    description += `**Additional Teams:**\n`;
-    teamsInDescription.forEach(summary => {
+  // Helper function to build fields for a set of teams
+  const buildFields = (teams: TeamSummary[]) => {
+    return teams.map(summary => {
       const overCap = summary.totalOverall - OVERALL_CAP_LIMIT;
       const status = overCap > 0 
         ? `🔴 ${summary.totalOverall} (+${overCap})`
         : `${summary.totalOverall}`;
+      
       const teamUrl = `${websiteUrl}?team=${encodeURIComponent(summary.team)}`;
-      description += `• [${summary.team}](<${teamUrl}>) - (${summary.playerCount}/14) - ${status}\n`;
+      const rosterLink = `[View Roster](${teamUrl})`;
+      
+      return {
+        name: summary.team,
+        value: `${rosterLink}\n(${summary.playerCount}/14) - ${status}`,
+        inline: true
+      };
     });
-    description += `\n`;
-  }
+  };
   
-  description += `**View all rosters:** <https://tinyurl.com/hof2k>`;
+  // Build description for first embed
+  const description1 = `**Cap Limit:** ${OVERALL_CAP_LIMIT} Total Overall\n🔴 Over Cap: ${overCapTeams} teams\n\n**View all rosters:** <https://tinyurl.com/hof2k>`;
+  
+  // Build description for second embed
+  const description2 = `**Cap Limit:** ${OVERALL_CAP_LIMIT} Total Overall\n🔴 Over Cap: ${overCapTeams} teams\n\n**View all rosters:** <https://tinyurl.com/hof2k>`;
   
   return {
-    embeds: [{
-      title: "🏀 NBA 2K26 Team Cap Status",
-      description: description,
-      fields: fields,
-      color: overCapTeams > 0 ? 0xef4444 : 0x3b82f6, // Red if over cap, blue otherwise
-      url: websiteUrl, // Makes the title clickable
-      thumbnail: {
-        url: "https://cdn.nba.com/logos/leagues/logo-nba.svg"
+    embeds: [
+      {
+        title: "🏀 NBA 2K26 Team Cap Status (Part 1/2)",
+        description: description1,
+        fields: buildFields(firstHalf),
+        color: overCapTeams > 0 ? 0xef4444 : 0x3b82f6,
+        url: websiteUrl,
+        thumbnail: {
+          url: "https://cdn.nba.com/logos/leagues/logo-nba.svg"
+        },
+        footer: {
+          text: `Last updated: ${new Date().toLocaleString()}`
+        },
+        timestamp: new Date().toISOString()
       },
-      footer: {
-        text: `Last updated: ${new Date().toLocaleString()}`
-      },
-      timestamp: new Date().toISOString()
-    }]
+      {
+        title: "🏀 NBA 2K26 Team Cap Status (Part 2/2)",
+        description: description2,
+        fields: buildFields(secondHalf),
+        color: overCapTeams > 0 ? 0xef4444 : 0x3b82f6,
+        url: websiteUrl,
+        thumbnail: {
+          url: "https://cdn.nba.com/logos/leagues/logo-nba.svg"
+        },
+        footer: {
+          text: `Last updated: ${new Date().toLocaleString()}`
+        },
+        timestamp: new Date().toISOString()
+      }
+    ]
   };
 }
 

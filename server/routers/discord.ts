@@ -14,7 +14,7 @@ export const discordRouter = router({
         websiteUrl: z.string().url(),
       })
     )
-    .mutation(async ({ input, ctx }): Promise<{ success: boolean; messageId: string | null; teamCount: number }> => {
+    .mutation(async ({ input, ctx }): Promise<{ success: boolean; messageId: string | null; messageId2?: string | null; teamCount: number }> => {
       // Only admins can post to Discord
       if (ctx.user?.role !== "admin") {
         throw new Error("Unauthorized: Admin access required");
@@ -22,7 +22,7 @@ export const discordRouter = router({
 
       const result = await postCapStatusToChannel(input.channelId, input.websiteUrl);
       
-      // Save message ID to config
+      // Save both message IDs to config
       const db = await getDb();
       if (db && result.messageId) {
         const existing = await db.select().from(discordConfig).limit(1);
@@ -31,6 +31,7 @@ export const discordRouter = router({
             .update(discordConfig)
             .set({
               messageId: result.messageId,
+              messageId2: result.messageId2 || null,
               lastUpdated: new Date(),
             })
             .where(eq(discordConfig.id, existing[0].id));
@@ -46,6 +47,7 @@ export const discordRouter = router({
       z.object({
         channelId: z.string(),
         messageId: z.string(),
+        messageId2: z.string().optional(),
         websiteUrl: z.string().url(),
       })
     )
@@ -58,7 +60,8 @@ export const discordRouter = router({
       const result = await updateCapStatusMessage(
         input.channelId,
         input.messageId,
-        input.websiteUrl
+        input.websiteUrl,
+        input.messageId2
       );
       
       // Update last updated timestamp
@@ -97,6 +100,7 @@ export const discordRouter = router({
       z.object({
         channelId: z.string(),
         messageId: z.string().optional(),
+        messageId2: z.string().optional(),
         websiteUrl: z.string().url(),
         autoUpdateEnabled: z.boolean(),
       })
@@ -118,6 +122,7 @@ export const discordRouter = router({
           .set({
             channelId: input.channelId,
             messageId: input.messageId || null,
+            messageId2: input.messageId2 || null,
             websiteUrl: input.websiteUrl,
             autoUpdateEnabled: input.autoUpdateEnabled ? 1 : 0,
             updatedAt: new Date(),
@@ -128,6 +133,7 @@ export const discordRouter = router({
         await db.insert(discordConfig).values({
           channelId: input.channelId,
           messageId: input.messageId || null,
+          messageId2: input.messageId2 || null,
           websiteUrl: input.websiteUrl,
           autoUpdateEnabled: input.autoUpdateEnabled ? 1 : 0,
         });

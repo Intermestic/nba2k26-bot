@@ -615,15 +615,22 @@ embeds[0].fields[BASE_TYPE_MAX_LENGTH]: Must be 25 or fewer in length.
 - Previous fix (checkpoint 6bb8323c) removed the 25-field limit thinking Discord could handle more, but it cannot
 
 ### Solution Options
-1. ✅ **Use first 25 teams as fields, put remaining 3 in description** (RECOMMENDED - simple and clean)
+1. ~~Use first 25 teams as fields, put remaining 3 in description~~ (implemented but user wants cleaner approach)
 2. Combine multiple teams per field (e.g., 2 teams per field = 14 fields)
-3. Split into two separate embeds
+3. ✅ **Split into two separate embeds (14 teams each)** (USER REQUESTED - cleanest approach)
 4. Use description-based format instead of fields (harder to read)
 
 ### Tasks
 - [x] Locate cap status message generation code in server/discord.ts
-- [x] Revert to using 25 fields max + description for remaining teams
-- [x] Ensure remaining teams still show alphabetically at the end
+- [x] Revert to using 25 fields max + description for remaining teams (completed but will be replaced)
+- [x] Update postCapStatus to split teams into two groups of 14
+- [x] Create first embed with teams 1-14
+- [x] Create second embed with teams 15-28
+- [x] Post both embeds sequentially to the same channel
+- [x] Update bot config to store both message IDs (added messageId2 field)
+- [x] Add messageId2 to database schema
+- [x] Update API endpoints to handle messageId2
+- [x] Update frontend UI to display and edit messageId2
 - [ ] Test posting cap status message from Bot Management page (ready for user testing)
-- [ ] Verify all 28 teams appear correctly without error (ready for user testing)
+- [ ] Verify both messages appear correctly without error (ready for user testing)
 - [ ] Save checkpoint (pending user test)
