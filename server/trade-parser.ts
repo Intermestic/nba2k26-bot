@@ -214,10 +214,11 @@ export function parseTrade(message: string): ParsedTrade | null {
 function parsePlayerListWithOVR(text: string): string[] {
   const players: string[] = [];
   
-  // Split by newlines AND commas to handle both formats:
+  // Split by newlines, commas, AND "and" to handle multiple formats:
   // - Multi-line: "Player A\nPlayer B"
   // - Comma-separated: "Player A, Player B"
-  const lines = text.split(/[\n,]/).map(l => l.trim()).filter(l => l.length > 0);
+  // - And-separated: "Player A and Player B"
+  const lines = text.split(/[\n,]|\s+and\s+/i).map(l => l.trim()).filter(l => l.length > 0);
   
   for (const line of lines) {
     // Skip lines that are just numbers and hyphens (totals like "245/33" or "159-21")

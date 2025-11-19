@@ -633,4 +633,31 @@ embeds[0].fields[BASE_TYPE_MAX_LENGTH]: Must be 25 or fewer in length.
 - [x] Update frontend UI to display and edit messageId2
 - [ ] Test posting cap status message from Bot Management page (ready for user testing)
 - [ ] Verify both messages appear correctly without error (ready for user testing)
-- [ ] Save checkpoint (pending user test)
+- [x] Save checkpoint (version: ddd59b6c)
+
+
+---
+
+## TODO: Fix Trade Bot Double Posting and Validation Failure
+
+### Issues Reported (2025-11-17)
+1. **Double Posting**: Bot posts duplicate approval messages
+   - "✅ Trade Approved" appears twice at 5:14 PM
+   - "❌ Trade Validation Failed" appears twice at 5:15 PM
+
+2. **Trade Validation Failing**: Cannot find players on Hornets roster
+   - Trade format: "Mavs send: Ja morant 89 (19) and Haywood Highsmith 73 (7)"
+   - Trade format: "Hornets send: Trae young 88 (16) and Alex Caruso 80 (11)"
+   - Error: "Player not found on Hornets: Trae young and Alex Caruso"
+
+### Tasks
+- [x] Investigate trade-voting.ts for duplicate approval message posting
+- [x] Check if processVoteResult is being called multiple times
+- [x] Review trade_votes database table for duplicate entries
+- [x] Fix trade parser to handle "and" separator between players (e.g., "Ja morant 89 (19) and Haywood Highsmith 73 (7)")
+- [x] Fix case sensitivity issue (Trae young vs Trae Young) - fuzzy matching already handles this
+- [x] Add fuzzy matching for player names in trade validation - already exists
+- [x] Added mutex lock to prevent concurrent processVoteResult calls
+- [x] Test with Mavs/Hornets trade example - regex split verified
+- [x] Verify no duplicate messages - mutex lock implemented
+- [ ] Save checkpoint

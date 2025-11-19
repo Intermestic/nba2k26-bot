@@ -23,6 +23,9 @@ interface VoteCount {
 // Track active votes
 const activeVotes = new Map<string, VoteCount>();
 
+// Track which messages are currently being processed to prevent duplicate posting
+const processingVotes = new Set<string>();
+
 /**
  * Check if user has Trade Committee role
  */
@@ -102,6 +105,15 @@ async function processVoteResult(
   approved: boolean
 ) {
   try {
+    // Check if this message is already being processed (mutex lock)
+    if (processingVotes.has(message.id)) {
+      console.log(`[Trade Voting] Trade ${message.id} is already being processed, skipping duplicate call`);
+      return;
+    }
+    
+    // Add to processing set to prevent concurrent calls
+    processingVotes.add(message.id);
+    
     // Check if this trade vote has already been processed in the database
     const db = await getDb();
     if (!db) {
@@ -166,6 +178,9 @@ async function processVoteResult(
     
   } catch (error) {
     console.error('[Trade Voting] Error processing vote result:', error);
+  } finally {
+    // Always remove from processing set, even if error occurred
+    processingVotes.delete(message.id);
   }
 }
 
