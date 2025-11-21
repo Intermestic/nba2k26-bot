@@ -660,4 +660,43 @@ embeds[0].fields[BASE_TYPE_MAX_LENGTH]: Must be 25 or fewer in length.
 - [x] Added mutex lock to prevent concurrent processVoteResult calls
 - [x] Test with Mavs/Hornets trade example - regex split verified
 - [x] Verify no duplicate messages - mutex lock implemented
+- [x] Save checkpoint (version: 041bd1a3)
+
+
+## TODO: Fix FA Bid Projected Cap Calculation (Second Bug)
+
+### Issue Reported (2025-11-17)
+**Incorrect Math**: Bot shows projected cap as 1090 when it should be 1096
+- Team: Grizzlies
+- Current: 1098
+- Cut: Jakob Poeltl (79 OVR)
+- Sign: Kyle Filipowski (77 OVR)
+- Expected: (1098 - 79) + 77 = 1096
+- Actual: Bot shows 1090 (off by 6)
+
+### Investigation Results
+**No bug found** - Bot calculation is correct!
+
+- Grizzlies current roster: **1092 total OVR** (not 1098 as user assumed)
+- Jakob Poeltl: 79 OVR
+- Kyle Filipowski: 77 OVR
+- Correct calculation: 1092 - 79 + 77 = **1090** ✅
+
+### Tasks
+- [x] Find cap calculation code in discord-bot.ts bid confirmation
+- [x] Verify the formula is correct (lines 657-666)
+- [x] Query database to check Grizzlies actual roster total
+- [x] Confirmed bot is calculating correctly
+- [ ] Explain to user that their assumption was wrong
+
+
+## TODO: Mark Liam McNeeley as Rookie
+
+### Issue Reported (2025-11-17)
+Liam McNeeley should be marked as a Class of 2025 rookie but currently doesn't have the rookie badge.
+
+### Tasks
+- [x] Query database to check Liam McNeeley's current isRookie status (was 0)
+- [x] Update isRookie=1 and draftYear=2025 for Liam McNeely
+- [x] Verify rookie badge appears on his player card
 - [ ] Save checkpoint
