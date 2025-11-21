@@ -700,3 +700,17 @@ Liam McNeeley should be marked as a Class of 2025 rookie but currently doesn't h
 - [x] Update isRookie=1 and draftYear=2025 for Liam McNeely
 - [x] Verify rookie badge appears on his player card
 - [ ] Save checkpoint
+
+
+## TODO: Add Rookies Filter to Homepage
+
+### Feature Request (2025-11-17)
+Add "Rookies" option to team filter dropdown on homepage, positioned after "Free Agents". Should show all players with isRookie=1.
+
+### Tasks
+- [x] Find team filter dropdown in Home.tsx
+- [x] Add "Rookies" option after "Free Agents"
+- [x] Update filtering logic to handle "Rookies" selection (checks isRookie === 1)
+- [x] Update selectedTeamSummary to show rookie count
+- [x] Test that Rookies filter shows only rookie players
+- [ ] Save checkpoint
