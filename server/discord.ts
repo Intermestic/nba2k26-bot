@@ -96,12 +96,9 @@ export function generateDiscordEmbed(summaries: TeamSummary[], websiteUrl: strin
         ? `🔴 ${summary.totalOverall} (+${overCap})`
         : `${summary.totalOverall}`;
       
-      const teamUrl = `${websiteUrl}?team=${encodeURIComponent(summary.team)}`;
-      const rosterLink = `[View Roster](${teamUrl})`;
-      
       return {
         name: summary.team,
-        value: `${rosterLink}\n(${summary.playerCount}/14) - ${status}`,
+        value: `(${summary.playerCount}/14) - ${status}`,
         inline: true
       };
     });

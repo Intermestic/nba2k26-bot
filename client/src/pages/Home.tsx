@@ -88,9 +88,7 @@ export default function Home() {
         const normalizedSearch = normalizeName(searchTerm);
         const matchesSearch = normalizedPlayerName.includes(normalizedSearch);
         const matchesRating = p.overall >= parseInt(minRating);
-        const matchesTeam = selectedTeam === "all" || 
-                           selectedTeam === "Rookies" ? p.isRookie === 1 : 
-                           p.team === selectedTeam;
+        const matchesTeam = selectedTeam === "all" || p.team === selectedTeam;
         return matchesSearch && matchesRating && matchesTeam;
       })
       .sort((a, b) => b.overall - a.overall);
@@ -106,7 +104,7 @@ export default function Home() {
       .slice(0, 10);
   }, [players, searchTerm]);
 
-  // Get unique teams for filter (Free Agents at the end, then Rookies)
+  // Get unique teams for filter (Free Agents at the end)
   const teams = useMemo(() => {
     const uniqueTeams = Array.from(new Set(players.map(p => p.team).filter(Boolean)));
     const sorted = uniqueTeams.sort();
@@ -116,8 +114,6 @@ export default function Home() {
       sorted.splice(freeAgentIndex, 1);
       sorted.push("Free Agents");
     }
-    // Add "Rookies" after Free Agents
-    sorted.push("Rookies");
     return sorted;
   }, [players]);
 
@@ -180,12 +176,8 @@ export default function Home() {
     if (selectedTeam === "Free Agents") {
       return { team: "Free Agents", playerCount: freeAgentCount, totalOverall: 0, isFreeAgent: true };
     }
-    if (selectedTeam === "Rookies") {
-      const rookieCount = players.filter(p => p.isRookie === 1).length;
-      return { team: "Rookies", playerCount: rookieCount, totalOverall: 0, isFreeAgent: true };
-    }
     return teamSummaries.find(t => t.team === selectedTeam);
-  }, [selectedTeam, teamSummaries, freeAgentCount, players]);
+  }, [selectedTeam, teamSummaries, freeAgentCount]);
 
   // Selection handlers
   const togglePlayer = (playerId: string) => {

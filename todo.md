@@ -690,27 +690,25 @@ embeds[0].fields[BASE_TYPE_MAX_LENGTH]: Must be 25 or fewer in length.
 - [ ] Explain to user that their assumption was wrong
 
 
-## TODO: Mark Liam McNeeley as Rookie
 
-### Issue Reported (2025-11-17)
-Liam McNeeley should be marked as a Class of 2025 rookie but currently doesn't have the rookie badge.
+## TODO: Simplify Discord Cap Status Embed + Add /updatecap Command
 
-### Tasks
-- [x] Query database to check Liam McNeeley's current isRookie status (was 0)
-- [x] Update isRookie=1 and draftYear=2025 for Liam McNeely
-- [x] Verify rookie badge appears on his player card
-- [ ] Save checkpoint
+### Issue
+Trail Blazers link was showing raw markdown in Discord embed. Tried multiple fixes (angle brackets, plain URL, etc.) but none worked reliably.
 
+### Final Solution
+Remove all individual team roster links from embed fields. Keep only the main "View all rosters" link at the top.
 
-## TODO: Add Rookies Filter to Homepage
-
-### Feature Request (2025-11-17)
-Add "Rookies" option to team filter dropdown on homepage, positioned after "Free Agents". Should show all players with isRookie=1.
+### Implementation
+1. ✅ Removed roster links from team fields in discord.ts buildFields()
+2. ✅ Added `/updatecap` command in discord-bot.ts messageCreate handler
+3. ✅ Command calls updateCapStatusMessage() directly (no circular import)
+4. ✅ Fixed after server crash - re-implemented correctly
 
 ### Tasks
-- [x] Find team filter dropdown in Home.tsx
-- [x] Add "Rookies" option after "Free Agents"
-- [x] Update filtering logic to handle "Rookies" selection (checks isRookie === 1)
-- [x] Update selectedTeamSummary to show rookie count
-- [x] Test that Rookies filter shows only rookie players
+- [x] Remove individual team roster links from Discord embed
+- [x] Add /updatecap command to update messages from Discord FA channel
+- [x] Fix circular import issue (call function directly instead of importing)
+- [x] Test /updatecap command in Discord
+- [x] Verify simplified embed format displays correctly
 - [ ] Save checkpoint

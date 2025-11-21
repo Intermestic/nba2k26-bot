@@ -1084,6 +1084,39 @@ export async function startDiscordBot(token: string) {
         return;
       }
       
+      // Check for update cap status command
+      if (message.content.trim().toLowerCase() === '/updatecap') {
+        try {
+          await message.reply('🔄 Updating cap status messages...');
+          
+          // Get Discord config from database
+          const db = await getDb();
+          if (!db) {
+            await message.reply('❌ Database not available.');
+            return;
+          }
+          
+          const { discordConfig } = await import('../drizzle/schema');
+          const configs = await db.select().from(discordConfig).limit(1);
+          
+          if (configs.length === 0 || !configs[0].channelId || !configs[0].messageId || !configs[0].websiteUrl) {
+            await message.reply('❌ Cap status messages not configured. Please set up channel ID, message IDs, and website URL in Bot Management.');
+            return;
+          }
+          
+          const config = configs[0];
+          
+          // Update both Part 1 and Part 2 messages by calling the function directly
+          await updateCapStatusMessage(config.channelId!, config.messageId!, config.websiteUrl!, config.messageId2 || undefined);
+          
+          await message.reply('✅ Cap status messages updated successfully!');
+        } catch (error) {
+          console.error('[Update Cap] Command failed:', error);
+          await message.reply('❌ Failed to update cap status. Check logs for details.');
+        }
+        return;
+      }
+      
       // Check for regenerate summary command: !regenerate-summary <windowId>
       if (message.content.trim().toLowerCase().startsWith('!regenerate-summary')) {
         const parts = message.content.trim().split(/\s+/);
