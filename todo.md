@@ -888,4 +888,19 @@ Trade Committee members are receiving hourly DM reminders to vote on trades, whi
 - [x] Locate trade vote reminder code in trade-voting.ts (lines 844-849)
 - [x] Comment out the setInterval reminder scheduler
 - [x] Add note explaining it was disabled per user request
+- [x] Save checkpoint (version: 245a974a)
+
+
+## Admin Team Channel Permissions & Reaction Forwarding
+
+### Requirements
+1. Admins need read/write access to all 28 team channels
+2. When admin reacts with ✅ on any post in team channels, forward that message to channel 1149106208498790500
+
+### Tasks
+- [x] Update team-channel-manager.ts to grant admin role read/write permissions
+- [x] Add messageReactionAdd handler for ✅ emoji in team channels
+- [x] Implement message forwarding logic to channel 1149106208498790500
+- [ ] Test admin permissions in team channels
+- [ ] Test reaction forwarding functionality
 - [ ] Save checkpoint

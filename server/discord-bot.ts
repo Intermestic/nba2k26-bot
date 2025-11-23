@@ -1423,6 +1423,64 @@ export async function startDiscordBot(token: string) {
         }
         return;
       }
+      
+      // Handle team channel message forwarding (✅ by admin in team channels)
+      try {
+        const guild = message.guild;
+        if (!guild) return;
+        
+        const member = await guild.members.fetch(user.id);
+        const adminRole = guild.roles.cache.find(r => r.name === 'Admin');
+        
+        // Check if user has Admin role
+        if (!adminRole || !member.roles.cache.has(adminRole.id)) {
+          console.log(`[Team Channel Forward] Non-admin user ${user.tag} reacted with ✅`);
+          return;
+        }
+        
+        // Check if message is in a team channel
+        const teamChannelPattern = /^team-/;
+        const channelName = message.channel && 'name' in message.channel ? message.channel.name : null;
+        if (!channelName || !teamChannelPattern.test(channelName)) {
+          console.log(`[Team Channel Forward] Message not in team channel: ${message.channel?.id}`);
+          return;
+        }
+        
+        // Forward message to target channel
+        const TARGET_CHANNEL_ID = '1149106208498790500';
+        const targetChannel = await guild.channels.fetch(TARGET_CHANNEL_ID);
+        
+        if (!targetChannel || !targetChannel.isTextBased()) {
+          console.error(`[Team Channel Forward] Target channel ${TARGET_CHANNEL_ID} not found or not text-based`);
+          return;
+        }
+        
+        // Build forwarded message
+        const sourceChannel = message.channel;
+        const sourceChannelName = 'name' in sourceChannel ? sourceChannel.name : 'unknown';
+        const messageLink = `https://discord.com/channels/${guild.id}/${message.channelId}/${message.id}`;
+        
+        let forwardContent = `**Forwarded from #${sourceChannelName}** (approved by ${user.tag})\n`;
+        forwardContent += `**Author:** ${message.author.tag}\n`;
+        forwardContent += `**Link:** ${messageLink}\n\n`;
+        forwardContent += message.content || '*[No text content]*';
+        
+        // Include attachments if present
+        if (message.attachments.size > 0) {
+          forwardContent += '\n\n**Attachments:**\n';
+          message.attachments.forEach(attachment => {
+            forwardContent += `${attachment.url}\n`;
+          });
+        }
+        
+        await targetChannel.send(forwardContent);
+        console.log(`[Team Channel Forward] Forwarded message ${message.id} from #${sourceChannelName} to ${TARGET_CHANNEL_ID}`);
+        
+        // React with checkmark to confirm forwarding
+        await message.react('✅');
+      } catch (error) {
+        console.error('[Team Channel Forward] Error forwarding message:', error);
+      }
     }
     
     // Process lightning bolt emoji (⚡) or exclamation emoji (❗) for manual processing
