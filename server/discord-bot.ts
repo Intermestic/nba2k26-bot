@@ -592,7 +592,43 @@ async function handleBidMessage(message: Message) {
     return;
   }
   
-  // Record the bid
+  // VALIDATE CAP BEFORE RECORDING BID
+  // Calculate projected cap to ensure bid won't exceed limit
+  const teamPlayers = await db
+    .select()
+    .from(players)
+    .where(eq(players.team, team));
+  
+  const currentTotal = teamPlayers.reduce((sum, p) => sum + p.overall, 0);
+  let projectedTotal = currentTotal;
+  
+  // Subtract dropped player if present
+  if (dropPlayerValidated) {
+    projectedTotal -= dropPlayerValidated.overall;
+  }
+  
+  // Add signed player
+  projectedTotal += player.overall;
+  
+  const CAP_LIMIT = 1098;
+  const capDiff = projectedTotal - CAP_LIMIT;
+  
+  // HARD-CODED RULE: Reject any bid that would put team over cap
+  if (projectedTotal > CAP_LIMIT) {
+    await message.reply(
+      `❌ **Bid Rejected - Would Exceed Cap**\n\n` +
+      `**Cut**: ${dropPlayerValidated ? `${dropPlayerValidated.name} (${dropPlayerValidated.overall} OVR)` : 'None'}\n` +
+      `**Sign**: ${player.name} (${player.overall} OVR)\n` +
+      `**Team**: ${team}\n\n` +
+      `**Current cap**: ${currentTotal}/${CAP_LIMIT}\n` +
+      `**Projected cap**: 🔴 ${projectedTotal}/${CAP_LIMIT} (+${capDiff})\n\n` +
+      `⚠️ **Teams cannot sign players that would take them over the ${CAP_LIMIT} cap limit.**\n\n` +
+      `To make this signing, you must first drop a player with a higher overall rating.`
+    );
+    return;
+  }
+  
+  // Record the bid (only if cap check passed)
   const bidResult = await recordBid(
     player.name,
     player.id,
@@ -647,49 +683,11 @@ async function handleBidMessage(message: Message) {
   confirmationMessage += `**Your bid**: $${parsedBid.bidAmount}\n`;
   confirmationMessage += `**Team**: ${team}\n`;
   
-  // Calculate and show cap projection (db already initialized above)
-  if (db) {
-    const teamPlayers = await db
-      .select()
-      .from(players)
-      .where(eq(players.team, team));
-    
-    const currentTotal = teamPlayers.reduce((sum, p) => sum + p.overall, 0);
-    let projectedTotal = currentTotal;
-    
-    // Subtract dropped player if present (use already-validated drop player)
-    if (dropPlayerValidated) {
-      projectedTotal -= dropPlayerValidated.overall;
-    }
-    
-    // Add signed player
-    projectedTotal += player.overall;
-    
-    const CAP_LIMIT = 1098;
-    const capDiff = projectedTotal - CAP_LIMIT;
-    
-    // HARD-CODED RULE: Reject any bid that would put team over cap
-    if (projectedTotal > CAP_LIMIT) {
-      await message.reply(
-        `❌ **Bid Rejected - Would Exceed Cap**\n\n` +
-        `**Cut**: ${dropPlayerValidated ? `${dropPlayerValidated.name} (${dropPlayerValidated.overall} OVR)` : 'None'}\n` +
-        `**Sign**: ${player.name} (${player.overall} OVR)\n` +
-        `**Team**: ${team}\n\n` +
-        `**Current cap**: ${currentTotal}/${CAP_LIMIT}\n` +
-        `**Projected cap**: 🔴 ${projectedTotal}/${CAP_LIMIT} (+${capDiff})\n\n` +
-        `⚠️ **Teams cannot sign players that would take them over the ${CAP_LIMIT} cap limit.**\n\n` +
-        `To make this signing, you must first drop a player with a higher overall rating.`
-      );
-      return;
-    }
-    
-    const capStatus = capDiff > 0 ? `(+${capDiff})` : capDiff < 0 ? `(${capDiff})` : '(At Cap)';
-    const emoji = capDiff > 0 ? '🔴' : capDiff < 0 ? '🟢' : '🟡';
-    
-    confirmationMessage += `**Projected cap**: ${emoji} ${projectedTotal}/${CAP_LIMIT} ${capStatus}\n\n`;
-  } else {
-    confirmationMessage += '\n';
-  }
+  // Show cap projection (already calculated above before recording bid)
+  const capStatus = capDiff > 0 ? `(+${capDiff})` : capDiff < 0 ? `(${capDiff})` : '(At Cap)';
+  const emoji = capDiff > 0 ? '🔴' : capDiff < 0 ? '🟢' : '🟡';
+  
+  confirmationMessage += `**Projected cap**: ${emoji} ${projectedTotal}/${CAP_LIMIT} ${capStatus}\n\n`;
   
   if (highestBid && highestBid.bidderName === message.author.username) {
     confirmationMessage += `🏆 **You have the highest bid!**`;

@@ -322,12 +322,12 @@ export async function findPlayerByFuzzyName(
     }
   }
   
-  // Strategy 4: League-wide fuzzy match
-  const matches = extract(searchName, allPlayers.map(p => p.name), { limit: 1 });
+  // Strategy 4: League-wide fuzzy match (case-insensitive)
+  const matches = extract(searchName, allPlayers.map(p => p.name.toLowerCase()), { limit: 1 });
   
   if (matches.length > 0 && matches[0][1] >= 70) {
     const matchedName = matches[0][0];
-    const player = allPlayers.find(p => p.name === matchedName);
+    const player = allPlayers.find(p => p.name.toLowerCase() === matchedName);
     
     if (player) {
       console.log(`[Player Matcher] Found via fuzzy match: "${name}" → "${player.name}" (${matches[0][1]}% match)`);

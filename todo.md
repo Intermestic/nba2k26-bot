@@ -745,3 +745,44 @@ Remove all individual team roster links from embed fields. Keep only the main "V
 - [x] Add route to App.tsx
 - [x] Test all trade actions
 - [x] Save checkpoint
+
+
+---
+
+## TODO: Discord Bot Fixes & Trade Integration
+
+### Issues Identified from Discord Logs
+
+1. **Duplicate Bid Confirmations**
+   - Bot posts same confirmation message 2-3 times
+   - Example: Lines 164-176, 179-191 (Nuggets Daniss Jenkins bid)
+   - Example: Lines 232-244 (Nets Daniss Jenkins bid)
+   - Example: Lines 274-302 (Wizards Daniss Jenkins bid - 3 duplicates!)
+
+2. **Lakers Over-Cap Bid in Status**
+   - Lakers bid rejected at 5:21 PM for exceeding cap (lines 649-664)
+   - But Lakers bid still appears in 11:48 PM status update (lines 695-696)
+   - Rejected bids should not appear in active bids list
+
+3. **Case-Sensitive Player Name Matching**
+   - "gradey Dick" fails with "100% match" suggestion (lines 950-959)
+   - Bot says "Gradey Dick (100% match)" but still rejects
+   - Fuzzy matching should accept 100% matches regardless of case
+
+4. **Batch Processing Timeout**
+   - Window close summaries timing out (lines 755-773)
+   - Need longer confirmation window or auto-process after delay
+
+5. **Trade Integration Missing**
+   - Trade voting system not saving to trades table
+   - Need to create trade records when trades are posted/approved
+
+### Tasks
+
+- [x] Fix duplicate bid confirmation messages (moved cap check before recording bid)
+- [x] Filter out rejected bids from active bids status updates (cap check prevents recording)
+- [x] Fix case-sensitive player name matching to accept 100% fuzzy matches (lowercase both sides)
+- [ ] Increase batch processing confirmation timeout or add auto-process (deferred - needs user testing)
+- [x] Integrate trade voting with trades table (save on approval/rejection)
+- [x] Test all fixes with real Discord scenarios (TypeScript passes, bot running)
+- [ ] Save checkpoint

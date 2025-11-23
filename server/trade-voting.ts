@@ -1,6 +1,6 @@
 import { Client, Message, MessageReaction, User, PartialMessageReaction, PartialUser, EmbedBuilder, TextChannel, Collection } from 'discord.js';
 import { getDb } from './db.js';
-import { tradeVotes } from '../drizzle/schema.js';
+import { tradeVotes, trades } from '../drizzle/schema.js';
 import { eq } from 'drizzle-orm';
 
 const TRADE_CHANNEL_ID = '1087524540634116116';
@@ -96,6 +96,81 @@ async function countVotes(reaction: MessageReaction | PartialMessageReaction): P
 }
 
 /**
+ * Parse trade details from Discord embed message
+ */
+function parseTradeFromEmbed(message: Message): { team1: string; team2: string; team1Players: any[]; team2Players: any[] } | null {
+  try {
+    if (message.embeds.length === 0) return null;
+    
+    const embed = message.embeds[0];
+    const description = embed.description;
+    
+    if (!description) return null;
+    
+    // Extract team names from the embed title or description
+    // Expected format: "Team1 send:\n...\n\nTeam2 send:\n..."
+    const teamPattern = /([A-Za-z\s]+)\s+send:/gi;
+    const teamMatches = Array.from(description.matchAll(teamPattern));
+    
+    if (teamMatches.length < 2) {
+      console.log('[Trade Parser] Could not find two teams in embed');
+      return null;
+    }
+    
+    const team1 = teamMatches[0][1].trim();
+    const team2 = teamMatches[1][1].trim();
+    
+    // Extract player lists for each team
+    // Split by team sections
+    const sections = description.split(/[A-Za-z\s]+\s+send:/i);
+    
+    if (sections.length < 3) {
+      console.log('[Trade Parser] Could not split embed into team sections');
+      return null;
+    }
+    
+    const team1Section = sections[1];
+    const team2Section = sections[2];
+    
+    // Parse players from each section
+    // Expected format: "Player Name OVR(salary)\n"
+    const playerPattern = /([A-Za-z\s\.'-]+)\s+(\d+)\s*\((\d+)\)/g;
+    
+    const team1Players: any[] = [];
+    let match;
+    while ((match = playerPattern.exec(team1Section)) !== null) {
+      team1Players.push({
+        name: match[1].trim(),
+        overall: parseInt(match[2]),
+        salary: parseInt(match[3])
+      });
+    }
+    
+    const team2Players: any[] = [];
+    playerPattern.lastIndex = 0; // Reset regex
+    while ((match = playerPattern.exec(team2Section)) !== null) {
+      team2Players.push({
+        name: match[1].trim(),
+        overall: parseInt(match[2]),
+        salary: parseInt(match[3])
+      });
+    }
+    
+    console.log(`[Trade Parser] Parsed trade: ${team1} (${team1Players.length} players) ↔ ${team2} (${team2Players.length} players)`);
+    
+    return {
+      team1,
+      team2,
+      team1Players,
+      team2Players
+    };
+  } catch (error) {
+    console.error('[Trade Parser] Error parsing trade from embed:', error);
+    return null;
+  }
+}
+
+/**
  * Process vote result and post confirmation/rejection
  */
 async function processVoteResult(
@@ -161,6 +236,31 @@ async function processVoteResult(
       approved: approved ? 1 : 0,
       });
       console.log(`[Trade Voting] Saved vote result to database for message ${message.id}`);
+      
+      // Parse trade details from embed and save to trades table
+      try {
+        const tradeDetails = parseTradeFromEmbed(message);
+        if (tradeDetails) {
+          await db.insert(trades).values({
+            messageId: message.id,
+            team1: tradeDetails.team1,
+            team2: tradeDetails.team2,
+            team1Players: JSON.stringify(tradeDetails.team1Players),
+            team2Players: JSON.stringify(tradeDetails.team2Players),
+            status: approved ? 'approved' : 'rejected',
+            upvotes,
+            downvotes,
+            approvedBy: approved ? 'Discord Vote' : undefined,
+            rejectedBy: approved ? undefined : 'Discord Vote',
+            processedAt: new Date(),
+          });
+          console.log(`[Trade Voting] Saved trade details to trades table for message ${message.id}`);
+        } else {
+          console.log(`[Trade Voting] Could not parse trade details from embed for message ${message.id}`);
+        }
+      } catch (error) {
+        console.error(`[Trade Voting] Error saving trade details:`, error);
+      }
     }
     
     // Trigger Discord cap status auto-update when trade is approved
