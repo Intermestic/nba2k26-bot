@@ -912,6 +912,9 @@ export async function startDiscordBot(token: string) {
     ]
   });
   
+  // Remove all existing listeners to prevent duplicates on hot reload
+  client.removeAllListeners();
+  
   client.once('clientReady', async () => {
     console.log(`[Discord Bot] Logged in as ${client!.user?.tag}!`);
     
@@ -1437,6 +1440,23 @@ export async function startDiscordBot(token: string) {
       
       // Handle ❗ emoji - manually record a single bid (authorized user only)
       if (reaction.emoji.name === '❗') {
+        // Deduplication check
+        const reactionKey = `${message.id}-❗-${user.id}`;
+        if (processedReactions.has(reactionKey)) {
+          console.log(`[Discord Bot] Skipping duplicate ❗ reaction for message ${message.id}`);
+          return;
+        }
+        processedReactions.add(reactionKey);
+        
+        // Auto-cleanup after TTL
+        setTimeout(() => processedReactions.delete(reactionKey), REACTION_CACHE_TTL);
+        
+        // Enforce cache size limit
+        if (processedReactions.size > REACTION_CACHE_SIZE) {
+          const firstKey = processedReactions.values().next().value;
+          if (firstKey) processedReactions.delete(firstKey);
+        }
+        
         // Check if user is authorized
         if (user.id !== '679275787664359435') {
           console.log(`[Discord Bot] Unauthorized user ${user.tag} (${user.id}) attempted manual processing`);

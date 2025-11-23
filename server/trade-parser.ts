@@ -16,7 +16,7 @@ export interface ParsedTrade {
  * NBA team names for fuzzy matching
  */
 const NBA_TEAMS = [
-  '76ers', 'Bucks', 'Bulls', 'Cavaliers', 'Celtics', 'Grizzlies', 'Grizz',
+  '76ers', 'Bucks', 'Bulls', 'Cavaliers', 'Cavs', 'Celtics', 'Grizzlies', 'Grizz',
   'Hawks', 'Heat', 'Hornets', 'Jazz', 'Kings', 'Knicks', 'Lakers', 'Magic',
   'Mavs', 'Mavericks', 'Nets', 'Nuggets', 'Pacers', 'Pelicans', 'Pistons',
   'Raptors', 'Rockets', 'Spurs', 'Suns', 'Timberwolves', 'Trailblazers', 'Blazers',
@@ -43,6 +43,7 @@ function normalizeTeamName(teamName: string): string {
     'bucks': 'Bucks',
     'bulls': 'Bulls',
     'cavaliers': 'Cavaliers',
+    'cavs': 'Cavaliers',
     'celtics': 'Celtics',
     'grizzlies': 'Grizzlies',
     'grizz': 'Grizzlies',
@@ -142,7 +143,7 @@ export function parseTrade(message: string): ParsedTrade | null {
     }
     
     if (team2Match) {
-      console.log('[Trade Parser] Using "Send" format strategy');
+      console.log('[Trade Parser] Using "Send" format strategy (Team1 sends)');
       console.log('[Trade Parser] Team1 raw:', sendMatch[1]);
       console.log('[Trade Parser] Team2 raw:', team2Match[1]);
       return {
@@ -150,6 +151,34 @@ export function parseTrade(message: string): ParsedTrade | null {
         team1Players: parsePlayerListWithOVR(sendMatch[1]),
         team2: normalizeTeamName(team2Raw),
         team2Players: parsePlayerListWithOVR(team2Match[1])
+      };
+    }
+  }
+  
+  // Strategy 1b: Team1 has no "send", but Team2 has "send"
+  // Format: "Cavs \n Player \n\n Nuggets send \n Player"
+  const team1NoSendPattern = new RegExp(
+    `${team1Raw}\\s*\\n([^]+?)(?=${team2Raw})`,
+    'is'
+  );
+  const team1NoSendMatch = text.match(team1NoSendPattern);
+  
+  if (team1NoSendMatch) {
+    const team2SendPattern = new RegExp(
+      `${team2Raw}\\s+send[s]?[:\\s]+([^]+?)(?:$|\\n\\n)`,
+      'is'
+    );
+    const team2SendMatch = text.match(team2SendPattern);
+    
+    if (team2SendMatch) {
+      console.log('[Trade Parser] Using mixed format strategy (Team1 no send, Team2 sends)');
+      console.log('[Trade Parser] Team1 raw:', team1NoSendMatch[1]);
+      console.log('[Trade Parser] Team2 raw:', team2SendMatch[1]);
+      return {
+        team1: normalizeTeamName(team1Raw),
+        team1Players: parsePlayerListWithOVR(team1NoSendMatch[1]),
+        team2: normalizeTeamName(team2Raw),
+        team2Players: parsePlayerListWithOVR(team2SendMatch[1])
       };
     }
   }

@@ -936,3 +936,103 @@ Keldon Johnson 78 (8)
 - [ ] Test with the problematic trade message
 - [ ] Fix any issues found
 - [ ] Save checkpoint
+
+
+---
+
+## COMPLETED: Fix Trade Parser for Cavs/Nuggets Trade ✅
+
+### Issue Fixed
+Trade parser couldn't parse this format:
+```
+Cavs 
+Khris Middleton 78 (10) 
+
+Nuggets send 
+Keldon Johnson 78 (8)
+```
+
+### Root Causes
+1. "Cavs" was not in the NBA_TEAMS list (only "Cavaliers" was recognized)
+2. Parser didn't handle mixed formats (Team1 without "send", Team2 with "send")
+
+### Solution Applied
+1. ✅ Added "Cavs" to NBA_TEAMS list and team normalization map
+2. ✅ Added Strategy 1b to handle mixed format trades
+3. ✅ Tested and confirmed working
+
+### Tasks Completed
+- [x] Investigate why trade parser is failing
+- [x] Add "Cavs" to team recognition
+- [x] Add mixed format parsing strategy
+- [x] Test with problematic trade (working!)
+- [x] Save checkpoint
+
+
+---
+
+## COMPLETED: Fix Duplicate Manual Bid Messages (❗ Handler) ✅
+
+### Issue Fixed
+Manual bid recording (❗ emoji) was sending duplicate messages.
+
+### Solution Applied
+1. ✅ Added deduplication check to ❗ emoji handler
+2. ✅ Uses processedReactions cache with reaction key: `messageId-❗-userId`
+3. ✅ Auto-cleanup after 1 minute TTL
+4. ✅ Combined with removeAllListeners() fix for complete solution
+
+### Tasks Completed
+- [x] Add deduplication to ❗ handler
+- [x] Test with manual bid (working!)
+- [x] Save checkpoint
+
+
+---
+
+## COMPLETED: Fix Duplicate Bid Confirmation Messages (Regular FA Bids) ✅
+
+### Issue Fixed
+Regular FA bid messages were sending duplicate "Bid Confirmed" messages (3 identical responses).
+
+### Root Cause
+Code hot-reloading in development (tsx watch) was registering duplicate event listeners without removing old ones.
+
+### Solution Applied
+1. ✅ Added `client.removeAllListeners()` before registering new listeners
+2. ✅ This prevents duplicate listeners when code reloads
+3. ✅ Tested and confirmed - only one "Bid Confirmed" message now
+
+### Tasks Completed
+- [x] Identify root cause (hot reload duplicate listeners)
+- [x] Add listener cleanup before registration
+- [x] Test with regular FA bid (working!)
+- [x] Save checkpoint
+
+
+---
+
+## COMPLETED: Fix Bid Parser for Colon Format ✅
+
+### Issue Fixed
+Bid parser failing on format with colons:
+```
+Cut: Eugene Omoruyi 
+Sign: Nae'Qwan Tomlin 
+Bid: 1
+```
+
+### Root Cause
+Regex patterns only matched `\s+` (spaces) after keywords, but didn't handle optional colons.
+
+### Solution Applied
+1. ✅ Updated cutPattern: `/\b(cut|drop|waive)\s*:?\s*(.+?)/i`
+2. ✅ Updated signPattern: `/\b(sign|add|pickup)\s*:?\s*(.+?)/i`
+3. ✅ Added `\s*:?\s*` to handle optional colons with surrounding whitespace
+4. ✅ Tested and confirmed working
+
+### Tasks Completed
+- [x] Identify root cause (regex doesn't handle colons)
+- [x] Fix cutPattern and signPattern regex
+- [x] Test with colon format (working!)
+- [x] Save checkpoint
