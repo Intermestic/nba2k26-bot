@@ -4,6 +4,9 @@ import { validateTeamName } from './team-validator';
 
 const FA_CHANNEL_ID = '1095812920056762510';
 
+// Mutex lock to prevent concurrent batch processing
+const processingLocks = new Map<string, boolean>();
+
 /**
  * Post window close summary with all winning bids
  */
@@ -166,7 +169,22 @@ function parseSummaryMessage(embed: any): Array<{ playerName: string; dropPlayer
  * Process all winning bids from a summary message
  */
 export async function processBidsFromSummary(message: any, processorId: string) {
+  // Lock key for this message
+  const lockKey = `batch-${message.id}`;
+  
   try {
+    // Check if this message is already being processed
+    if (processingLocks.get(lockKey)) {
+      console.log(`[Batch Process] Already processing message ${message.id}, skipping duplicate request`);
+      return {
+        success: false,
+        message: 'Batch processing already in progress for this message'
+      };
+    }
+    
+    // Acquire lock
+    processingLocks.set(lockKey, true);
+    console.log(`[Batch Process] Lock acquired for message ${message.id}`);
     console.log(`[Batch Process] Starting batch processing from summary message by user ${processorId}`);
     
     // Parse bids from the summary message embed
@@ -409,6 +427,10 @@ export async function processBidsFromSummary(message: any, processorId: string) 
       }
     }
     
+    // Release lock
+    processingLocks.delete(lockKey);
+    console.log(`[Batch Process] Lock released for message ${message.id}`);
+    
     return {
       success: true,
       results,
@@ -418,6 +440,11 @@ export async function processBidsFromSummary(message: any, processorId: string) 
     
   } catch (error) {
     console.error('[Batch Process] Fatal error:', error);
+    
+    // Release lock on error
+    processingLocks.delete(lockKey);
+    console.log(`[Batch Process] Lock released for message ${message.id} (error path)`);
+    
     return {
       success: false,
       message: error instanceof Error ? error.message : 'Unknown error'

@@ -785,4 +785,33 @@ Remove all individual team roster links from embed fields. Keep only the main "V
 - [ ] Increase batch processing confirmation timeout or add auto-process (deferred - needs user testing)
 - [x] Integrate trade voting with trades table (save on approval/rejection)
 - [x] Test all fixes with real Discord scenarios (TypeScript passes, bot running)
-- [ ] Save checkpoint
+- [x] Save checkpoint (version: 5f8496f8)
+
+
+## 2025-11-21: Duplicate Batch Processing Messages
+
+### Issue
+Bot is processing the same FA transaction multiple times, showing 3x duplicate error messages:
+- "✅ Transaction Processed" (successful)
+- "❌ Could not find player to sign: Dayron Sharpe" (error 1)
+- "❌ Could not find player to sign: Dayron Sharpe" (error 2)
+- "❌ Could not find player to sign: Dayron Sharpe" (error 3)
+
+This indicates the batch processor is running the same transaction 4 times concurrently.
+
+### Root Cause
+The reaction collector in discord-bot.ts (line 1534) triggers `processBidsFromSummary` without any mutex lock. Multiple reactions (or rapid repeated reactions) spawn concurrent batch processing runs, causing the same transactions to be processed multiple times.
+
+### Solution Implemented
+1. Added `processingLocks` Map to track in-progress batch processing by message ID
+2. Check lock at start of `processBidsFromSummary` - reject if already processing
+3. Acquire lock before processing, release after completion (both success and error paths)
+4. Log all lock operations for debugging
+
+### Tasks
+- [x] Investigate batch-processor.ts for concurrent execution
+- [x] Check if multiple reaction collectors are triggering simultaneously
+- [x] Add mutex lock or processing flag to prevent concurrent batch processing
+- [x] Add deduplication check for transaction IDs (using message ID as lock key)
+- [ ] Test with real batch processing scenario (ready for user testing)
+- [ ] Save checkpoint (pending test)
