@@ -444,12 +444,31 @@ export async function handleReactionAdd(
     // Check if vote threshold reached
     // Rejection takes priority: if 5 👎 reached, reject immediately
     // Approval: 7 👍 (only if not already rejected)
-    if (downvotes >= REJECTION_THRESHOLD) {
-      // Trade rejected: got 5 downvotes
-      await processVoteResult(reaction.message as Message, upvotes, downvotes, false);
-    } else if (upvotes >= APPROVAL_THRESHOLD) {
-      // Trade approved: got 7 upvotes (and less than 5 downvotes)
-      await processVoteResult(reaction.message as Message, upvotes, downvotes, true);
+    if (downvotes >= REJECTION_THRESHOLD || upvotes >= APPROVAL_THRESHOLD) {
+      // Early lock check to prevent race condition
+      if (processingVotes.has(reaction.message.id)) {
+        console.log(`[Trade Voting] Trade ${reaction.message.id} is already being processed, skipping duplicate reaction event`);
+        return;
+      }
+      
+      // Check database to prevent duplicate processing
+      const db = await getDb();
+      if (db) {
+        const existingVote = await db.select().from(tradeVotes).where(eq(tradeVotes.messageId, reaction.message.id)).limit(1);
+        if (existingVote.length > 0) {
+          console.log(`[Trade Voting] Trade ${reaction.message.id} already processed at ${existingVote[0].processedAt}, skipping duplicate reaction event`);
+          return;
+        }
+      }
+      
+      // Process the vote result
+      if (downvotes >= REJECTION_THRESHOLD) {
+        // Trade rejected: got 5 downvotes
+        await processVoteResult(reaction.message as Message, upvotes, downvotes, false);
+      } else if (upvotes >= APPROVAL_THRESHOLD) {
+        // Trade approved: got 7 upvotes (and less than 5 downvotes)
+        await processVoteResult(reaction.message as Message, upvotes, downvotes, true);
+      }
     }
     
   } catch (error) {

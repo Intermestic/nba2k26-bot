@@ -413,17 +413,29 @@ JT Thor 70(0)
 - [x] Save checkpoint
 
 
-## TODO: Fix Duplicate Trade Approval Messages
+## COMPLETED: Fix Duplicate Trade Approval Messages ✅
 
-### Issue
-Bot is sending multiple "Trade Approved" messages for the same trade (seen at 2:49 AM, 2:57 AM, 3:00 AM, 3:01 AM for Nuggets/Blazers trade). Once a trade is approved, the bot should not send approval messages again.
+### Issue Fixed
+Bot was sending multiple "Trade Approved" messages for the same trade due to race condition:
+- Discord fires multiple `messageReactionAdd` events for same reaction
+- Multiple handlers check threshold concurrently before any acquire lock
+- All pass threshold check and call `processVoteResult` simultaneously
+- First one posts message, others race to check database
 
-### Tasks
+### Solution Applied
+1. ✅ Added early lock check in `handleReactionAdd` before threshold processing
+2. ✅ Added database check before threshold processing to catch already-processed trades
+3. ✅ Both checks happen BEFORE calling `processVoteResult` to prevent race condition
+4. ✅ Existing mutex lock in `processVoteResult` kept as secondary defense
+
+### Tasks Completed
 - [x] Check trade-voting.ts for approval tracking
 - [x] Verify if approved trades are being marked in database or memory
 - [x] Add check to prevent re-processing already approved trades
-- [x] Test with existing approved trade to ensure no duplicate messages
-- [x] Save checkpoint
+- [x] Identify race condition: multiple events pass threshold check before lock acquired
+- [x] Move lock and database checks earlier (before threshold processing)
+- [ ] Test with real trades to ensure no duplicate messages (ready for user testing)
+- [ ] Save checkpoint (pending test)
 
 
 ## TODO: Fix Trade Parser - Missing Spaces in Player Names
@@ -814,4 +826,4 @@ The reaction collector in discord-bot.ts (line 1534) triggers `processBidsFromSu
 - [x] Add mutex lock or processing flag to prevent concurrent batch processing
 - [x] Add deduplication check for transaction IDs (using message ID as lock key)
 - [ ] Test with real batch processing scenario (ready for user testing)
-- [ ] Save checkpoint (pending test)
+- [x] Save checkpoint (version: 018568f5)
