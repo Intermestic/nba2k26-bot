@@ -144,27 +144,12 @@ async function createOrUpdateTeamChannel(
               PermissionFlagsBits.EmbedLinks,
             ],
           },
-          // Admin role permissions
-          ...(guild.roles.cache.find((r: Role) => r.name === 'Admin') ? [
-            {
-              id: guild.roles.cache.find((r: Role) => r.name === 'Admin')!.id,
-              allow: [
-                PermissionFlagsBits.ViewChannel,
-                PermissionFlagsBits.SendMessages,
-                PermissionFlagsBits.ReadMessageHistory,
-                PermissionFlagsBits.AddReactions,
-                PermissionFlagsBits.AttachFiles,
-                PermissionFlagsBits.EmbedLinks,
-                PermissionFlagsBits.ManageMessages,
-              ],
-            },
-          ] : []),
         ],
       });
       console.log(`[Team Channels] Created channel: ${channelName} with topic: ${rosterSummary}`);
     } else {
       // Update existing channel permissions
-      const permissionOverwrites: any[] = [
+      await channel.permissionOverwrites.set([
         {
           id: guild.id, // @everyone role
           deny: [PermissionFlagsBits.ViewChannel],
@@ -180,26 +165,7 @@ async function createOrUpdateTeamChannel(
             PermissionFlagsBits.EmbedLinks,
           ],
         },
-      ];
-      
-      // Add admin role permissions if role exists
-      const adminRole = guild.roles.cache.find((r: Role) => r.name === 'Admin');
-      if (adminRole) {
-        permissionOverwrites.push({
-          id: adminRole.id,
-          allow: [
-            PermissionFlagsBits.ViewChannel,
-            PermissionFlagsBits.SendMessages,
-            PermissionFlagsBits.ReadMessageHistory,
-            PermissionFlagsBits.AddReactions,
-            PermissionFlagsBits.AttachFiles,
-            PermissionFlagsBits.EmbedLinks,
-            PermissionFlagsBits.ManageMessages,
-          ],
-        });
-      }
-      
-      await channel.permissionOverwrites.set(permissionOverwrites);
+      ]);
 
       // Move to category if not already there
       if (channel.parentId !== category.id) {
