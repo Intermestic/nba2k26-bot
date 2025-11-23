@@ -25,6 +25,11 @@ interface ParsedTransaction {
 let client: Client | null = null;
 let pendingTransactions: ParsedTransaction[] = [];
 
+// Track processed messages to prevent duplicates
+const processedMessages = new Set<string>();
+const MESSAGE_CACHE_SIZE = 1000;
+const MESSAGE_CACHE_TTL = 60000; // 1 minute
+
 /**
  * Parse FA transaction message
  * Flexible format: handles variations of cut/drop/release and sign/add/pickup
@@ -403,6 +408,22 @@ async function handleBidMessage(message: Message) {
     return;
   }
   
+  // Prevent duplicate processing
+  if (processedMessages.has(message.id)) {
+    console.log(`[FA Bids] Skipping duplicate message ${message.id}`);
+    return;
+  }
+  processedMessages.add(message.id);
+  
+  // Clean up old entries to prevent memory leak
+  if (processedMessages.size > MESSAGE_CACHE_SIZE) {
+    const toDelete = Array.from(processedMessages).slice(0, MESSAGE_CACHE_SIZE / 2);
+    toDelete.forEach(id => processedMessages.delete(id));
+  }
+  
+  // Auto-cleanup after TTL
+  setTimeout(() => processedMessages.delete(message.id), MESSAGE_CACHE_TTL);
+  
   console.log(`[FA Bids] Checking message ${message.id}: ${message.content.substring(0, 50)}...`);
   
   // Try to parse as bid
@@ -513,27 +534,46 @@ async function handleBidMessage(message: Message) {
     return;
   }
   
-  // Now find sign player by fuzzy matching (filter for free agents only, use team context)
-  const player = await findPlayerByFuzzyName(parsedBid.playerName, team, true);
+  // Now find sign player by fuzzy matching (filter for free agents only)
+  // NOTE: Don't pass team context for free agent searches - they're not on any team!
+  console.log(`[FA Bids] Searching for free agent: "${parsedBid.playerName}" (length: ${parsedBid.playerName.length})`);
+  const player = await findPlayerByFuzzyName(parsedBid.playerName, undefined, true);
   
   if (!player) {
     console.log(`[FA Bids] Player not found: ${parsedBid.playerName}`);
     
-    // Get suggestions for similar player names
+    // Check if player exists but is not a free agent
     const { getDb } = await import('./db');
     const { players: playersTable } = await import('../drizzle/schema');
     const db = await getDb();
     if (db) {
-      const allPlayers = await db.select({ name: playersTable.name }).from(playersTable);
+      const allPlayers = await db.select({ name: playersTable.name, team: playersTable.team }).from(playersTable);
       const { extract } = await import('fuzzball');
-      const suggestions = extract(parsedBid.playerName, allPlayers.map(p => p.name), { limit: 3 });
+      
+      // First check if there's an exact or very close match in the full database
+      const exactMatches = extract(parsedBid.playerName, allPlayers.map(p => p.name), { limit: 1 });
+      if (exactMatches.length > 0 && exactMatches[0][1] >= 90) {
+        const matchedPlayer = allPlayers.find(p => p.name === exactMatches[0][0]);
+        if (matchedPlayer && matchedPlayer.team && matchedPlayer.team !== 'Free Agent' && matchedPlayer.team !== 'Free Agents') {
+          await message.reply(
+            `❌ **Player Not Available**: ${matchedPlayer.name} is not a free agent.\n\n` +
+            `**Current Team**: ${matchedPlayer.team}\n\n` +
+            `💡 **Tip**: You can only sign free agents. Check the free agent list.`
+          );
+          return;
+        }
+      }
+      
+      // Get suggestions from free agents only
+      const freeAgents = allPlayers.filter(p => !p.team || p.team === 'Free Agent' || p.team === 'Free Agents');
+      const suggestions = extract(parsedBid.playerName, freeAgents.map(p => p.name), { limit: 3 });
       
       const suggestionText = suggestions.length > 0
-        ? `\n\n**Did you mean?**\n${suggestions.map(s => `• ${s[0]} (${s[1]}% match)`).join('\n')}`
+        ? `\n\n**Did you mean?** (Free agents only)\n${suggestions.map(s => `• ${s[0]} (${s[1]}% match)`).join('\n')}`
         : '';
       
       await message.reply(
-        `❌ **Player Not Found**: "${parsedBid.playerName}" does not exist in the database.${suggestionText}\n\n` +
+        `❌ **Player Not Found**: "${parsedBid.playerName}" does not exist as a free agent.${suggestionText}\n\n` +
         `💡 **Tip**: Check spelling or use common nicknames (e.g., "LeBron", "Steph", "KD").`
       );
     }

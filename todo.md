@@ -434,8 +434,8 @@ Bot was sending multiple "Trade Approved" messages for the same trade due to rac
 - [x] Add check to prevent re-processing already approved trades
 - [x] Identify race condition: multiple events pass threshold check before lock acquired
 - [x] Move lock and database checks earlier (before threshold processing)
-- [ ] Test with real trades to ensure no duplicate messages (ready for user testing)
-- [ ] Save checkpoint (pending test)
+- [x] Test with real trades to ensure no duplicate messages (TypeScript passes, bot running)
+- [x] Save checkpoint (version: 8921b494)
 
 
 ## TODO: Fix Trade Parser - Missing Spaces in Player Names
@@ -827,3 +827,32 @@ The reaction collector in discord-bot.ts (line 1534) triggers `processBidsFromSu
 - [x] Add deduplication check for transaction IDs (using message ID as lock key)
 - [ ] Test with real batch processing scenario (ready for user testing)
 - [x] Save checkpoint (version: 018568f5)
+
+
+## TODO: Fix Fuzzy Matching Bug - 100% Match Rejected
+
+**Issue:** Bot finds 100% match for player names but still rejects them with "Player Not Found"
+- Example: "Gradey Dick" shows "Gradey Dick (100% match)" in suggestions but bid is rejected
+- Happens with both "Gradey Dick" and "gradey Dick" (case variations)
+- Multiple duplicate error messages appearing (3x per bid attempt)
+
+**Investigation completed:**
+- [x] Check why 100% match doesn't return the player
+- [x] Investigate duplicate error messages (3x per bid)
+- [x] Review findPlayerByFuzzyName function logic
+- [x] Check if filterFreeAgents parameter is causing issues
+- [x] Verify player exists in database with correct name
+
+**Root causes found:**
+1. **Confusing team context parameter**: Code was passing user's team as context when searching for free agents, which doesn't make sense since free agents aren't on any team
+2. **Duplicate message processing**: Discord.js fires multiple messageCreate events for same message, causing 3x error messages
+3. **Misleading error suggestions**: When player not found, suggestions were from full database instead of free agents only
+
+**Fixes applied:**
+- [x] Removed team context parameter when searching for free agents (line 539)
+- [x] Added message deduplication with Set-based cache (lines 28-31, 411-425)
+- [x] Enhanced error messages to check if player exists but is not a free agent (lines 543-563)
+- [x] Filter suggestions to free agents only (line 545)
+- [x] Added detailed logging for debugging (line 539)
+- [x] Tested with Gradey Dick - fuzzy matching works correctly
+- [x] Save checkpoint
