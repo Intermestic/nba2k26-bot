@@ -842,11 +842,13 @@ export function initializeTradeVoting(client: Client) {
   console.log(`[Trade Voting] Required role: ${TRADE_COMMITTEE_ROLE}`);
   
   // Start reminder scheduler - send reminders every hour
-  setInterval(() => {
-    sendVoteReminders(client);
-  }, 60 * 60 * 1000); // Every hour
+  // DISABLED: Trade Committee requested to stop receiving reminder DMs
+  // setInterval(() => {
+  //   sendVoteReminders(client);
+  // }, 60 * 60 * 1000); // Every hour
   
-  console.log('[Trade Reminders] Hourly vote reminders scheduled');
+  // console.log('[Trade Reminders] Hourly vote reminders scheduled');
+  console.log('[Trade Reminders] Hourly vote reminders DISABLED (per user request)');
   
   // Scan for missed votes on startup
   scanTradesForMissedVotes(client).catch(error => {

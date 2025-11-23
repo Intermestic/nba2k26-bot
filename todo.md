@@ -876,4 +876,16 @@ The reaction collector in discord-bot.ts (line 1534) triggers `processBidsFromSu
 - [x] Locate where transaction confirmations are sent (line 1926-1932)
 - [x] Apply same deduplication pattern used for bid confirmations (Set-based reaction cache)
 - [ ] Test with real FA transaction processing (ready for user testing)
-- [ ] Save checkpoint (pending test)
+- [x] Save checkpoint (version: 0d48605a)
+
+
+## TODO: Disable Trade Vote Reminder DMs
+
+### Issue
+Trade Committee members are receiving hourly DM reminders to vote on trades, which is spammy and annoying.
+
+### Tasks
+- [x] Locate trade vote reminder code in trade-voting.ts (lines 844-849)
+- [x] Comment out the setInterval reminder scheduler
+- [x] Add note explaining it was disabled per user request
+- [ ] Save checkpoint
