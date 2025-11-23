@@ -17,7 +17,8 @@ import {
   CheckCircle,
   AlertTriangle,
   Database,
-  Zap
+  Zap,
+  ArrowLeftRight
 } from "lucide-react";
 
 interface AdminTool {
@@ -109,6 +110,14 @@ export default function AdminDashboard() {
       href: "/admin/transactions",
       icon: <Zap className="w-6 h-6" />,
       color: "bg-purple-500",
+      section: "team"
+    },
+    {
+      title: "Trade Management",
+      description: "View, approve, reject, and reverse trades",
+      href: "/admin/trades",
+      icon: <ArrowLeftRight className="w-6 h-6" />,
+      color: "bg-emerald-500",
       section: "team"
     },
     

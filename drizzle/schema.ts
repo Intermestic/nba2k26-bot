@@ -683,3 +683,27 @@ export const tradeVotes = mysqlTable("trade_votes", {
 
 export type TradeVote = typeof tradeVotes.$inferSelect;
 export type InsertTradeVote = typeof tradeVotes.$inferInsert;
+
+/**
+ * Trades table - comprehensive trade tracking with all details
+ */
+export const trades = mysqlTable("trades", {
+  id: int("id").autoincrement().primaryKey(),
+  messageId: varchar("messageId", { length: 64 }).notNull().unique(), // Discord message ID
+  team1: varchar("team1", { length: 64 }).notNull(), // First team name
+  team2: varchar("team2", { length: 64 }).notNull(), // Second team name
+  team1Players: text("team1Players").notNull(), // JSON array of player objects
+  team2Players: text("team2Players").notNull(), // JSON array of player objects
+  status: mysqlEnum("status", ["pending", "approved", "rejected", "reversed"]).notNull().default("pending"),
+  upvotes: int("upvotes").notNull().default(0),
+  downvotes: int("downvotes").notNull().default(0),
+  approvedBy: varchar("approvedBy", { length: 255 }), // Admin who approved
+  rejectedBy: varchar("rejectedBy", { length: 255 }), // Admin who rejected
+  reversedBy: varchar("reversedBy", { length: 255 }), // Admin who reversed
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  processedAt: timestamp("processedAt"), // When approved/rejected
+  reversedAt: timestamp("reversedAt"), // When reversed
+});
+
+export type Trade = typeof trades.$inferSelect;
+export type InsertTrade = typeof trades.$inferInsert;

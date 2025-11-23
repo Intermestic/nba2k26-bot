@@ -711,4 +711,37 @@ Remove all individual team roster links from embed fields. Keep only the main "V
 - [x] Fix circular import issue (call function directly instead of importing)
 - [x] Test /updatecap command in Discord
 - [x] Verify simplified embed format displays correctly
-- [ ] Save checkpoint
+- [x] Save checkpoint (version: e2c63dec)
+
+
+---
+
+## TODO: Trade Management System
+
+### Requirements
+- Close all active trades in database
+- Create trade management admin page
+- Show all trades with status (pending, approved, rejected)
+- Allow approve/reject/reverse actions
+- Display trade details (teams, players, votes)
+- Add to admin dashboard navigation
+
+### Implementation
+1. ✅ Created trades table in database with comprehensive fields (status, teams, players, votes, admin actions)
+2. ✅ Built trades TRPC router with getAllTrades, approveTrade, rejectTrade, reverseTrade, closeAllPendingTrades
+3. ✅ Created TradeManagement.tsx admin page with tabs and table view
+4. ✅ Added approve/reject/reverse buttons with AlertDialog confirmations
+5. ✅ Added "Close All Pending Trades" bulk action button
+6. ✅ Added trade management card to admin dashboard
+7. ✅ Added /admin/trades route to App.tsx
+8. ✅ Wrote and passed vitest tests for trades table
+
+### Tasks
+- [x] Close all active trades in trade_votes table (N/A - no pending trades found)
+- [x] Create trades TRPC router with getAllTrades, approveTrade, rejectTrade, reverseTrade endpoints
+- [x] Build TradeManagement.tsx admin page with table view
+- [x] Add approve/reject/reverse buttons with confirmation dialogs
+- [x] Add trade management card to admin dashboard
+- [x] Add route to App.tsx
+- [x] Test all trade actions
+- [x] Save checkpoint
