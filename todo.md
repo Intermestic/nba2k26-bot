@@ -856,3 +856,24 @@ The reaction collector in discord-bot.ts (line 1534) triggers `processBidsFromSu
 - [x] Added detailed logging for debugging (line 539)
 - [x] Tested with Gradey Dick - fuzzy matching works correctly
 - [x] Save checkpoint
+
+
+## COMPLETED: Fix Duplicate FA Transaction Confirmations ✅
+
+**Issue Fixed:** Bot was posting the same transaction confirmation message 3 times when processing FA bids
+- Example: "✅ Transaction Processed - Team: Pacers, Signed: Noah Clowney (73 OVR), Dropped: Jose Alvarado (75 OVR), Cost: $3" appeared 3x
+- Root cause: Discord.js fires multiple `messageReactionAdd` events for same reaction
+- Manual transaction handler (⚡ reaction) had no deduplication logic
+
+**Solution Applied:**
+1. ✅ Added `processedReactions` Set to track processed reactions (similar to `processedMessages`)
+2. ✅ Created unique reaction key: `${message.id}-${user.id}-⚡`
+3. ✅ Check cache before processing - skip if already processed
+4. ✅ Added memory management (cache size limit + TTL cleanup)
+5. ✅ Applied to manual bid processing handler (lines 1806-1821)
+
+**Tasks Completed:**
+- [x] Locate where transaction confirmations are sent (line 1926-1932)
+- [x] Apply same deduplication pattern used for bid confirmations (Set-based reaction cache)
+- [ ] Test with real FA transaction processing (ready for user testing)
+- [ ] Save checkpoint (pending test)

@@ -30,6 +30,11 @@ const processedMessages = new Set<string>();
 const MESSAGE_CACHE_SIZE = 1000;
 const MESSAGE_CACHE_TTL = 60000; // 1 minute
 
+// Track processed reactions to prevent duplicate transaction confirmations
+const processedReactions = new Set<string>();
+const REACTION_CACHE_SIZE = 1000;
+const REACTION_CACHE_TTL = 60000; // 1 minute
+
 /**
  * Parse FA transaction message
  * Flexible format: handles variations of cut/drop/release and sign/add/pickup
@@ -1797,6 +1802,23 @@ export async function startDiscordBot(token: string) {
           console.log(`[Discord Bot] Unauthorized user ${user.tag} (${user.id}) attempted manual bid processing`);
           return;
         }
+        
+        // Prevent duplicate processing of same reaction
+        const reactionKey = `${message.id}-${user.id}-⚡`;
+        if (processedReactions.has(reactionKey)) {
+          console.log(`[Discord Bot] Skipping duplicate reaction ${reactionKey}`);
+          return;
+        }
+        processedReactions.add(reactionKey);
+        
+        // Clean up old entries to prevent memory leak
+        if (processedReactions.size > REACTION_CACHE_SIZE) {
+          const toDelete = Array.from(processedReactions).slice(0, REACTION_CACHE_SIZE / 2);
+          toDelete.forEach(id => processedReactions.delete(id));
+        }
+        
+        // Auto-cleanup after TTL
+        setTimeout(() => processedReactions.delete(reactionKey), REACTION_CACHE_TTL);
         
         console.log('[Discord Bot] Authorized user triggered manual bid processing (execute transaction)');
         const { parseBidMessage, findPlayerByFuzzyName } = await import('./fa-bid-parser');
