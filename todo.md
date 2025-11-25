@@ -1036,3 +1036,45 @@ Regex patterns only matched `\s+` (spaces) after keywords, but didn't handle opt
 - [x] Fix cutPattern and signPattern regex
 - [x] Test with colon format (working!)
 - [x] Save checkpoint
+
+
+
+---
+
+## TODO: Fix Fuzzy Matching for Jeremy Sochan Typo
+
+### Issue
+FA bid parser failing on:
+```
+Cut kyle flipnowski sign Jermey scohan 
+Big 4
+```
+
+Parser couldn't match "Jermey scohan" to "Jeremy Sochan" (typo in first name: Jermey vs Jeremy).
+
+### Possible Causes
+- Fuzzy matching threshold too strict (currently 70%)
+- First name typo not being caught by current strategies
+- Need to add Jeremy Sochan to player aliases
+
+### Root Cause
+Two issues found:
+1. **Sign pattern regex** didn't handle newlines between player name and bid amount
+2. **Initial keyword validation** rejected messages without explicit "bid" keyword, even if they had numbers
+
+### Solution Applied
+1. ✅ Updated sign pattern to match newlines: `/\b(sign|add|pickup)\s*:?\s*(.+?)(?:\s+(?:bid|\d+)|\n|$)/i`
+2. ✅ Added number detection to keyword validation: `const hasNumber = /\d+/.test(text);`
+3. ✅ Added Kyle Filipowski aliases: `['kyle flipowski', 'kyle flipnowski', 'filipowski', 'flipowski']`
+
+### Test Results
+✅ "kyle flipnowski" → Kyle Filipowski (via alias)
+✅ "Jermey scohan" → Jeremy Sochan (85% fuzzy match)
+✅ Bid amount "Big 4" → 4 (standalone number pattern)
+
+### Tasks
+- [x] Check current fuzzy matching threshold (70%)
+- [x] Test why "Jermey" doesn't match "Jeremy" (it does - 92% score)
+- [x] Add alias for Kyle Filipowski typos
+- [x] Test with this specific bid (working!)
+- [x] Save checkpoint

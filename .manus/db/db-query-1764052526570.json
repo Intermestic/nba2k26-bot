@@ -1,0 +1,16 @@
+{
+  "query": "SELECT id, name, team, overall FROM players WHERE name LIKE '%Filipowski%'",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT id, name, team, overall FROM players WHERE name LIKE '%Filipowski%'",
+  "rows": [
+    {
+      "id": "P0173",
+      "name": "Kyle Filipowski",
+      "team": "Pacers",
+      "overall": "77"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\tteam\toverall\nP0173\tKyle Filipowski\tPacers\t77\n",
+  "stderr": "",
+  "execution_time_ms": 48
+}

@@ -22,11 +22,12 @@ export function parseBidMessage(message: string): ParsedBid | null {
   // Check for acquisition keywords
   const hasAcquisition = /\b(sign|add|pickup)\b/i.test(text);
   
-  // Check for value keywords  
+  // Check for value keywords OR standalone numbers
   const hasValue = /\b(bid|coins?|\$)\b/i.test(text);
+  const hasNumber = /\d+/.test(text);
   
-  // Must have at least one acquisition OR value keyword
-  if (!hasAcquisition && !hasValue) {
+  // Must have at least one acquisition OR (value keyword OR number)
+  if (!hasAcquisition && !hasValue && !hasNumber) {
     return null;
   }
   
@@ -40,8 +41,8 @@ export function parseBidMessage(message: string): ParsedBid | null {
   }
   
   // Step B: Identify signed player (required)
-  // Match everything after sign/add/pickup (with optional colon) until we hit bid, a number, or end of string
-  const signPattern = /\b(sign|add|pickup)\s*:?\s*(.+?)(?:\s+(?:bid|\d+)|$)/i;
+  // Match everything after sign/add/pickup (with optional colon) until we hit bid, a number, newline, or end of string
+  const signPattern = /\b(sign|add|pickup)\s*:?\s*(.+?)(?:\s+(?:bid|\d+)|\n|$)/i;
   const signMatch = message.match(signPattern);
   
   if (!signMatch) {
@@ -108,6 +109,7 @@ export async function findPlayerByFuzzyName(
     'Džanan Musa': ['dzanan musa', 'musa'],
     
     // Common misspellings
+    'Kyle Filipowski': ['kyle flipowski', 'kyle flipnowski', 'filipowski', 'flipowski'],
     'Johnny Furphy': ['johnny murphy', 'furfy', 'furphy'],
     'Day\'Ron Sharpe': ['dayron sharpe', 'day ron sharpe', 'sharp'],
     'Rocco Zikarsky': ['rocco zikarsky', 'zikarsky', 'zikarsky'],
