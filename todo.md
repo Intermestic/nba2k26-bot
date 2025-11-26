@@ -1106,4 +1106,31 @@ Error message suggests bot tried to find "Kat" on Wizards roster but failed.
 - [x] Add "kat" nickname alias to NICKNAMES mapping → "karl-anthony towns"
 - [x] Add detailed error logging to show full trade context when validation fails
 - [x] Test with similar short names/nicknames (✅ All tests passed: Kat → Karl-Anthony Towns)
+- [x] Save checkpoint (version: dbb84c93)
+
+
+---
+
+## TODO: Fix Trade Parser - Wolves/Bulls Format (2025-11-26)
+
+### Issue
+Trade parser failing on format:
+```
+Wolves send:
+Paolo Banchero 90 (20)
+Kyle kuzma 77 (14)
+
+Bulls send:
+lamelo ball 88 (15)
+rui Hachimura 80 (11)
+```
+
+Bot shows "Could not parse trade automatically" and asks for manual correction.
+
+### Tasks
+- [x] Check current trade parser logic in server/trade-parser.ts
+- [x] Identify why "Wolves send:" format is not being recognized ("Wolves" not in NBA_TEAMS array)
+- [x] Check if team name "Wolves" needs to be added to team variations (YES - only "Timberwolves" was listed)
+- [x] Fix parser to handle this format (added "Wolves" to NBA_TEAMS and normalization mapping)
+- [x] Test with the actual trade message (✅ Successfully parsed: Wolves → Timberwolves, Bulls → Bulls)
 - [ ] Save checkpoint

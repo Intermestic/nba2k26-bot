@@ -19,7 +19,7 @@ const NBA_TEAMS = [
   '76ers', 'Bucks', 'Bulls', 'Cavaliers', 'Cavs', 'Celtics', 'Grizzlies', 'Grizz',
   'Hawks', 'Heat', 'Hornets', 'Jazz', 'Kings', 'Knicks', 'Lakers', 'Magic',
   'Mavs', 'Mavericks', 'Nets', 'Nuggets', 'Pacers', 'Pelicans', 'Pistons',
-  'Raptors', 'Rockets', 'Spurs', 'Suns', 'Timberwolves', 'Trailblazers', 'Blazers',
+  'Raptors', 'Rockets', 'Spurs', 'Suns', 'Timberwolves', 'Wolves', 'Trailblazers', 'Blazers',
   'Warriors', 'Wizards', 'Sixers'
 ];
 
@@ -64,6 +64,7 @@ function normalizeTeamName(teamName: string): string {
     'spurs': 'Spurs',
     'suns': 'Suns',
     'timberwolves': 'Timberwolves',
+    'wolves': 'Timberwolves',
     'warriors': 'Warriors',
     'wizards': 'Wizards'
   };
