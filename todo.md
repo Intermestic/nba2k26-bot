@@ -1078,3 +1078,32 @@ Two issues found:
 - [x] Add alias for Kyle Filipowski typos
 - [x] Test with this specific bid (working!)
 - [x] Save checkpoint
+
+
+---
+
+## TODO: Trade Validation Bug - "Player not found on Wizards: Kat"
+
+### Issue
+Trade was approved by Trade Committee (7 votes) but validation shows error "Player not found on Wizards: Kat" even though trade completed successfully.
+
+Trade details from screenshot:
+- Pacers received: Klay Thompson, Jeremiah Robinson-Earl
+- Suns received: Josh Okogie, Tony Bradley
+
+Error message suggests bot tried to find "Kat" on Wizards roster but failed.
+
+### Possible Causes
+- Trade parser is extracting "Kat" instead of full player name
+- "Kat" is a nickname/abbreviation that needs alias (likely Karl-Anthony Towns)
+- Player might not actually be on Wizards roster
+- Parser might be splitting player names incorrectly
+
+### Tasks
+- [x] Check trade parser - is it extracting "Kat" instead of full player name?
+- [x] Search database for "Kat" or "Karl-Anthony Towns" (found: Karl-Anthony Towns, Wizards, OVR 95)
+- [x] Check if Karl-Anthony Towns is on Wizards roster (YES - he is on Wizards)
+- [x] Add "kat" nickname alias to NICKNAMES mapping → "karl-anthony towns"
+- [x] Add detailed error logging to show full trade context when validation fails
+- [x] Test with similar short names/nicknames (✅ All tests passed: Kat → Karl-Anthony Towns)
+- [ ] Save checkpoint

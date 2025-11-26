@@ -374,6 +374,7 @@ export async function findPlayerByFuzzyName(name: string, teamFilter?: string, c
       'steph': 'stephen curry',
       'cp3': 'chris paul',
       'pg13': 'paul george',
+      'kat': 'karl-anthony towns',
       'greek freak': 'giannis antetokounmpo',
       'king james': 'lebron james',
       'slim reaper': 'kevin durant',
@@ -536,6 +537,8 @@ export async function resolveTradePlayer(parsedTrade: ParsedTrade): Promise<{
     if (player) {
       team1Players.push({ id: player.id, name: player.name, overall: player.overall });
     } else {
+      console.error(`[Trade Validation] ❌ Player not found on ${parsedTrade.team1}: "${playerName}"`);
+      console.error(`[Trade Validation] Full trade context:`, JSON.stringify(parsedTrade, null, 2));
       errors.push(`Player not found on ${parsedTrade.team1}: ${playerName}`);
     }
   }
@@ -546,6 +549,8 @@ export async function resolveTradePlayer(parsedTrade: ParsedTrade): Promise<{
     if (player) {
       team2Players.push({ id: player.id, name: player.name, overall: player.overall });
     } else {
+      console.error(`[Trade Validation] ❌ Player not found on ${parsedTrade.team2}: "${playerName}"`);
+      console.error(`[Trade Validation] Full trade context:`, JSON.stringify(parsedTrade, null, 2));
       errors.push(`Player not found on ${parsedTrade.team2}: ${playerName}`);
     }
   }
