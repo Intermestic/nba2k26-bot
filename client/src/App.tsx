@@ -29,6 +29,7 @@ import UpgradeHistory from "./pages/admin/UpgradeHistory";
 import UpgradeHistoryDashboard from "./pages/admin/UpgradeHistoryDashboard";
 import ValidationRules from "./pages/admin/ValidationRules";
 import TradeManagement from "./pages/TradeManagement";
+import TradeMachine from "./pages/TradeMachine";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -41,6 +42,7 @@ function Router() {
       <Route path={"/admin/upgrade-dashboard"} component={UpgradeHistoryDashboard} />
       <Route path={"/admin/validation-rules"} component={ValidationRules} />
       <Route path={"/admin/trades"} component={TradeManagement} />
+      <Route path={"/trade-machine"} component={TradeMachine} />
       <Route path={"/admin/roster"} component={Admin} />
       <Route path={"/admin/transactions"} component={Transactions} />
       <Route path={"/admin/history"} component={History} />

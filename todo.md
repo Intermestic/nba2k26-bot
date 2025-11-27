@@ -1133,4 +1133,46 @@ Bot shows "Could not parse trade automatically" and asks for manual correction.
 - [x] Check if team name "Wolves" needs to be added to team variations (YES - only "Timberwolves" was listed)
 - [x] Fix parser to handle this format (added "Wolves" to NBA_TEAMS and normalization mapping)
 - [x] Test with the actual trade message (✅ Successfully parsed: Wolves → Timberwolves, Bulls → Bulls)
+- [x] Save checkpoint (version: dd6754c3)
+
+## CSV Player Database Export for OCR Matching
+- [x] Query all players from database (name, team, id)
+- [x] Create team abbreviation mapping (full name → 3-letter abbr)
+- [x] Parse player names into components (first, last, first_initial_last)
+- [x] Load existing player aliases for common_nicknames column
+- [x] Generate CSV with columns: full_name, first_initial_last, first_name, last_name, team_abbr, common_nicknames, player_id
+- [x] Save as nba_player_database.csv
+- [x] Deliver to user
+
+## Trade Machine Feature
+- [x] Create trade machine page route (/trade-machine)
+- [x] Build backend API for trade operations
+  - [x] Create getTradableTeams endpoint (28 NBA teams)
+  - [x] Create getTeamRoster endpoint (players with ratings)
+  - [x] Create scrapeBadgeCount endpoint (manual entry due to CAPTCHA)
+  - [x] Create postTradeToDiscord endpoint (channel 1336156955722645535)
+- [x] Implement badge scraping service
+  - [x] Investigated 2kratings.com (CAPTCHA protected)
+  - [x] Implemented manual badge entry with 2kratings links
+  - [x] Badge counts entered manually by users
+- [x] Build trade machine UI
+  - [x] Team 1 selector dropdown (28 teams)
+  - [x] Team 1 player multi-select with checkboxes
+  - [x] Team 2 selector dropdown (28 teams)
+  - [x] Team 2 player multi-select with checkboxes
+  - [x] Manual badge entry fields with 2kratings links
+  - [x] Trade preview with formatted output
+  - [x] Total ratings and badges calculation
+  - [x] "Confirm Trade" button
+  - [x] "Post to Discord" button (after confirmation)
+- [x] Implement trade formatting
+  - [x] Format: "Team Name Sends:"
+  - [x] Format: "Player Name Rating (badges)"
+  - [x] Format: "-- total sum of ratings (total sum of badges)"
+- [x] Discord integration
+  - [x] Post formatted trade to channel 1336156955722645535
+  - [x] Use bot to post message
+  - [x] Success/error feedback to user
+- [x] Test complete flow
+- [x] Write and pass vitest tests
 - [ ] Save checkpoint
