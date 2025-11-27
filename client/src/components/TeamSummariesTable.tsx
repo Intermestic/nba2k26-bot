@@ -81,7 +81,8 @@ export function TeamSummariesTable({ summaries, onTeamClick }: TeamSummariesTabl
                   onClick={() => handleSort("players")}
                 >
                   <div className="flex items-center justify-center gap-2">
-                    Players
+                    <span className="hidden md:inline">Players</span>
+                    <span className="md:hidden">P</span>
                     <ArrowUpDown className="w-4 h-4" />
                   </div>
                 </TableHead>
@@ -90,12 +91,14 @@ export function TeamSummariesTable({ summaries, onTeamClick }: TeamSummariesTabl
                   onClick={() => handleSort("overall")}
                 >
                   <div className="flex items-center justify-center gap-2">
-                    Total Overall
+                    <span className="hidden md:inline">Total Overall</span>
+                    <span className="md:hidden">OVR</span>
                     <ArrowUpDown className="w-4 h-4" />
                   </div>
                 </TableHead>
                 <TableHead className="text-slate-300 text-center">
-                  FA Coins
+                  <span className="hidden md:inline">FA Coins</span>
+                  <span className="md:hidden">Coins</span>
                 </TableHead>
               </TableRow>
             </TableHeader>
@@ -107,24 +110,24 @@ export function TeamSummariesTable({ summaries, onTeamClick }: TeamSummariesTabl
                   onClick={() => onTeamClick?.(summary.team)}
                 >
                   <TableCell className="font-medium">
-                    <div className="flex items-center gap-3">
-                      <TeamLogoBadge team={summary.team} size="sm" />
-                      <span className="text-white">{summary.team}</span>
+                    <div className="flex items-center gap-2 md:gap-3">
+                      <TeamLogoBadge team={summary.team} size="sm" className="hidden md:block" />
+                      <span className="text-white text-sm md:text-base">{summary.team}</span>
                     </div>
                   </TableCell>
-                  <TableCell className="text-center text-slate-300">
+                  <TableCell className="text-center text-slate-300 text-sm md:text-base px-2">
                     {summary.playerCount}/14
                   </TableCell>
-                  <TableCell className={`text-center font-semibold ${getCapStatusColor(summary.totalOverall)}`}>
+                  <TableCell className={`text-center font-semibold text-sm md:text-base px-2 ${getCapStatusColor(summary.totalOverall)}`}>
                     {summary.totalOverall}
                     {summary.totalOverall > OVERALL_CAP_LIMIT && (
                       <span className="text-red-500 ml-1">(+{summary.totalOverall - OVERALL_CAP_LIMIT})</span>
                     )}
                   </TableCell>
-                  <TableCell className="text-center text-slate-300">
+                  <TableCell className="text-center text-slate-300 text-sm md:text-base px-2">
                     {summary.coinsRemaining !== undefined ? (
                       <span>
-                        🪙 {summary.coinsRemaining}/{summary.team === 'Hawks' || summary.team === 'Nuggets' ? '115' : '100'}
+                        🪙 {summary.coinsRemaining}<span className="hidden sm:inline">/{summary.team === 'Hawks' || summary.team === 'Nuggets' ? '115' : '100'}</span>
                       </span>
                     ) : (
                       <span className="text-slate-500">-</span>

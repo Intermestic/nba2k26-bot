@@ -1237,3 +1237,11 @@ Bot shows "Could not parse trade automatically" and asks for manual correction.
 - [x] Display coin balance for each of the 28 teams
 - [x] Exclude Free Agents from coin display (not applicable)
 - [x] Test and verify coin balances are accurate
+
+
+## Mobile Optimization for Landing Page Table
+- [x] Hide team logos on mobile screens (< 768px)
+- [x] Use abbreviated column headers on mobile (Players → P, Total Overall → OVR, FA Coins → Coins)
+- [x] Reduce padding and font sizes for mobile
+- [x] Test table fits within mobile viewport without horizontal scroll
+- [ ] Save checkpoint
