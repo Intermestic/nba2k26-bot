@@ -1244,4 +1244,4 @@ Bot shows "Could not parse trade automatically" and asks for manual correction.
 - [x] Use abbreviated column headers on mobile (Players → P, Total Overall → OVR, FA Coins → Coins)
 - [x] Reduce padding and font sizes for mobile
 - [x] Test table fits within mobile viewport without horizontal scroll
-- [ ] Save checkpoint
+- [x] Save checkpoint
