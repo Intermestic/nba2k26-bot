@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { ArrowLeftRight, Loader2 } from "lucide-react";
 import { APP_TITLE } from "@/const";
 import { trpc } from "@/lib/trpc";
+import { getTeamLogo } from "@/lib/teamLogos";
 
 export default function Landing() {
   const [, navigate] = useLocation();
@@ -65,7 +66,21 @@ export default function Landing() {
                         onClick={() => navigate(`/players?team=${encodeURIComponent(team.team)}`)}
                         className="border-b hover:bg-muted/50 cursor-pointer transition-colors"
                       >
-                        <td className="py-3 px-4 font-medium">{team.team}</td>
+                        <td className="py-3 px-4">
+                          <div className="flex items-center gap-3">
+                            {getTeamLogo(team.team) && (
+                              <div className="w-8 h-8 bg-white rounded-full p-1 shadow-sm flex-shrink-0">
+                                <img
+                                  src={getTeamLogo(team.team)!}
+                                  alt={`${team.team} logo`}
+                                  className="w-full h-full object-contain"
+                                  loading="lazy"
+                                />
+                              </div>
+                            )}
+                            <span className="font-medium">{team.team}</span>
+                          </div>
+                        </td>
                         <td className="py-3 px-4 text-center text-muted-foreground">
                           {team.playerCount}/14
                         </td>

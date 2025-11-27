@@ -1188,7 +1188,7 @@ Bot shows "Could not parse trade automatically" and asks for manual correction.
 - [x] Add back button to Trade Machine page header
 - [x] Style button to match existing design
 - [x] Test navigation back to homepage
-- [ ] Save checkpoint
+- [x] Save checkpoint
 
 ## Create Landing Page
 - [x] Create new landing page component
@@ -1197,7 +1197,7 @@ Bot shows "Could not parse trade automatically" and asks for manual correction.
 - [x] Update routing to make landing page the new home
 - [x] Move current homepage to /players route
 - [x] Test all navigation flows
-- [ ] Save checkpoint
+- [x] Save checkpoint
 
 
 ## Redesign Landing Page with Team Cap Table
@@ -1207,4 +1207,18 @@ Bot shows "Could not parse trade automatically" and asks for manual correction.
 - [x] Update player database page to support team filter from URL query params
 - [x] Add visual indicators for over-cap teams
 - [x] Test complete navigation flow
+- [x] Save checkpoint
+
+## Add Team Logos to Landing Page Table
+- [ ] Import TEAM_LOGOS mapping from existing components
+- [ ] Add logo column to teams table
+- [ ] Display team logos next to team names
+- [ ] Ensure logos are properly sized and aligned
+- [ ] Test visual appearance across all teams
 - [ ] Save checkpoint
+
+## Add Team Logos to Landing Page Table - UPDATE
+- [x] Import TEAM_LOGOS mapping from existing components
+- [x] Add logo column to teams table
+- [x] Display team logos next to team names
+- [x] Ensure logos are properly sized and aligned
