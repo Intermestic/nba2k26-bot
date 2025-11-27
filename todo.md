@@ -1272,3 +1272,34 @@ Allow users to select Discord users for both teams and send them DMs with the tr
 5. ✅ DM messages show personalized trade details for each team owner
 6. ✅ Added success/error toast notifications for DM delivery
 7. ✅ Tests verify team_assignments table structure and data access
+
+
+---
+
+## COMPLETED: Roll Back DM Feature from Trade Machine ✅
+
+### Goal
+User requested to remove the Discord DM feature from Trade Machine completely.
+
+### Tasks Completed
+- [x] Roll back to checkpoint before DM feature was added
+- [x] Remove DM-related state variables (team1UserId, team2UserId, sendDM)
+- [x] Remove teamOwners query and sendDMMutation
+- [x] Remove DM sending code from handleConfirmTrade
+- [x] Remove entire DM Options UI section (checkbox and user dropdowns)
+- [x] Remove MessageCircle icon from imports
+- [x] Verify Trade Machine works without DM functionality
+- [x] Save checkpoint
+
+### Implementation Details
+1. ✅ Removed state variables: team1UserId, team2UserId, sendDM
+2. ✅ Removed teamOwners query from TRPC
+3. ✅ Removed sendDMMutation mutation
+4. ✅ Removed DM sending logic from handleConfirmTrade
+5. ✅ Removed entire DM Options UI section (checkbox, user dropdowns)
+6. ✅ Removed MessageCircle icon from lucide-react imports
+7. ✅ Verified Trade Machine shows only "Confirm Trade" and "Post to Discord" buttons
+8. ✅ No DM-related UI elements visible in Trade Preview section
+
+### Result
+Trade Machine successfully restored to previous version without DM functionality. Users can now only confirm trades and post to Discord without DM options.

@@ -14,7 +14,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Loader2, ArrowLeftRight, Send, ArrowLeft, MessageCircle } from "lucide-react";
+import { Loader2, ArrowLeftRight, Send, ArrowLeft } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -42,12 +42,9 @@ export default function TradeMachine() {
   const [playerBadges, setPlayerBadges] = useState<Map<number, number>>(new Map());
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [tradeConfirmed, setTradeConfirmed] = useState(false);
-  const [team1UserId, setTeam1UserId] = useState<string>("");
-  const [team2UserId, setTeam2UserId] = useState<string>("");
-  const [sendDM, setSendDM] = useState(false);
+
 
   const { data: teams, isLoading: teamsLoading } = trpc.tradeMachine.getTradableTeams.useQuery();
-  const { data: teamOwners } = trpc.tradeMachine.getTeamOwners.useQuery();
   const { data: team1Roster, isLoading: team1Loading } = trpc.tradeMachine.getTeamRoster.useQuery(
     { teamName: team1 },
     { enabled: !!team1 }
@@ -67,23 +64,13 @@ export default function TradeMachine() {
       setTeam2SelectedPlayers(new Set());
       setPlayerBadges(new Map());
       setTradeConfirmed(false);
-      setTeam1UserId("");
-      setTeam2UserId("");
-      setSendDM(false);
     },
     onError: (error) => {
       toast.error(`Failed to post trade: ${error.message}`);
     },
   });
 
-  const sendDMMutation = trpc.tradeMachine.sendTradeDM.useMutation({
-    onSuccess: () => {
-      toast.success("Trade offer sent via DM!");
-    },
-    onError: (error) => {
-      toast.error(`Failed to send DM: ${error.message}`);
-    },
-  });
+
 
   const togglePlayer = (playerId: number, team: 1 | 2) => {
     if (team === 1) {
@@ -180,14 +167,6 @@ export default function TradeMachine() {
 
     postTradeMutation.mutate(tradeData);
 
-    // Send DMs if enabled and users selected
-    if (sendDM && team1UserId && team2UserId) {
-      sendDMMutation.mutate({
-        ...tradeData,
-        team1UserId,
-        team2UserId,
-      });
-    }
   };
 
   return (
@@ -407,59 +386,7 @@ export default function TradeMachine() {
                 </div>
               </div>
 
-              {/* DM Options */}
-              <div className="mt-4 p-4 border rounded-lg space-y-3">
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="send-dm"
-                    checked={sendDM}
-                    onCheckedChange={(checked) => setSendDM(checked as boolean)}
-                  />
-                  <Label htmlFor="send-dm" className="flex items-center gap-2 cursor-pointer">
-                    <MessageCircle className="h-4 w-4" />
-                    Send DM to team owners
-                  </Label>
-                </div>
 
-                {sendDM && (
-                  <div className="grid grid-cols-2 gap-4 mt-3">
-                    <div>
-                      <Label className="text-xs mb-1">{team1} Owner</Label>
-                      <Select value={team1UserId} onValueChange={setTeam1UserId}>
-                        <SelectTrigger className="h-9">
-                          <SelectValue placeholder="Select user..." />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {teamOwners
-                            ?.filter((owner) => owner.team === team1)
-                            .map((owner) => (
-                              <SelectItem key={owner.discordUserId} value={owner.discordUserId}>
-                                {owner.discordUsername || owner.discordUserId}
-                              </SelectItem>
-                            ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div>
-                      <Label className="text-xs mb-1">{team2} Owner</Label>
-                      <Select value={team2UserId} onValueChange={setTeam2UserId}>
-                        <SelectTrigger className="h-9">
-                          <SelectValue placeholder="Select user..." />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {teamOwners
-                            ?.filter((owner) => owner.team === team2)
-                            .map((owner) => (
-                              <SelectItem key={owner.discordUserId} value={owner.discordUserId}>
-                                {owner.discordUsername || owner.discordUserId}
-                              </SelectItem>
-                            ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-                )}
-              </div>
 
               <div className="mt-6 flex gap-3">
                 <Button
