@@ -8,7 +8,8 @@ import {
   capViolations, 
   players, 
   faTransactions,
-  teamAssignments 
+  teamAssignments,
+  teamCoins 
 } from '../../drizzle/schema';
 import { eq, count, and, sql } from 'drizzle-orm';
 
@@ -94,6 +95,20 @@ export const dashboardRouter = router({
       .from(players)
       .where(sql`${players.team} IS NOT NULL`);
 
+    // Get all team coins
+    const allTeamCoins = await db
+      .select({
+        team: teamCoins.team,
+        coinsRemaining: teamCoins.coinsRemaining,
+      })
+      .from(teamCoins);
+
+    // Create coin map for quick lookup
+    const coinMap = new Map<string, number>();
+    allTeamCoins.forEach((tc) => {
+      coinMap.set(tc.team, tc.coinsRemaining);
+    });
+
     // Group by team and calculate totals
     const teamMap = new Map<string, { totalOverall: number; playerCount: number }>();
     
@@ -111,6 +126,7 @@ export const dashboardRouter = router({
       // Free Agents don't have cap limits
       const isFreeAgents = team === 'Free Agents';
       const overCap = isFreeAgents ? 0 : data.totalOverall - OVERALL_CAP_LIMIT;
+      const faCoins = isFreeAgents ? null : (coinMap.get(team) ?? null);
       return {
         team,
         totalOverall: data.totalOverall,
@@ -118,6 +134,7 @@ export const dashboardRouter = router({
         overCap,
         isOverCap: !isFreeAgents && overCap > 0,
         isFreeAgents,
+        faCoins,
       };
     });
 

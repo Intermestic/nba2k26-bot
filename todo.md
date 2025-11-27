@@ -1229,3 +1229,11 @@ Bot shows "Could not parse trade automatically" and asks for manual correction.
 - [x] Display Free Agents with player count (no /14 limit)
 - [x] Ensure Free Agents appear in the table
 - [x] Test navigation to Free Agents player list
+
+
+## Add FA Coins Column to Landing Page
+- [x] Update backend query to include team coin balances
+- [x] Add FA Coins column to the teams table
+- [x] Display coin balance for each of the 28 teams
+- [x] Exclude Free Agents from coin display (not applicable)
+- [x] Test and verify coin balances are accurate

@@ -56,6 +56,7 @@ export default function Landing() {
                       <th className="text-left py-3 px-4 font-semibold">Team</th>
                       <th className="text-center py-3 px-4 font-semibold">Players</th>
                       <th className="text-center py-3 px-4 font-semibold">Total Overall</th>
+                      <th className="text-center py-3 px-4 font-semibold">FA Coins</th>
                       <th className="text-center py-3 px-4 font-semibold">Cap Status</th>
                     </tr>
                   </thead>
@@ -86,6 +87,17 @@ export default function Landing() {
                         </td>
                         <td className="py-3 px-4 text-center font-mono">
                           {team.totalOverall}
+                        </td>
+                        <td className="py-3 px-4 text-center font-mono">
+                          {team.isFreeAgents ? (
+                            <span className="text-muted-foreground">—</span>
+                          ) : team.faCoins !== null ? (
+                            <span className={team.faCoins === 0 ? "text-red-500 font-semibold" : ""}>
+                              {team.faCoins}
+                            </span>
+                          ) : (
+                            <span className="text-muted-foreground">—</span>
+                          )}
                         </td>
                         <td className="py-3 px-4 text-center">
                           {team.isFreeAgents ? (
