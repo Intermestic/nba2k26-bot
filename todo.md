@@ -1181,4 +1181,20 @@ Bot shows "Could not parse trade automatically" and asks for manual correction.
 - [x] Add Trade Machine button to homepage header
 - [x] Position next to CSV/JSON download buttons
 - [x] Test navigation works correctly
+- [x] Save checkpoint
+
+
+## Add Back Button to Trade Machine
+- [x] Add back button to Trade Machine page header
+- [x] Style button to match existing design
+- [x] Test navigation back to homepage
+- [ ] Save checkpoint
+
+## Create Landing Page
+- [x] Create new landing page component
+- [x] Add quick links to Player Database and Trade Machine
+- [x] Design attractive layout with icons/cards
+- [x] Update routing to make landing page the new home
+- [x] Move current homepage to /players route
+- [x] Test all navigation flows
 - [ ] Save checkpoint

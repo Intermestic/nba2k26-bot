@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,7 +14,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Loader2, ArrowLeftRight, Send } from "lucide-react";
+import { Loader2, ArrowLeftRight, Send, ArrowLeft } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -33,6 +34,7 @@ interface PlayerWithBadges {
 }
 
 export default function TradeMachine() {
+  const [, navigate] = useLocation();
   const [team1, setTeam1] = useState<string>("");
   const [team2, setTeam2] = useState<string>("");
   const [team1SelectedPlayers, setTeam1SelectedPlayers] = useState<Set<number>>(new Set());
@@ -165,6 +167,17 @@ export default function TradeMachine() {
     <div className="min-h-screen bg-background">
       <div className="container py-8">
         <div className="mb-8">
+          <div className="flex items-center gap-4 mb-4">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => navigate("/")}
+              className="gap-2"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back to Home
+            </Button>
+          </div>
           <h1 className="text-4xl font-bold mb-2">Trade Machine</h1>
           <p className="text-muted-foreground">
             Build a trade between two teams, verify badge counts, and post to Discord
