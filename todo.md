@@ -1175,4 +1175,10 @@ Bot shows "Could not parse trade automatically" and asks for manual correction.
   - [x] Success/error feedback to user
 - [x] Test complete flow
 - [x] Write and pass vitest tests
+- [x] Save checkpoint
+
+## Add Trade Machine Navigation Button
+- [x] Add Trade Machine button to homepage header
+- [x] Position next to CSV/JSON download buttons
+- [x] Test navigation works correctly
 - [ ] Save checkpoint

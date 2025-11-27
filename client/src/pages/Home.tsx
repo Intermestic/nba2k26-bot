@@ -5,7 +5,7 @@ import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
-import { Download, Search, Filter, Shield, Check, History } from "lucide-react";
+import { Download, Search, Filter, Shield, Check, History, ArrowLeftRight } from "lucide-react";
 import { Link } from "wouter";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PlayerAvatar } from "@/components/PlayerAvatar";
@@ -291,6 +291,12 @@ export default function Home() {
                   </a>
                 </Button>
               )}
+              <Button asChild variant="outline" className="bg-green-900 border-green-700 hover:bg-green-800">
+                <Link href="/trade-machine">
+                  <ArrowLeftRight className="w-4 h-4 mr-2" />
+                  Trade Machine
+                </Link>
+              </Button>
               <Button asChild variant="outline" className="bg-slate-800 border-slate-700 hover:bg-slate-700">
                 <a href="/players.csv" download>
                   <Download className="w-4 h-4 mr-2" />
