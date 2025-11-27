@@ -45,6 +45,7 @@ export default function TradeMachine() {
   const [team1UserId, setTeam1UserId] = useState<string>("");
   const [team2UserId, setTeam2UserId] = useState<string>("");
   const [sendDM, setSendDM] = useState(false);
+  const [dmsSent, setDmsSent] = useState(false);
 
   const { data: teams, isLoading: teamsLoading } = trpc.tradeMachine.getTradableTeams.useQuery();
   const { data: teamOwners } = trpc.tradeMachine.getTeamOwners.useQuery();
@@ -70,6 +71,7 @@ export default function TradeMachine() {
       setTeam1UserId("");
       setTeam2UserId("");
       setSendDM(false);
+      setDmsSent(false);
     },
     onError: (error) => {
       toast.error(`Failed to post trade: ${error.message}`);
@@ -78,7 +80,8 @@ export default function TradeMachine() {
 
   const sendDMMutation = trpc.tradeMachine.sendTradeDM.useMutation({
     onSuccess: () => {
-      toast.success("Trade offer sent via DM!");
+      toast.success("Trade offer sent via DM to both team owners!");
+      setDmsSent(true);
     },
     onError: (error) => {
       toast.error(`Failed to send DM: ${error.message}`);
@@ -162,6 +165,32 @@ export default function TradeMachine() {
     toast.success("Trade confirmed! You can now post it to Discord.");
   };
 
+  const handleSendDMs = () => {
+    if (!team1UserId || !team2UserId) {
+      toast.error("Please select both team owners before sending DMs");
+      return;
+    }
+
+    const tradeData = {
+      team1Name: team1,
+      team1Players: team1PlayersWithBadges.map((p) => ({
+        name: p.name,
+        overall: p.overall,
+        badges: p.badges,
+      })),
+      team2Name: team2,
+      team2Players: team2PlayersWithBadges.map((p) => ({
+        name: p.name,
+        overall: p.overall,
+        badges: p.badges,
+      })),
+      team1UserId,
+      team2UserId,
+    };
+
+    sendDMMutation.mutate(tradeData);
+  };
+
   const handlePostToDiscord = () => {
     const tradeData = {
       team1Name: team1,
@@ -179,15 +208,6 @@ export default function TradeMachine() {
     };
 
     postTradeMutation.mutate(tradeData);
-
-    // Send DMs if enabled and users selected
-    if (sendDM && team1UserId && team2UserId) {
-      sendDMMutation.mutate({
-        ...tradeData,
-        team1UserId,
-        team2UserId,
-      });
-    }
   };
 
   return (
@@ -469,25 +489,56 @@ export default function TradeMachine() {
                 >
                   {tradeConfirmed ? "Trade Confirmed ✓" : "Confirm Trade"}
                 </Button>
-                <Button
-                  onClick={handlePostToDiscord}
-                  disabled={!tradeConfirmed || postTradeMutation.isPending}
-                  variant="default"
-                  className="flex-1"
-                >
-                  {postTradeMutation.isPending ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Posting...
-                    </>
-                  ) : (
-                    <>
-                      <Send className="mr-2 h-4 w-4" />
-                      Post to Discord
-                    </>
-                  )}
-                </Button>
               </div>
+
+              {/* Show DM and Post buttons after trade is confirmed */}
+              {tradeConfirmed && (
+                <div className="mt-4 space-y-3">
+                  {sendDM && (
+                    <Button
+                      onClick={handleSendDMs}
+                      disabled={!team1UserId || !team2UserId || sendDMMutation.isPending || dmsSent}
+                      variant="outline"
+                      className="w-full"
+                    >
+                      {sendDMMutation.isPending ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Sending DMs...
+                        </>
+                      ) : dmsSent ? (
+                        <>
+                          <MessageCircle className="mr-2 h-4 w-4" />
+                          DMs Sent ✓
+                        </>
+                      ) : (
+                        <>
+                          <MessageCircle className="mr-2 h-4 w-4" />
+                          Send DMs to Team Owners
+                        </>
+                      )}
+                    </Button>
+                  )}
+                  <Button
+                    onClick={handlePostToDiscord}
+                    disabled={postTradeMutation.isPending}
+                    variant="default"
+                    className="w-full"
+                  >
+                    {postTradeMutation.isPending ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Posting...
+                      </>
+                    ) : (
+                      <>
+                        <Send className="mr-2 h-4 w-4" />
+                        Post to Discord
+                      </>
+                    )}
+                  </Button>
+                </div>
+              )}
             </CardContent>
           </Card>
         )}

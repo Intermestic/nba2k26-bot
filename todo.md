@@ -1272,3 +1272,28 @@ Allow users to select Discord users for both teams and send them DMs with the tr
 5. ✅ DM messages show personalized trade details for each team owner
 6. ✅ Added success/error toast notifications for DM delivery
 7. ✅ Tests verify team_assignments table structure and data access
+
+---
+
+## TODO: Add Separate "Send DMs" Button to Trade Machine
+
+### Goal
+Modify the DM workflow so users can send DMs after confirming the trade but before posting to Discord trade channel
+
+### Current Behavior
+- DMs are sent automatically when user clicks "Confirm Trade"
+- Trade is posted to Discord immediately after
+
+### Desired Behavior
+- After clicking "Confirm Trade", show the trade preview
+- Add a "Send DMs" button that sends notifications to selected team owners
+- Keep the "Post to Discord" button separate
+- User can send DMs first, then post to Discord
+
+### Tasks
+- [x] Remove automatic DM sending from "Confirm Trade" action
+- [x] Add "Send DMs" button to confirmed trade preview section
+- [x] Show success message after DMs are sent
+- [x] Keep "Post to Discord" button independent
+- [x] Test the new workflow (confirm → send DMs → post to Discord)
+- [ ] Save checkpoint
