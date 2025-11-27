@@ -1198,3 +1198,13 @@ Bot shows "Could not parse trade automatically" and asks for manual correction.
 - [x] Move current homepage to /players route
 - [x] Test all navigation flows
 - [ ] Save checkpoint
+
+
+## Redesign Landing Page with Team Cap Table
+- [x] Create tRPC endpoint to fetch all teams with cap data
+- [x] Redesign Landing page to show teams table/grid with cap numbers
+- [x] Make teams clickable to navigate to player database filtered by team
+- [x] Update player database page to support team filter from URL query params
+- [x] Add visual indicators for over-cap teams
+- [x] Test complete navigation flow
+- [ ] Save checkpoint

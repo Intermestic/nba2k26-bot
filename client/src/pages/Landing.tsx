@@ -1,98 +1,103 @@
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Database, ArrowLeftRight, Users } from "lucide-react";
+import { ArrowLeftRight, Loader2 } from "lucide-react";
 import { APP_TITLE } from "@/const";
+import { trpc } from "@/lib/trpc";
 
 export default function Landing() {
   const [, navigate] = useLocation();
+  const { data: teams, isLoading } = trpc.dashboard.getTeamsWithCapData.useQuery();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
-      <div className="container py-16">
+      <div className="container py-8">
         {/* Header */}
-        <div className="text-center mb-16">
-          <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-            {APP_TITLE}
-          </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Your complete NBA 2K26 league management platform. Browse players, analyze rosters, and build trades.
-          </p>
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+                {APP_TITLE}
+              </h1>
+              <p className="text-muted-foreground">
+                NBA 2K26 league management platform - Browse teams, players, and build trades
+              </p>
+            </div>
+            <Button
+              onClick={() => navigate("/trade-machine")}
+              className="gap-2"
+              size="lg"
+            >
+              <ArrowLeftRight className="h-5 w-5" />
+              Trade Machine
+            </Button>
+          </div>
         </div>
 
-        {/* Feature Cards */}
-        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-          {/* Player Database Card */}
-          <Card className="group hover:shadow-lg transition-all duration-300 border-2 hover:border-primary/50 cursor-pointer" onClick={() => navigate("/players")}>
-            <CardHeader>
-              <div className="flex items-center gap-3 mb-2">
-                <div className="p-3 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
-                  <Database className="h-6 w-6 text-primary" />
-                </div>
-                <CardTitle className="text-2xl">Player Database</CardTitle>
+        {/* Teams Table */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Team Cap Status</CardTitle>
+            <CardDescription>
+              Click any team to view their full roster. Cap limit: 1098 total overall
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {isLoading ? (
+              <div className="flex items-center justify-center py-12">
+                <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
               </div>
-              <CardDescription className="text-base">
-                Browse and search through the complete roster of NBA 2K26 players
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-2 text-sm text-muted-foreground mb-6">
-                <li className="flex items-center gap-2">
-                  <Users className="h-4 w-4" />
-                  View all players with ratings and team assignments
-                </li>
-                <li className="flex items-center gap-2">
-                  <Database className="h-4 w-4" />
-                  Search by name, team, or overall rating
-                </li>
-                <li className="flex items-center gap-2">
-                  <ArrowLeftRight className="h-4 w-4" />
-                  Export data in CSV or JSON format
-                </li>
-              </ul>
-              <Button className="w-full" onClick={() => navigate("/players")}>
-                Browse Players
-              </Button>
-            </CardContent>
-          </Card>
-
-          {/* Trade Machine Card */}
-          <Card className="group hover:shadow-lg transition-all duration-300 border-2 hover:border-primary/50 cursor-pointer" onClick={() => navigate("/trade-machine")}>
-            <CardHeader>
-              <div className="flex items-center gap-3 mb-2">
-                <div className="p-3 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
-                  <ArrowLeftRight className="h-6 w-6 text-primary" />
-                </div>
-                <CardTitle className="text-2xl">Trade Machine</CardTitle>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b">
+                      <th className="text-left py-3 px-4 font-semibold">Team</th>
+                      <th className="text-center py-3 px-4 font-semibold">Players</th>
+                      <th className="text-center py-3 px-4 font-semibold">Total Overall</th>
+                      <th className="text-center py-3 px-4 font-semibold">Cap Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {teams?.map((team) => (
+                      <tr
+                        key={team.team}
+                        onClick={() => navigate(`/players?team=${encodeURIComponent(team.team)}`)}
+                        className="border-b hover:bg-muted/50 cursor-pointer transition-colors"
+                      >
+                        <td className="py-3 px-4 font-medium">{team.team}</td>
+                        <td className="py-3 px-4 text-center text-muted-foreground">
+                          {team.playerCount}/14
+                        </td>
+                        <td className="py-3 px-4 text-center font-mono">
+                          {team.totalOverall}
+                        </td>
+                        <td className="py-3 px-4 text-center">
+                          {team.isOverCap ? (
+                            <span className="inline-flex items-center gap-1 text-red-500 font-semibold">
+                              🔴 +{team.overCap}
+                            </span>
+                          ) : team.overCap === 0 ? (
+                            <span className="inline-flex items-center gap-1 text-yellow-500 font-semibold">
+                              🟡 At Cap
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1 text-green-500 font-semibold">
+                              🟢 {team.overCap}
+                            </span>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-              <CardDescription className="text-base">
-                Build and analyze trades between teams with badge tracking
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-2 text-sm text-muted-foreground mb-6">
-                <li className="flex items-center gap-2">
-                  <ArrowLeftRight className="h-4 w-4" />
-                  Select players from any two teams
-                </li>
-                <li className="flex items-center gap-2">
-                  <Database className="h-4 w-4" />
-                  Track badge counts for accurate trade values
-                </li>
-                <li className="flex items-center gap-2">
-                  <Users className="h-4 w-4" />
-                  Post trades directly to Discord for voting
-                </li>
-              </ul>
-              <Button className="w-full" onClick={() => navigate("/trade-machine")}>
-                Build a Trade
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
+            )}
+          </CardContent>
+        </Card>
 
         {/* Footer */}
-        <div className="text-center mt-16 text-sm text-muted-foreground">
+        <div className="text-center mt-8 text-sm text-muted-foreground">
           <p>Powered by NBA 2K26 Player Database • Built with React & tRPC</p>
         </div>
       </div>

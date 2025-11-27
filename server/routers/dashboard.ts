@@ -1,4 +1,6 @@
 import { router, publicProcedure } from '../_core/trpc';
+
+const OVERALL_CAP_LIMIT = 1098;
 import { getDb } from '../db';
 import { 
   upgradeRequests, 
@@ -72,5 +74,63 @@ export const dashboardRouter = router({
       totalTransactions: totalTransactions[0]?.count || 0,
       totalAssignments: totalAssignments[0]?.count || 0,
     };
+  }),
+
+  /**
+   * Get all teams with their cap data (total overall, player count, cap status)
+   */
+  getTeamsWithCapData: publicProcedure.query(async () => {
+    const db = await getDb();
+    if (!db) {
+      throw new Error('Database not available');
+    }
+
+    // Get all players with non-null teams (excluding Free Agents)
+    const allPlayers = await db
+      .select({
+        team: players.team,
+        overall: players.overall,
+      })
+      .from(players)
+      .where(
+        and(
+          sql`${players.team} IS NOT NULL`,
+          sql`${players.team} != 'Free Agents'`
+        )
+      );
+
+    // Group by team and calculate totals
+    const teamMap = new Map<string, { totalOverall: number; playerCount: number }>();
+    
+    allPlayers.forEach((player) => {
+      const team = player.team!;
+      const existing = teamMap.get(team) || { totalOverall: 0, playerCount: 0 };
+      teamMap.set(team, {
+        totalOverall: existing.totalOverall + player.overall,
+        playerCount: existing.playerCount + 1,
+      });
+    });
+
+    // Convert to array and add cap status
+    const teams = Array.from(teamMap.entries()).map(([team, data]) => {
+      const overCap = data.totalOverall - OVERALL_CAP_LIMIT;
+      return {
+        team,
+        totalOverall: data.totalOverall,
+        playerCount: data.playerCount,
+        overCap,
+        isOverCap: overCap > 0,
+      };
+    });
+
+    // Sort: under cap teams first (by total overall desc), then over cap teams (by over amount desc)
+    teams.sort((a, b) => {
+      if (a.isOverCap && !b.isOverCap) return 1;
+      if (!a.isOverCap && b.isOverCap) return -1;
+      if (a.isOverCap && b.isOverCap) return b.overCap - a.overCap;
+      return b.totalOverall - a.totalOverall;
+    });
+
+    return teams;
   }),
 });

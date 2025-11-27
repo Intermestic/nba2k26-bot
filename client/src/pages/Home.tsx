@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Download, Search, Filter, Shield, Check, History, ArrowLeftRight } from "lucide-react";
-import { Link } from "wouter";
+import { Link, useLocation, useSearch } from "wouter";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PlayerAvatar } from "@/components/PlayerAvatar";
 import { FreeAgentBadge } from "@/components/FreeAgentBadge";
@@ -40,10 +40,17 @@ export default function Home() {
   // The userAuth hooks provides authentication state
   // To implement login/logout functionality, simply call logout() or redirect to getLoginUrl()
   let { user, loading: authLoading, error, isAuthenticated, logout } = useAuth();
+  const searchParams = useSearch();
+  
+  // Get team from URL query params if present
+  const teamFromUrl = useMemo(() => {
+    const params = new URLSearchParams(searchParams);
+    return params.get('team') || null;
+  }, [searchParams]);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [minRating, setMinRating] = useState("0");
-  const [selectedTeam, setSelectedTeam] = useState("all");
+  const [selectedTeam, setSelectedTeam] = useState(teamFromUrl || "all");
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedPlayers, setSelectedPlayers] = useState<Set<string>>(new Set());
   const [showRosterCard, setShowRosterCard] = useState(false);
