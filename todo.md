@@ -1222,3 +1222,10 @@ Bot shows "Could not parse trade automatically" and asks for manual correction.
 - [x] Add logo column to teams table
 - [x] Display team logos next to team names
 - [x] Ensure logos are properly sized and aligned
+
+
+## Add Free Agents to Landing Page
+- [x] Update backend query to include Free Agents in teams list
+- [x] Display Free Agents with player count (no /14 limit)
+- [x] Ensure Free Agents appear in the table
+- [x] Test navigation to Free Agents player list

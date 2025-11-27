@@ -85,19 +85,14 @@ export const dashboardRouter = router({
       throw new Error('Database not available');
     }
 
-    // Get all players with non-null teams (excluding Free Agents)
+    // Get all players with non-null teams (including Free Agents)
     const allPlayers = await db
       .select({
         team: players.team,
         overall: players.overall,
       })
       .from(players)
-      .where(
-        and(
-          sql`${players.team} IS NOT NULL`,
-          sql`${players.team} != 'Free Agents'`
-        )
-      );
+      .where(sql`${players.team} IS NOT NULL`);
 
     // Group by team and calculate totals
     const teamMap = new Map<string, { totalOverall: number; playerCount: number }>();
@@ -113,18 +108,26 @@ export const dashboardRouter = router({
 
     // Convert to array and add cap status
     const teams = Array.from(teamMap.entries()).map(([team, data]) => {
-      const overCap = data.totalOverall - OVERALL_CAP_LIMIT;
+      // Free Agents don't have cap limits
+      const isFreeAgents = team === 'Free Agents';
+      const overCap = isFreeAgents ? 0 : data.totalOverall - OVERALL_CAP_LIMIT;
       return {
         team,
         totalOverall: data.totalOverall,
         playerCount: data.playerCount,
         overCap,
-        isOverCap: overCap > 0,
+        isOverCap: !isFreeAgents && overCap > 0,
+        isFreeAgents,
       };
     });
 
-    // Sort: under cap teams first (by total overall desc), then over cap teams (by over amount desc)
+    // Sort: Free Agents at bottom, then under cap teams (by total overall desc), then over cap teams (by over amount desc)
     teams.sort((a, b) => {
+      // Free Agents always at bottom
+      if (a.isFreeAgents && !b.isFreeAgents) return 1;
+      if (!a.isFreeAgents && b.isFreeAgents) return -1;
+      
+      // Regular team sorting
       if (a.isOverCap && !b.isOverCap) return 1;
       if (!a.isOverCap && b.isOverCap) return -1;
       if (a.isOverCap && b.isOverCap) return b.overCap - a.overCap;

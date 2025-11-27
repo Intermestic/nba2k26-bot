@@ -82,13 +82,17 @@ export default function Landing() {
                           </div>
                         </td>
                         <td className="py-3 px-4 text-center text-muted-foreground">
-                          {team.playerCount}/14
+                          {team.isFreeAgents ? team.playerCount : `${team.playerCount}/14`}
                         </td>
                         <td className="py-3 px-4 text-center font-mono">
                           {team.totalOverall}
                         </td>
                         <td className="py-3 px-4 text-center">
-                          {team.isOverCap ? (
+                          {team.isFreeAgents ? (
+                            <span className="inline-flex items-center gap-1 text-blue-500 font-semibold">
+                              🔵 FA Pool
+                            </span>
+                          ) : team.isOverCap ? (
                             <span className="inline-flex items-center gap-1 text-red-500 font-semibold">
                               🔴 +{team.overCap}
                             </span>
