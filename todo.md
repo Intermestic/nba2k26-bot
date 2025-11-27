@@ -1245,3 +1245,30 @@ Bot shows "Could not parse trade automatically" and asks for manual correction.
 - [x] Reduce padding and font sizes for mobile
 - [x] Test table fits within mobile viewport without horizontal scroll
 - [x] Save checkpoint
+
+
+---
+
+## COMPLETED: Add Discord DM Feature to Trade Machine ✅
+
+### Goal
+Allow users to select Discord users for both teams and send them DMs with the trade offer after confirming the trade
+
+### Tasks
+- [x] Add user selection dropdowns for both teams in Trade Machine UI
+- [x] Fetch team assignments from database to populate user options
+- [x] Add checkbox to enable "Send DM to team owners"
+- [x] Create backend endpoint to send DMs via Discord bot
+- [x] Format DM message with trade details (teams, players, badges)
+- [x] Add success/error feedback after sending DMs
+- [x] Test DM delivery to Discord users
+- [x] Save checkpoint
+
+### Implementation Details
+1. ✅ Added MessageCircle icon and checkbox to enable DM sending
+2. ✅ Added user selection dropdowns for both teams (filtered by team assignment)
+3. ✅ Created getTeamOwners endpoint to fetch team assignments from database
+4. ✅ Created sendTradeDM endpoint to send formatted DMs via Discord bot
+5. ✅ DM messages show personalized trade details for each team owner
+6. ✅ Added success/error toast notifications for DM delivery
+7. ✅ Tests verify team_assignments table structure and data access
