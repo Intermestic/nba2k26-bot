@@ -132,3 +132,20 @@ Build Discord bot feature to track team W/L records from activity booster posts.
 - [x] Add database table for activity records
 - [x] Test with real channel messages
 - [x] Add error handling for malformed posts
+
+## Fix Activity Booster Command Bugs
+
+### Issues
+1. !ab-records command executes twice, causing double posting
+2. Game counts are doubled (20 games shown for 10 actual Raptors games)
+
+### Root Cause
+- No command deduplication mechanism
+- Same command message triggers handler twice
+- Database records get counted twice before checkpoint is saved
+
+### Tasks
+- [x] Add command deduplication tracking (Set with TTL)
+- [x] Reset activity records database to clear double-counted data
+- [x] Reset activity checkpoint to allow fresh scan
+- [x] Test !ab-records command for single execution and correct counts

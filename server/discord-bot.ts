@@ -35,6 +35,11 @@ const processedReactions = new Set<string>();
 const REACTION_CACHE_SIZE = 1000;
 const REACTION_CACHE_TTL = 60000; // 1 minute
 
+// Track processed commands to prevent duplicate execution
+const processedCommands = new Set<string>();
+const COMMAND_CACHE_SIZE = 1000;
+const COMMAND_CACHE_TTL = 60000; // 1 minute
+
 /**
  * Parse FA transaction message
  * Flexible format: handles variations of cut/drop/release and sign/add/pickup
@@ -1085,6 +1090,24 @@ export async function startDiscordBot(token: string) {
     
     // Check for activity records command: !ab-records
     if (message.content.trim().toLowerCase() === '!ab-records') {
+      // Prevent duplicate command execution
+      const commandKey = `ab-records:${message.id}`;
+      if (processedCommands.has(commandKey)) {
+        console.log(`[Activity Records] Skipping duplicate command from message ${message.id}`);
+        return;
+      }
+      
+      processedCommands.add(commandKey);
+      
+      // Clean up old entries
+      if (processedCommands.size > COMMAND_CACHE_SIZE) {
+        const toDelete = Array.from(processedCommands).slice(0, processedCommands.size - COMMAND_CACHE_SIZE);
+        toDelete.forEach(key => processedCommands.delete(key));
+      }
+      
+      // Auto-cleanup after TTL
+      setTimeout(() => processedCommands.delete(commandKey), COMMAND_CACHE_TTL);
+      
       try {
         const { handleActivityRecordsCommand } = await import('./activity-booster-command');
         await handleActivityRecordsCommand(client!, message);
