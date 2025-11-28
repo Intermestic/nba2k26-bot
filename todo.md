@@ -145,7 +145,37 @@ Build Discord bot feature to track team W/L records from activity booster posts.
 - Database records get counted twice before checkpoint is saved
 
 ### Tasks
-- [x] Add command deduplication tracking (Set with TTL)
+- [x] Add command deduplication tracking (Set with TTL) - FAILED, still double posting
 - [x] Reset activity records database to clear double-counted data
 - [x] Reset activity checkpoint to allow fresh scan
-- [x] Test !ab-records command for single execution and correct counts
+- [x] Investigate why deduplication is not working (race condition in async check)
+- [x] Implement proper async locking mechanism with commandsInProgress Set - FAILED
+- [ ] Test !ab-records command for single execution and correct counts
+
+## CRITICAL: !ab-records Command Executing 5+ Times
+
+### Observed Behavior
+- Single !ab-records command triggered 5 "Scanning..." messages
+- Posted 5 different standings with escalating counts:
+  * First: Raptors 25-0 (50.5 games)
+  * Second: Raptors 26-0 (56 games)
+  * Third: Raptors 40-0 (85.5 games)
+  * Fourth: Raptors 45-0 (96 games)
+  * Fifth: Raptors 26-0 (57 games)
+- 5 "Processed 20 new games" completion messages
+
+### Root Cause Analysis
+- [x] Check if commandsInProgress Set is being cleared too early - No, timing was correct
+- [x] Verify message.id is stable across all executions - Yes, stable
+- [x] Check if Discord is sending duplicate messageCreate events - No, single event
+- [x] Investigate if hot reload is causing multiple listener registrations - **YES, THIS WAS THE ISSUE**
+- [x] Add comprehensive logging to track execution flow
+
+### Root Cause Identified
+Hot Module Reloading (HMR) was registering multiple messageCreate listeners without removing old ones. Each code save added a new listener, resulting in 5+ concurrent executions of the same command. Additionally, the commandsInProgress Set was recreated on each reload, so old listeners couldn't see new locks.
+
+### Solution Implemented
+- [x] Made processedCommands and commandsInProgress Sets persist in global scope to survive HMR
+- [x] Added client.removeAllListeners('messageCreate') before registering listener
+- [x] Reset all activity booster database tables (records, head-to-head, checkpoint)
+- [ ] Test !ab-records command for single execution and correct counts

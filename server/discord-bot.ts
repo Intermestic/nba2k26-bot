@@ -36,7 +36,16 @@ const REACTION_CACHE_SIZE = 1000;
 const REACTION_CACHE_TTL = 60000; // 1 minute
 
 // Track processed commands to prevent duplicate execution
-const processedCommands = new Set<string>();
+// Use global to persist across HMR reloads
+const globalAny = global as any;
+if (!globalAny.__processedCommands) {
+  globalAny.__processedCommands = new Set<string>();
+}
+if (!globalAny.__commandsInProgress) {
+  globalAny.__commandsInProgress = new Set<string>();
+}
+const processedCommands: Set<string> = globalAny.__processedCommands;
+const commandsInProgress: Set<string> = globalAny.__commandsInProgress;
 const COMMAND_CACHE_SIZE = 1000;
 const COMMAND_CACHE_TTL = 60000; // 1 minute
 
@@ -1066,6 +1075,9 @@ export async function startDiscordBot(token: string) {
     }
   });
   
+  // Remove existing messageCreate listeners to prevent duplicates on HMR
+  client.removeAllListeners('messageCreate');
+  
   // Monitor all messages for FA bids and commands
   client.on('messageCreate', async (message) => {
     // Ignore bot messages
@@ -1090,30 +1102,48 @@ export async function startDiscordBot(token: string) {
     
     // Check for activity records command: !ab-records
     if (message.content.trim().toLowerCase() === '!ab-records') {
-      // Prevent duplicate command execution
       const commandKey = `ab-records:${message.id}`;
+      
+      // Check if already processed
       if (processedCommands.has(commandKey)) {
-        console.log(`[Activity Records] Skipping duplicate command from message ${message.id}`);
+        console.log(`[Activity Records] Skipping already processed command ${message.id}`);
         return;
       }
       
-      processedCommands.add(commandKey);
-      
-      // Clean up old entries
-      if (processedCommands.size > COMMAND_CACHE_SIZE) {
-        const toDelete = Array.from(processedCommands).slice(0, processedCommands.size - COMMAND_CACHE_SIZE);
-        toDelete.forEach(key => processedCommands.delete(key));
+      // Check if currently in progress (prevent concurrent execution)
+      if (commandsInProgress.has(commandKey)) {
+        console.log(`[Activity Records] Skipping concurrent execution of command ${message.id}`);
+        return;
       }
       
-      // Auto-cleanup after TTL
-      setTimeout(() => processedCommands.delete(commandKey), COMMAND_CACHE_TTL);
+      // Mark as in progress IMMEDIATELY before any async operations
+      commandsInProgress.add(commandKey);
+      console.log(`[Activity Records] Starting command execution for message ${message.id}`);
       
       try {
         const { handleActivityRecordsCommand } = await import('./activity-booster-command');
         await handleActivityRecordsCommand(client!, message);
+        
+        // Mark as processed after successful completion
+        processedCommands.add(commandKey);
+        
+        // Clean up old entries
+        if (processedCommands.size > COMMAND_CACHE_SIZE) {
+          const toDelete = Array.from(processedCommands).slice(0, processedCommands.size - COMMAND_CACHE_SIZE);
+          toDelete.forEach(key => processedCommands.delete(key));
+        }
+        
+        // Auto-cleanup after TTL
+        setTimeout(() => processedCommands.delete(commandKey), COMMAND_CACHE_TTL);
+        
+        console.log(`[Activity Records] Command completed for message ${message.id}`);
       } catch (error) {
         console.error('[Activity Records] Command failed:', error);
         await message.reply('❌ Failed to process activity records. Check logs for details.');
+      } finally {
+        // Always remove from in-progress set
+        commandsInProgress.delete(commandKey);
+        console.log(`[Activity Records] Removed in-progress lock for message ${message.id}`);
       }
       return;
     }
