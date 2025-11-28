@@ -2,7 +2,7 @@ import express from "express";
 import { createServer } from "http";
 import path from "path";
 import { fileURLToPath } from "url";
-import { startDiscordBot } from "./discord-bot.js";
+// Discord bot now runs in separate process (bot-standalone.ts)
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -30,18 +30,8 @@ async function startServer() {
     console.log(`Server running on http://localhost:${port}/`);
   });
   
-  // Start Discord bot if token is provided
-  const botToken = process.env.DISCORD_BOT_TOKEN;
-  if (botToken) {
-    try {
-      await startDiscordBot(botToken);
-      console.log('[Discord Bot] Started successfully');
-    } catch (error) {
-      console.error('[Discord Bot] Failed to start:', error);
-    }
-  } else {
-    console.log('[Discord Bot] Token not provided, skipping bot startup');
-  }
+  // Discord bot runs in separate process to avoid HMR issues
+  // See bot-standalone.ts and package.json scripts
 }
 
 startServer().catch(console.error);

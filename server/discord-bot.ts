@@ -902,13 +902,19 @@ async function handleBidMessage(message: Message) {
   }
 }
 
+// Track bot instance ID to detect multiple instances
+const INSTANCE_ID = Math.random().toString(36).substring(7);
+
 /**
  * Start Discord bot
  */
 export async function startDiscordBot(token: string) {
+  console.log(`[Discord Bot] Starting instance ${INSTANCE_ID}`);
+  
   if (client) {
-    console.log('[Discord Bot] Already running');
-    return;
+    console.log(`[Discord Bot] Client already exists. Destroying old client from instance ${INSTANCE_ID}`);
+    await client.destroy();
+    client = null;
   }
   
   client = new Client({
@@ -926,8 +932,8 @@ export async function startDiscordBot(token: string) {
     ]
   });
   
-  // Remove all existing listeners to prevent duplicates on hot reload
-  client.removeAllListeners();
+  // Listeners will be set up fresh on this new client instance
+  console.log(`[Discord Bot] Created new client for instance ${INSTANCE_ID}`);
   
   client.once('clientReady', async () => {
     console.log(`[Discord Bot] Logged in as ${client!.user?.tag}!`);
@@ -1075,13 +1081,31 @@ export async function startDiscordBot(token: string) {
     }
   });
   
-  // Remove existing messageCreate listeners to prevent duplicates on HMR
-  client.removeAllListeners('messageCreate');
+  // messageCreate listener is being registered on a fresh client instance
+  console.log(`[Discord Bot] Registering messageCreate listener for instance ${INSTANCE_ID}`);
   
   // Monitor all messages for FA bids and commands
   client.on('messageCreate', async (message) => {
     // Ignore bot messages
     if (message.author.bot) return;
+    
+    // CRITICAL: Deduplicate at the very start before ANY processing
+    // Use a simple message ID check that persists across all executions
+    const messageKey = `msg:${message.id}`;
+    if (processedMessages.has(messageKey)) {
+      console.log(`[Message Handler] Instance ${INSTANCE_ID} skipping duplicate message ${message.id}`);
+      return;
+    }
+    processedMessages.add(messageKey);
+    
+    // Clean up old entries
+    if (processedMessages.size > MESSAGE_CACHE_SIZE) {
+      const toDelete = Array.from(processedMessages).slice(0, MESSAGE_CACHE_SIZE / 2);
+      toDelete.forEach(id => processedMessages.delete(id));
+    }
+    
+    // Auto-cleanup after TTL
+    setTimeout(() => processedMessages.delete(messageKey), MESSAGE_CACHE_TTL);
     
     // Track message for analytics
     try {
@@ -1103,16 +1127,18 @@ export async function startDiscordBot(token: string) {
     // Check for activity records command: !ab-records
     if (message.content.trim().toLowerCase() === '!ab-records') {
       const commandKey = `ab-records:${message.id}`;
+      console.log(`[Activity Records] Instance ${INSTANCE_ID} received command ${message.id}`);
       
-      // Check if already processed
+      // Double-check: message should already be filtered by processedMessages above
+      // This is a secondary safety check specifically for commands
       if (processedCommands.has(commandKey)) {
-        console.log(`[Activity Records] Skipping already processed command ${message.id}`);
+        console.log(`[Activity Records] SECONDARY CHECK: Skipping already processed command ${message.id}`);
         return;
       }
       
       // Check if currently in progress (prevent concurrent execution)
       if (commandsInProgress.has(commandKey)) {
-        console.log(`[Activity Records] Skipping concurrent execution of command ${message.id}`);
+        console.log(`[Activity Records] SECONDARY CHECK: Skipping concurrent execution of command ${message.id}`);
         return;
       }
       

@@ -348,12 +348,9 @@ function CommandsTab({ onEdit, onAdd }: { onEdit: (command: string) => void; onA
         <div className="flex items-center justify-between">
           <div>
             <CardTitle>Bot Commands</CardTitle>
-            <CardDescription>Manage Discord bot commands and responses</CardDescription>
+            <CardDescription>Hardcoded Discord bot commands - enable/disable and customize responses</CardDescription>
           </div>
-          <Button onClick={onAdd}>
-            <Plus className="w-4 h-4 mr-2" />
-            Add Command
-          </Button>
+          {/* Removed Add Command button - these are hardcoded commands only */}
         </div>
       </CardHeader>
       <CardContent>
@@ -374,7 +371,7 @@ function CommandsTab({ onEdit, onAdd }: { onEdit: (command: string) => void; onA
                 <TableCell className="font-mono text-sm">{command.command}</TableCell>
                 <TableCell className="max-w-[250px] truncate">{command.description}</TableCell>
                 <TableCell>{command.category || "-"}</TableCell>
-                <TableCell>{command.permissions || "all"}</TableCell>
+                <TableCell>{command.requiredPermission || "everyone"}</TableCell>
                 <TableCell>
                   <Switch
                     checked={command.enabled}

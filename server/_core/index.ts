@@ -72,24 +72,35 @@ async function startServer() {
     console.log(`Server running on http://localhost:${port}/`);
   });
 
-  // Start Discord bot if token is available
-  const botToken = process.env.DISCORD_BOT_TOKEN;
-  console.log('[Discord Bot] Checking for DISCORD_BOT_TOKEN...', botToken ? 'Found' : 'Not found');
-  if (botToken) {
-    try {
-      console.log('[Discord Bot] Attempting to start bot...');
-      await startDiscordBot(botToken);
-      console.log('[Discord Bot] ✅ Started successfully');
-    } catch (error) {
-      console.error('[Discord Bot] ❌ Failed to start:', error);
-      if (error instanceof Error) {
-        console.error('[Discord Bot] Error details:', error.message);
-        console.error('[Discord Bot] Stack trace:', error.stack);
-      }
-    }
-  } else {
-    console.log('[Discord Bot] ⚠️  DISCORD_BOT_TOKEN not found, bot will not start');
-  }
+  // Discord bot is now run in a separate standalone process (bot-standalone.ts)
+  // This prevents HMR from creating duplicate bot instances
+  // To start the bot: pnpm dev:bot (or tsx server/bot-standalone.ts)
+  console.log('[Discord Bot] Bot runs in standalone process - use "pnpm dev:bot" to start');
+  
+  // DISABLED: Bot startup moved to bot-standalone.ts
+  // const globalAny = global as any;
+  // if (!globalAny.__discordBotStarted) {
+  //   const botToken = process.env.DISCORD_BOT_TOKEN;
+  //   console.log('[Discord Bot] Checking for DISCORD_BOT_TOKEN...', botToken ? 'Found' : 'Not found');
+  //   if (botToken) {
+  //     try {
+  //       console.log('[Discord Bot] Attempting to start bot...');
+  //       await startDiscordBot(botToken);
+  //       globalAny.__discordBotStarted = true;
+  //       console.log('[Discord Bot] ✅ Started successfully');
+  //     } catch (error) {
+  //       console.error('[Discord Bot] ❌ Failed to start:', error);
+  //       if (error instanceof Error) {
+  //         console.error('[Discord Bot] Error details:', error.message);
+  //         console.error('[Discord Bot] Stack trace:', error.stack);
+  //       }
+  //     }
+  //   } else {
+  //     console.log('[Discord Bot] ⚠️  DISCORD_BOT_TOKEN not found, bot will not start');
+  //   }
+  // } else {
+  //   console.log('[Discord Bot] Already started, skipping initialization (HMR)');
+  // }
 }
 
 startServer().catch(console.error);

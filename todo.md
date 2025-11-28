@@ -174,8 +174,105 @@ Build Discord bot feature to track team W/L records from activity booster posts.
 ### Root Cause Identified
 Hot Module Reloading (HMR) was registering multiple messageCreate listeners without removing old ones. Each code save added a new listener, resulting in 5+ concurrent executions of the same command. Additionally, the commandsInProgress Set was recreated on each reload, so old listeners couldn't see new locks.
 
-### Solution Implemented
+### Solution Implemented (Attempt 1 - FAILED)
 - [x] Made processedCommands and commandsInProgress Sets persist in global scope to survive HMR
 - [x] Added client.removeAllListeners('messageCreate') before registering listener
 - [x] Reset all activity booster database tables (records, head-to-head, checkpoint)
-- [ ] Test !ab-records command for single execution and correct counts
+- [x] Still had 4x execution - removeAllListeners didn't work
+
+### Solution Implemented (Attempt 2 - TESTING)
+- [x] Added global flag to prevent startDiscordBot from running multiple times on HMR
+- [x] Added instance ID tracking to identify which bot instance handles commands
+- [x] Destroy old client before creating new one in startDiscordBot
+- [x] Added primary message deduplication at messageCreate handler start (processedMessages Set)
+- [x] Made processedMessages Set persist in global scope
+- [x] Cleared all database records for fresh test (activity_records, activity_head_to_head, activity_checkpoint)
+- [ ] Test !ab-records command for single execution and correct counts (waiting for user)
+
+
+## Activity Booster Enhancements
+
+### Game Result Validation System
+- [ ] Create activity_conflicts database table to store flagged games
+- [ ] Design conflict detection logic (same matchup, different outcomes)
+- [ ] Implement validation in activity-booster-command.ts
+- [ ] Add conflict flagging when processing games
+- [ ] Post warnings to Discord when conflicts detected
+- [ ] Create admin UI to review flagged conflicts
+
+### !ab-reset Admin Command
+- [ ] Add !ab-reset command handler in discord-bot.ts
+- [ ] Implement admin permission check (Admin role or owner ID)
+- [ ] Add confirmation dialog with reaction collector
+- [ ] Clear all three tables: activity_records, activity_head_to_head, activity_checkpoint
+- [ ] Post success message after reset
+- [ ] Add logging for audit trail
+
+
+## URGENT: !ab-records Still Executing 4+ Times
+
+### Latest Observation (12:46 AM)
+- 4 "Scanning..." messages
+- 2 error messages with different standings (29.5 games vs 40.5 games)
+- 2 success messages "Processed 20 new games"
+- HMR listener cleanup not working as expected
+
+### Investigation Tasks
+- [x] Check if removeAllListeners is actually being called
+- [x] Verify global Sets are persisting across HMR reloads
+- [x] Add unique instance ID to track how many bot instances exist
+- [x] Check if Discord client is being recreated multiple times
+- [x] Prevent HMR from calling startDiscordBot multiple times
+- [x] Add primary message deduplication at messageCreate handler start
+- [ ] Test if fix works (waiting for user confirmation)
+
+
+## CRITICAL: !ab-records Still Has Two Major Bugs
+
+### Issue 1: Still Quadruple Posting (12:53 AM Test)
+- 4 "Scanning..." messages
+- 4 different standings posted with varying counts
+- 3 "Processed 20 new games" success messages
+- All deduplication attempts failed (global Sets, removeAllListeners, global flag, processedMessages)
+
+### Issue 2: Incorrect Game Counts
+Expected output:
+- Raptors: 9-0
+- Rockets: 3-1
+- Nuggets: 2-0
+- etc. (total ~20 games)
+
+Actual output:
+- Raptors: 34-0
+- Rockets: 10-4
+- Nuggets: 7-0
+- etc. (total ~72 games)
+
+Counts are 3-4x higher than they should be.
+
+### Root Cause Theories
+1. **Quadruple posting**: HMR is still creating multiple bot instances despite global flag
+2. **Incorrect counts**: Parser may be counting each message multiple times, or including messages before cutoff
+
+### Tasks
+- [x] Implement execution lock mechanism to prevent duplicate command processing
+- [x] Test quadruple posting fix - RESOLVED! Only one message now
+- [ ] Debug parser to understand why counts are still slightly off (Raptors 10-0 vs 9-0, Spurs 0-2 vs 0-3)
+- [ ] Add detailed logging to see which messages are being parsed
+- [ ] Verify cross-team posts are handled correctly (e.g., Pistons user posting Raptors win)
+- [ ] Test with corrected parser logic
+
+
+## Fix Bot Management Commands Display
+
+### Issues
+1. Bot Management > Commands tab only shows 2 commands (!sync-team-roles, !sync-team-channels)
+2. Missing many hardcoded Discord commands: !ab-records, !badge, !update bid, !regenerate-summary, /updatecap, !updateovercap
+3. Custom Commands page is redundant and confusing (shows 0 commands, separate feature)
+
+### Tasks
+- [x] Identify all hardcoded Discord commands from discord-bot.ts
+- [x] Add missing commands to bot_commands table with proper metadata (description, category, permissions)
+- [x] Update Bot Management UI to show all hardcoded commands
+- [x] Clarify difference between Bot Management Commands (hardcoded) and Custom Commands (user-created)
+- [ ] Consider removing or renaming Custom Commands page to reduce confusion (kept as-is with clarified description)

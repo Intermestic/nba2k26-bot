@@ -154,7 +154,7 @@ export default function CustomCommands() {
           <div>
             <h1 className="text-3xl font-bold">Custom Commands</h1>
             <p className="text-muted-foreground mt-1">
-              Create and manage custom bot commands with variables and cooldowns
+              Create user-defined commands with custom triggers and responses (separate from hardcoded bot commands in Bot Management)
             </p>
           </div>
           <Button onClick={() => setIsCreateDialogOpen(true)}>

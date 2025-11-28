@@ -8,6 +8,14 @@ const ACTIVITY_BOOSTER_CHANNEL_ID = '1384397576606056579';
 const HEAD_TO_HEAD_LOG_CHANNEL_ID = '1443741234106470493';
 const CUTOFF_MESSAGE_ID = '1440851551030870147';
 
+// Global outgoing message deduplication (persist across HMR)
+const globalAny = global as any;
+if (!globalAny.__abCommandExecutions) {
+  globalAny.__abCommandExecutions = new Map<string, number>();
+}
+const abCommandExecutions: Map<string, number> = globalAny.__abCommandExecutions;
+const EXECUTION_LOCK_TTL = 30000; // 30 seconds
+
 /**
  * Activity Booster Records Command Handler
  * 
@@ -42,14 +50,22 @@ async function updateTeamRecord(teamName: string, isWin: boolean): Promise<void>
   const existing = await db.select().from(activityRecords).where(eq(activityRecords.teamName, teamName)).limit(1);
   
   if (existing.length > 0) {
-    // Update existing record
-    await db.update(activityRecords)
-      .set({
-        wins: isWin ? existing[0].wins + 1 : existing[0].wins,
-        losses: !isWin ? existing[0].losses + 1 : existing[0].losses,
-        lastUpdated: new Date(),
-      })
-      .where(eq(activityRecords.teamName, teamName));
+    // Use atomic SQL increment to prevent race conditions
+    if (isWin) {
+      await db.update(activityRecords)
+        .set({
+          wins: sql`${activityRecords.wins} + 1`,
+          lastUpdated: new Date(),
+        })
+        .where(eq(activityRecords.teamName, teamName));
+    } else {
+      await db.update(activityRecords)
+        .set({
+          losses: sql`${activityRecords.losses} + 1`,
+          lastUpdated: new Date(),
+        })
+        .where(eq(activityRecords.teamName, teamName));
+    }
   } else {
     // Create new record
     await db.insert(activityRecords).values({
@@ -83,14 +99,22 @@ async function updateHeadToHead(team1: string, team2: string, team1Won: boolean)
     .limit(1);
   
   if (existing.length > 0) {
-    // Update existing matchup
-    await db.update(activityHeadToHead)
-      .set({
-        team1Wins: teamAWon ? existing[0].team1Wins + 1 : existing[0].team1Wins,
-        team2Wins: !teamAWon ? existing[0].team2Wins + 1 : existing[0].team2Wins,
-        lastUpdated: new Date(),
-      })
-      .where(eq(activityHeadToHead.id, existing[0].id));
+    // Use atomic SQL increment to prevent race conditions
+    if (teamAWon) {
+      await db.update(activityHeadToHead)
+        .set({
+          team1Wins: sql`${activityHeadToHead.team1Wins} + 1`,
+          lastUpdated: new Date(),
+        })
+        .where(eq(activityHeadToHead.id, existing[0].id));
+    } else {
+      await db.update(activityHeadToHead)
+        .set({
+          team2Wins: sql`${activityHeadToHead.team2Wins} + 1`,
+          lastUpdated: new Date(),
+        })
+        .where(eq(activityHeadToHead.id, existing[0].id));
+    }
   } else {
     // Create new matchup
     await db.insert(activityHeadToHead).values({
@@ -255,18 +279,25 @@ async function scanAndProcessMessages(
     );
     
     for (const message of sortedMessages) {
-      // Skip messages before cutoff
-      if (message.id <= CUTOFF_MESSAGE_ID) continue;
+      // Skip messages before or at cutoff (use BigInt for proper comparison)
+      if (BigInt(message.id) <= BigInt(CUTOFF_MESSAGE_ID)) continue;
       
       // Skip bot messages
       if (message.author.bot) continue;
       
+      // Log message details
+      const roles = message.member?.roles.cache.map(r => r.name).join(', ') || 'No roles';
+      const contentPreview = message.content.substring(0, 80).replace(/\n/g, ' ');
+      console.log(`[AB Command] Message ${message.id} by ${message.author.username} [${roles}]: "${contentPreview}..."`);
+      
       // Try to parse message
       const parsed = parseActivityBoosterMessage(message);
       if (parsed) {
+        console.log(`[AB Command]   ✓ Parsed: ${parsed.postingTeam} ${parsed.postingTeamResult} vs ${parsed.opponentTeam} ${parsed.opponentTeamResult}`);
         await processActivityBooster(parsed);
         processed++;
-        console.log(`[AB Command] Processed: ${parsed.postingTeam} ${parsed.postingTeamResult} vs ${parsed.opponentTeam}`);
+      } else {
+        console.log(`[AB Command]   ✗ Failed to parse`);
       }
       
       lastMessageId = message.id;
@@ -291,6 +322,19 @@ export async function handleActivityRecordsCommand(
   client: Client,
   message: Message
 ): Promise<void> {
+  // Check if this command is already being executed
+  const now = Date.now();
+  const lastExecution = abCommandExecutions.get(message.id);
+  
+  if (lastExecution && now - lastExecution < EXECUTION_LOCK_TTL) {
+    console.log(`[AB Command] Command ${message.id} already executing, skipping duplicate`);
+    return;
+  }
+  
+  // Mark as executing
+  abCommandExecutions.set(message.id, now);
+  console.log(`[AB Command] Locked execution for command ${message.id}`);
+  
   try {
     await message.reply('🔄 Scanning activity booster channel...');
     
@@ -356,5 +400,11 @@ export async function handleActivityRecordsCommand(
   } catch (error) {
     console.error('[AB Command] Error:', error);
     await message.reply('❌ An error occurred while processing activity boosters.');
+  } finally {
+    // Clean up execution lock after TTL
+    setTimeout(() => {
+      abCommandExecutions.delete(message.id);
+      console.log(`[AB Command] Cleaned up execution lock for command ${message.id}`);
+    }, EXECUTION_LOCK_TTL);
   }
 }
