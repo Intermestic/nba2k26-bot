@@ -43,3 +43,32 @@ Create admin automation that downloads photos from OneDrive, uploads to ChatGPT 
 - [x] Update executablePath to /usr/lib/chromium-browser/chromium-browser
 - [x] Test browser launch with correct path
 - [x] Verify OneDrive processor works end-to-end
+
+## Browser Launch Error Investigation (Web UI)
+
+User reports browser still fails when triggered from web UI with error:
+"Browser was not found at the configured executablePath (/usr/lib/chromium-browser/chromium-browser)"
+
+### Investigation Tasks
+- [x] Check if error happens during server startup or only when triggered - Only when triggered
+- [x] Verify the actual error message from the server logs - "Browser was not found at the configured executablePath"
+- [x] Test if Puppeteer can launch browser in the server process context - Works in standalone tests
+- [x] Check if there are permission issues or missing dependencies - Browser is accessible and executable
+- [x] Verify the code path from web UI button click to browser launch - API call hangs during browser launch
+
+### Fix Strategy
+- [x] Switch from `puppeteer` to `puppeteer-core` to avoid browser download issues
+- [x] Remove regular `puppeteer` package to prevent conflicts
+- [ ] Test with puppeteer-core through web UI
+
+## Switch to Playwright
+
+Puppeteer-core still fails with the same error even though standalone tests work. Switching to Playwright which has better system browser support.
+
+### Tasks
+- [x] Install Playwright
+- [x] Rewrite OneDrive processor to use Playwright API
+- [x] Fix Playwright API compatibility (networkidle2 → networkidle, waitForNavigation → waitForLoadState)
+- [x] Add comprehensive logging throughout the function
+- [x] Test browser launch with Playwright
+- [x] Verify complete workflow works through web UI - SUCCESS!

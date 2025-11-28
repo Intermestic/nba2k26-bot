@@ -1,4 +1,4 @@
-import puppeteer, { Browser, Page } from "puppeteer";
+import { chromium, Browser, Page } from "playwright";
 import fs from "fs/promises";
 import path from "path";
 import { getDiscordClient } from "../discord-bot";
@@ -43,7 +43,7 @@ async function downloadPhotosFromOneDrive(browser: Browser): Promise<string[]> {
   const page = await browser.newPage();
   
   try {
-    await page.goto(ONEDRIVE_URL, { waitUntil: "networkidle2", timeout: 60000 });
+    await page.goto(ONEDRIVE_URL, { waitUntil: "networkidle", timeout: 60000 });
     
     // Wait for the file list to load
     await page.waitForSelector('[role="row"]', { timeout: 30000 });
@@ -134,7 +134,7 @@ async function uploadToChatGPT(browser: Browser, photoPaths: string[]): Promise<
   
   try {
     // Navigate to ChatGPT chat
-    await page.goto(CHATGPT_CHAT_URL, { waitUntil: "networkidle2", timeout: 60000 });
+    await page.goto(CHATGPT_CHAT_URL, { waitUntil: "networkidle", timeout: 60000 });
     
     // Check if we need to login
     const isLoginPage = await page.evaluate(() => {
@@ -147,7 +147,7 @@ async function uploadToChatGPT(browser: Browser, photoPaths: string[]): Promise<
       updateStatus({ status: "Waiting for ChatGPT login..." });
       
       // Wait for user to complete login (up to 5 minutes)
-      await page.waitForNavigation({ timeout: 300000, waitUntil: "networkidle2" });
+      await page.waitForLoadState("networkidle", { timeout: 300000 });
       console.log("Login completed");
     }
     
@@ -222,7 +222,7 @@ async function deletePhotosFromOneDrive(browser: Browser, photoNames: string[]):
   const page = await browser.newPage();
   
   try {
-    await page.goto(ONEDRIVE_URL, { waitUntil: "networkidle2", timeout: 60000 });
+    await page.goto(ONEDRIVE_URL, { waitUntil: "networkidle", timeout: 60000 });
     await page.waitForSelector('[role="row"]', { timeout: 30000 });
     
     for (const photoName of photoNames) {
@@ -291,28 +291,55 @@ function parseResponsesAndGenerateCSV(responses: string[]): string {
  * Main processing function
  */
 export async function processOneDrivePhotos() {
+  console.log("\n=== processOneDrivePhotos CALLED ===");
+  console.log("Timestamp:", new Date().toISOString());
+  console.log("Node version:", process.version);
+  console.log("CWD:", process.cwd());
+  
   if (processingStatus.isProcessing) {
+    console.log("Already processing, throwing error");
     throw new Error("Processing already in progress");
   }
   
+  console.log("Setting status to processing...");
   updateStatus({ isProcessing: true, status: "Starting..." });
   
   let browser: Browser | null = null;
   
   try {
-    // Launch browser
-    console.log("Launching browser...");
-    browser = await puppeteer.launch({
+    console.log("\n=== BROWSER LAUNCH SECTION ===");
+    console.log("About to launch browser...");
+    
+    // Try to find chromium executable
+    const execPath = "/usr/lib/chromium-browser/chromium-browser";
+    console.log("Using chromium at:", execPath);
+    
+    // Verify the file exists before launching
+    try {
+      const stats = await fs.stat(execPath);
+      console.log("✓ Browser executable found:", {
+        path: execPath,
+        size: stats.size,
+        mode: stats.mode.toString(8),
+        isFile: stats.isFile(),
+      });
+    } catch (error) {
+      console.error("✗ Browser executable not found at:", execPath);
+      throw new Error(`Browser executable not found at ${execPath}`);
+    }
+    
+    console.log("Attempting to launch browser with Playwright...");
+    browser = await chromium.launch({
       headless: true,
       args: [
         "--no-sandbox",
         "--disable-setuid-sandbox",
         "--disable-dev-shm-usage",
-        "--disable-accelerated-2d-canvas",
-        "--disable-gpu",
       ],
-      executablePath: "/usr/lib/chromium-browser/chromium-browser",
+      executablePath: execPath,
     });
+    
+    console.log("Browser launched successfully!");
     
     // Step 1: Download photos from OneDrive
     updateStatus({ status: "Downloading photos from OneDrive..." });
@@ -373,15 +400,25 @@ export async function processOneDrivePhotos() {
       csvUrl: csvPath,
     };
   } catch (error) {
-    console.error("Processing error:", error);
+    console.error("\n=== PROCESSING ERROR ===");
+    console.error("Error type:", error instanceof Error ? error.constructor.name : typeof error);
+    console.error("Error message:", error instanceof Error ? error.message : String(error));
+    console.error("Error stack:", error instanceof Error ? error.stack : "No stack trace");
+    console.error("Full error object:", error);
+    
     updateStatus({ 
       isProcessing: false, 
       status: `Error: ${error instanceof Error ? error.message : "Unknown error"}` 
     });
     throw error;
   } finally {
+    console.log("\n=== CLEANUP ===");
     if (browser) {
+      console.log("Closing browser...");
       await browser.close();
+      console.log("Browser closed");
+    } else {
+      console.log("No browser to close");
     }
   }
 }
