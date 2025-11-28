@@ -45,6 +45,9 @@ async function startServer() {
   // FA transactions history API
   const faTransactionsRouter = (await import('../routes/fa-transactions')).default;
   app.use("/api/fa-transactions", faTransactionsRouter);
+  // OneDrive processor API
+  const onedriveRouter = (await import('../routes/onedrive')).default;
+  app.use("/api/onedrive", onedriveRouter);
   // tRPC API
   app.use(
     "/api/trpc",

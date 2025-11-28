@@ -18,7 +18,8 @@ import {
   AlertTriangle,
   Database,
   Zap,
-  ArrowLeftRight
+  ArrowLeftRight,
+  Cloud
 } from "lucide-react";
 
 interface AdminTool {
@@ -246,6 +247,14 @@ export default function AdminDashboard() {
       href: "/admin/validation-rules",
       icon: <Settings className="w-6 h-6" />,
       color: "bg-rose-500",
+      section: "system"
+    },
+    {
+      title: "OneDrive Processor",
+      description: "Process photos from OneDrive and upload to ChatGPT",
+      href: "/admin/onedrive-processor",
+      icon: <Cloud className="w-6 h-6" />,
+      color: "bg-indigo-500",
       section: "system"
     },
     {

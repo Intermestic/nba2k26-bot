@@ -23,6 +23,7 @@ import CustomCommands from "./pages/CustomCommands";
 import WelcomeGoodbye from "./pages/WelcomeGoodbye";
 import ReactionRoles from "./pages/ReactionRoles";
 import Analytics from "./pages/Analytics";
+import OneDriveProcessor from "./pages/admin/OneDriveProcessor";
 import ServerLogs from "./pages/ServerLogs";
 import AdminDashboard from "./pages/AdminDashboard";
 import UpgradeSummary from "./pages/admin/UpgradeSummary";
@@ -62,6 +63,7 @@ function Router() {
       <Route path={"/admin/welcome-goodbye"} component={WelcomeGoodbye} />
       <Route path={"/admin/reaction-roles"} component={ReactionRoles} />
       <Route path={"/admin/analytics"} component={Analytics} />
+      <Route path={"/admin/onedrive-processor"} component={OneDriveProcessor} />
       <Route path={"/admin/logs"} component={ServerLogs} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
