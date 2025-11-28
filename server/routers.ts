@@ -20,6 +20,7 @@ import { dashboardRouter } from "./routers/dashboard";
 import { validationRulesRouter } from "./routers/validationRules";
 import { tradesRouter } from "./routers/trades";
 import { tradeMachineRouter } from "./routers/tradeMachine";
+import { csvExportRouter } from "./routes/csvExport";
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -88,6 +89,9 @@ export const appRouter = router({
   
   // Trade machine for building and posting trades
   tradeMachine: tradeMachineRouter,
+  
+  // CSV export with customizable columns
+  csvExport: csvExportRouter,
 });
 
 export type AppRouter = typeof appRouter;

@@ -95,3 +95,16 @@ Feature is not working reliably and wasting time/money. Removing completely.
 - [x] Remove OneDrive router from server index
 - [x] Remove OneDrive navigation card from admin dashboard
 - [x] Remove playwright dependency (only used for OneDrive)
+
+## Create Admin CSV Export Page
+
+Move CSV export functionality from main page to admin area with customizable column selection.
+
+### Tasks
+- [x] Create admin CSV export page UI with checkboxes for column selection
+- [x] Add column options: Full Name, First Initial Last Name, Team, Overall, Photo URL, Aliases, Rookie Status, etc.
+- [x] Add filter options: All Players, Rookies Only, By Team
+- [x] Build backend TRPC endpoint for customizable CSV generation
+- [x] Remove CSV/JSON download buttons from main page header
+- [x] Add CSV Export to admin dashboard navigation
+- [x] Test all column combinations and filters

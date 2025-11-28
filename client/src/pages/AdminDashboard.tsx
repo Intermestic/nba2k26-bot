@@ -19,7 +19,8 @@ import {
   Database,
   Zap,
   ArrowLeftRight,
-  Cloud
+  Cloud,
+  FileDown
 } from "lucide-react";
 
 interface AdminTool {
@@ -253,8 +254,16 @@ export default function AdminDashboard() {
       title: "Match Logs",
       description: "View fuzzy matching logs for debugging",
       href: "/admin/match-logs",
-      icon: <FileText className="w-6 h-6" />,
-      color: "bg-amber-500",
+      icon: <Database className="w-6 h-6" />,
+      color: "bg-gray-500",
+      section: "system"
+    },
+    {
+      title: "CSV Export",
+      description: "Export player data with customizable columns",
+      href: "/admin/csv-export",
+      icon: <FileDown className="w-6 h-6" />,
+      color: "bg-green-500",
       section: "system"
     },
 
