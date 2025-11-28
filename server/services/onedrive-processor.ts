@@ -303,8 +303,15 @@ export async function processOneDrivePhotos() {
     // Launch browser
     console.log("Launching browser...");
     browser = await puppeteer.launch({
-      headless: false, // Set to false so user can login if needed
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+      headless: true,
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-dev-shm-usage",
+        "--disable-accelerated-2d-canvas",
+        "--disable-gpu",
+      ],
+      executablePath: "/usr/bin/chromium-browser",
     });
     
     // Step 1: Download photos from OneDrive
