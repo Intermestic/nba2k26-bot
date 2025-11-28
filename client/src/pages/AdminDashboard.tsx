@@ -250,14 +250,6 @@ export default function AdminDashboard() {
       section: "system"
     },
     {
-      title: "OneDrive Processor",
-      description: "Process photos from OneDrive and upload to ChatGPT",
-      href: "/admin/onedrive-processor",
-      icon: <Cloud className="w-6 h-6" />,
-      color: "bg-indigo-500",
-      section: "system"
-    },
-    {
       title: "Match Logs",
       description: "View fuzzy matching logs for debugging",
       href: "/admin/match-logs",

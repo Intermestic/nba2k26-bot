@@ -72,3 +72,26 @@ Puppeteer-core still fails with the same error even though standalone tests work
 - [x] Add comprehensive logging throughout the function
 - [x] Test browser launch with Playwright
 - [x] Verify complete workflow works through web UI - SUCCESS!
+
+## Fix Photo Detection Issue
+
+Browser launches successfully but finds 0 photos when there are 41 photos in the OneDrive folder.
+
+### Tasks
+- [ ] Check server logs to see what's happening during photo detection
+- [ ] Verify OneDrive folder URL and selectors are correct
+- [ ] Add more detailed logging to downloadPhotosFromOneDrive function
+- [ ] Test photo detection and download
+
+## Remove OneDrive Photo Processor Feature
+
+Feature is not working reliably and wasting time/money. Removing completely.
+
+### Tasks
+- [x] Delete server/services/onedrive-processor.ts
+- [x] Delete server/routes/onedrive.ts
+- [x] Delete client/src/pages/admin/OneDriveProcessor.tsx
+- [x] Remove OneDrive route from App.tsx
+- [x] Remove OneDrive router from server index
+- [x] Remove OneDrive navigation card from admin dashboard
+- [x] Remove playwright dependency (only used for OneDrive)
