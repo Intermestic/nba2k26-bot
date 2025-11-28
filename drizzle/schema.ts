@@ -707,3 +707,49 @@ export const trades = mysqlTable("trades", {
 
 export type Trade = typeof trades.$inferSelect;
 export type InsertTrade = typeof trades.$inferInsert;
+
+/**
+ * Activity Booster Records Table
+ * Stores W/L records for each team from activity booster posts
+ */
+export const activityRecords = mysqlTable("activity_records", {
+  id: int("id").autoincrement().primaryKey(),
+  teamName: varchar("teamName", { length: 100 }).notNull().unique(),
+  wins: int("wins").notNull().default(0),
+  losses: int("losses").notNull().default(0),
+  lastUpdated: timestamp("lastUpdated").defaultNow().notNull(),
+});
+
+export type ActivityRecord = typeof activityRecords.$inferSelect;
+export type InsertActivityRecord = typeof activityRecords.$inferInsert;
+
+/**
+ * Activity Booster Checkpoint Table
+ * Tracks the last processed message and standings post
+ */
+export const activityCheckpoint = mysqlTable("activity_checkpoint", {
+  id: int("id").autoincrement().primaryKey(),
+  lastProcessedMessageId: varchar("lastProcessedMessageId", { length: 64 }).notNull(),
+  lastStandingsMessageId: varchar("lastStandingsMessageId", { length: 64 }),
+  processedAt: timestamp("processedAt").defaultNow().notNull(),
+  totalGamesProcessed: int("totalGamesProcessed").notNull().default(0),
+});
+
+export type ActivityCheckpoint = typeof activityCheckpoint.$inferSelect;
+export type InsertActivityCheckpoint = typeof activityCheckpoint.$inferInsert;
+
+/**
+ * Activity Booster Head-to-Head Table
+ * Tracks matchup records between teams
+ */
+export const activityHeadToHead = mysqlTable("activity_head_to_head", {
+  id: int("id").autoincrement().primaryKey(),
+  team1: varchar("team1", { length: 100 }).notNull(),
+  team2: varchar("team2", { length: 100 }).notNull(),
+  team1Wins: int("team1Wins").notNull().default(0),
+  team2Wins: int("team2Wins").notNull().default(0),
+  lastUpdated: timestamp("lastUpdated").defaultNow().notNull(),
+});
+
+export type ActivityHeadToHead = typeof activityHeadToHead.$inferSelect;
+export type InsertActivityHeadToHead = typeof activityHeadToHead.$inferInsert;

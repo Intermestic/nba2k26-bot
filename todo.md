@@ -108,3 +108,27 @@ Move CSV export functionality from main page to admin area with customizable col
 - [x] Remove CSV/JSON download buttons from main page header
 - [x] Add CSV Export to admin dashboard navigation
 - [x] Test all column combinations and filters
+
+## Activity Booster Record Tracking System
+
+Build Discord bot feature to track team W/L records from activity booster posts.
+
+### Requirements Gathering
+- [x] Clarify post format (how users post results)
+- [x] Determine team identification method (role vs message content)
+- [x] Define result parsing logic (W/L, score, text)
+- [x] Design standings message format
+
+### Implementation
+- [x] Create activity booster message parser
+- [x] Build record calculation logic
+- [x] Implement !activity-records command
+- [x] Add message scanning from channel start
+- [x] Create standings message generator
+- [x] Create head-to-head matchup log generator
+- [x] Send head-to-head log to channel 1443741234106470493
+- [x] Build checkpoint system (track last standings post)
+- [x] Implement incremental update logic
+- [x] Add database table for activity records
+- [x] Test with real channel messages
+- [x] Add error handling for malformed posts

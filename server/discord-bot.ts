@@ -1083,6 +1083,18 @@ export async function startDiscordBot(token: string) {
       console.error('[Custom Commands] Error handling command:', error);
     }
     
+    // Check for activity records command: !ab-records
+    if (message.content.trim().toLowerCase() === '!ab-records') {
+      try {
+        const { handleActivityRecordsCommand } = await import('./activity-booster-command');
+        await handleActivityRecordsCommand(client!, message);
+      } catch (error) {
+        console.error('[Activity Records] Command failed:', error);
+        await message.reply('❌ Failed to process activity records. Check logs for details.');
+      }
+      return;
+    }
+    
     if (message.channelId === FA_CHANNEL_ID) {
       // Check for update bid command: !update bid <player> <amount>
       if (message.content.trim().toLowerCase().startsWith('!update bid')) {
