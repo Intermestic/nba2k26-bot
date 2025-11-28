@@ -1153,7 +1153,13 @@ export async function startDiscordBot(token: string) {
         // Add fields for each category
         for (const [category, cmds] of Object.entries(categories)) {
           const commandList = cmds
-            .map(cmd => `**${cmd.command}**\n${cmd.description}`)
+            .map(cmd => {
+              let text = `**${cmd.command}**\n${cmd.description}`;
+              if (cmd.example) {
+                text += `\n*Example:* \`${cmd.example}\``;
+              }
+              return text;
+            })
             .join('\n\n');
           
           embed.addFields({

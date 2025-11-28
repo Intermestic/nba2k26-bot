@@ -290,3 +290,16 @@ Implement !help command that lists all available Discord bot commands with descr
 - [x] Add usage examples for each command
 - [x] Test !help command in Discord
 - [x] Add !help command to bot_commands table
+
+
+## Command Usage Examples
+
+### Goal
+Add usage examples to bot_commands table and display them in !help command
+
+### Tasks
+- [x] Add example column to bot_commands table schema
+- [x] Update database migration
+- [x] Populate example data for all 10 commands
+- [x] Update !help command to display examples
+- [x] Test !help command shows examples correctly

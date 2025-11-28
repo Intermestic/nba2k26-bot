@@ -320,6 +320,7 @@ export const botCommands = mysqlTable("bot_commands", {
   id: int("id").autoincrement().primaryKey(),
   command: varchar("command", { length: 100 }).notNull().unique(), // Command trigger (e.g., "!sync-team-roles")
   description: text("description").notNull(), // What the command does
+  example: text("example"), // Usage example (e.g., "!update bid Curry 50")
   enabled: boolean("enabled").default(true).notNull(), // Whether command is active
   responseTemplate: text("responseTemplate"), // Response message template
   permissions: varchar("permissions", { length: 50 }), // Required permissions (e.g., "admin", "user")
