@@ -276,3 +276,17 @@ Counts are 3-4x higher than they should be.
 - [x] Update Bot Management UI to show all hardcoded commands
 - [x] Clarify difference between Bot Management Commands (hardcoded) and Custom Commands (user-created)
 - [ ] Consider removing or renaming Custom Commands page to reduce confusion (kept as-is with clarified description)
+
+
+## Help Command System
+
+### Goal
+Implement !help command that lists all available Discord bot commands with descriptions and usage examples
+
+### Tasks
+- [x] Create help command handler in discord-bot.ts
+- [x] Fetch all bot commands from bot_commands table
+- [x] Format commands into Discord embed with categories
+- [x] Add usage examples for each command
+- [x] Test !help command in Discord
+- [x] Add !help command to bot_commands table

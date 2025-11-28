@@ -1124,6 +1124,55 @@ export async function startDiscordBot(token: string) {
       console.error('[Custom Commands] Error handling command:', error);
     }
     
+    // Check for help command: !help
+    if (message.content.trim().toLowerCase() === '!help') {
+      try {
+        const db = await getDb();
+        const { botCommands } = await import('../drizzle/schema');
+        const { EmbedBuilder } = await import('discord.js');
+        
+        // Fetch all enabled commands from database
+        const commands = await db.select().from(botCommands).where(eq(botCommands.enabled, true));
+        
+        // Group commands by category
+        const categories: Record<string, typeof commands> = {};
+        for (const cmd of commands) {
+          const category = cmd.category || 'General';
+          if (!categories[category]) {
+            categories[category] = [];
+          }
+          categories[category].push(cmd);
+        }
+        
+        // Create embed with all commands
+        const embed = new EmbedBuilder()
+          .setTitle('🤖 Bot Commands')
+          .setDescription('Here are all available commands:')
+          .setColor(0x5865F2);
+        
+        // Add fields for each category
+        for (const [category, cmds] of Object.entries(categories)) {
+          const commandList = cmds
+            .map(cmd => `**${cmd.command}**\n${cmd.description}`)
+            .join('\n\n');
+          
+          embed.addFields({
+            name: `📁 ${category.charAt(0).toUpperCase() + category.slice(1)}`,
+            value: commandList || 'No commands',
+            inline: false
+          });
+        }
+        
+        embed.setFooter({ text: 'Use commands in their respective channels' });
+        
+        await message.reply({ embeds: [embed] });
+      } catch (error) {
+        console.error('[Help Command] Error:', error);
+        await message.reply('❌ Failed to fetch command list. Check logs for details.');
+      }
+      return;
+    }
+    
     // Check for activity records command: !ab-records
     if (message.content.trim().toLowerCase() === '!ab-records') {
       const commandKey = `ab-records:${message.id}`;

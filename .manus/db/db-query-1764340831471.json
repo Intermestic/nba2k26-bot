@@ -1,0 +1,55 @@
+{
+  "query": "SELECT command, category, description FROM bot_commands ORDER BY category, command",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT command, category, description FROM bot_commands ORDER BY category, command",
+  "rows": [
+    {
+      "command": "!ab-records",
+      "category": "activity",
+      "description": "Display activity booster team records and standings"
+    },
+    {
+      "command": "!regenerate-summary",
+      "category": "admin",
+      "description": "Regenerate FA window summary for a specific window"
+    },
+    {
+      "command": "!rollback",
+      "category": "admin",
+      "description": "Rollback FA transaction batch by batch ID"
+    },
+    {
+      "command": "!sync-team-channels",
+      "category": "admin",
+      "description": "Manually sync team channels and update topics"
+    },
+    {
+      "command": "!sync-team-roles",
+      "category": "admin",
+      "description": "Manually sync team roles from the team message"
+    },
+    {
+      "command": "!updateovercap",
+      "category": "admin",
+      "description": "Manually update overcap roles for all teams"
+    },
+    {
+      "command": "/updatecap",
+      "category": "admin",
+      "description": "Update cap status messages in configured channel"
+    },
+    {
+      "command": "!update bid",
+      "category": "fa",
+      "description": "Update your FA bid amount for a player"
+    },
+    {
+      "command": "!badge",
+      "category": "info",
+      "description": "Look up badge information by abbreviation or list all badges"
+    }
+  ],
+  "messages": [],
+  "stdout": "command\tcategory\tdescription\n!ab-records\tactivity\tDisplay activity booster team records and standings\n!regenerate-summary\tadmin\tRegenerate FA window summary for a specific window\n!rollback\tadmin\tRollback FA transaction batch by batch ID\n!sync-team-channels\tadmin\tManually sync team channels and update topics\n!sync-team-roles\tadmin\tManually sync team roles from the team message\n!updateovercap\tadmin\tManually update overcap roles for all teams\n/updatecap\tadmin\tUpdate cap status messages in configured channel\n!update bid\tfa\tUpdate your FA bid amount for a player\n!badge\tinfo\tLook up badge information by abbreviation or list all badges\n",
+  "stderr": "",
+  "execution_time_ms": 533
+}
