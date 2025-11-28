@@ -311,7 +311,7 @@ export async function processOneDrivePhotos() {
         "--disable-accelerated-2d-canvas",
         "--disable-gpu",
       ],
-      executablePath: "/usr/bin/chromium-browser",
+      executablePath: "/usr/lib/chromium-browser/chromium-browser",
     });
     
     // Step 1: Download photos from OneDrive

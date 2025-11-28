@@ -32,3 +32,14 @@ Create admin automation that downloads photos from OneDrive, uploads to ChatGPT 
 - [x] Configure Puppeteer with proper launch arguments
 - [x] Test browser automation
 - [x] Verify OneDrive processor works end-to-end
+
+## Fix Chromium Binary Path
+
+### Issue
+- executablePath was set to /usr/bin/chromium-browser (shell script wrapper)
+- Actual binary is at /usr/lib/chromium-browser/chromium-browser
+
+### Tasks
+- [x] Update executablePath to /usr/lib/chromium-browser/chromium-browser
+- [x] Test browser launch with correct path
+- [x] Verify OneDrive processor works end-to-end
