@@ -16,6 +16,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Loader2, ArrowLeftRight, Send, ArrowLeft } from "lucide-react";
 import { getTeamLogo } from "@/lib/teamLogos";
+import { getTeamColors, getTeamGradient, getContrastColor } from "@/lib/teamColors";
 import {
   Dialog,
   DialogContent,
@@ -202,8 +203,19 @@ export default function TradeMachine() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           {/* Team 1 */}
-          <Card className="border-2 border-primary/30 hover:border-primary/60 transition-all shadow-lg hover:shadow-xl">
-            <CardHeader className="bg-gradient-to-br from-blue-500/20 via-primary/10 to-transparent border-b border-primary/20">
+          <Card 
+            className="border-2 transition-all shadow-lg hover:shadow-xl"
+            style={{
+              borderColor: team1 ? `${getTeamColors(team1).primary}50` : 'hsl(var(--primary) / 0.3)',
+            }}
+          >
+            <CardHeader 
+              className="border-b"
+              style={{
+                background: team1 ? `linear-gradient(135deg, ${getTeamColors(team1).primary}33 0%, ${getTeamColors(team1).secondary}1A 100%)` : 'linear-gradient(135deg, hsl(var(--primary) / 0.2) 0%, hsl(var(--primary) / 0.1) 100%)',
+                borderColor: team1 ? `${getTeamColors(team1).primary}33` : 'hsl(var(--primary) / 0.2)',
+              }}
+            >
               <div className="flex items-center gap-3">
                 {team1 && (
                   <img 
@@ -303,8 +315,19 @@ export default function TradeMachine() {
           </Card>
 
           {/* Team 2 */}
-          <Card className="border-2 border-red-500/30 hover:border-red-500/60 transition-all shadow-lg hover:shadow-xl">
-            <CardHeader className="bg-gradient-to-br from-red-500/20 via-orange-500/10 to-transparent border-b border-red-500/20">
+          <Card 
+            className="border-2 transition-all shadow-lg hover:shadow-xl"
+            style={{
+              borderColor: team2 ? `${getTeamColors(team2).primary}50` : 'hsl(var(--border))',
+            }}
+          >
+            <CardHeader 
+              className="border-b"
+              style={{
+                background: team2 ? `linear-gradient(135deg, ${getTeamColors(team2).primary}33 0%, ${getTeamColors(team2).secondary}1A 100%)` : 'transparent',
+                borderColor: team2 ? `${getTeamColors(team2).primary}33` : 'hsl(var(--border))',
+              }}
+            >
               <div className="flex items-center gap-3">
                 {team2 && (
                   <img 
@@ -415,7 +438,13 @@ export default function TradeMachine() {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-blue-500/5 rounded-lg p-4 border border-blue-500/20">
+                <div 
+                  className="rounded-lg p-4 border"
+                  style={{
+                    backgroundColor: `${getTeamColors(team1).primary}0D`,
+                    borderColor: `${getTeamColors(team1).primary}33`,
+                  }}
+                >
                   <h3 className="font-bold text-lg mb-3 flex items-center gap-2">
                     <img src={getTeamLogo(team1)} alt={team1} className="h-6 w-6 object-contain" />
                     {team1} Sends:
@@ -428,14 +457,26 @@ export default function TradeMachine() {
                         <span className="text-xs bg-primary/10 px-2 py-0.5 rounded-full">{player.badges} badges</span>
                       </div>
                     ))}
-                    <div className="border-t border-blue-500/20 pt-3 mt-3 font-bold flex items-center gap-3">
+                    <div 
+                      className="border-t pt-3 mt-3 font-bold flex items-center gap-3"
+                      style={{ borderColor: `${getTeamColors(team1).primary}33` }}
+                    >
                       <span className="text-lg">{team1TotalOvr} OVR</span>
-                      <span className="text-sm bg-blue-500/20 px-3 py-1 rounded-full">{team1TotalBadges} badges</span>
+                      <span 
+                        className="text-sm px-3 py-1 rounded-full"
+                        style={{ backgroundColor: `${getTeamColors(team1).primary}33` }}
+                      >{team1TotalBadges} badges</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="bg-red-500/5 rounded-lg p-4 border border-red-500/20">
+                <div 
+                  className="rounded-lg p-4 border"
+                  style={{
+                    backgroundColor: `${getTeamColors(team2).primary}0D`,
+                    borderColor: `${getTeamColors(team2).primary}33`,
+                  }}
+                >
                   <h3 className="font-bold text-lg mb-3 flex items-center gap-2">
                     <img src={getTeamLogo(team2)} alt={team2} className="h-6 w-6 object-contain" />
                     {team2} Sends:
@@ -448,9 +489,15 @@ export default function TradeMachine() {
                         <span className="text-xs bg-primary/10 px-2 py-0.5 rounded-full">{player.badges} badges</span>
                       </div>
                     ))}
-                    <div className="border-t border-red-500/20 pt-3 mt-3 font-bold flex items-center gap-3">
+                    <div 
+                      className="border-t pt-3 mt-3 font-bold flex items-center gap-3"
+                      style={{ borderColor: `${getTeamColors(team2).primary}33` }}
+                    >
                       <span className="text-lg">{team2TotalOvr} OVR</span>
-                      <span className="text-sm bg-red-500/20 px-3 py-1 rounded-full">{team2TotalBadges} badges</span>
+                      <span 
+                        className="text-sm px-3 py-1 rounded-full"
+                        style={{ backgroundColor: `${getTeamColors(team2).primary}33` }}
+                      >{team2TotalBadges} badges</span>
                     </div>
                   </div>
                 </div>

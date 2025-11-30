@@ -615,3 +615,16 @@ User reports Trade Machine page is bland and missing visual elements.
 - [x] Add team color themes to cards based on selected team
 - [x] Improve player selection UI with better styling
 - [x] Test all visual changes
+
+
+## Dynamic Team Color Customization for Trade Machine
+
+Make Trade Machine cards automatically change colors to match the selected team's actual NBA colors (Lakers gold/purple, Celtics green, etc.)
+
+### Tasks
+- [x] Create comprehensive team color mapping with primary/secondary colors for all 30 teams
+- [x] Update TradeMachine.tsx to use dynamic colors based on selected teams
+- [x] Replace generic blue/red gradients with team-specific gradients
+- [x] Update border colors to match team themes
+- [x] Test with multiple team combinations (Lakers, Celtics, Warriors, Heat, etc.)
+- [x] Verify colors work well together when two teams are selected
