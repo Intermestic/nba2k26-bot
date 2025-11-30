@@ -22,7 +22,9 @@ import {
   Cloud,
   FileDown,
   Power,
-  ScrollText
+  ScrollText,
+  Clock,
+  Heart
 } from "lucide-react";
 
 interface AdminTool {
@@ -282,6 +284,22 @@ export default function AdminDashboard() {
       href: "/admin/bot-logs",
       icon: <ScrollText className="w-6 h-6" />,
       color: "bg-purple-500",
+      section: "system"
+    },
+    {
+      title: "Scheduled Restarts",
+      description: "Configure automatic bot restarts for stability",
+      href: "/admin/scheduled-restarts",
+      icon: <Clock className="w-6 h-6" />,
+      color: "bg-indigo-500",
+      section: "system"
+    },
+    {
+      title: "Health Alerts",
+      description: "Monitor bot health and receive Discord alerts",
+      href: "/admin/health-alerts",
+      icon: <Heart className="w-6 h-6" />,
+      color: "bg-pink-500",
       section: "system"
     },
 

@@ -35,6 +35,8 @@ import TradeMachine from "./pages/TradeMachine";
 import CsvExport from "./pages/admin/CsvExport";
 import BotControl from "./pages/admin/BotControl";
 import BotLogs from "./pages/admin/BotLogs";
+import ScheduledRestarts from "./pages/admin/ScheduledRestarts";
+import HealthAlerts from "./pages/admin/HealthAlerts";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -69,6 +71,8 @@ function Router() {
       <Route path={"/admin/csv-export"} component={CsvExport} />
       <Route path={"/admin/bot-control"} component={BotControl} />
       <Route path={"/admin/bot-logs"} component={BotLogs} />
+      <Route path={"/admin/scheduled-restarts"} component={ScheduledRestarts} />
+      <Route path={"/admin/health-alerts"} component={HealthAlerts} />
 
       <Route path={"/admin/logs"} component={ServerLogs} />
       <Route path={"/404"} component={NotFound} />

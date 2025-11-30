@@ -359,9 +359,9 @@ Implement automatic daily bot restarts at specific time
 - [x] Create TRPC endpoints for schedule management
 - [x] Implement cron-based restart scheduler
 - [x] Add restart_history database table
-- [ ] Build admin UI for configuring restart schedule
-- [ ] Add enable/disable toggle in UI
-- [ ] Display restart history in UI
+- [x] Build admin UI for configuring restart schedule
+- [x] Add enable/disable toggle in UI
+- [x] Display restart history in UI
 - [ ] Test scheduled restarts end-to-end
 
 ### Implementation Notes
@@ -380,12 +380,12 @@ Set up Discord notifications when bot goes offline or encounters errors
 ### Tasks
 - [x] Create health_alerts database table
 - [x] Create alert_history database table
-- [ ] Implement bot health monitoring system
-- [ ] Add Discord notification for offline events
-- [ ] Add Discord notification for critical errors
-- [ ] Create TRPC endpoints for alert configuration
-- [ ] Build admin UI for alert settings
-- [ ] Add alert history viewer
+- [x] Implement bot health monitoring system
+- [x] Add Discord notification for offline events
+- [x] Add Discord notification for critical errors
+- [x] Create TRPC endpoints for alert configuration
+- [x] Build admin UI for alert settings
+- [x] Add alert history viewer
 - [ ] Test health alerts
 
 ### Implementation Notes
