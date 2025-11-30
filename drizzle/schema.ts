@@ -197,6 +197,30 @@ export type PlayerAlias = typeof playerAliases.$inferSelect;
 export type InsertPlayerAlias = typeof playerAliases.$inferInsert;
 
 /**
+ * Upgrade Log table - tracks all player badge and attribute upgrades
+ */
+export const upgradeLog = mysqlTable("upgrade_log", {
+  id: int("id").autoincrement().primaryKey(),
+  playerName: varchar("playerName", { length: 255 }).notNull(), // Player name
+  userName: varchar("userName", { length: 255 }).notNull(), // Discord username who owns the player
+  date: varchar("date", { length: 20 }).notNull(), // Date of upgrade (MM/DD/YYYY)
+  sourceType: varchar("sourceType", { length: 50 }).notNull(), // Voting, Welcome, Game, Rookie, OG, etc.
+  sourceDetail: text("sourceDetail"), // Additional context (e.g., "Game 5 badge", "Welcomes upgrades")
+  upgradeType: mysqlEnum("upgradeType", ["Badge", "Attribute"]).notNull(),
+  badgeOrAttribute: varchar("badgeOrAttribute", { length: 255 }).notNull(), // Name of badge or attribute
+  fromValue: varchar("fromValue", { length: 50 }), // Starting value (None, Bronze, Silver, Gold, or numeric)
+  toValue: varchar("toValue", { length: 50 }).notNull(), // Ending value
+  notes: text("notes"), // Admin notes about this upgrade
+  flagged: int("flagged").default(0).notNull(), // 1 = flagged for review, 0 = normal
+  flagReason: text("flagReason"), // Reason for flagging
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type UpgradeLog = typeof upgradeLog.$inferSelect;
+export type InsertUpgradeLog = typeof upgradeLog.$inferInsert;
+
+/**
  * Failed Player Searches table - logs unsuccessful player name searches for auto-learning
  */
 export const failedSearches = mysqlTable("failed_searches", {

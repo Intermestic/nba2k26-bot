@@ -36,6 +36,7 @@ import ScheduledRestarts from "./pages/admin/ScheduledRestarts";
 import HealthAlerts from "./pages/admin/HealthAlerts";
 import BotActivity from "./pages/admin/BotActivity";
 import TradeLog from "./pages/admin/TradeLog";
+import UpgradeLog from "./pages/admin/UpgradeLog";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -72,6 +73,7 @@ function Router() {
       <Route path={"/admin/scheduled-restarts"} component={ScheduledRestarts} />
       <Route path={"/admin/health-alerts"} component={HealthAlerts} />
       <Route path={"/admin/bot-activity"} component={BotActivity} />
+      <Route path={"/admin/upgrade-log"} component={UpgradeLog} />
 
       <Route path={"/admin/logs"} component={ServerLogs} />
       <Route path={"/404"} component={NotFound} />

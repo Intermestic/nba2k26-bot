@@ -628,3 +628,17 @@ Make Trade Machine cards automatically change colors to match the selected team'
 - [x] Update border colors to match team themes
 - [x] Test with multiple team combinations (Lakers, Celtics, Warriors, Heat, etc.)
 - [x] Verify colors work well together when two teams are selected
+
+
+## Upgrade Log Visual Interface
+
+### Goal
+Create sortable, filterable upgrade log page with notes and flags for tracking all player badge and attribute upgrades
+
+### Tasks
+- [x] Parse upgrade data from CSV file
+- [x] Create database schema for upgrade log with notes and flags
+- [x] Build admin UI page with sortable table
+- [x] Add filtering by player, user, date, upgrade type
+- [x] Add notes and flags functionality to upgrade records
+- [x] Test the upgrade log page
