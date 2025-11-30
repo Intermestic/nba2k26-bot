@@ -642,3 +642,17 @@ Create sortable, filterable upgrade log page with notes and flags for tracking a
 - [x] Add filtering by player, user, date, upgrade type
 - [x] Add notes and flags functionality to upgrade records
 - [x] Test the upgrade log page
+
+## Player Swap Tracking System (SZN 17)
+
+Track individual player swaps (DNA swaps, player replacements) at player level.
+
+### Tasks
+- [ ] Create playerSwaps database table (player_id, swap_type, swap_date, old_player_name, new_player_name, notes)
+- [ ] Create TRPC router for player swap operations (list, create, update, delete)
+- [ ] Build admin UI page at /admin/player-swaps
+- [ ] Add filtering by player name, swap type, date range
+- [ ] Add search functionality for player names
+- [ ] Import swap data from CSV file
+- [ ] Add notes and flags functionality for swaps
+- [ ] Test swap tracking page with real data

@@ -255,6 +255,14 @@ export default function AdminDashboard() {
       section: "system"
     },
     {
+      title: "Upgrade Log",
+      description: "Track player badge and attribute upgrades with notes and flags",
+      href: "/admin/upgrade-log",
+      icon: <ScrollText className="w-6 h-6" />,
+      color: "bg-amber-500",
+      section: "system"
+    },
+    {
       title: "Validation Rules",
       description: "Configure upgrade validation rules",
       href: "/admin/validation-rules",
@@ -317,6 +325,14 @@ export default function AdminDashboard() {
       icon: <BarChart3 className="w-6 h-6" />,
       color: "bg-cyan-500",
       section: "system"
+    },
+    {
+      title: "Player Swaps",
+      description: "Track DNA swaps and player replacements for Season 17",
+      href: "/admin/player-swaps",
+      icon: <ArrowLeftRight className="w-6 h-6" />,
+      color: "bg-amber-500",
+      section: "team"
     },
 
   ];

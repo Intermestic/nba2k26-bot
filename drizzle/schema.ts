@@ -290,6 +290,31 @@ export type MatchLog = typeof matchLogs.$inferSelect;
 export type InsertMatchLog = typeof matchLogs.$inferInsert;
 
 /**
+ * Player Swaps table - tracks DNA swaps and player replacements for SZN 17
+ */
+export const playerSwaps = mysqlTable("player_swaps", {
+  id: int("id").autoincrement().primaryKey(),
+  playerId: varchar("playerId", { length: 64 }), // Reference to players.id (nullable if old player no longer exists)
+  oldPlayerName: varchar("oldPlayerName", { length: 255 }).notNull(), // Original player name before swap
+  newPlayerName: varchar("newPlayerName", { length: 255 }).notNull(), // New player name after swap
+  team: varchar("team", { length: 100 }), // Team the player was on when swapped
+  swapType: mysqlEnum("swapType", ["dna_swap", "player_replacement", "other"]).notNull(), // Type of swap
+  swapDate: varchar("swapDate", { length: 20 }).notNull(), // Date of swap (MM/DD/YYYY)
+  oldPlayerOvr: int("oldPlayerOvr"), // Overall rating of old player
+  newPlayerOvr: int("newPlayerOvr"), // Overall rating of new player
+  notes: text("notes"), // Admin notes about the swap
+  flagged: int("flagged").default(0).notNull(), // 1 = flagged for review, 0 = normal
+  flagReason: text("flagReason"), // Reason for flagging
+  addedBy: int("addedBy"), // Reference to users.id who added this swap
+  addedByName: varchar("addedByName", { length: 255 }), // Denormalized admin name
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type PlayerSwap = typeof playerSwaps.$inferSelect;
+export type InsertPlayerSwap = typeof playerSwaps.$inferInsert;
+
+/**
  * Team Role Changes table - tracks Discord role additions/removals
  */
 export const teamRoleChanges = mysqlTable("team_role_changes", {
