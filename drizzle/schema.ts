@@ -754,3 +754,99 @@ export const activityHeadToHead = mysqlTable("activity_head_to_head", {
 
 export type ActivityHeadToHead = typeof activityHeadToHead.$inferSelect;
 export type InsertActivityHeadToHead = typeof activityHeadToHead.$inferInsert;
+
+
+/**
+ * Bot Logs Table
+ * Stores Discord bot activity logs including commands, errors, and events
+ */
+export const botLogs = mysqlTable("bot_logs", {
+  id: int("id").autoincrement().primaryKey(),
+  level: mysqlEnum("level", ["info", "warn", "error", "debug"]).notNull().default("info"),
+  eventType: varchar("eventType", { length: 100 }).notNull(), // command, error, discord_event, etc.
+  message: text("message").notNull(),
+  details: text("details"), // JSON string with additional context
+  userId: varchar("userId", { length: 64 }), // Discord user ID if applicable
+  username: varchar("username", { length: 255 }), // Discord username if applicable
+  channelId: varchar("channelId", { length: 64 }), // Discord channel ID if applicable
+  guildId: varchar("guildId", { length: 64 }), // Discord guild ID if applicable
+  commandName: varchar("commandName", { length: 100 }), // Command name if applicable
+  errorStack: text("errorStack"), // Error stack trace if applicable
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type BotLog = typeof botLogs.$inferSelect;
+export type InsertBotLog = typeof botLogs.$inferInsert;
+
+/**
+ * Scheduled Restarts Table
+ * Stores bot restart schedule configuration
+ */
+export const scheduledRestarts = mysqlTable("scheduled_restarts", {
+  id: int("id").autoincrement().primaryKey(),
+  enabled: int("enabled").notNull().default(0), // 0 = disabled, 1 = enabled
+  cronExpression: varchar("cronExpression", { length: 100 }).notNull(), // Cron expression for schedule
+  timezone: varchar("timezone", { length: 100 }).notNull().default("America/New_York"),
+  lastExecuted: timestamp("lastExecuted"),
+  nextExecution: timestamp("nextExecution"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type ScheduledRestart = typeof scheduledRestarts.$inferSelect;
+export type InsertScheduledRestart = typeof scheduledRestarts.$inferInsert;
+
+/**
+ * Restart History Table
+ * Tracks all bot restart events
+ */
+export const restartHistory = mysqlTable("restart_history", {
+  id: int("id").autoincrement().primaryKey(),
+  restartType: mysqlEnum("restartType", ["manual", "scheduled", "automatic"]).notNull(),
+  triggeredBy: varchar("triggeredBy", { length: 255 }), // User or system identifier
+  success: int("success").notNull(), // 0 = failed, 1 = success
+  errorMessage: text("errorMessage"), // Error details if failed
+  uptime: int("uptime"), // Bot uptime in seconds before restart
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type RestartHistory = typeof restartHistory.$inferSelect;
+export type InsertRestartHistory = typeof restartHistory.$inferInsert;
+
+/**
+ * Health Alerts Configuration Table
+ * Stores bot health monitoring and alert settings
+ */
+export const healthAlerts = mysqlTable("health_alerts", {
+  id: int("id").autoincrement().primaryKey(),
+  enabled: int("enabled").notNull().default(1), // 0 = disabled, 1 = enabled
+  alertChannelId: varchar("alertChannelId", { length: 64 }).notNull(), // Discord channel for alerts
+  offlineAlertEnabled: int("offlineAlertEnabled").notNull().default(1),
+  errorAlertEnabled: int("errorAlertEnabled").notNull().default(1),
+  errorThreshold: int("errorThreshold").notNull().default(5), // Number of errors before alert
+  checkIntervalSeconds: int("checkIntervalSeconds").notNull().default(60), // Health check interval
+  lastHealthCheck: timestamp("lastHealthCheck"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type HealthAlert = typeof healthAlerts.$inferSelect;
+export type InsertHealthAlert = typeof healthAlerts.$inferInsert;
+
+/**
+ * Alert History Table
+ * Tracks all health alerts sent
+ */
+export const alertHistory = mysqlTable("alert_history", {
+  id: int("id").autoincrement().primaryKey(),
+  alertType: mysqlEnum("alertType", ["offline", "error", "recovery"]).notNull(),
+  message: text("message").notNull(),
+  details: text("details"), // JSON string with additional context
+  discordMessageId: varchar("discordMessageId", { length: 64 }), // Discord message ID of alert
+  resolved: int("resolved").notNull().default(0), // 0 = active, 1 = resolved
+  resolvedAt: timestamp("resolvedAt"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type AlertHistoryRecord = typeof alertHistory.$inferSelect;
+export type InsertAlertHistory = typeof alertHistory.$inferInsert;

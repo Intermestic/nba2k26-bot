@@ -938,6 +938,17 @@ export async function startDiscordBot(token: string) {
   client.once('clientReady', async () => {
     console.log(`[Discord Bot] Logged in as ${client!.user?.tag}!`);
     
+    // Log bot startup
+    try {
+      const { logDiscordEvent } = await import('./bot-logger.js');
+      await logDiscordEvent('ready', `Bot logged in as ${client!.user?.tag}`, {
+        userId: client!.user?.id,
+        username: client!.user?.tag,
+      });
+    } catch (error) {
+      console.error('[Bot Logger] Failed to log ready event:', error);
+    }
+    
     // Initialize default configurations
     try {
       const { initializeDefaults } = await import('./bot-config-loader.js');
@@ -1181,6 +1192,20 @@ export async function startDiscordBot(token: string) {
     
     // Check for activity records command: !ab-records
     if (message.content.trim().toLowerCase() === '!ab-records') {
+      // Log command
+      try {
+        const { logCommand } = await import('./bot-logger.js');
+        await logCommand(
+          '!ab-records',
+          message.author.id,
+          message.author.tag,
+          message.channelId,
+          message.guildId || '',
+          'Activity records command executed'
+        );
+      } catch (error) {
+        console.error('[Bot Logger] Failed to log command:', error);
+      }
       const commandKey = `ab-records:${message.id}`;
       console.log(`[Activity Records] Instance ${INSTANCE_ID} received command ${message.id}`);
       
@@ -1386,6 +1411,20 @@ export async function startDiscordBot(token: string) {
       
       // Check for team role sync command
       if (message.content.trim().toLowerCase() === '!sync-team-roles') {
+        // Log command
+        try {
+          const { logCommand } = await import('./bot-logger.js');
+          await logCommand(
+            '!sync-team-roles',
+            message.author.id,
+            message.author.tag,
+            message.channelId,
+            message.guildId || '',
+            'Team roles sync command executed'
+          );
+        } catch (error) {
+          console.error('[Bot Logger] Failed to log command:', error);
+        }
         try {
           // Check if command is enabled
           const { isCommandEnabled, getCommand, replaceVariables } = await import('./bot-config-loader.js');

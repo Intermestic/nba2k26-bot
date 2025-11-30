@@ -319,3 +319,80 @@ Create admin UI that allows user to restart Discord bot without assistance
 - [x] Add real-time status updates
 - [x] Test bot restart functionality
 - [x] Add error handling and status notifications
+
+
+## Fix Bot Startup Failure (URGENT)
+
+### Issue
+Bot Control page shows "Failed to start bot: Failed to start bot. Bot process failed to start" error
+
+### Tasks
+- [x] Check bot startup logs for error details
+- [x] Verify Discord bot token is configured correctly
+- [x] Check if bot process script exists and is executable
+- [x] Fix any missing dependencies or configuration
+- [x] Test bot startup through UI
+
+
+## Bot Activity Logs Viewer
+
+### Goal
+Add log viewer showing recent bot commands, errors, and Discord events
+
+### Tasks
+- [x] Create bot_logs database table
+- [x] Implement logging system in Discord bot
+- [x] Create TRPC endpoints for fetching logs
+- [x] Build admin UI page for viewing logs
+- [x] Add filters (date, level, event type)
+- [x] Add search functionality
+- [x] Test log viewer
+
+
+## Scheduled Bot Restarts
+
+### Goal
+Implement automatic daily bot restarts at specific time
+
+### Tasks
+- [x] Add scheduled_restarts database table
+- [x] Create TRPC endpoints for schedule management
+- [x] Implement cron-based restart scheduler
+- [x] Add restart_history database table
+- [ ] Build admin UI for configuring restart schedule
+- [ ] Add enable/disable toggle in UI
+- [ ] Display restart history in UI
+- [ ] Test scheduled restarts end-to-end
+
+### Implementation Notes
+- Backend complete with node-cron integration
+- Supports custom cron expressions and timezones
+- Automatic restart execution with logging
+- Manual test restart endpoint available
+- UI needs to be built at /admin/scheduled-restarts
+
+
+## Bot Health Alerts
+
+### Goal
+Set up Discord notifications when bot goes offline or encounters errors
+
+### Tasks
+- [x] Create health_alerts database table
+- [x] Create alert_history database table
+- [ ] Implement bot health monitoring system
+- [ ] Add Discord notification for offline events
+- [ ] Add Discord notification for critical errors
+- [ ] Create TRPC endpoints for alert configuration
+- [ ] Build admin UI for alert settings
+- [ ] Add alert history viewer
+- [ ] Test health alerts
+
+### Implementation Notes
+- Database schema complete (health_alerts, alert_history)
+- Need to implement:
+  * Health check cron job (check bot status every N seconds)
+  * Discord webhook/channel messaging for alerts
+  * TRPC router for configuration
+  * Admin UI at /admin/health-alerts
+- Should integrate with existing bot_logs table for error tracking

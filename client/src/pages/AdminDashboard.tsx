@@ -21,7 +21,8 @@ import {
   ArrowLeftRight,
   Cloud,
   FileDown,
-  Power
+  Power,
+  ScrollText
 } from "lucide-react";
 
 interface AdminTool {
@@ -273,6 +274,14 @@ export default function AdminDashboard() {
       href: "/admin/bot-control",
       icon: <Power className="w-6 h-6" />,
       color: "bg-red-500",
+      section: "system"
+    },
+    {
+      title: "Bot Activity Logs",
+      description: "View Discord bot commands, errors, and events",
+      href: "/admin/bot-logs",
+      icon: <ScrollText className="w-6 h-6" />,
+      color: "bg-purple-500",
       section: "system"
     },
 

@@ -4,6 +4,7 @@ import { spawn, exec } from "child_process";
 import { promisify } from "util";
 import path from "path";
 import { fileURLToPath } from "url";
+import fs from "fs";
 
 const execAsync = promisify(exec);
 
@@ -92,11 +93,23 @@ export const botControlRouter = router({
     try {
       console.log("[Bot Control] Starting bot process...");
       
+      // Create logs directory if it doesn't exist
+      const logsDir = path.join(projectRoot, "logs");
+      if (!fs.existsSync(logsDir)) {
+        fs.mkdirSync(logsDir, { recursive: true });
+      }
+      
+      // Open log files for stdout and stderr
+      const botLogPath = path.join(logsDir, "bot.log");
+      const botErrorPath = path.join(logsDir, "bot-error.log");
+      const outLog = fs.openSync(botLogPath, "a");
+      const errLog = fs.openSync(botErrorPath, "a");
+      
       // Start bot in detached mode so it survives after this process
       const child = spawn("pnpm", ["run", "start:bot"], {
         cwd: projectRoot,
         detached: true,
-        stdio: "ignore",
+        stdio: ["ignore", outLog, errLog],
         env: {
           ...process.env,
           NODE_ENV: "production",
@@ -105,13 +118,28 @@ export const botControlRouter = router({
 
       // Detach the child process
       child.unref();
+      
+      // Close file descriptors in parent process
+      fs.closeSync(outLog);
+      fs.closeSync(errLog);
 
-      // Wait a bit to verify it started
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Wait for bot to start and check status
+      await new Promise(resolve => setTimeout(resolve, 3000));
       
       const isNowRunning = await isBotRunning();
       if (!isNowRunning) {
-        throw new Error("Bot process failed to start");
+        // Read error log to get failure reason
+        let errorDetails = "No error details available";
+        try {
+          const errorLog = fs.readFileSync(botErrorPath, "utf-8");
+          const lastErrors = errorLog.split("\n").filter(line => line.trim()).slice(-10);
+          if (lastErrors.length > 0) {
+            errorDetails = lastErrors.join("\n");
+          }
+        } catch (e) {
+          // Ignore read errors
+        }
+        throw new Error(`Bot process failed to start. Last errors:\n${errorDetails}`);
       }
 
       const pid = await getBotPid();
@@ -205,10 +233,20 @@ export const botControlRouter = router({
       }
 
       // Start the bot
+      const logsDir = path.join(projectRoot, "logs");
+      if (!fs.existsSync(logsDir)) {
+        fs.mkdirSync(logsDir, { recursive: true });
+      }
+      
+      const botLogPath = path.join(logsDir, "bot.log");
+      const botErrorPath = path.join(logsDir, "bot-error.log");
+      const outLog = fs.openSync(botLogPath, "a");
+      const errLog = fs.openSync(botErrorPath, "a");
+      
       const child = spawn("pnpm", ["run", "start:bot"], {
         cwd: projectRoot,
         detached: true,
-        stdio: "ignore",
+        stdio: ["ignore", outLog, errLog],
         env: {
           ...process.env,
           NODE_ENV: "production",
@@ -216,9 +254,12 @@ export const botControlRouter = router({
       });
 
       child.unref();
+      
+      fs.closeSync(outLog);
+      fs.closeSync(errLog);
 
       // Wait and verify
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise(resolve => setTimeout(resolve, 3000));
       
       const isNowRunning = await isBotRunning();
       if (!isNowRunning) {
