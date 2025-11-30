@@ -396,3 +396,32 @@ Set up Discord notifications when bot goes offline or encounters errors
   * TRPC router for configuration
   * Admin UI at /admin/health-alerts
 - Should integrate with existing bot_logs table for error tracking
+
+
+## Fix Trade Approval Reaction Handler
+
+### Issue
+Bot not generating confirmation message after users react with ⚡ (bolt) emoji on trade messages
+
+### Tasks
+- [x] Investigate messageReactionAdd handler in discord-bot.ts
+- [x] Check if reaction collector is properly set up for trade messages
+- [x] Verify bolt emoji detection logic
+- [x] Fix message generation after trade approval
+- [x] Create trade-approval-handler.ts to process approved trades
+- [x] Update discord-bot.ts to use new handler
+- [ ] Test trade approval workflow end-to-end
+
+
+## Fix Trade Processing Hang Issue
+
+### Issue
+Trade completion messages stuck on "⏳ Processing trade..." indefinitely. Only 1 of 3 trades completed successfully.
+
+### Root Cause
+Story generation API call (https://hofsn-news.manus.space/api/generate-story) was blocking trade completion. When the API was slow or unresponsive, it prevented the success message from being posted.
+
+### Tasks
+- [x] Make story generation API call non-blocking (fire-and-forget)
+- [x] Add 5-second timeout to prevent indefinite waiting
+- [x] Restart Discord bot with fix

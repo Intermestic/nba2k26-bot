@@ -2164,7 +2164,9 @@ export async function startDiscordBot(token: string) {
       }
     } else if (reaction.message.channelId === TRADE_CHANNEL_ID) {
       console.log(`[Discord Bot] ⚡ reaction detected in Trade channel by ${user.tag}`);
-      await handleTradeMessage(message);
+      // Process approved trade instead of asking for confirmation
+      const { handleApprovedTradeProcessing } = await import('./trade-approval-handler');
+      await handleApprovedTradeProcessing(message);
     }
   });
   
