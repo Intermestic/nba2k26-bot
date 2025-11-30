@@ -362,6 +362,7 @@ Implement automatic daily bot restarts at specific time
 - [x] Build admin UI for configuring restart schedule
 - [x] Add enable/disable toggle in UI
 - [x] Display restart history in UI
+- [x] Add manual test restart button
 - [ ] Test scheduled restarts end-to-end
 
 ### Implementation Notes
@@ -381,19 +382,18 @@ Set up Discord notifications when bot goes offline or encounters errors
 - [x] Create health_alerts database table
 - [x] Create alert_history database table
 - [x] Implement bot health monitoring system
-- [x] Add Discord notification for offline events
-- [x] Add Discord notification for critical errors
-- [x] Create TRPC endpoints for alert configuration
-- [x] Build admin UI for alert settings
-- [x] Add alert history viewer
-- [ ] Test health alerts
+- [x] Fix module import errors for bot-standalone.js
+- [x] Implement Discord notification service
+- [x] Add alert configuration UI
+- [ ] Test offline/error/recovery scenarios
+- [ ] Verify alerts are sent to correct Discord channel
 
 ### Implementation Notes
 - Database schema complete (health_alerts, alert_history)
+- Backend router exists at server/routers/healthAlerts.ts
 - Need to implement:
-  * Health check cron job (check bot status every N seconds)
+  * Fix bot-standalone.js module import issues
   * Discord webhook/channel messaging for alerts
-  * TRPC router for configuration
   * Admin UI at /admin/health-alerts
 - Should integrate with existing bot_logs table for error tracking
 
@@ -499,3 +499,27 @@ Implemented file-based cross-process communication:
 - [x] Check how getDiscordClient() is being called
 - [x] Fix status detection to correctly identify online bot
 - [x] Test status display updates correctly
+
+
+## Bot Activity Dashboard
+
+### Goal
+Create visualization page for command usage statistics and performance metrics
+
+### Requirements
+- Command usage statistics (count per command)
+- Error rate visualization
+- Performance metrics (response times)
+- Activity timeline/chart
+- Filter by date range
+- Export statistics to CSV
+
+### Tasks
+- [x] Design dashboard layout with charts
+- [x] Query bot_logs table for statistics
+- [x] Implement command usage chart (bar/pie chart)
+- [x] Implement error rate timeline chart
+- [x] Add date range filters
+- [x] Create statistics summary cards
+- [x] Add CSV export functionality
+- [x] Integrate with admin dashboard navigation

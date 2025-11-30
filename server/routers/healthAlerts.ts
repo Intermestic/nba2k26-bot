@@ -15,9 +15,9 @@ let consecutiveErrors = 0;
  */
 async function getDiscordClient(): Promise<Client | null> {
   try {
-    // Import bot instance
-    const { client } = await import("../../bot/bot-standalone.js");
-    return client;
+    // Import bot instance from discord-bot.ts
+    const { getDiscordClient: getBotClient } = await import("../discord-bot.js");
+    return getBotClient();
   } catch (error) {
     console.error("[Health Alerts] Failed to get Discord client:", error);
     return null;

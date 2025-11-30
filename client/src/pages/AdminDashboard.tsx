@@ -302,6 +302,14 @@ export default function AdminDashboard() {
       color: "bg-pink-500",
       section: "system"
     },
+    {
+      title: "Bot Activity Dashboard",
+      description: "View command usage statistics and performance metrics",
+      href: "/admin/bot-activity",
+      icon: <BarChart3 className="w-6 h-6" />,
+      color: "bg-cyan-500",
+      section: "system"
+    },
 
   ];
 
