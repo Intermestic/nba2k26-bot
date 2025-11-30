@@ -35,6 +35,7 @@ import BotLogs from "./pages/admin/BotLogs";
 import ScheduledRestarts from "./pages/admin/ScheduledRestarts";
 import HealthAlerts from "./pages/admin/HealthAlerts";
 import BotActivity from "./pages/admin/BotActivity";
+import TradeLog from "./pages/admin/TradeLog";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -48,6 +49,7 @@ function Router() {
       <Route path={"/admin/upgrade-dashboard"} component={UpgradeHistoryDashboard} />
       <Route path={"/admin/validation-rules"} component={ValidationRules} />
       <Route path={"/admin/trades"} component={TradeManagement} />
+      <Route path={"/admin/trade-log"} component={TradeLog} />
       <Route path={"/trade-machine"} component={TradeMachine} />
       <Route path={"/admin/roster"} component={Admin} />
       <Route path={"/admin/transactions"} component={Transactions} />

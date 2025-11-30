@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Loader2, ArrowLeftRight, Send, ArrowLeft } from "lucide-react";
+import { getTeamLogo } from "@/lib/teamLogos";
 import {
   Dialog,
   DialogContent,
@@ -173,7 +174,20 @@ export default function TradeMachine() {
     <div className="min-h-screen bg-background">
       <div className="container py-8">
         <div className="mb-8">
-          <div className="flex items-center gap-4 mb-4">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-4">
+              <img 
+                src="/hof-logo.png" 
+                alt="Hall of Fame Basketball Association" 
+                className="h-16 w-auto object-contain drop-shadow-lg"
+              />
+              <div>
+                <h1 className="text-4xl font-bold mb-1">Trade Machine</h1>
+                <p className="text-muted-foreground">
+                  Build a trade between two teams, verify badge counts, and post to Discord
+                </p>
+              </div>
+            </div>
             <Button
               variant="outline"
               size="sm"
@@ -184,17 +198,22 @@ export default function TradeMachine() {
               Back to Home
             </Button>
           </div>
-          <h1 className="text-4xl font-bold mb-2">Trade Machine</h1>
-          <p className="text-muted-foreground">
-            Build a trade between two teams, verify badge counts, and post to Discord
-          </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           {/* Team 1 */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Team 1</CardTitle>
+          <Card className="border-2 hover:border-primary/50 transition-colors">
+            <CardHeader className="bg-gradient-to-r from-primary/10 to-transparent">
+              <div className="flex items-center gap-3">
+                {team1 && (
+                  <img 
+                    src={getTeamLogo(team1)} 
+                    alt={team1}
+                    className="h-10 w-10 object-contain"
+                  />
+                )}
+                <CardTitle className="text-xl">{team1 || "Team 1"}</CardTitle>
+              </div>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
@@ -224,14 +243,22 @@ export default function TradeMachine() {
                   <Label>Select Players</Label>
                   <div className="max-h-96 overflow-y-auto space-y-2 border rounded-md p-3">
                     {team1Roster.map((player) => (
-                      <div key={player.id} className="space-y-2 pb-2 border-b last:border-b-0">
-                        <div className="flex items-center space-x-2">
+                      <div key={player.id} className="space-y-2 pb-2 border-b last:border-b-0 hover:bg-muted/30 rounded-md p-2 transition-colors">
+                        <div className="flex items-center space-x-3">
                           <Checkbox
                             checked={team1SelectedPlayers.has(player.id)}
                             onCheckedChange={() => togglePlayer(player.id, 1)}
                           />
-                          <label className="text-sm font-medium flex-1">
-                            {player.name} - {player.overall} OVR
+                          {player.photoUrl && (
+                            <img 
+                              src={player.photoUrl} 
+                              alt={player.name}
+                              className="h-10 w-10 rounded-full object-cover border-2 border-primary/20"
+                            />
+                          )}
+                          <label className="text-sm font-medium flex-1 cursor-pointer">
+                            <div className="font-semibold">{player.name}</div>
+                            <div className="text-xs text-muted-foreground">{player.overall} OVR</div>
                           </label>
                         </div>
                         {team1SelectedPlayers.has(player.id) && (
@@ -269,9 +296,18 @@ export default function TradeMachine() {
           </Card>
 
           {/* Team 2 */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Team 2</CardTitle>
+          <Card className="border-2 hover:border-primary/50 transition-colors">
+            <CardHeader className="bg-gradient-to-r from-primary/10 to-transparent">
+              <div className="flex items-center gap-3">
+                {team2 && (
+                  <img 
+                    src={getTeamLogo(team2)} 
+                    alt={team2}
+                    className="h-10 w-10 object-contain"
+                  />
+                )}
+                <CardTitle className="text-xl">{team2 || "Team 2"}</CardTitle>
+              </div>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
@@ -301,14 +337,22 @@ export default function TradeMachine() {
                   <Label>Select Players</Label>
                   <div className="max-h-96 overflow-y-auto space-y-2 border rounded-md p-3">
                     {team2Roster.map((player) => (
-                      <div key={player.id} className="space-y-2 pb-2 border-b last:border-b-0">
-                        <div className="flex items-center space-x-2">
+                      <div key={player.id} className="space-y-2 pb-2 border-b last:border-b-0 hover:bg-muted/30 rounded-md p-2 transition-colors">
+                        <div className="flex items-center space-x-3">
                           <Checkbox
                             checked={team2SelectedPlayers.has(player.id)}
                             onCheckedChange={() => togglePlayer(player.id, 2)}
                           />
-                          <label className="text-sm font-medium flex-1">
-                            {player.name} - {player.overall} OVR
+                          {player.photoUrl && (
+                            <img 
+                              src={player.photoUrl} 
+                              alt={player.name}
+                              className="h-10 w-10 rounded-full object-cover border-2 border-primary/20"
+                            />
+                          )}
+                          <label className="text-sm font-medium flex-1 cursor-pointer">
+                            <div className="font-semibold">{player.name}</div>
+                            <div className="text-xs text-muted-foreground">{player.overall} OVR</div>
                           </label>
                         </div>
                         {team2SelectedPlayers.has(player.id) && (

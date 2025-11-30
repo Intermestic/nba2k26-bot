@@ -20,6 +20,7 @@ import { dashboardRouter } from "./routers/dashboard";
 import { validationRulesRouter } from "./routers/validationRules";
 import { tradesRouter } from "./routers/trades";
 import { tradeMachineRouter } from "./routers/tradeMachine";
+import { tradeLogRouter } from "./routers/tradeLog";
 import { csvExportRouter } from "./routes/csvExport";
 import { botControlRouter } from "./routers/botControl";
 import { botLogsRouter } from "./routers/botLogs";
@@ -94,6 +95,9 @@ export const appRouter = router({
   
   // Trade machine for building and posting trades
   tradeMachine: tradeMachineRouter,
+  
+  // Trade log for admin review and approval
+  tradeLog: tradeLogRouter,
   
   // CSV export with customizable columns
   csvExport: csvExportRouter,

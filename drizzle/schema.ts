@@ -850,3 +850,24 @@ export const alertHistory = mysqlTable("alert_history", {
 
 export type AlertHistoryRecord = typeof alertHistory.$inferSelect;
 export type InsertAlertHistory = typeof alertHistory.$inferInsert;
+
+/**
+ * Trade Log table - stores all trades submitted via Trade Machine for admin review
+ */
+export const tradeLogs = mysqlTable("trade_logs", {
+  id: int("id").autoincrement().primaryKey(),
+  team1: varchar("team1", { length: 100 }).notNull(), // First team in trade
+  team2: varchar("team2", { length: 100 }).notNull(), // Second team in trade
+  team1Players: text("team1Players").notNull(), // JSON array of player objects from team1
+  team2Players: text("team2Players").notNull(), // JSON array of player objects from team2
+  playerBadges: text("playerBadges").notNull(), // JSON object mapping player IDs to badge counts
+  status: mysqlEnum("status", ["pending", "approved", "declined"]).default("pending").notNull(),
+  submittedBy: varchar("submittedBy", { length: 255 }), // Discord username or user info
+  reviewedBy: int("reviewedBy"), // Reference to users.id who reviewed
+  reviewedAt: timestamp("reviewedAt"), // When trade was approved/declined
+  notes: text("notes"), // Admin notes about the trade
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type TradeLog = typeof tradeLogs.$inferSelect;
+export type InsertTradeLog = typeof tradeLogs.$inferInsert;

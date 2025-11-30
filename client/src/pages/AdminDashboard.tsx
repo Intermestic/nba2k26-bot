@@ -126,6 +126,14 @@ export default function AdminDashboard() {
       color: "bg-emerald-500",
       section: "team"
     },
+    {
+      title: "Trade Log Review",
+      description: "Review and approve trades from Trade Machine",
+      href: "/admin/trade-log",
+      icon: <CheckCircle className="w-6 h-6" />,
+      color: "bg-teal-600",
+      section: "team"
+    },
     
     // Free Agency Section
     {

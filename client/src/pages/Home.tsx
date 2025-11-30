@@ -270,10 +270,11 @@ export default function Home() {
         <div className="container mx-auto px-4 py-6">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div className="flex items-center gap-4">
-              <img src="/hof-logo.png" alt="Hall of Fame Basketball Association" className="h-16 md:h-20 w-auto" />
+              <img src="/hof-logo.png" alt="Hall of Fame Basketball Association" className="h-16 w-auto drop-shadow-lg" />
               <div>
-                <h1 className="text-3xl md:text-4xl font-bold text-white">Hall of Fame Basketball Association - SZN 17 Roster</h1>
-                <p className="text-slate-400 mt-1">Complete player database with ratings and photos</p>
+                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white">Hall of Fame Basketball Association</h1>
+                <p className="text-xl md:text-2xl font-semibold text-yellow-400 mt-1">SZN 17 Roster</p>
+                <p className="text-slate-400 mt-2">Complete player database with ratings and photos</p>
               </div>
             </div>
             <div className="flex gap-2">

@@ -16,13 +16,23 @@ export default function Landing() {
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
-            <div>
-              <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-                {APP_TITLE}
-              </h1>
-              <p className="text-muted-foreground">
-                NBA 2K26 league management platform - Browse teams, players, and build trades
-              </p>
+            <div className="flex items-center gap-6">
+              <img 
+                src="/hof-logo.png" 
+                alt="Hall of Fame Basketball Association" 
+                className="h-16 w-auto object-contain drop-shadow-lg"
+              />
+              <div>
+                <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+                  Hall of Fame Basketball Association
+                </h1>
+                <p className="text-xl font-semibold text-primary mb-1">
+                  SZN 17 Player Database
+                </p>
+                <p className="text-muted-foreground">
+                  Browse teams, players, and build trades
+                </p>
+              </div>
             </div>
             <Button
               onClick={() => navigate("/trade-machine")}
@@ -129,7 +139,7 @@ export default function Landing() {
 
         {/* Footer */}
         <div className="text-center mt-8 text-sm text-muted-foreground">
-          <p>Powered by NBA 2K26 Player Database • Built with React & tRPC</p>
+          <p>Hall of Fame Basketball Association SZN 17 • Powered by NBA 2K26 Player Database</p>
         </div>
       </div>
     </div>

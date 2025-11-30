@@ -2,7 +2,7 @@ import { z } from "zod";
 import { eq, and, inArray } from "drizzle-orm";
 import { publicProcedure, router } from "../_core/trpc";
 import { getDb } from "../db";
-import { players, teamAssignments } from "../../drizzle/schema";
+import { players, teamAssignments, tradeLogs } from "../../drizzle/schema";
 import { VALID_TEAMS } from "../team-validator";
 import axios from "axios";
 import * as cheerio from "cheerio";
@@ -226,6 +226,30 @@ export const tradeMachineRouter = router({
         await channel.send(message);
 
         console.log(`[Trade Machine] Posted trade to Discord: ${input.team1Name} ↔ ${input.team2Name}`);
+
+        // Save trade to database for admin review
+        const db = await getDb();
+        if (db) {
+          const playerBadgesMap: Record<string, number> = {};
+          input.team1Players.forEach(p => {
+            playerBadgesMap[p.name] = p.badges;
+          });
+          input.team2Players.forEach(p => {
+            playerBadgesMap[p.name] = p.badges;
+          });
+
+          await db.insert(tradeLogs).values({
+            team1: input.team1Name,
+            team2: input.team2Name,
+            team1Players: JSON.stringify(input.team1Players),
+            team2Players: JSON.stringify(input.team2Players),
+            playerBadges: JSON.stringify(playerBadgesMap),
+            status: "pending",
+            submittedBy: "Trade Machine",
+          });
+
+          console.log(`[Trade Machine] Saved trade to database for review`);
+        }
 
         return {
           success: true,

@@ -523,3 +523,77 @@ Create visualization page for command usage statistics and performance metrics
 - [x] Create statistics summary cards
 - [x] Add CSV export functionality
 - [x] Integrate with admin dashboard navigation
+
+## Configure Scheduled Bot Restarts
+
+Set up automatic daily bot restarts at 3 AM ET for maintaining bot stability and clearing memory.
+
+### Tasks
+- [x] Configure scheduled restart in database (3 AM ET daily)
+- [x] Verify cron job is active
+- [x] Test restart configuration
+
+
+## Update Player 2KRatings URLs
+
+Update 2KRatings URLs for 13 players with correct links.
+
+### Tasks
+- [x] Update Cody Williams URL to https://www.2kratings.com/cody-williams
+- [x] Update Dru Smith URL to https://www.2kratings.com/dru-smith
+- [x] Update Grant Williams URL to https://www.2kratings.com/grant-williams
+- [x] Update Jamal Shead URL to https://www.2kratings.com/jamal-shead
+- [x] Update Javonte Green URL to https://www.2kratings.com/javonte-green
+- [x] Update Jordan Clarkson URL to https://www.2kratings.com/jordan-clarkson
+- [x] Update Kyle Lowry URL to https://www.2kratings.com/kyle-lowry
+- [x] Update Moses Moody URL to https://www.2kratings.com/moses-moody
+- [x] Update Pat Spencer URL to https://www.2kratings.com/pat-spencer
+- [x] Update Patrick Williams URL to https://www.2kratings.com/patrick-williams
+- [x] Update Tre Mann URL to https://www.2kratings.com/tre-mann
+- [x] Update Tyler Smith URL to https://www.2kratings.com/tyler-smith
+- [x] Update Vince Williams Jr. URL to https://www.2kratings.com/vince-williams-jr
+
+
+## Landing Page Branding Update
+
+Update landing page with Hall of Fame Basketball League branding.
+
+### Tasks
+- [x] Update page title to "Hall of Fame Basketball League SZN 17 Player Database"
+- [x] Add HoF league logo to landing page header
+- [x] Update subtitle/description with league branding
+- [x] Ensure responsive design with logo and branding
+
+
+## Logo Size Standardization
+
+Standardize logo size across all pages to h-16 for consistent header appearance.
+
+### Tasks
+- [x] Update Landing page logo to h-16
+- [x] Verify Home page logo is h-16
+- [x] Verify Trade Machine logo is h-16
+- [x] Verify all other pages use h-16 logo
+
+## Trade Machine UI Enhancements
+
+Enhance Trade Machine page with team logos and better visual styling.
+
+### Tasks
+- [x] Add team logos to player cards in trade machine
+- [x] Improve overall styling and layout
+- [x] Add visual polish (colors, spacing, shadows)
+- [x] Test responsive design
+
+## Trade Log System
+
+Create database-backed trade log system with admin approval workflow for badge count updates.
+
+### Tasks
+- [x] Create trade_log database table (stores all trades with badge counts)
+- [x] Update Trade Machine to save all trades to database
+- [x] Create admin UI page to review trade logs
+- [x] Add approve/decline functionality for individual trades
+- [x] Implement batch approve functionality
+- [x] Update player badge counts when trades are approved (backend ready)
+- [x] Test complete workflow
