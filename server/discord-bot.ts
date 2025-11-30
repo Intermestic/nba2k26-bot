@@ -8,6 +8,8 @@ import { eq, sql, and } from 'drizzle-orm';
 import { extract } from 'fuzzball';
 import { handleTradeMessage } from './trade-handler';
 import { getConfig } from './bot-config-loader.js';
+import fs from 'fs';
+import path from 'path';
 
 const FA_CHANNEL_ID = '1095812920056762510';
 const TRADE_CHANNEL_ID = '1087524540634116116';
@@ -937,6 +939,20 @@ export async function startDiscordBot(token: string) {
   
   client.once('clientReady', async () => {
     console.log(`[Discord Bot] Logged in as ${client!.user?.tag}!`);
+    
+    // Write bot status to file for cross-process communication
+    try {
+      const statusFile = path.join(process.cwd(), 'bot-status.json');
+      await fs.promises.writeFile(statusFile, JSON.stringify({
+        online: true,
+        username: client!.user?.tag || null,
+        userId: client!.user?.id || null,
+        readyAt: new Date().toISOString(),
+      }, null, 2));
+      console.log('[Discord Bot] Status file updated');
+    } catch (error) {
+      console.error('[Discord Bot] Failed to write status file:', error);
+    }
     
     // Log bot startup
     try {

@@ -478,3 +478,24 @@ Add filter options to Team Management page to easily identify and update players
 - [x] Add "Missing 2kratings Links" filter option to show all players without 2kratings links
 - [x] Update UI to display active filters clearly
 - [x] Test both filters with real data
+
+
+## Fix Bot Status Detection Showing Offline
+
+### Issue
+Bot Control page shows "Offline" status even though Discord bot is online and responding to commands in Discord
+
+### Root Cause
+Bot runs in separate standalone process. Web server couldn't access Discord client directly (cross-process issue).
+
+### Solution
+Implemented file-based cross-process communication:
+- Bot writes status to bot-status.json when connected
+- Web server reads this file to display accurate status
+- Status combines process running + Discord client ready state
+
+### Tasks
+- [x] Investigate bot status detection logic in botControl router
+- [x] Check how getDiscordClient() is being called
+- [x] Fix status detection to correctly identify online bot
+- [x] Test status display updates correctly

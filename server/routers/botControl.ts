@@ -59,9 +59,18 @@ async function getBotUptime(): Promise<number | null> {
 }
 
 // Get bot username from Discord client
+// Note: This function reads from bot-status.json file
 async function getBotUsername(): Promise<string | null> {
-  // This would require accessing the Discord client instance
-  // For now, return null - can be enhanced later
+  try {
+    const statusFile = path.join(projectRoot, 'bot-status.json');
+    if (fs.existsSync(statusFile)) {
+      const statusData = fs.readFileSync(statusFile, 'utf-8');
+      const status = JSON.parse(statusData);
+      return status.username || null;
+    }
+  } catch (error) {
+    console.error('[Bot Control] Failed to read bot username:', error);
+  }
   return null;
 }
 
@@ -71,13 +80,32 @@ export const botControlRouter = router({
     const isRunning = await isBotRunning();
     const pid = await getBotPid();
     const uptime = await getBotUptime();
-    const username = await getBotUsername();
-
+    
+    // Read Discord client status from file (cross-process communication)
+    let discordStatus = {
+      online: false,
+      username: null as string | null,
+    };
+    
+    try {
+      const statusFile = path.join(projectRoot, 'bot-status.json');
+      if (fs.existsSync(statusFile)) {
+        const statusData = fs.readFileSync(statusFile, 'utf-8');
+        const status = JSON.parse(statusData);
+        discordStatus = {
+          online: status.online || false,
+          username: status.username || null,
+        };
+      }
+    } catch (error) {
+      console.error('[Bot Control] Failed to read bot status file:', error);
+    }
+    
     return {
-      isOnline: isRunning,
+      isOnline: isRunning && discordStatus.online,
       processId: pid,
       uptime: uptime,
-      botUsername: username,
+      botUsername: discordStatus.username,
       lastStarted: botProcess.startTime?.toISOString() || null,
     };
   }),
