@@ -33,6 +33,7 @@ import ValidationRules from "./pages/admin/ValidationRules";
 import TradeManagement from "./pages/TradeManagement";
 import TradeMachine from "./pages/TradeMachine";
 import CsvExport from "./pages/admin/CsvExport";
+import BotControl from "./pages/admin/BotControl";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -65,6 +66,7 @@ function Router() {
       <Route path={"/admin/reaction-roles"} component={ReactionRoles} />
       <Route path={"/admin/analytics"} component={Analytics} />
       <Route path={"/admin/csv-export"} component={CsvExport} />
+      <Route path={"/admin/bot-control"} component={BotControl} />
 
       <Route path={"/admin/logs"} component={ServerLogs} />
       <Route path={"/404"} component={NotFound} />

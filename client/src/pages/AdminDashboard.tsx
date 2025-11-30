@@ -20,7 +20,8 @@ import {
   Zap,
   ArrowLeftRight,
   Cloud,
-  FileDown
+  FileDown,
+  Power
 } from "lucide-react";
 
 interface AdminTool {
@@ -264,6 +265,14 @@ export default function AdminDashboard() {
       href: "/admin/csv-export",
       icon: <FileDown className="w-6 h-6" />,
       color: "bg-green-500",
+      section: "system"
+    },
+    {
+      title: "Bot Control",
+      description: "Start, stop, and restart the Discord bot",
+      href: "/admin/bot-control",
+      icon: <Power className="w-6 h-6" />,
+      color: "bg-red-500",
       section: "system"
     },
 

@@ -303,3 +303,19 @@ Add usage examples to bot_commands table and display them in !help command
 - [x] Populate example data for all 10 commands
 - [x] Update !help command to display examples
 - [x] Test !help command shows examples correctly
+
+
+## Self-Service Bot Restart Feature
+
+### Goal
+Create admin UI that allows user to restart Discord bot without assistance
+
+### Tasks
+- [x] Analyze current bot process management setup
+- [x] Create Bot Control admin page with status display
+- [x] Add bot status check endpoint (online/offline, uptime)
+- [x] Implement bot restart endpoint with process management
+- [x] Add start/stop/restart buttons to UI
+- [x] Add real-time status updates
+- [x] Test bot restart functionality
+- [x] Add error handling and status notifications
