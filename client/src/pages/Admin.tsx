@@ -18,6 +18,7 @@ interface Player {
   overall: number;
   team?: string | null;
   photoUrl?: string | null;
+  playerPageUrl?: string | null;
 }
 
 export default function Admin() {
@@ -25,6 +26,8 @@ export default function Admin() {
   const [, setLocation] = useLocation();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTeam, setSelectedTeam] = useState<string>("all");
+  const [filterMissingPhotos, setFilterMissingPhotos] = useState(false);
+  const [filterMissing2kRatings, setFilterMissing2kRatings] = useState(false);
   const [showAddPlayer, setShowAddPlayer] = useState(false);
   const [editingPlayer, setEditingPlayer] = useState<Player | null>(null);
   const [playerForm, setPlayerForm] = useState({
@@ -67,10 +70,12 @@ export default function Admin() {
       .filter(p => {
         const matchesSearch = p.name.toLowerCase().includes(searchTerm.toLowerCase());
         const matchesTeam = selectedTeam === "all" || p.team === selectedTeam;
-        return matchesSearch && matchesTeam;
+        const matchesMissingPhoto = !filterMissingPhotos || !p.photoUrl || p.photoUrl.trim() === "";
+        const matchesMissing2kRatings = !filterMissing2kRatings || !p.playerPageUrl || p.playerPageUrl.trim() === "";
+        return matchesSearch && matchesTeam && matchesMissingPhoto && matchesMissing2kRatings;
       })
       .sort((a, b) => a.name.localeCompare(b.name));
-  }, [players, searchTerm, selectedTeam]);
+  }, [players, searchTerm, selectedTeam, filterMissingPhotos, filterMissing2kRatings]);
 
   // Mutation to update player team
   const utils = trpc.useUtils();
@@ -261,30 +266,65 @@ export default function Admin() {
 
       <div className="container mx-auto px-4 py-8">
         {/* Filters */}
-        <div className="mb-6 flex flex-col sm:flex-row gap-4">
-          <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-            <Input
-              placeholder="Search players..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 bg-slate-800 border-slate-700 text-white placeholder:text-slate-400"
-            />
+        <div className="mb-6 space-y-4">
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="relative flex-1 max-w-md">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <Input
+                placeholder="Search players..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 bg-slate-800 border-slate-700 text-white placeholder:text-slate-400"
+              />
+            </div>
+            <div className="w-full sm:w-[250px]">
+              <Select value={selectedTeam} onValueChange={setSelectedTeam}>
+                <SelectTrigger className="bg-slate-800 border-slate-700 text-white">
+                  <SelectValue placeholder="Filter by team" />
+                </SelectTrigger>
+                <SelectContent className="bg-slate-800 border-slate-700 max-h-[300px]">
+                  <SelectItem value="all">All Teams</SelectItem>
+                  {teams.map((team) => (
+                    <SelectItem key={team} value={team as string}>
+                      {team}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
-          <div className="w-full sm:w-[250px]">
-            <Select value={selectedTeam} onValueChange={setSelectedTeam}>
-              <SelectTrigger className="bg-slate-800 border-slate-700 text-white">
-                <SelectValue placeholder="Filter by team" />
-              </SelectTrigger>
-              <SelectContent className="bg-slate-800 border-slate-700 max-h-[300px]">
-                <SelectItem value="all">All Teams</SelectItem>
-                {teams.map((team) => (
-                  <SelectItem key={team} value={team as string}>
-                    {team}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          
+          {/* Data Quality Filters */}
+          <div className="flex flex-wrap gap-2">
+            <Button
+              variant={filterMissingPhotos ? "default" : "outline"}
+              size="sm"
+              onClick={() => setFilterMissingPhotos(!filterMissingPhotos)}
+              className={filterMissingPhotos ? "bg-blue-600 hover:bg-blue-700" : "bg-slate-800 border-slate-700 hover:bg-slate-700"}
+            >
+              Missing Photos
+            </Button>
+            <Button
+              variant={filterMissing2kRatings ? "default" : "outline"}
+              size="sm"
+              onClick={() => setFilterMissing2kRatings(!filterMissing2kRatings)}
+              className={filterMissing2kRatings ? "bg-blue-600 hover:bg-blue-700" : "bg-slate-800 border-slate-700 hover:bg-slate-700"}
+            >
+              Missing 2KRatings Links
+            </Button>
+            {(filterMissingPhotos || filterMissing2kRatings) && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  setFilterMissingPhotos(false);
+                  setFilterMissing2kRatings(false);
+                }}
+                className="text-slate-400 hover:text-white"
+              >
+                Clear Filters
+              </Button>
+            )}
           </div>
         </div>
 

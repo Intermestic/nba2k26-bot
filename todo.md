@@ -466,3 +466,15 @@ Consolidate redundant FA monitoring admin pages into single comprehensive dashbo
 - [x] Implement coin monitoring and discrepancy fixes
 - [x] Remove redundant FA pages (4 pages)
 - [x] Update admin navigation
+
+
+## Team Management Filter Enhancements
+
+### Goal
+Add filter options to Team Management page to easily identify and update players with missing data
+
+### Tasks
+- [x] Add "Missing Photos" filter option to show all players without photo URLs
+- [x] Add "Missing 2kratings Links" filter option to show all players without 2kratings links
+- [x] Update UI to display active filters clearly
+- [x] Test both filters with real data
