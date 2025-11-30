@@ -1,0 +1,22 @@
+{
+  "query": "SELECT * FROM health_alerts LIMIT 1",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT * FROM health_alerts LIMIT 1",
+  "rows": [
+    {
+      "id": "3",
+      "enabled": "1",
+      "alertChannelId": "1444709506499088467",
+      "offlineAlertEnabled": "1",
+      "errorAlertEnabled": "1",
+      "errorThreshold": "5",
+      "checkIntervalSeconds": "60",
+      "lastHealthCheck": "NULL",
+      "createdAt": "2025-11-30 15:21:27",
+      "updatedAt": "2025-11-30 15:21:27"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tenabled\talertChannelId\tofflineAlertEnabled\terrorAlertEnabled\terrorThreshold\tcheckIntervalSeconds\tlastHealthCheck\tcreatedAt\tupdatedAt\n3\t1\t1444709506499088467\t1\t1\t5\t60\tNULL\t2025-11-30 15:21:27\t2025-11-30 15:21:27\n",
+  "stderr": "",
+  "execution_time_ms": 56
+}

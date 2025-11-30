@@ -10,15 +10,12 @@ import Admin from "./pages/Admin";
 import Transactions from "./pages/Transactions";
 import History from "./pages/History";
 
-import CoinDashboard from "./pages/CoinDashboard";
 import CapCompliance from "./pages/CapCompliance";
-import FAHistory from "./pages/FAHistory";
 import PlayerAliases from "./pages/admin/PlayerAliases";
 import TeamAssignments from "./pages/admin/TeamAssignments";
 import BotManagement from "./pages/admin/BotManagement";
 import MatchLogs from "./pages/MatchLogs";
-import FAWindowSummary from "./pages/FAWindowSummary";
-import FAMonitor from "./pages/FAMonitor";
+import FAManagement from "./pages/admin/FAManagement";
 import CustomCommands from "./pages/CustomCommands";
 import WelcomeGoodbye from "./pages/WelcomeGoodbye";
 import ReactionRoles from "./pages/ReactionRoles";
@@ -55,15 +52,13 @@ function Router() {
       <Route path={"/admin/transactions"} component={Transactions} />
       <Route path={"/admin/history"} component={History} />
 
-      <Route path={"/admin/coins"} component={CoinDashboard} />
       <Route path={"/admin/cap-compliance"} component={CapCompliance} />
-      <Route path={"/admin/fa-history"} component={FAHistory} />
+      <Route path={"/admin/fa-management"} component={FAManagement} />
       <Route path={"/admin/player-aliases"} component={PlayerAliases} />
       <Route path={"/admin/teams"} component={TeamAssignments} />
       <Route path={"/admin/bot-management"} component={BotManagement} />
       <Route path={"/admin/match-logs"} component={MatchLogs} />
-      <Route path={"/admin/fa-summary"} component={FAWindowSummary} />
-      <Route path={"/admin/fa-monitor"} component={FAMonitor} />
+
       <Route path={"/admin/custom-commands"} component={CustomCommands} />
       <Route path={"/admin/welcome-goodbye"} component={WelcomeGoodbye} />
       <Route path={"/admin/reaction-roles"} component={ReactionRoles} />

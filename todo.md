@@ -425,3 +425,44 @@ Story generation API call (https://hofsn-news.manus.space/api/generate-story) wa
 - [x] Make story generation API call non-blocking (fire-and-forget)
 - [x] Add 5-second timeout to prevent indefinite waiting
 - [x] Restart Discord bot with fix
+
+## Discord Bot Health Alerts and Scheduled Restarts
+
+### Requirements
+- Enable health alerts with Discord channel: 1444709506499088467
+- Schedule daily restart at 3 AM Eastern Time
+
+### Tasks
+- [x] Configure health alerts with Discord channel
+- [x] Set up daily restart schedule at 3 AM ET
+- [x] Test health alert notifications
+- [x] Verify scheduled restart triggers correctly
+
+
+## FA Admin Consolidation
+
+Consolidate redundant FA monitoring admin pages into single comprehensive dashboard.
+
+### Current FA Pages (Redundant)
+- /admin/coins - CoinDashboard
+- /admin/fa-history - FAHistory
+- /admin/fa-summary - FAWindowSummary
+- /admin/fa-monitor - FAMonitor
+
+### Requirements
+- Single unified FA management dashboard
+- Monitor active bids and determine winners
+- Reverse processed winning bids (restore players and coins)
+- Monitor available coins for all teams
+- Fix coin discrepancies
+- Remove redundant FA admin pages
+
+### Tasks
+- [x] Audit existing FA admin pages (CoinDashboard, FAHistory, FAWindowSummary, FAMonitor)
+- [x] Design unified dashboard structure with all features
+- [x] Build consolidated FA management dashboard
+- [x] Implement bid monitoring and winner determination
+- [x] Implement transaction reversal functionality
+- [x] Implement coin monitoring and discrepancy fixes
+- [x] Remove redundant FA pages (4 pages)
+- [x] Update admin navigation

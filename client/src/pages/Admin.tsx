@@ -235,18 +235,13 @@ export default function Admin() {
                 </Link>
               </Button>
               <Button asChild variant="outline" size="sm" className="bg-slate-800 border-slate-700 hover:bg-slate-700">
-                <Link href="/admin/coins">
-                  FA Coins
+                <Link href="/admin/fa-management">
+                  FA Management
                 </Link>
               </Button>
               <Button asChild variant="outline" size="sm" className="bg-slate-800 border-slate-700 hover:bg-slate-700">
                 <Link href="/admin/match-logs">
                   Match Logs
-                </Link>
-              </Button>
-              <Button asChild variant="outline" size="sm" className="bg-slate-800 border-slate-700 hover:bg-slate-700">
-                <Link href="/admin/fa-summary">
-                  FA Summary
                 </Link>
               </Button>
               <Button asChild variant="outline" size="sm" className="bg-slate-800 border-slate-700 hover:bg-slate-700">
