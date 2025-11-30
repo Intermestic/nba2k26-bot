@@ -1,9 +1,12 @@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { trpc } from "@/lib/trpc";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, TrendingUp, Award } from "lucide-react";
+import { Calendar, TrendingUp, Award, Filter } from "lucide-react";
 import { format } from "date-fns";
 import type { UpgradeRequest } from "../../../drizzle/schema";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useState } from "react";
+import { Input } from "@/components/ui/input";
 
 interface PlayerUpgradeHistoryDialogProps {
   playerName: string | null;
@@ -12,6 +15,10 @@ interface PlayerUpgradeHistoryDialogProps {
 }
 
 export function PlayerUpgradeHistoryDialog({ playerName, open, onClose }: PlayerUpgradeHistoryDialogProps) {
+  const [upgradeTypeFilter, setUpgradeTypeFilter] = useState<string>("all");
+  const [sourceTypeFilter, setSourceTypeFilter] = useState<string>("all");
+  const [dateFilter, setDateFilter] = useState<string>("all");
+  
   const { data: upgrades = [], isLoading } = trpc.upgrades.getByPlayer.useQuery(
     { playerName: playerName || "" },
     { enabled: open && !!playerName }
@@ -19,21 +26,69 @@ export function PlayerUpgradeHistoryDialog({ playerName, open, onClose }: Player
 
   if (!playerName) return null;
 
-  // Calculate statistics
-  const totalUpgrades = upgrades.length;
-  const pendingCount = upgrades.filter((u: UpgradeRequest) => u.status === "pending").length;
-  const approvedCount = upgrades.filter((u: UpgradeRequest) => u.status === "approved").length;
-  const rejectedCount = upgrades.filter((u: UpgradeRequest) => u.status === "rejected").length;
-  const uniqueBadges = new Set(upgrades.map((u: UpgradeRequest) => u.badgeName)).size;
+  // Apply filters
+  let filteredUpgrades = upgrades;
+  
+  // Filter by upgrade type (Badge/Attribute)
+  if (upgradeTypeFilter !== "all") {
+    filteredUpgrades = filteredUpgrades.filter((u: UpgradeRequest) => 
+      u.upgradeType?.toLowerCase() === upgradeTypeFilter.toLowerCase()
+    );
+  }
+  
+  // Filter by source type
+  if (sourceTypeFilter !== "all") {
+    filteredUpgrades = filteredUpgrades.filter((u: UpgradeRequest) => 
+      u.sourceType?.toLowerCase() === sourceTypeFilter.toLowerCase()
+    );
+  }
+  
+  // Filter by date range
+  if (dateFilter !== "all") {
+    const now = new Date();
+    const cutoffDate = new Date();
+    
+    switch (dateFilter) {
+      case "week":
+        cutoffDate.setDate(now.getDate() - 7);
+        break;
+      case "month":
+        cutoffDate.setMonth(now.getMonth() - 1);
+        break;
+      case "3months":
+        cutoffDate.setMonth(now.getMonth() - 3);
+        break;
+      case "6months":
+        cutoffDate.setMonth(now.getMonth() - 6);
+        break;
+      case "year":
+        cutoffDate.setFullYear(now.getFullYear() - 1);
+        break;
+    }
+    
+    filteredUpgrades = filteredUpgrades.filter((u: UpgradeRequest) => 
+      new Date(u.createdAt) >= cutoffDate
+    );
+  }
+
+  // Calculate statistics (from filtered data)
+  const totalUpgrades = filteredUpgrades.length;
+  const pendingCount = filteredUpgrades.filter((u: UpgradeRequest) => u.status === "pending").length;
+  const approvedCount = filteredUpgrades.filter((u: UpgradeRequest) => u.status === "approved").length;
+  const rejectedCount = filteredUpgrades.filter((u: UpgradeRequest) => u.status === "rejected").length;
+  const uniqueBadges = new Set(filteredUpgrades.map((u: UpgradeRequest) => u.badgeName)).size;
+
+  // Get unique source types for filter dropdown
+  const uniqueSourceTypes = Array.from(new Set(upgrades.map((u: UpgradeRequest) => u.sourceType).filter(Boolean)));
 
   // Group by status
-  const approvedUpgrades = upgrades.filter((u: UpgradeRequest) => u.status === "approved");
-  const pendingUpgrades = upgrades.filter((u: UpgradeRequest) => u.status === "pending");
-  const rejectedUpgrades = upgrades.filter((u: UpgradeRequest) => u.status === "rejected");
+  const approvedUpgrades = filteredUpgrades.filter((u: UpgradeRequest) => u.status === "approved");
+  const pendingUpgrades = filteredUpgrades.filter((u: UpgradeRequest) => u.status === "pending");
+  const rejectedUpgrades = filteredUpgrades.filter((u: UpgradeRequest) => u.status === "rejected");
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="bg-slate-800 border-slate-700 text-white max-w-3xl max-h-[80vh] overflow-y-auto">
+      <DialogContent className="bg-slate-800 border-slate-700 text-white max-w-4xl max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-2xl flex items-center gap-2">
             <TrendingUp className="w-6 h-6 text-purple-400" />
@@ -44,8 +99,68 @@ export function PlayerUpgradeHistoryDialog({ playerName, open, onClose }: Player
           </DialogDescription>
         </DialogHeader>
 
+        {/* Filter Controls */}
+        <div className="bg-slate-700/30 rounded-lg p-4 border border-slate-600">
+          <div className="flex items-center gap-2 mb-3">
+            <Filter className="w-4 h-4 text-slate-400" />
+            <span className="text-sm font-semibold text-slate-300">Filters</span>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            {/* Upgrade Type Filter */}
+            <div>
+              <label className="text-xs text-slate-400 mb-1 block">Upgrade Type</label>
+              <Select value={upgradeTypeFilter} onValueChange={setUpgradeTypeFilter}>
+                <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="bg-slate-700 border-slate-600">
+                  <SelectItem value="all">All Types</SelectItem>
+                  <SelectItem value="badge">Badge</SelectItem>
+                  <SelectItem value="attribute">Attribute</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Source Type Filter */}
+            <div>
+              <label className="text-xs text-slate-400 mb-1 block">Source Type</label>
+              <Select value={sourceTypeFilter} onValueChange={setSourceTypeFilter}>
+                <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="bg-slate-700 border-slate-600">
+                  <SelectItem value="all">All Sources</SelectItem>
+                  {uniqueSourceTypes.map((source) => (
+                    <SelectItem key={source} value={source?.toLowerCase() || ""}>
+                      {source}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Date Range Filter */}
+            <div>
+              <label className="text-xs text-slate-400 mb-1 block">Date Range</label>
+              <Select value={dateFilter} onValueChange={setDateFilter}>
+                <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="bg-slate-700 border-slate-600">
+                  <SelectItem value="all">All Time</SelectItem>
+                  <SelectItem value="week">Last 7 Days</SelectItem>
+                  <SelectItem value="month">Last Month</SelectItem>
+                  <SelectItem value="3months">Last 3 Months</SelectItem>
+                  <SelectItem value="6months">Last 6 Months</SelectItem>
+                  <SelectItem value="year">Last Year</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </div>
+
         {/* Statistics Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 my-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="bg-slate-700/50 rounded-lg p-4 border border-slate-600">
             <div className="text-2xl font-bold text-white">{totalUpgrades}</div>
             <div className="text-xs text-slate-400">Total Upgrades</div>
@@ -69,7 +184,7 @@ export function PlayerUpgradeHistoryDialog({ playerName, open, onClose }: Player
         ) : totalUpgrades === 0 ? (
           <div className="text-center py-8 text-slate-400">
             <Award className="w-12 h-12 mx-auto mb-2 opacity-50" />
-            <p>No upgrades found for this player</p>
+            <p>No upgrades found matching the selected filters</p>
           </div>
         ) : (
           <div className="space-y-6">
@@ -94,6 +209,11 @@ export function PlayerUpgradeHistoryDialog({ playerName, open, onClose }: Player
                             {upgrade.upgradeType && (
                               <Badge variant="outline" className="text-xs">
                                 {upgrade.upgradeType}
+                              </Badge>
+                            )}
+                            {upgrade.sourceType && (
+                              <Badge variant="outline" className="text-xs bg-blue-900/30 border-blue-700">
+                                {upgrade.sourceType}
                               </Badge>
                             )}
                           </div>
@@ -149,6 +269,11 @@ export function PlayerUpgradeHistoryDialog({ playerName, open, onClose }: Player
                                 {upgrade.upgradeType}
                               </Badge>
                             )}
+                            {upgrade.sourceType && (
+                              <Badge variant="outline" className="text-xs bg-blue-900/30 border-blue-700">
+                                {upgrade.sourceType}
+                              </Badge>
+                            )}
                           </div>
                           {upgrade.attributes && (
                             <div className="text-sm text-slate-300 mb-1">
@@ -195,6 +320,11 @@ export function PlayerUpgradeHistoryDialog({ playerName, open, onClose }: Player
                             {upgrade.upgradeType && (
                               <Badge variant="outline" className="text-xs">
                                 {upgrade.upgradeType}
+                              </Badge>
+                            )}
+                            {upgrade.sourceType && (
+                              <Badge variant="outline" className="text-xs bg-blue-900/30 border-blue-700">
+                                {upgrade.sourceType}
                               </Badge>
                             )}
                           </div>

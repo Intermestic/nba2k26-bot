@@ -668,3 +668,12 @@ Track individual player swaps (DNA swaps, player replacements) at player level.
 - [x] Investigate upgrade_log and player_upgrades table schemas
 - [x] Create migration script to sync upgrade log entries to player_upgrades
 - [x] Execute migration and verify upgrades show on player cards (135 upgrades migrated successfully)
+
+## Fix Skipped Player Upgrades and Add Filtering
+
+### Tasks
+- [x] Investigate skipped player upgrades (199 entries) and identify name mismatch patterns
+- [x] Add player aliases or fix name mismatches in upgrade_log table
+- [x] Re-run migration script to sync previously skipped upgrades
+- [x] Add filtering UI to upgrade history modal (upgrade type, date range, source type)
+- [x] Test filtering functionality and verify all upgrades display correctly

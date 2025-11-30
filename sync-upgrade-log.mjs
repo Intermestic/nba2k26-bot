@@ -5,7 +5,7 @@
 
 import 'dotenv/config';
 import { drizzle } from 'drizzle-orm/mysql2';
-import { upgradeLog, playerUpgrades, players } from './drizzle/schema.js';
+import { upgradeLog, playerUpgrades, players, playerAliases } from './drizzle/schema.ts';
 import { eq } from 'drizzle-orm';
 
 async function main() {
@@ -33,6 +33,14 @@ async function main() {
       playerNameMap.set(player.name.toLowerCase().trim(), player.id);
     });
     console.log(`👥 Loaded ${allPlayers.length} players for name mapping\n`);
+    
+    // Fetch all aliases to map alternate names to IDs
+    const allAliases = await db.select().from(playerAliases);
+    const aliasMap = new Map();
+    allAliases.forEach(alias => {
+      aliasMap.set(alias.alias.toLowerCase().trim(), alias.playerId);
+    });
+    console.log(`🔗 Loaded ${allAliases.length} player aliases\n`);
 
     let successCount = 0;
     let skipCount = 0;
@@ -41,11 +49,17 @@ async function main() {
     // Process each upgrade log entry
     for (const upgrade of allUpgrades) {
       try {
-        // Find player ID by name
-        const playerId = playerNameMap.get(upgrade.playerName.toLowerCase().trim());
+        // Find player ID by name (check both direct name and aliases)
+        const normalizedName = upgrade.playerName.toLowerCase().trim();
+        let playerId = playerNameMap.get(normalizedName);
+        
+        // If not found by name, check aliases
+        if (!playerId) {
+          playerId = aliasMap.get(normalizedName);
+        }
         
         if (!playerId) {
-          console.log(`⚠️  Skipping: Player "${upgrade.playerName}" not found in players table`);
+          console.log(`⚠️  Skipping: Player "${upgrade.playerName}" not found in players table or aliases`);
           skipCount++;
           continue;
         }
