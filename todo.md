@@ -597,3 +597,21 @@ Create database-backed trade log system with admin approval workflow for badge c
 - [x] Implement batch approve functionality
 - [x] Update player badge counts when trades are approved (backend ready)
 - [x] Test complete workflow
+
+
+## Trade Machine Visual Improvements
+
+User reports Trade Machine page is bland and missing visual elements.
+
+### Issues
+- League logo in header is tiny (needs to be h-16 like other pages)
+- No team logos showing in Team 1 and Team 2 selection cards
+- Overall styling is bland (no colors, gradients, or visual hierarchy)
+
+### Tasks
+- [x] Increase league logo from current size to h-16 in header
+- [x] Add team logos to Team 1 and Team 2 selection cards
+- [x] Add gradient backgrounds to team cards
+- [x] Add team color themes to cards based on selected team
+- [x] Improve player selection UI with better styling
+- [x] Test all visual changes

@@ -202,8 +202,8 @@ export default function TradeMachine() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           {/* Team 1 */}
-          <Card className="border-2 hover:border-primary/50 transition-colors">
-            <CardHeader className="bg-gradient-to-r from-primary/10 to-transparent">
+          <Card className="border-2 border-primary/30 hover:border-primary/60 transition-all shadow-lg hover:shadow-xl">
+            <CardHeader className="bg-gradient-to-br from-blue-500/20 via-primary/10 to-transparent border-b border-primary/20">
               <div className="flex items-center gap-3">
                 {team1 && (
                   <img 
@@ -225,7 +225,14 @@ export default function TradeMachine() {
                   <SelectContent>
                     {teams?.map((team) => (
                       <SelectItem key={team} value={team}>
-                        {team}
+                        <div className="flex items-center gap-2">
+                          <img 
+                            src={getTeamLogo(team)} 
+                            alt={team}
+                            className="h-5 w-5 object-contain"
+                          />
+                          {team}
+                        </div>
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -296,8 +303,8 @@ export default function TradeMachine() {
           </Card>
 
           {/* Team 2 */}
-          <Card className="border-2 hover:border-primary/50 transition-colors">
-            <CardHeader className="bg-gradient-to-r from-primary/10 to-transparent">
+          <Card className="border-2 border-red-500/30 hover:border-red-500/60 transition-all shadow-lg hover:shadow-xl">
+            <CardHeader className="bg-gradient-to-br from-red-500/20 via-orange-500/10 to-transparent border-b border-red-500/20">
               <div className="flex items-center gap-3">
                 {team2 && (
                   <img 
@@ -319,7 +326,14 @@ export default function TradeMachine() {
                   <SelectContent>
                     {teams?.map((team) => (
                       <SelectItem key={team} value={team}>
-                        {team}
+                        <div className="flex items-center gap-2">
+                          <img 
+                            src={getTeamLogo(team)} 
+                            alt={team}
+                            className="h-5 w-5 object-contain"
+                          />
+                          {team}
+                        </div>
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -392,39 +406,51 @@ export default function TradeMachine() {
 
         {/* Trade Preview */}
         {team1PlayersWithBadges.length > 0 && team2PlayersWithBadges.length > 0 && (
-          <Card className="mb-6">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <ArrowLeftRight className="h-5 w-5" />
+          <Card className="mb-6 border-2 border-purple-500/30 shadow-xl">
+            <CardHeader className="bg-gradient-to-r from-purple-500/20 via-pink-500/10 to-purple-500/20 border-b border-purple-500/20">
+              <CardTitle className="flex items-center gap-2 text-2xl">
+                <ArrowLeftRight className="h-6 w-6 text-purple-500" />
                 Trade Preview
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <h3 className="font-bold text-lg mb-2">{team1} Sends:</h3>
+                <div className="bg-blue-500/5 rounded-lg p-4 border border-blue-500/20">
+                  <h3 className="font-bold text-lg mb-3 flex items-center gap-2">
+                    <img src={getTeamLogo(team1)} alt={team1} className="h-6 w-6 object-contain" />
+                    {team1} Sends:
+                  </h3>
                   <div className="space-y-1">
                     {team1PlayersWithBadges.map((player) => (
-                      <div key={player.id} className="text-sm">
-                        {player.name} {player.overall} ({player.badges})
+                      <div key={player.id} className="text-sm flex items-center gap-2 py-1">
+                        <span className="font-medium">{player.name}</span>
+                        <span className="text-muted-foreground">{player.overall} OVR</span>
+                        <span className="text-xs bg-primary/10 px-2 py-0.5 rounded-full">{player.badges} badges</span>
                       </div>
                     ))}
-                    <div className="border-t pt-2 mt-2 font-bold">
-                      {team1TotalOvr} ({team1TotalBadges})
+                    <div className="border-t border-blue-500/20 pt-3 mt-3 font-bold flex items-center gap-3">
+                      <span className="text-lg">{team1TotalOvr} OVR</span>
+                      <span className="text-sm bg-blue-500/20 px-3 py-1 rounded-full">{team1TotalBadges} badges</span>
                     </div>
                   </div>
                 </div>
 
-                <div>
-                  <h3 className="font-bold text-lg mb-2">{team2} Sends:</h3>
+                <div className="bg-red-500/5 rounded-lg p-4 border border-red-500/20">
+                  <h3 className="font-bold text-lg mb-3 flex items-center gap-2">
+                    <img src={getTeamLogo(team2)} alt={team2} className="h-6 w-6 object-contain" />
+                    {team2} Sends:
+                  </h3>
                   <div className="space-y-1">
                     {team2PlayersWithBadges.map((player) => (
-                      <div key={player.id} className="text-sm">
-                        {player.name} {player.overall} ({player.badges})
+                      <div key={player.id} className="text-sm flex items-center gap-2 py-1">
+                        <span className="font-medium">{player.name}</span>
+                        <span className="text-muted-foreground">{player.overall} OVR</span>
+                        <span className="text-xs bg-primary/10 px-2 py-0.5 rounded-full">{player.badges} badges</span>
                       </div>
                     ))}
-                    <div className="border-t pt-2 mt-2 font-bold">
-                      {team2TotalOvr} ({team2TotalBadges})
+                    <div className="border-t border-red-500/20 pt-3 mt-3 font-bold flex items-center gap-3">
+                      <span className="text-lg">{team2TotalOvr} OVR</span>
+                      <span className="text-sm bg-red-500/20 px-3 py-1 rounded-full">{team2TotalBadges} badges</span>
                     </div>
                   </div>
                 </div>
@@ -436,15 +462,16 @@ export default function TradeMachine() {
                 <Button
                   onClick={handleConfirmTrade}
                   disabled={!canConfirmTrade || tradeConfirmed}
-                  className="flex-1"
+                  className="flex-1 bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 text-white shadow-lg"
+                  size="lg"
                 >
-                  {tradeConfirmed ? "Trade Confirmed ✓" : "Confirm Trade"}
+                  {tradeConfirmed ? "✓ Trade Confirmed" : "Confirm Trade"}
                 </Button>
                 <Button
                   onClick={handlePostToDiscord}
                   disabled={!tradeConfirmed || postTradeMutation.isPending}
-                  variant="default"
-                  className="flex-1"
+                  className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg"
+                  size="lg"
                 >
                   {postTradeMutation.isPending ? (
                     <>
