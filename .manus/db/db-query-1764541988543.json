@@ -1,0 +1,15 @@
+{
+  "query": "SELECT id, name, team FROM players WHERE name LIKE '%LaVine%' OR name LIKE '%Lavine%'",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT id, name, team FROM players WHERE name LIKE '%LaVine%' OR name LIKE '%Lavine%'",
+  "rows": [
+    {
+      "id": "P0348",
+      "name": "Zach LaVine",
+      "team": "Bulls"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\tteam\nP0348\tZach LaVine\tBulls\n",
+  "stderr": "",
+  "execution_time_ms": 54
+}

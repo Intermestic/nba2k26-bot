@@ -656,3 +656,15 @@ Track individual player swaps (DNA swaps, player replacements) at player level.
 - [ ] Import swap data from CSV file
 - [ ] Add notes and flags functionality for swaps
 - [ ] Test swap tracking page with real data
+
+## Import 24 Player Swaps
+
+### Tasks
+- [x] Import 24 player swaps from previously provided data into player_swaps table
+
+## Sync Upgrade Log to Player Upgrades
+
+### Tasks
+- [x] Investigate upgrade_log and player_upgrades table schemas
+- [x] Create migration script to sync upgrade log entries to player_upgrades
+- [x] Execute migration and verify upgrades show on player cards (135 upgrades migrated successfully)
