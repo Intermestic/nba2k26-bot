@@ -38,7 +38,7 @@ export const upgradeLimitsRouter = router({
           .where(eq(upgradeLog.playerName, player.name));
         
         // Initialize counters for different upgrade types
-        let sevenGameOverallIncrease = 0;
+        const sevenGameByAttribute: Record<string, number> = {}; // Track per-attribute 7GM usage
         let sevenGameCount = 0;
         let welcomeUpgrades = 0;
         let fiveGameBadges = 0;
@@ -52,9 +52,10 @@ export const upgradeLimitsRouter = router({
           try {
             const metadata = upgrade.metadata ? JSON.parse(upgrade.metadata) : {};
             
-            // 7-Game attribute upgrades
-            if (metadata.upgradeType === '7GM' && upgrade.upgradeType === 'attribute' && upgrade.statIncrease) {
-              sevenGameOverallIncrease += upgrade.statIncrease;
+            // 7-Game attribute upgrades - track per attribute
+            if (metadata.upgradeType === '7GM' && upgrade.upgradeType === 'attribute' && upgrade.statIncrease && upgrade.statName) {
+              const attrName = upgrade.statName;
+              sevenGameByAttribute[attrName] = (sevenGameByAttribute[attrName] || 0) + upgrade.statIncrease;
               sevenGameCount++;
             }
             
@@ -109,8 +110,18 @@ export const upgradeLimitsRouter = router({
           }
         });
         
-        // Determine status for each upgrade type
-        const sevenGameStatus = sevenGameOverallIncrease >= 6 ? 'at_cap' : sevenGameOverallIncrease >= 5 ? 'near_cap' : 'ok';
+        // Calculate overall 7GM status based on any attribute being at/near cap
+        const attributeStatuses = Object.entries(sevenGameByAttribute).map(([attr, total]) => ({
+          attribute: attr,
+          used: total,
+          remaining: Math.max(0, 6 - total),
+          status: total >= 6 ? 'at_cap' : total >= 5 ? 'near_cap' : 'ok'
+        }));
+        
+        // Overall status is worst status among all attributes
+        const hasAnyCapped = attributeStatuses.some(a => a.status === 'at_cap');
+        const hasAnyNearCap = attributeStatuses.some(a => a.status === 'near_cap');
+        const sevenGameStatus = hasAnyCapped ? 'at_cap' : hasAnyNearCap ? 'near_cap' : 'ok';
         const badgeStatus = player.isRookie 
           ? (rookieBadgesToSilver >= 2 ? 'at_cap' : rookieBadgesToSilver >= 1 ? 'near_cap' : 'ok')
           : 'n/a';
@@ -128,10 +139,9 @@ export const upgradeLimitsRouter = router({
           overall: player.overall,
           isRookie: player.isRookie,
           
-          // 7-Game Overall
-          sevenGameIncrease: sevenGameOverallIncrease,
+          // 7-Game Overall (per-attribute tracking)
+          sevenGameByAttribute: attributeStatuses,
           sevenGameCount,
-          sevenGameRemaining: Math.max(0, 6 - sevenGameOverallIncrease),
           sevenGameStatus,
           
           // Rookie Badges

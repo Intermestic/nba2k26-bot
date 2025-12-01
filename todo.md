@@ -810,3 +810,20 @@ Ensure all existing upgrade_log data is properly integrated and accessible throu
 - [x] Show pending upgrade requests with approval status
 - [x] Integrate validation rules display in UI
 - [x] Test consolidated upgrade system end-to-end
+
+
+## CRITICAL: Fix 7GM Per-Attribute Tracking
+
+### Issue
+Current system tracks total +6 cap across all attributes. Should track +6 cap PER INDIVIDUAL ATTRIBUTE.
+
+Example: Player A can do +3 3PT, +3 Dunk, +3 3PT again. Should be:
+- 3PT: 6/6 (CAPPED)
+- Dunk: 3/6 (3 remaining)
+- Mid Range: 0/6 (6 remaining)
+
+### Tasks
+- [x] Update database schema to track 7GM usage per attribute (not just total)
+- [x] Modify backend to calculate +6 cap per individual attribute
+- [x] Update Upgrade Limits UI to show per-attribute breakdown
+- [x] Test attribute-specific cap enforcement

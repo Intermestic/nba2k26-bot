@@ -5,13 +5,26 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { AlertCircle, AlertTriangle, CheckCircle, Download, Loader2, TrendingUp } from 'lucide-react';
+import { AlertCircle, AlertTriangle, CheckCircle, ChevronDown, ChevronRight, Download, Loader2, TrendingUp } from 'lucide-react';
 import { Link } from 'wouter';
 
 export default function UpgradeLimits() {
   const [filterTeam, setFilterTeam] = useState<string>('all');
   const [filterStatus, setFilterStatus] = useState<'all' | 'at_cap' | 'near_cap'>('all');
   const [filterType, setFilterType] = useState<'all' | 'overall' | 'badge' | 'welcome' | 'fivegm' | 'rookie' | 'og'>('all');
+  const [expandedPlayers, setExpandedPlayers] = useState<Set<string>>(new Set());
+
+  const toggleExpanded = (playerId: string) => {
+    setExpandedPlayers(prev => {
+      const next = new Set(prev);
+      if (next.has(playerId)) {
+        next.delete(playerId);
+      } else {
+        next.add(playerId);
+      }
+      return next;
+    });
+  };
 
   const { data: teams } = trpc.upgradeLimits.getTeams.useQuery();
   const { data, isLoading } = trpc.upgradeLimits.getUpgradeLimitStatus.useQuery({
@@ -48,8 +61,7 @@ export default function UpgradeLimits() {
       p.team,
       p.overall,
       p.isRookie ? 'Yes' : 'No',
-      `+${p.sevenGameIncrease}`,
-      p.sevenGameRemaining,
+      p.sevenGameByAttribute?.map((a: any) => `${a.attribute}: ${a.used}/6`).join('; ') || 'None',
       p.sevenGameStatus,
       p.badgeUpgradesToSilver ?? 'N/A',
       p.badgeRemaining ?? 'N/A',
@@ -277,7 +289,7 @@ export default function UpgradeLimits() {
                     <TableHead>Team</TableHead>
                     <TableHead>OVR</TableHead>
                     <TableHead>Rookie</TableHead>
-                    <TableHead>7GM</TableHead>
+                    <TableHead>7GM Attributes</TableHead>
                     <TableHead>7GM Status</TableHead>
                     <TableHead>Badges</TableHead>
                     <TableHead>Badge Status</TableHead>
@@ -302,9 +314,38 @@ export default function UpgradeLimits() {
                       <TableCell>{player.overall}</TableCell>
                       <TableCell>{player.isRookie ? 'Yes' : 'No'}</TableCell>
                       <TableCell>
-                        <span className={player.sevenGameIncrease >= 6 ? 'text-red-600 font-semibold' : player.sevenGameIncrease >= 5 ? 'text-yellow-600 font-semibold' : ''}>
-                          +{player.sevenGameIncrease}/{player.sevenGameRemaining} left
-                        </span>
+                        {player.sevenGameByAttribute && player.sevenGameByAttribute.length > 0 ? (
+                          <div className="space-y-1">
+                            <button
+                              onClick={() => toggleExpanded(player.id)}
+                              className="flex items-center gap-1 text-sm hover:underline"
+                            >
+                              {expandedPlayers.has(player.id) ? (
+                                <ChevronDown className="h-3 w-3" />
+                              ) : (
+                                <ChevronRight className="h-3 w-3" />
+                              )}
+                              {player.sevenGameByAttribute.length} attribute{player.sevenGameByAttribute.length !== 1 ? 's' : ''}
+                            </button>
+                            {expandedPlayers.has(player.id) && (
+                              <div className="ml-4 space-y-1 text-xs">
+                                {player.sevenGameByAttribute.map((attr: any) => (
+                                  <div key={attr.attribute} className="flex items-center gap-2">
+                                    <span className="font-medium">{attr.attribute}:</span>
+                                    <span className={
+                                      attr.status === 'at_cap' ? 'text-red-600 font-semibold' :
+                                      attr.status === 'near_cap' ? 'text-yellow-600 font-semibold' : ''
+                                    }>
+                                      +{attr.used}/6 ({attr.remaining} left)
+                                    </span>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        ) : (
+                          <span className="text-muted-foreground">None</span>
+                        )}
                       </TableCell>
                       <TableCell>{getStatusBadge(player.sevenGameStatus)}</TableCell>
                       <TableCell>
