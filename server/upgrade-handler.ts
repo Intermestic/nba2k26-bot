@@ -3,7 +3,7 @@ import { parseUpgradeRequests } from './upgrade-parser';
 import { validateUpgradeRequest, formatValidationMessage } from './upgrade-validator';
 import { validateUpgradeRules } from './upgrade-rules-validator';
 import { getDb } from './db';
-import { upgradeRequests, players, playerUpgrades } from '../drizzle/schema';
+import { upgradeRequests, players, playerUpgrades, badgeAdditions } from '../drizzle/schema';
 import { findPlayerByFuzzyName } from './trade-parser';
 import { eq } from 'drizzle-orm';
 
@@ -156,16 +156,40 @@ export async function handleUpgradeApproval(message: Message, adminUser: any) {
     
     // Add to player_upgrades table
     if (request.playerId) {
-      await db.insert(playerUpgrades).values({
+      const upgradeType = request.fromLevel === 'none' ? 'new_badge' : 'badge_level';
+      const insertResult = await db.insert(playerUpgrades).values({
         playerId: request.playerId,
         playerName: request.playerName,
         badgeName: request.badgeName,
         fromLevel: request.fromLevel,
         toLevel: request.toLevel,
-        upgradeType: request.fromLevel === 'none' ? 'new_badge' : 'badge_level',
+        upgradeType,
         gameNumber: request.gameNumber || null,
         requestId: request.id,
       });
+      
+      // Track badge additions for rookies (for silver upgrade limit enforcement)
+      if (upgradeType === 'new_badge' && request.badgeName) {
+        const [player] = await db.select({ isRookie: players.isRookie })
+          .from(players)
+          .where(eq(players.id, request.playerId))
+          .limit(1);
+        
+        if (player?.isRookie === 1) {
+          await db.insert(badgeAdditions).values({
+            playerId: request.playerId,
+            playerName: request.playerName,
+            badgeName: request.badgeName,
+            upgradeId: Number(insertResult[0]?.insertId) || null,
+            metadata: JSON.stringify({
+              fromLevel: request.fromLevel,
+              toLevel: request.toLevel,
+              gameNumber: request.gameNumber,
+            }),
+          });
+          console.log(`[Upgrade Handler] Tracked badge addition for rookie: ${request.playerName} - ${request.badgeName}`);
+        }
+      }
     }
   }
   

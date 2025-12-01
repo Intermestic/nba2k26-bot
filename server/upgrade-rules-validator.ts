@@ -1,5 +1,5 @@
 import { getDb } from './db';
-import { validationRules, playerUpgrades, upgradeRequests, players } from '../drizzle/schema';
+import { validationRules, playerUpgrades, upgradeRequests, players, badgeAdditions } from '../drizzle/schema';
 import { eq, and, desc, gte, sql } from 'drizzle-orm';
 import type { ParsedUpgrade } from './upgrade-parser';
 
@@ -369,8 +369,50 @@ async function validateRookieUG(
 
   // Badge validation for rookies
   if (upgrade.upgradeType === 'badge') {
-    // Rookies can add new badges
-    warnings.push(`Verify rookie badge rules: only two added badges may be upgraded to Silver, others stay Bronze`);
+    // Check if upgrading an added badge to silver
+    if (upgrade.fromLevel === 'bronze' && upgrade.toLevel === 'silver' && upgrade.badgeName) {
+      // Check if this badge was added (not original)
+      const addedBadge = await db
+        .select()
+        .from(badgeAdditions)
+        .where(
+          and(
+            eq(badgeAdditions.playerId, player?.id || ''),
+            eq(badgeAdditions.badgeName, upgrade.badgeName)
+          )
+        )
+        .limit(1);
+      
+      if (addedBadge.length > 0) {
+        // This is an added badge being upgraded to silver
+        // Count how many added badges have already been upgraded to silver
+        const silverUpgradedAddedBadges = await db
+          .select({ badgeName: badgeAdditions.badgeName })
+          .from(badgeAdditions)
+          .innerJoin(
+            playerUpgrades,
+            and(
+              eq(badgeAdditions.playerId, playerUpgrades.playerId),
+              eq(badgeAdditions.badgeName, playerUpgrades.badgeName),
+              eq(playerUpgrades.toLevel, 'silver')
+            )
+          )
+          .where(eq(badgeAdditions.playerId, player?.id || ''));
+        
+        if (silverUpgradedAddedBadges.length >= 2) {
+          errors.push(
+            `Rookie badge limit: Only 2 added badges can be upgraded to Silver. ` +
+            `This player already has ${silverUpgradedAddedBadges.length} added badges at Silver ` +
+            `(${silverUpgradedAddedBadges.map((b: any) => b.badgeName).join(', ')})`
+          );
+        }
+      }
+    }
+    
+    // General warning for rookie badge rules
+    if (upgrade.fromLevel === 'none') {
+      warnings.push(`Rookie badge rule: Only two added badges may be upgraded to Silver, others must stay Bronze`);
+    }
   }
 }
 

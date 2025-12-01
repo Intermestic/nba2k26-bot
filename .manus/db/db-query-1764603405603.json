@@ -1,0 +1,50 @@
+{
+  "query": "SELECT \n  pu.statName,\n  pu.statIncrease,\n  pu.metadata\nFROM player_upgrades pu\nJOIN players p ON p.id = pu.playerId\nWHERE p.name = 'OG Anunoby'\nAND pu.upgradeType = 'attribute'\nAND JSON_EXTRACT(pu.metadata, '$.upgradeType') = '7GM'\nORDER BY pu.statName, pu.createdAt",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT \n  pu.statName,\n  pu.statIncrease,\n  pu.metadata\nFROM player_upgrades pu\nJOIN players p ON p.id = pu.playerId\nWHERE p.name = 'OG Anunoby'\nAND pu.upgradeType = 'attribute'\nAND JSON_EXTRACT(pu.metadata, '$.upgradeType') = '7GM'\nORDER BY pu.statName, pu.createdAt",
+  "rows": [
+    {
+      "statName": "3PT",
+      "statIncrease": "1",
+      "metadata": "{\"upgradeType\":\"7GM\",\"source\":\"Game\",\"sourceDetail\":\"Game 56 upgrade\",\"date\":\"11/28/2025\",\"importedFrom\":\"upgrade_log\",\"upgradeLogId\":316}"
+    },
+    {
+      "statName": "3PT",
+      "statIncrease": "1",
+      "metadata": "{\"upgradeType\":\"7GM\",\"source\":\"Game\",\"sourceDetail\":\"Game 56 upgrade\",\"date\":\"11/28/2025\",\"importedFrom\":\"upgrade_log\",\"upgradeLogId\":316}"
+    },
+    {
+      "statName": "Block",
+      "statIncrease": "3",
+      "metadata": "{\"upgradeType\":\"7GM\",\"source\":\"Game\",\"sourceDetail\":\"Game 42 attribute upgrade\",\"date\":\"11/23/2025\",\"importedFrom\":\"upgrade_log\",\"upgradeLogId\":245}"
+    },
+    {
+      "statName": "Block",
+      "statIncrease": "3",
+      "metadata": "{\"upgradeType\":\"7GM\",\"source\":\"Game\",\"sourceDetail\":\"Game 42 attribute upgrade\",\"date\":\"11/23/2025\",\"importedFrom\":\"upgrade_log\",\"upgradeLogId\":245}"
+    },
+    {
+      "statName": "Driving Dunk",
+      "statIncrease": "2",
+      "metadata": "{\"upgradeType\":\"7GM\",\"source\":\"Game\",\"sourceDetail\":\"Game 56 upgrade\",\"date\":\"11/28/2025\",\"importedFrom\":\"upgrade_log\",\"upgradeLogId\":315}"
+    },
+    {
+      "statName": "Driving Dunk",
+      "statIncrease": "2",
+      "metadata": "{\"upgradeType\":\"7GM\",\"source\":\"Game\",\"sourceDetail\":\"Game 56 upgrade\",\"date\":\"11/28/2025\",\"importedFrom\":\"upgrade_log\",\"upgradeLogId\":315}"
+    },
+    {
+      "statName": "Steal",
+      "statIncrease": "1",
+      "metadata": "{\"upgradeType\":\"7GM\",\"source\":\"Game\",\"sourceDetail\":\"14 game\",\"date\":\"11/13/2025\",\"importedFrom\":\"upgrade_log\",\"upgradeLogId\":10}"
+    },
+    {
+      "statName": "Steal",
+      "statIncrease": "1",
+      "metadata": "{\"upgradeType\":\"7GM\",\"source\":\"Game\",\"sourceDetail\":\"14 game\",\"date\":\"11/13/2025\",\"importedFrom\":\"upgrade_log\",\"upgradeLogId\":10}"
+    }
+  ],
+  "messages": [],
+  "stdout": "statName\tstatIncrease\tmetadata\n3PT\t1\t{\"upgradeType\":\"7GM\",\"source\":\"Game\",\"sourceDetail\":\"Game 56 upgrade\",\"date\":\"11/28/2025\",\"importedFrom\":\"upgrade_log\",\"upgradeLogId\":316}\n3PT\t1\t{\"upgradeType\":\"7GM\",\"source\":\"Game\",\"sourceDetail\":\"Game 56 upgrade\",\"date\":\"11/28/2025\",\"importedFrom\":\"upgrade_log\",\"upgradeLogId\":316}\nBlock\t3\t{\"upgradeType\":\"7GM\",\"source\":\"Game\",\"sourceDetail\":\"Game 42 attribute upgrade\",\"date\":\"11/23/2025\",\"importedFrom\":\"upgrade_log\",\"upgradeLogId\":245}\nBlock\t3\t{\"upgradeType\":\"7GM\",\"source\":\"Game\",\"sourceDetail\":\"Game 42 attribute upgrade\",\"date\":\"11/23/2025\",\"importedFrom\":\"upgrade_log\",\"upgradeLogId\":245}\nDriving Dunk\t2\t{\"upgradeType\":\"7GM\",\"source\":\"Game\",\"sourceDetail\":\"Game 56 upgrade\",\"date\":\"11/28/2025\",\"importedFrom\":\"upgrade_log\",\"upgradeLogId\":315}\nDriving Dunk\t2\t{\"upgradeType\":\"7GM\",\"source\":\"Game\",\"sourceDetail\":\"Game 56 upgrade\",\"date\":\"11/28/2025\",\"importedFrom\":\"upgrade_log\",\"upgradeLogId\":315}\nSteal\t1\t{\"upgradeType\":\"7GM\",\"source\":\"Game\",\"sourceDetail\":\"14 game\",\"date\":\"11/13/2025\",\"importedFrom\":\"upgrade_log\",\"upgradeLogId\":10}\nSteal\t1\t{\"upgradeType\":\"7GM\",\"source\":\"Game\",\"sourceDetail\":\"14 game\",\"date\":\"11/13/2025\",\"importedFrom\":\"upgrade_log\",\"upgradeLogId\":10}\n",
+  "stderr": "",
+  "execution_time_ms": 95
+}

@@ -702,6 +702,23 @@ export type PlayerUpgrade = typeof playerUpgrades.$inferSelect;
 export type InsertPlayerUpgrade = typeof playerUpgrades.$inferInsert;
 
 /**
+ * Badge Additions table - tracks which badges were added to rookie players
+ * Used to enforce the rule: "Only 2 added badges can be upgraded to silver"
+ */
+export const badgeAdditions = mysqlTable("badge_additions", {
+  id: int("id").autoincrement().primaryKey(),
+  playerId: varchar("playerId", { length: 64 }).notNull(), // Reference to players.id
+  playerName: varchar("playerName", { length: 255 }).notNull(), // Player name
+  badgeName: varchar("badgeName", { length: 100 }).notNull(), // Badge abbreviation that was added
+  addedAt: timestamp("addedAt").defaultNow().notNull(), // When badge was added
+  upgradeId: int("upgradeId"), // Reference to playerUpgrades.id that added this badge
+  metadata: text("metadata"), // JSON metadata (source, admin, etc.)
+});
+
+export type BadgeAddition = typeof badgeAdditions.$inferSelect;
+export type InsertBadgeAddition = typeof badgeAdditions.$inferInsert;
+
+/**
  * Validation Rules table - configurable upgrade validation rules
  */
 export const validationRules = mysqlTable("validation_rules", {

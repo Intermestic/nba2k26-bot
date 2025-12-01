@@ -827,3 +827,29 @@ Example: Player A can do +3 3PT, +3 Dunk, +3 3PT again. Should be:
 - [x] Modify backend to calculate +6 cap per individual attribute
 - [x] Update Upgrade Limits UI to show per-attribute breakdown
 - [x] Test attribute-specific cap enforcement
+
+
+## Fix 7GM Tracking - Import Historical Data and Filter by Type
+
+### Issues
+1. Historical 7GM upgrades from upgrade_log not imported to player_upgrades table
+2. Backend counting ALL attribute upgrades instead of only 7GM type
+3. Welcome/Rookie/OG attribute upgrades incorrectly counted toward 7GM cap
+4. Example: "2nd Team All Defense Att UG" (7GM type) should count, but "Welcome Att UG" should not
+
+### Tasks
+- [x] Update upgradeLimitsRouter to filter by metadata->upgradeType = '7GM'
+- [x] Create migration script to import 7GM attribute upgrades from upgrade_log
+- [x] Verify only 7GM upgrades are counted (not Welcome, Rookie, OG, etc.)
+- [x] Test with real player data to confirm accurate tracking
+
+## Badge Addition Tracking System
+
+### Goal
+Track which badges are added to rookie players and enforce the rule: "Only 2 added badges can be upgraded to silver"
+
+### Tasks
+- [x] Create badge_additions database table to track all badge additions
+- [x] Implement backend logic to enforce "only 2 added badges can be upgraded to silver" rule
+- [x] Update upgrade validator to check added badge silver upgrade limit
+- [x] Test enforcement with various scenarios
