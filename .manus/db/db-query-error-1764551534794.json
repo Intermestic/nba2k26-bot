@@ -1,0 +1,8 @@
+{
+  "query": "INSERT INTO player_aliases (player_id, alias) SELECT id, 'Cooper' FROM players WHERE name = 'Cooper Flagg' AND team = 'Magic' ON DUPLICATE KEY UPDATE alias=alias",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute INSERT INTO player_aliases (player_id, alias) SELECT id, 'Cooper' FROM players WHERE name = 'Cooper Flagg' AND team = 'Magic' ON DUPLICATE KEY UPDATE alias=alias",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1054 (42S22) at line 1: Unknown column 'player_id' in 'field list'"
+  ]
+}

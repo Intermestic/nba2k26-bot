@@ -1,0 +1,30 @@
+{
+  "query": "SELECT name, isRookie, draftYear FROM players WHERE name LIKE '%Richard%'",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT name, isRookie, draftYear FROM players WHERE name LIKE '%Richard%'",
+  "rows": [
+    {
+      "name": "Will Richard",
+      "isRookie": "1",
+      "draftYear": "2025"
+    },
+    {
+      "name": "Nick Richards",
+      "isRookie": "0",
+      "draftYear": "NULL"
+    },
+    {
+      "name": "Josh Richardson",
+      "isRookie": "0",
+      "draftYear": "NULL"
+    },
+    {
+      "name": "Jase Richardson",
+      "isRookie": "1",
+      "draftYear": "2025"
+    }
+  ],
+  "messages": [],
+  "stdout": "name\tisRookie\tdraftYear\nWill Richard\t1\t2025\nNick Richards\t0\tNULL\nJosh Richardson\t0\tNULL\nJase Richardson\t1\t2025\n",
+  "stderr": "",
+  "execution_time_ms": 58
+}

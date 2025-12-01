@@ -184,19 +184,40 @@ export class UpgradeAuditor {
   }
 
   /**
-   * Find player by name (with fuzzy matching)
+   * Find player by name (with team-aware fuzzy matching, case-insensitive, and alias support)
    */
-  private async findPlayer(playerName: string): Promise<typeof players.$inferSelect | null> {
+  private async findPlayer(playerName: string, teamContext?: string): Promise<typeof players.$inferSelect | null> {
     const db = await getDb();
     if (!db) return null;
 
-    // Try exact match first
-    const [exactMatch] = await db.select().from(players).where(eq(players.name, playerName)).limit(1);
+    // Normalize input: trim, remove punctuation, lowercase
+    const normalizedInput = playerName.trim().toLowerCase().replace(/['']/g, "");
+
+    // Try exact match first (case-insensitive)
+    const [exactMatch] = await db.select().from(players)
+      .where(sql`LOWER(REPLACE(REPLACE(${players.name}, "'", ""), "'", "")) = ${normalizedInput}`)
+      .limit(1);
     if (exactMatch) return exactMatch;
 
-    // Try case-insensitive match
-    const [fuzzyMatch] = await db.select().from(players).where(like(players.name, playerName)).limit(1);
-    return fuzzyMatch || null;
+    // Try alias match (case-insensitive)
+    const { playerAliases } = await import("../../drizzle/schema");
+    const [aliasMatch] = await db.select({ player: players })
+      .from(playerAliases)
+      .innerJoin(players, eq(players.id, playerAliases.playerId))
+      .where(sql`LOWER(${playerAliases.alias}) = ${normalizedInput}`)
+      .limit(1);
+    if (aliasMatch) return aliasMatch.player;
+
+    // Try partial match (first name or last name)
+    const nameParts = normalizedInput.split(/\s+/);
+    if (nameParts.length > 0) {
+      const [partialMatch] = await db.select().from(players)
+        .where(sql`LOWER(REPLACE(REPLACE(${players.name}, "'", ""), "'", "")) LIKE ${`%${nameParts[0]}%`}`)
+        .limit(1);
+      if (partialMatch) return partialMatch;
+    }
+
+    return null;
   }
 
   /**

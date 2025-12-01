@@ -721,3 +721,40 @@ Implement comprehensive upgrade validation system that checks all existing and f
   * Provide option to request removal of improper upgrade
 - [x] Integrate validator into existing Discord bot upgrade approval workflow
 - [x] Test complete workflow: validation → violation detection → flagging → notification
+
+
+## Resolve PLAYER_NOT_FOUND Violations
+
+### Goal
+Cross-reference upgrade log with roster database to resolve player name mismatches and missing players.
+
+### Tasks
+- [x] Query all PLAYER_NOT_FOUND violations from upgrade_violations table
+- [x] Cross-reference player names against roster database
+- [x] Add Egor Demin to Magic roster if missing
+- [x] Add Terrence Shannon Jr. to Raptors roster if missing (already existed)
+- [x] Create player name aliases for common variations (34 aliases added)
+- [x] Re-run full audit to verify resolution
+- [x] Report final violation count and remaining issues
+- [x] Add missing player aliases based on team context (Cooper, Berringer, Fox, Porzingis, Jalen variants, Ja, Donovan, Devin)
+- [x] Enhance upgrade compliance validator to use team-aware fuzzy matching
+- [x] Implement case-insensitive and punctuation-insensitive player name matching
+- [x] Apply fuzzy matching logic to Discord bot upgrade approval workflow
+- [x] Re-run upgrade compliance audit with improved matching
+- [x] Verify all PLAYER_NOT_FOUND violations are resolved
+
+
+## Upgrade Limit Tracking
+
+### Goal
+Add UI tracking for player upgrade limits to prevent exceeding NBA 2K26 rules
+
+### Requirements
+- **Overall Rating Cap**: Maximum +6 from 7-game upgrades
+- **Rookie Badge Cap**: Only 2 added badges can be upgraded to Silver
+
+### Tasks
+- [x] Add tracking for +6 overall rating cap from 7-game upgrades
+- [x] Add tracking for rookie badge limit (max 2 added badges upgraded to silver)
+- [x] Display upgrade limits in UI with visual indicators
+- [x] Prevent exceeding upgrade limits with validation

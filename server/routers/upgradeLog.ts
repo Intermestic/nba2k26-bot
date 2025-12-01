@@ -12,6 +12,20 @@ export const upgradeLogRouter = router({
     return upgrades;
   }),
 
+  getByPlayer: publicProcedure
+    .input(z.object({
+      playerName: z.string(),
+    }))
+    .query(async ({ input }) => {
+      const db = await getDb();
+      if (!db) throw new Error("Database connection failed");
+      const upgrades = await db
+        .select()
+        .from(upgradeLog)
+        .where(eq(upgradeLog.playerName, input.playerName));
+      return upgrades;
+    }),
+
   updateNotes: publicProcedure
     .input(
       z.object({

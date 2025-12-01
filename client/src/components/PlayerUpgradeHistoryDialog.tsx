@@ -1,12 +1,13 @@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { trpc } from "@/lib/trpc";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, TrendingUp, Award, Filter } from "lucide-react";
+import { Calendar, TrendingUp, Award, Filter, AlertTriangle, CheckCircle } from "lucide-react";
 import { format } from "date-fns";
 import type { UpgradeRequest } from "../../../drizzle/schema";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Input } from "@/components/ui/input";
+import { Progress } from "@/components/ui/progress";
 
 interface PlayerUpgradeHistoryDialogProps {
   playerName: string | null;
@@ -23,6 +24,20 @@ export function PlayerUpgradeHistoryDialog({ playerName, open, onClose }: Player
     { playerName: playerName || "" },
     { enabled: open && !!playerName }
   );
+
+  // Fetch upgrade log for limit tracking
+  const { data: upgradeLog = [] } = trpc.upgradeLog.getByPlayer.useQuery(
+    { playerName: playerName || "" },
+    { enabled: open && !!playerName }
+  );
+
+  // Fetch player info to check if rookie
+  const { data: players = [] } = trpc.player.list.useQuery({ limit: 1000 });
+  const currentPlayer = useMemo(() => 
+    players.find(p => p.name === playerName),
+    [players, playerName]
+  );
+  const isRookie = currentPlayer?.isRookie === 1;
 
   if (!playerName) return null;
 
@@ -77,6 +92,39 @@ export function PlayerUpgradeHistoryDialog({ playerName, open, onClose }: Player
   const approvedCount = filteredUpgrades.filter((u: UpgradeRequest) => u.status === "approved").length;
   const rejectedCount = filteredUpgrades.filter((u: UpgradeRequest) => u.status === "rejected").length;
   const uniqueBadges = new Set(filteredUpgrades.map((u: UpgradeRequest) => u.badgeName)).size;
+
+  // Calculate upgrade limits
+  const sevenGameOverallIncrease = useMemo(() => {
+    return upgradeLog
+      .filter(log => 
+        log.sourceType?.toLowerCase().includes('game') && 
+        log.upgradeType === 'Attribute'
+      )
+      .reduce((total, log) => {
+        // Parse attribute increases from sourceDetail or toValue
+        const increase = parseInt(log.toValue || '0') - parseInt(log.fromValue || '0');
+        return total + (isNaN(increase) ? 0 : increase);
+      }, 0);
+  }, [upgradeLog]);
+
+  const rookieSilverBadgeCount = useMemo(() => {
+    if (!isRookie) return 0;
+    return upgradeLog
+      .filter(log => 
+        log.sourceType?.toLowerCase().includes('rookie') &&
+        log.upgradeType === 'Badge' &&
+        log.fromValue === 'None' &&
+        log.toValue === 'Silver'
+      )
+      .length;
+  }, [upgradeLog, isRookie]);
+
+  const OVERALL_CAP = 6;
+  const ROOKIE_BADGE_CAP = 2;
+  const overallProgress = (sevenGameOverallIncrease / OVERALL_CAP) * 100;
+  const rookieBadgeProgress = (rookieSilverBadgeCount / ROOKIE_BADGE_CAP) * 100;
+  const overallExceeded = sevenGameOverallIncrease > OVERALL_CAP;
+  const rookieBadgeExceeded = rookieSilverBadgeCount > ROOKIE_BADGE_CAP;
 
   // Get unique source types for filter dropdown
   const uniqueSourceTypes = Array.from(new Set(upgrades.map((u: UpgradeRequest) => u.sourceType).filter(Boolean)));
@@ -157,6 +205,82 @@ export function PlayerUpgradeHistoryDialog({ playerName, open, onClose }: Player
               </Select>
             </div>
           </div>
+        </div>
+
+        {/* Upgrade Limit Tracking */}
+        <div className="bg-slate-700/30 rounded-lg p-4 border border-slate-600 space-y-4">
+          <div className="flex items-center gap-2 mb-2">
+            <TrendingUp className="w-4 h-4 text-blue-400" />
+            <span className="text-sm font-semibold text-slate-300">Upgrade Limits</span>
+          </div>
+          
+          {/* 7-Game Overall Cap */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-slate-300">7-Game Overall Increase</span>
+              <div className="flex items-center gap-2">
+                <span className={`text-sm font-bold ${
+                  overallExceeded ? 'text-red-400' : 
+                  sevenGameOverallIncrease >= OVERALL_CAP - 1 ? 'text-yellow-400' : 
+                  'text-green-400'
+                }`}>
+                  +{sevenGameOverallIncrease} / +{OVERALL_CAP}
+                </span>
+                {overallExceeded ? (
+                  <AlertTriangle className="w-4 h-4 text-red-400" />
+                ) : sevenGameOverallIncrease >= OVERALL_CAP ? (
+                  <CheckCircle className="w-4 h-4 text-green-400" />
+                ) : null}
+              </div>
+            </div>
+            <Progress 
+              value={Math.min(overallProgress, 100)} 
+              className={`h-2 ${
+                overallExceeded ? 'bg-red-900/30' : 'bg-slate-600'
+              }`}
+            />
+            {overallExceeded && (
+              <p className="text-xs text-red-400 flex items-center gap-1">
+                <AlertTriangle className="w-3 h-3" />
+                Exceeded maximum +6 overall cap!
+              </p>
+            )}
+          </div>
+
+          {/* Rookie Badge Cap */}
+          {isRookie && (
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-slate-300">Rookie Added Badges (Silver)</span>
+                <div className="flex items-center gap-2">
+                  <span className={`text-sm font-bold ${
+                    rookieBadgeExceeded ? 'text-red-400' : 
+                    rookieSilverBadgeCount >= ROOKIE_BADGE_CAP - 1 ? 'text-yellow-400' : 
+                    'text-green-400'
+                  }`}>
+                    {rookieSilverBadgeCount} / {ROOKIE_BADGE_CAP}
+                  </span>
+                  {rookieBadgeExceeded ? (
+                    <AlertTriangle className="w-4 h-4 text-red-400" />
+                  ) : rookieSilverBadgeCount >= ROOKIE_BADGE_CAP ? (
+                    <CheckCircle className="w-4 h-4 text-green-400" />
+                  ) : null}
+                </div>
+              </div>
+              <Progress 
+                value={Math.min(rookieBadgeProgress, 100)} 
+                className={`h-2 ${
+                  rookieBadgeExceeded ? 'bg-red-900/30' : 'bg-slate-600'
+                }`}
+              />
+              {rookieBadgeExceeded && (
+                <p className="text-xs text-red-400 flex items-center gap-1">
+                  <AlertTriangle className="w-3 h-3" />
+                  Exceeded maximum 2 rookie badges to silver!
+                </p>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Statistics Cards */}

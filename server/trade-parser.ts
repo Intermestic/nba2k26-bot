@@ -1,6 +1,7 @@
 import { getDb } from './db';
 import { players, matchLogs } from '../drizzle/schema';
 import { extract } from 'fuzzball';
+import { eq, sql } from 'drizzle-orm';
 
 /**
  * Parsed trade structure
@@ -474,7 +475,47 @@ export async function findPlayerByFuzzyName(name: string, teamFilter?: string, c
       }
     }
     
-    // Strategy 4: Check if search matches first name (for unique names like "Giannis")
+    // Strategy 4: Check player aliases (case-insensitive)
+    try {
+      const { playerAliases } = await import('../drizzle/schema');
+      const aliasResults = await db.select({ player: players })
+        .from(playerAliases)
+        .innerJoin(players, eq(players.id, playerAliases.playerId))
+        .where(sql`LOWER(${playerAliases.alias}) = ${searchName}`);
+      
+      // If team filter is specified, filter alias results by team
+      if (aliasResults.length > 0) {
+        let aliasPlayer = aliasResults[0].player;
+        
+        if (teamFilter) {
+          const normalizedTeam = normalizeTeamName(teamFilter);
+          const teamMatch = aliasResults.find(r => r.player.team === normalizedTeam);
+          if (teamMatch) {
+            aliasPlayer = teamMatch.player;
+          } else if (aliasResults.length === 1) {
+            // Only one alias match, use it even if team doesn't match
+            aliasPlayer = aliasResults[0].player;
+          } else {
+            // Multiple alias matches but none match team - skip
+            aliasPlayer = null as any;
+          }
+        }
+        
+        if (aliasPlayer) {
+          await logMatch(name, aliasPlayer.name, 95, 'alias_match', context, teamFilter, true);
+          return {
+            id: aliasPlayer.id,
+            name: aliasPlayer.name,
+            team: aliasPlayer.team || 'Free Agent',
+            overall: aliasPlayer.overall
+          };
+        }
+      }
+    } catch (error) {
+      console.error('[Player Matcher] Error checking aliases:', error);
+    }
+    
+    // Strategy 5: Check if search matches first name (for unique names like "Giannis")
     player = allPlayers.find(p => {
       const parts = p.name.split(' ');
       const firstName = parts[0].toLowerCase();
@@ -490,7 +531,7 @@ export async function findPlayerByFuzzyName(name: string, teamFilter?: string, c
       };
     }
     
-    // Strategy 5: Fuzzy match (fallback)
+    // Strategy 6: Fuzzy match (fallback)
     const matches = extract(name, allPlayers.map(p => p.name));
     
     if (matches.length > 0 && matches[0][1] >= 60) {
