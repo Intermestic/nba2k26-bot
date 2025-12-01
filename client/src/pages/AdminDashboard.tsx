@@ -247,14 +247,7 @@ export default function AdminDashboard() {
       color: "bg-slate-500",
       section: "system"
     },
-    {
-      title: "Upgrade History",
-      description: "View all badge upgrade requests and approvals",
-      href: "/admin/upgrade-history",
-      icon: <Database className="w-6 h-6" />,
-      color: "bg-fuchsia-500",
-      section: "system"
-    },
+
     {
       title: "Upgrade Log",
       description: "Track player badge and attribute upgrades with notes and flags",
@@ -288,8 +281,8 @@ export default function AdminDashboard() {
       section: "system"
     },
     {
-      title: "Upgrade Limits",
-      description: "Monitor players near or at upgrade caps (7-game +6 overall, rookie badges)",
+      title: "Player Upgrade Progress",
+      description: "Track all player upgrades and monitor progress toward limits (7GM, Welcome, 5GM, Rookie, OG, etc.)",
       href: "/admin/upgrade-limits",
       icon: <AlertTriangle className="w-6 h-6" />,
       color: "bg-orange-500",

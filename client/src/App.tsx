@@ -24,7 +24,7 @@ import Analytics from "./pages/Analytics";
 import ServerLogs from "./pages/ServerLogs";
 import AdminDashboard from "./pages/AdminDashboard";
 import UpgradeSummary from "./pages/admin/UpgradeSummary";
-import UpgradeHistory from "./pages/admin/UpgradeHistory";
+
 import UpgradeHistoryDashboard from "./pages/admin/UpgradeHistoryDashboard";
 import ValidationRules from "./pages/admin/ValidationRules";
 import TradeManagement from "./pages/TradeManagement";
@@ -50,7 +50,7 @@ function Router() {
       <Route path={"/players"} component={Home} />
       <Route path={"/admin"} component={AdminDashboard} />
       <Route path={"/admin/upgrade-summary"} component={UpgradeSummary} />
-      <Route path={"/admin/upgrade-history"} component={UpgradeHistory} />
+
       <Route path={"/admin/upgrade-dashboard"} component={UpgradeHistoryDashboard} />
       <Route path={"/admin/validation-rules"} component={ValidationRules} />
       <Route path={"/admin/trades"} component={TradeManagement} />

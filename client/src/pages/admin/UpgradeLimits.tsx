@@ -5,13 +5,13 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { AlertCircle, AlertTriangle, CheckCircle, Download, Loader2 } from 'lucide-react';
+import { AlertCircle, AlertTriangle, CheckCircle, Download, Loader2, TrendingUp } from 'lucide-react';
 import { Link } from 'wouter';
 
 export default function UpgradeLimits() {
   const [filterTeam, setFilterTeam] = useState<string>('all');
   const [filterStatus, setFilterStatus] = useState<'all' | 'at_cap' | 'near_cap'>('all');
-  const [filterType, setFilterType] = useState<'all' | 'overall' | 'badge'>('all');
+  const [filterType, setFilterType] = useState<'all' | 'overall' | 'badge' | 'welcome' | 'fivegm' | 'rookie' | 'og'>('all');
 
   const { data: teams } = trpc.upgradeLimits.getTeams.useQuery();
   const { data, isLoading } = trpc.upgradeLimits.getUpgradeLimitStatus.useQuery({
@@ -34,6 +34,13 @@ export default function UpgradeLimits() {
       'Badge Upgrades',
       'Badge Remaining',
       'Badge Status',
+      'Welcome Upgrades',
+      'Welcome Remaining',
+      '5GM Badges',
+      'OG Upgrades',
+      'Superstar Upgrades',
+      'Activity Bonus',
+      'Total Upgrades',
     ];
 
     const rows = data.players.map((p: any) => [
@@ -47,6 +54,13 @@ export default function UpgradeLimits() {
       p.badgeUpgradesToSilver ?? 'N/A',
       p.badgeRemaining ?? 'N/A',
       p.badgeStatus,
+      p.welcomeUpgrades,
+      p.welcomeRemaining,
+      p.fiveGameBadges,
+      p.ogUpgrades,
+      p.superstarUpgrades,
+      p.activityBonusUpgrades,
+      p.totalUpgrades,
     ]);
 
     const csv = [headers, ...rows].map(row => row.join(',')).join('\n');
@@ -54,7 +68,7 @@ export default function UpgradeLimits() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `upgrade-limits-${new Date().toISOString().split('T')[0]}.csv`;
+    a.download = `player-upgrade-progress-${new Date().toISOString().split('T')[0]}.csv`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -89,16 +103,19 @@ export default function UpgradeLimits() {
 
   return (
     <div className="container mx-auto py-8 space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Upgrade Limits Dashboard</h1>
-        <p className="text-muted-foreground mt-2">
-          Monitor players approaching or at their upgrade caps
-        </p>
+      <div className="flex items-center gap-3">
+        <TrendingUp className="h-8 w-8" />
+        <div>
+          <h1 className="text-3xl font-bold">Player Upgrade Progress</h1>
+          <p className="text-muted-foreground mt-1">
+            Track all player upgrades and monitor progress toward limits
+          </p>
+        </div>
       </div>
 
       {/* Summary Cards */}
       {data?.summary && (
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
           <Card>
             <CardHeader className="pb-3">
               <CardTitle className="text-sm font-medium">Total Players</CardTitle>
@@ -110,7 +127,16 @@ export default function UpgradeLimits() {
 
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-red-600">7-Game At Cap</CardTitle>
+              <CardTitle className="text-sm font-medium">Total Upgrades</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{data.summary.totalUpgrades}</div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-medium text-red-600">7GM At Cap</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-red-600">{data.summary.atCapOverall}</div>
@@ -119,7 +145,7 @@ export default function UpgradeLimits() {
 
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-yellow-600">7-Game Near Cap</CardTitle>
+              <CardTitle className="text-sm font-medium text-yellow-600">7GM Near</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-yellow-600">{data.summary.nearCapOverall}</div>
@@ -137,10 +163,28 @@ export default function UpgradeLimits() {
 
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-yellow-600">Badge Near Cap</CardTitle>
+              <CardTitle className="text-sm font-medium text-yellow-600">Badge Near</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-yellow-600">{data.summary.nearCapBadge}</div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-medium text-red-600">Welcome At Cap</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-red-600">{data.summary.atCapWelcome}</div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-medium text-yellow-600">Welcome Near</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-yellow-600">{data.summary.nearCapWelcome}</div>
             </CardContent>
           </Card>
         </div>
@@ -194,6 +238,10 @@ export default function UpgradeLimits() {
                 <SelectItem value="all">All Types</SelectItem>
                 <SelectItem value="overall">7-Game Overall</SelectItem>
                 <SelectItem value="badge">Rookie Badges</SelectItem>
+                <SelectItem value="welcome">Welcome Upgrades</SelectItem>
+                <SelectItem value="fivegm">5-Game Badges</SelectItem>
+                <SelectItem value="rookie">Rookies Only</SelectItem>
+                <SelectItem value="og">OG Upgrades</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -210,9 +258,9 @@ export default function UpgradeLimits() {
       {/* Players Table */}
       <Card>
         <CardHeader>
-          <CardTitle>Players</CardTitle>
+          <CardTitle>Player Upgrade Progress</CardTitle>
           <CardDescription>
-            Click on a player to view their detailed upgrade history
+            Comprehensive view of all player upgrades across all categories
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -221,27 +269,32 @@ export default function UpgradeLimits() {
               <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
             </div>
           ) : data?.players && data.players.length > 0 ? (
-            <div className="rounded-md border">
+            <div className="rounded-md border overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Player</TableHead>
+                    <TableHead className="sticky left-0 bg-background">Player</TableHead>
                     <TableHead>Team</TableHead>
-                    <TableHead>Overall</TableHead>
+                    <TableHead>OVR</TableHead>
                     <TableHead>Rookie</TableHead>
-                    <TableHead>7-Game Usage</TableHead>
-                    <TableHead>7-Game Remaining</TableHead>
-                    <TableHead>7-Game Status</TableHead>
-                    <TableHead>Badge Upgrades</TableHead>
-                    <TableHead>Badge Remaining</TableHead>
+                    <TableHead>7GM</TableHead>
+                    <TableHead>7GM Status</TableHead>
+                    <TableHead>Badges</TableHead>
                     <TableHead>Badge Status</TableHead>
+                    <TableHead>Welcome</TableHead>
+                    <TableHead>Welcome Status</TableHead>
+                    <TableHead>5GM</TableHead>
+                    <TableHead>OG</TableHead>
+                    <TableHead>Superstar</TableHead>
+                    <TableHead>Activity</TableHead>
+                    <TableHead>Total</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {data.players.map((player: any) => (
                     <TableRow key={player.id}>
-                      <TableCell>
-                        <Link href={`/player/${player.id}`} className="hover:underline font-medium">
+                      <TableCell className="sticky left-0 bg-background font-medium">
+                        <Link href={`/player/${player.id}`} className="hover:underline">
                           {player.fullName}
                         </Link>
                       </TableCell>
@@ -250,22 +303,31 @@ export default function UpgradeLimits() {
                       <TableCell>{player.isRookie ? 'Yes' : 'No'}</TableCell>
                       <TableCell>
                         <span className={player.sevenGameIncrease >= 6 ? 'text-red-600 font-semibold' : player.sevenGameIncrease >= 5 ? 'text-yellow-600 font-semibold' : ''}>
-                          +{player.sevenGameIncrease}
+                          +{player.sevenGameIncrease}/{player.sevenGameRemaining} left
                         </span>
                       </TableCell>
-                      <TableCell>{player.sevenGameRemaining}</TableCell>
                       <TableCell>{getStatusBadge(player.sevenGameStatus)}</TableCell>
                       <TableCell>
                         {player.badgeUpgradesToSilver !== null ? (
                           <span className={player.badgeUpgradesToSilver >= 2 ? 'text-red-600 font-semibold' : player.badgeUpgradesToSilver >= 1 ? 'text-yellow-600 font-semibold' : ''}>
-                            {player.badgeUpgradesToSilver}
+                            {player.badgeUpgradesToSilver}/{player.badgeRemaining ?? 0} left
                           </span>
                         ) : (
                           'N/A'
                         )}
                       </TableCell>
-                      <TableCell>{player.badgeRemaining ?? 'N/A'}</TableCell>
                       <TableCell>{getStatusBadge(player.badgeStatus)}</TableCell>
+                      <TableCell>
+                        <span className={player.welcomeUpgrades >= 2 ? 'text-red-600 font-semibold' : player.welcomeUpgrades >= 1 ? 'text-yellow-600 font-semibold' : ''}>
+                          {player.welcomeUpgrades}/{player.welcomeRemaining} left
+                        </span>
+                      </TableCell>
+                      <TableCell>{getStatusBadge(player.welcomeStatus)}</TableCell>
+                      <TableCell>{player.fiveGameBadges}</TableCell>
+                      <TableCell>{player.ogUpgrades}</TableCell>
+                      <TableCell>{player.superstarUpgrades}</TableCell>
+                      <TableCell>{player.activityBonusUpgrades}</TableCell>
+                      <TableCell className="font-semibold">{player.totalUpgrades}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

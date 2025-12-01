@@ -1,16 +1,16 @@
 import { router, publicProcedure } from '../_core/trpc';
 import { getDb } from '../db';
-import { players, playerUpgrades } from '../../drizzle/schema';
+import { players, playerUpgrades, upgradeLog } from '../../drizzle/schema';
 import { eq, sql, and } from 'drizzle-orm';
 import { z } from 'zod';
 
 export const upgradeLimitsRouter = router({
-  // Get all players with their upgrade limit status
+  // Get all players with their comprehensive upgrade status
   getUpgradeLimitStatus: publicProcedure
     .input(z.object({
       filterTeam: z.string().optional(),
       filterStatus: z.enum(['all', 'at_cap', 'near_cap']).default('all'),
-      filterType: z.enum(['all', 'overall', 'badge']).default('all'),
+      filterType: z.enum(['all', 'overall', 'badge', 'welcome', 'fivegm', 'rookie', 'og']).default('all'),
     }))
     .query(async ({ input }) => {
       const db = await getDb();
@@ -23,58 +23,103 @@ export const upgradeLimitsRouter = router({
         ? await db.select().from(players).where(eq(players.team, input.filterTeam))
         : await db.select().from(players);
       
-      // For each player, calculate their upgrade limit status
+      // For each player, calculate their comprehensive upgrade status
       const results = await Promise.all(allPlayers.map(async (player: any) => {
-        // Get all upgrades for this player
+        // Get all upgrades for this player from playerUpgrades table
         const upgrades = await db
           .select()
           .from(playerUpgrades)
           .where(eq(playerUpgrades.playerId, player.id));
         
-        // Calculate 7-game overall upgrades (attribute upgrades from 7GM)
+        // Get all upgrades from upgradeLog table for this player
+        const logUpgrades = await db
+          .select()
+          .from(upgradeLog)
+          .where(eq(upgradeLog.playerName, player.name));
+        
+        // Initialize counters for different upgrade types
         let sevenGameOverallIncrease = 0;
         let sevenGameCount = 0;
+        let welcomeUpgrades = 0;
+        let fiveGameBadges = 0;
+        let rookieBadgesToSilver = 0;
+        let ogUpgrades = 0;
+        let superstarUpgrades = 0;
+        let activityBonusUpgrades = 0;
         
+        // Process playerUpgrades table
         upgrades.forEach((upgrade: any) => {
           try {
             const metadata = upgrade.metadata ? JSON.parse(upgrade.metadata) : {};
             
-            // Check if this is a 7-game attribute upgrade
+            // 7-Game attribute upgrades
             if (metadata.upgradeType === '7GM' && upgrade.upgradeType === 'attribute' && upgrade.statIncrease) {
               sevenGameOverallIncrease += upgrade.statIncrease;
               sevenGameCount++;
+            }
+            
+            // Welcome upgrades
+            if (metadata.upgradeType === 'Welcome') {
+              welcomeUpgrades++;
+            }
+            
+            // 5-Game badge upgrades
+            if (metadata.upgradeType === '5GM') {
+              fiveGameBadges++;
+            }
+            
+            // Rookie badge upgrades to silver
+            if (player.isRookie && upgrade.upgradeType === 'new_badge' && upgrade.toLevel === 'silver') {
+              rookieBadgesToSilver++;
+            }
+            
+            // OG upgrades
+            if (metadata.upgradeType === 'OG') {
+              ogUpgrades++;
+            }
+            
+            // Superstar Pack upgrades
+            if (metadata.upgradeType === 'Superstar') {
+              superstarUpgrades++;
+            }
+            
+            // Activity Bonus upgrades
+            if (metadata.upgradeType === 'Activity') {
+              activityBonusUpgrades++;
             }
           } catch (e) {
             // Skip invalid metadata
           }
         });
         
-        // Calculate rookie badge upgrades to silver
-        let badgeUpgradesToSilver = 0;
+        // Also process upgradeLog table for additional tracking
+        logUpgrades.forEach((log: any) => {
+          const sourceType = log.sourceType?.toLowerCase() || '';
+          
+          if (sourceType.includes('welcome')) {
+            welcomeUpgrades++;
+          } else if (sourceType.includes('5') || sourceType.includes('five')) {
+            fiveGameBadges++;
+          } else if (sourceType.includes('og')) {
+            ogUpgrades++;
+          } else if (sourceType.includes('superstar')) {
+            superstarUpgrades++;
+          } else if (sourceType.includes('activity')) {
+            activityBonusUpgrades++;
+          }
+        });
         
-        if (player.isRookie) {
-          upgrades.forEach((upgrade: any) => {
-            try {
-              const metadata = upgrade.metadata ? JSON.parse(upgrade.metadata) : {};
-              
-              // Check if this is a new badge upgraded to silver
-              if (
-                upgrade.upgradeType === 'new_badge' &&
-                upgrade.toLevel === 'silver'
-              ) {
-                badgeUpgradesToSilver++;
-              }
-            } catch (e) {
-              // Skip invalid metadata
-            }
-          });
-        }
-        
-        // Determine status
+        // Determine status for each upgrade type
         const sevenGameStatus = sevenGameOverallIncrease >= 6 ? 'at_cap' : sevenGameOverallIncrease >= 5 ? 'near_cap' : 'ok';
         const badgeStatus = player.isRookie 
-          ? (badgeUpgradesToSilver >= 2 ? 'at_cap' : badgeUpgradesToSilver >= 1 ? 'near_cap' : 'ok')
+          ? (rookieBadgesToSilver >= 2 ? 'at_cap' : rookieBadgesToSilver >= 1 ? 'near_cap' : 'ok')
           : 'n/a';
+        
+        // Welcome upgrades: typically 2 max
+        const welcomeStatus = welcomeUpgrades >= 2 ? 'at_cap' : welcomeUpgrades >= 1 ? 'near_cap' : 'ok';
+        
+        // 5GM badges: no strict limit but track usage
+        const fiveGmStatus = fiveGameBadges >= 3 ? 'near_cap' : 'ok';
         
         return {
           id: player.id,
@@ -82,13 +127,34 @@ export const upgradeLimitsRouter = router({
           team: player.team,
           overall: player.overall,
           isRookie: player.isRookie,
+          
+          // 7-Game Overall
           sevenGameIncrease: sevenGameOverallIncrease,
           sevenGameCount,
           sevenGameRemaining: Math.max(0, 6 - sevenGameOverallIncrease),
           sevenGameStatus,
-          badgeUpgradesToSilver,
-          badgeRemaining: player.isRookie ? Math.max(0, 2 - badgeUpgradesToSilver) : null,
+          
+          // Rookie Badges
+          badgeUpgradesToSilver: rookieBadgesToSilver,
+          badgeRemaining: player.isRookie ? Math.max(0, 2 - rookieBadgesToSilver) : null,
           badgeStatus,
+          
+          // Welcome Upgrades
+          welcomeUpgrades,
+          welcomeRemaining: Math.max(0, 2 - welcomeUpgrades),
+          welcomeStatus,
+          
+          // 5-Game Badges
+          fiveGameBadges,
+          fiveGmStatus,
+          
+          // Other upgrade types
+          ogUpgrades,
+          superstarUpgrades,
+          activityBonusUpgrades,
+          
+          // Total upgrades
+          totalUpgrades: upgrades.length + logUpgrades.length,
         };
       }));
       
@@ -97,7 +163,10 @@ export const upgradeLimitsRouter = router({
       
       if (input.filterStatus !== 'all') {
         filtered = filtered.filter((p: any) => 
-          p.sevenGameStatus === input.filterStatus || p.badgeStatus === input.filterStatus
+          p.sevenGameStatus === input.filterStatus || 
+          p.badgeStatus === input.filterStatus ||
+          p.welcomeStatus === input.filterStatus ||
+          p.fiveGmStatus === input.filterStatus
         );
       }
       
@@ -105,6 +174,14 @@ export const upgradeLimitsRouter = router({
         filtered = filtered.filter((p: any) => p.sevenGameStatus === 'at_cap' || p.sevenGameStatus === 'near_cap');
       } else if (input.filterType === 'badge') {
         filtered = filtered.filter((p: any) => p.badgeStatus === 'at_cap' || p.badgeStatus === 'near_cap');
+      } else if (input.filterType === 'welcome') {
+        filtered = filtered.filter((p: any) => p.welcomeStatus === 'at_cap' || p.welcomeStatus === 'near_cap');
+      } else if (input.filterType === 'fivegm') {
+        filtered = filtered.filter((p: any) => p.fiveGmStatus === 'near_cap');
+      } else if (input.filterType === 'rookie') {
+        filtered = filtered.filter((p: any) => p.isRookie);
+      } else if (input.filterType === 'og') {
+        filtered = filtered.filter((p: any) => p.ogUpgrades > 0);
       }
       
       // Calculate summary statistics
@@ -114,6 +191,9 @@ export const upgradeLimitsRouter = router({
         nearCapOverall: filtered.filter((p: any) => p.sevenGameStatus === 'near_cap').length,
         atCapBadge: filtered.filter((p: any) => p.badgeStatus === 'at_cap').length,
         nearCapBadge: filtered.filter((p: any) => p.badgeStatus === 'near_cap').length,
+        atCapWelcome: filtered.filter((p: any) => p.welcomeStatus === 'at_cap').length,
+        nearCapWelcome: filtered.filter((p: any) => p.welcomeStatus === 'near_cap').length,
+        totalUpgrades: filtered.reduce((sum: number, p: any) => sum + p.totalUpgrades, 0),
       };
       
       return {

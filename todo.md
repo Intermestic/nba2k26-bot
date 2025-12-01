@@ -790,3 +790,23 @@ Ensure all existing upgrade_log data is properly integrated and accessible throu
 - [x] Add team-level upgrade statistics
 - [x] Ensure accurate upgrade counts are displayed throughout the system
 - [x] Add export functionality for upgrade log data
+
+
+## Consolidate Upgrade System
+
+### Issues
+1. Upgrade history channel appears to be a non-working remnant
+2. Three separate systems: upgrade log, upgrade requests, upgrade validation rules
+3. No UI to track individual player progress toward upgrade limits
+
+### Tasks
+- [x] Analyze current upgrade-related database tables and code
+- [x] Identify and remove upgrade history channel remnants
+- [x] Consolidate upgrade log, requests, and validation rules into unified system
+- [x] Create admin UI to view all player upgrade progress
+- [x] Show current overall rating vs upgrade limits for each player
+- [x] Display upgrade history per player
+- [x] Add filtering/sorting by team, position, upgrade status
+- [x] Show pending upgrade requests with approval status
+- [x] Integrate validation rules display in UI
+- [x] Test consolidated upgrade system end-to-end
