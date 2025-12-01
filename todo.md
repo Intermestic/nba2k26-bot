@@ -879,3 +879,24 @@ Populate badge_additions table with historical data from player_upgrades
 - [x] Distinguish between original badges and added badges
 - [x] Insert historical records into badge_additions table
 - [x] Verify data accuracy with spot checks
+
+
+## Upgrade Rollback and Correction System
+
+### Goal
+Add ability to rollback or correct incorrectly logged upgrades with full audit trail
+
+### Requirements
+- Rollback: Completely undo an upgrade and restore previous state
+- Correction: Edit upgrade details (badge name, tier, attributes, source type) without deleting
+- Audit trail: Track all corrections and rollbacks for transparency
+- UI: Add rollback/edit buttons to Upgrade Summary page
+
+### Tasks
+- [x] Add database schema for upgrade corrections and rollbacks (audit trail)
+- [x] Create backend procedures for rollback operations (undo upgrades)
+- [x] Create backend procedures for correction operations (edit upgrade details)
+- [x] Build UI for rollback functionality in Upgrade Summary page
+- [x] Build UI for correction/edit functionality in Upgrade Summary page
+- [x] Add confirmation dialogs for rollback and correction actions
+- [x] Test rollback and correction features

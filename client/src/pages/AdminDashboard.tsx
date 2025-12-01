@@ -25,7 +25,9 @@ import {
   ScrollText,
   Clock,
   Heart,
-  ShieldCheck
+  ShieldCheck,
+  RotateCcw,
+  Edit
 } from "lucide-react";
 
 interface AdminTool {
@@ -190,6 +192,14 @@ export default function AdminDashboard() {
       color: "bg-green-500",
       section: "system",
       statKey: "pendingUpgrades"
+    },
+    {
+      title: "Upgrade Management",
+      description: "Rollback or correct completed upgrades",
+      href: "/admin/upgrade-management",
+      icon: <RotateCcw className="w-6 h-6" />,
+      color: "bg-orange-500",
+      section: "system"
     },
     {
       title: "Player Aliases",

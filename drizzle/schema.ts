@@ -720,6 +720,41 @@ export type BadgeAddition = typeof badgeAdditions.$inferSelect;
 export type InsertBadgeAddition = typeof badgeAdditions.$inferInsert;
 
 /**
+ * Upgrade Audit Trail table - tracks all rollbacks and corrections to player upgrades
+ */
+export const upgradeAuditTrail = mysqlTable("upgrade_audit_trail", {
+  id: int("id").autoincrement().primaryKey(),
+  upgradeId: int("upgradeId").notNull(), // Reference to playerUpgrades.id
+  actionType: mysqlEnum("actionType", ["rollback", "correction"]).notNull(),
+  performedBy: int("performedBy").notNull(), // Reference to users.id who performed the action
+  performedByName: varchar("performedByName", { length: 255 }).notNull(),
+  reason: text("reason"), // Reason for rollback or correction
+  
+  // Original values before correction (null for rollback)
+  originalBadgeName: varchar("originalBadgeName", { length: 100 }),
+  originalFromLevel: mysqlEnum("originalFromLevel", ["none", "bronze", "silver", "gold"]),
+  originalToLevel: mysqlEnum("originalToLevel", ["bronze", "silver", "gold"]),
+  originalStatName: varchar("originalStatName", { length: 50 }),
+  originalStatIncrease: int("originalStatIncrease"),
+  originalNewStatValue: int("originalNewStatValue"),
+  originalMetadata: text("originalMetadata"), // JSON snapshot of original metadata
+  
+  // New values after correction (null for rollback)
+  correctedBadgeName: varchar("correctedBadgeName", { length: 100 }),
+  correctedFromLevel: mysqlEnum("correctedFromLevel", ["none", "bronze", "silver", "gold"]),
+  correctedToLevel: mysqlEnum("correctedToLevel", ["bronze", "silver", "gold"]),
+  correctedStatName: varchar("correctedStatName", { length: 50 }),
+  correctedStatIncrease: int("correctedStatIncrease"),
+  correctedNewStatValue: int("correctedNewStatValue"),
+  correctedMetadata: text("correctedMetadata"), // JSON snapshot of corrected metadata
+  
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type UpgradeAuditTrail = typeof upgradeAuditTrail.$inferSelect;
+export type InsertUpgradeAuditTrail = typeof upgradeAuditTrail.$inferInsert;
+
+/**
  * Validation Rules table - configurable upgrade validation rules
  */
 export const validationRules = mysqlTable("validation_rules", {
