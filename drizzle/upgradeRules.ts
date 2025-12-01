@@ -30,6 +30,10 @@ export const upgradeViolations = mysqlTable("upgrade_violations", {
   resolved: boolean("resolved").default(false).notNull(),
   resolvedAt: timestamp("resolvedAt"),
   resolvedBy: varchar("resolvedBy", { length: 255 }),
+  flagged: boolean("flagged").default(false).notNull(),
+  flaggedAt: timestamp("flaggedAt"),
+  flaggedBy: varchar("flaggedBy", { length: 255 }),
+  flagNotes: text("flagNotes"),
   notes: text("notes"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });

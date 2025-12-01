@@ -694,11 +694,30 @@ Track individual player swaps (DNA swaps, player replacements) at player level.
 ### Goal
 Implement comprehensive upgrade validation system that checks all existing and future upgrades against detailed upgrade rules, then run dry-run audit to identify violations before finalizing.
 
+### Current Status
+- Dry-run audit complete: 334 upgrades audited, 99.70% compliance
+- 1 violation found: Raynaud Interior Defense 59→60 (attribute below minimum threshold)
+- Multiple upgrade-related tables exist: upgrade_rules, upgrade_requests, upgrade_log, player_upgrades, upgrade_violations, upgrade_audits
+- /admin/upgrade-compliance route returns 404
+- No button on admin dashboard to access compliance features
+
 ### Tasks
-- [ ] Parse upgrade rules CSV and create validation rule database
-- [ ] Design validation system architecture
-- [ ] Implement comprehensive upgrade validator with all rule checks
-- [ ] Create dry-run audit system to check existing upgrades
-- [ ] Build admin UI to view compliance reports and violations
-- [ ] Integrate validator into Discord bot upgrade approval workflow
-- [ ] Run full audit and present findings to user
+- [x] Parse upgrade rules CSV and create validation rule database
+- [x] Design validation system architecture
+- [x] Implement comprehensive upgrade validator with all rule checks
+- [x] Create dry-run audit system to check existing upgrades
+- [x] Run full audit and present findings to user
+- [ ] Audit all existing upgrade-related database tables and identify purpose
+- [ ] Audit all existing upgrade-related routes and pages
+- [ ] Consolidate duplicate functionality into unified system
+- [ ] Remove old/unused upgrade tables and functions
+- [x] Create /admin/upgrade-compliance page with violation viewing
+- [x] Add "Upgrade Compliance" button to admin dashboard
+- [x] Implement violation flagging UI (flag violations with notes)
+- [x] Add Discord notification feature for flagged violations
+  * Post to channel 1149106208498790500
+  * Include @admins mention
+  * Include violation details (player, attribute/badge, old→new value, rule violated)
+  * Provide option to request removal of improper upgrade
+- [x] Integrate validator into existing Discord bot upgrade approval workflow
+- [x] Test complete workflow: validation → violation detection → flagging → notification

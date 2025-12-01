@@ -24,7 +24,8 @@ import {
   Power,
   ScrollText,
   Clock,
-  Heart
+  Heart,
+  ShieldCheck
 } from "lucide-react";
 
 interface AdminTool {
@@ -268,6 +269,14 @@ export default function AdminDashboard() {
       href: "/admin/validation-rules",
       icon: <Settings className="w-6 h-6" />,
       color: "bg-rose-500",
+      section: "system"
+    },
+    {
+      title: "Upgrade Compliance",
+      description: "Audit and validate all player upgrades against official rules",
+      href: "/admin/upgrade-compliance",
+      icon: <ShieldCheck className="w-6 h-6" />,
+      color: "bg-purple-500",
       section: "system"
     },
     {

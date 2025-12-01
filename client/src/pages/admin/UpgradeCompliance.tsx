@@ -14,6 +14,9 @@ export default function UpgradeCompliance() {
   const [isRunningAudit, setIsRunningAudit] = useState(false);
   const [selectedViolation, setSelectedViolation] = useState<any>(null);
   const [resolveNotes, setResolveNotes] = useState("");
+  const [flagDialogOpen, setFlagDialogOpen] = useState(false);
+  const [flagNotes, setFlagNotes] = useState("");
+  const [violationToFlag, setViolationToFlag] = useState<any>(null);
 
   const { data: stats, refetch: refetchStats } = trpc.upgradeCompliance.getViolationStats.useQuery();
   const { data: violations, refetch: refetchViolations } = trpc.upgradeCompliance.getViolations.useQuery({
@@ -49,6 +52,20 @@ export default function UpgradeCompliance() {
     },
   });
 
+  const flagViolationMutation = trpc.upgradeCompliance.flagViolation.useMutation({
+    onSuccess: () => {
+      toast.success("Violation flagged and Discord notification sent!");
+      setFlagDialogOpen(false);
+      setViolationToFlag(null);
+      setFlagNotes("");
+      refetchStats();
+      refetchViolations();
+    },
+    onError: (error) => {
+      toast.error(`Failed to flag violation: ${error.message}`);
+    },
+  });
+
   const handleRunAudit = () => {
     setIsRunningAudit(true);
     runAuditMutation.mutate({ createdBy: "Admin" });
@@ -61,6 +78,20 @@ export default function UpgradeCompliance() {
       resolvedBy: "Admin",
       notes: resolveNotes,
     });
+  };
+
+  const handleFlagViolation = () => {
+    if (!violationToFlag) return;
+    flagViolationMutation.mutate({
+      id: violationToFlag.id,
+      flaggedBy: "Admin",
+      flagNotes: flagNotes,
+    });
+  };
+
+  const openFlagDialog = (violation: any) => {
+    setViolationToFlag(violation);
+    setFlagDialogOpen(true);
   };
 
   const getSeverityIcon = (severity: string) => {
@@ -218,13 +249,23 @@ export default function UpgradeCompliance() {
                           <p className="text-xs text-muted-foreground mt-1">{violation.details}</p>
                         </TableCell>
                         <TableCell>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => setSelectedViolation(violation)}
-                          >
-                            Resolve
-                          </Button>
+                          <div className="flex gap-2">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => openFlagDialog(violation)}
+                              disabled={violation.flagged}
+                            >
+                              {violation.flagged ? "Flagged" : "Flag"}
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => setSelectedViolation(violation)}
+                            >
+                              Resolve
+                            </Button>
+                          </div>
                         </TableCell>
                       </TableRow>
                     ))}
@@ -350,6 +391,45 @@ export default function UpgradeCompliance() {
             </Button>
             <Button onClick={handleResolveViolation}>
               Mark as Resolved
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Flag Violation Dialog */}
+      <Dialog open={flagDialogOpen} onOpenChange={setFlagDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Flag Violation for Admin Review</DialogTitle>
+            <DialogDescription>
+              Flag this violation and send a notification to Discord admins to request removal of the improper upgrade
+            </DialogDescription>
+          </DialogHeader>
+          {violationToFlag && (
+            <div className="space-y-4">
+              <div>
+                <p className="text-sm font-medium">Player: {violationToFlag.playerName}</p>
+                <p className="text-sm text-muted-foreground">Upgrade Type: {violationToFlag.upgradeType}</p>
+                <p className="text-sm text-muted-foreground">Violation: {violationToFlag.violationType}</p>
+                <p className="text-sm text-muted-foreground mt-2">{violationToFlag.ruleViolated}</p>
+              </div>
+              <div>
+                <label className="text-sm font-medium">Notes (Optional)</label>
+                <Textarea
+                  value={flagNotes}
+                  onChange={(e) => setFlagNotes(e.target.value)}
+                  placeholder="Add any additional context about this violation..."
+                  className="mt-2"
+                />
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setFlagDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleFlagViolation} variant="destructive">
+              Flag & Notify Admins
             </Button>
           </DialogFooter>
         </DialogContent>
