@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { trpc } from "@/lib/trpc";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, TrendingUp, Award, Filter, AlertTriangle, CheckCircle } from "lucide-react";
+import { Calendar, TrendingUp, Award, Filter, AlertTriangle, CheckCircle, User, Users } from "lucide-react";
 import { format } from "date-fns";
 import type { UpgradeRequest } from "../../../drizzle/schema";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -29,6 +29,12 @@ export function PlayerUpgradeHistoryDialog({ playerName, open, onClose }: Player
   const { data: upgradeLog = [] } = trpc.upgradeLog.getByPlayer.useQuery(
     { playerName: playerName || "" },
     { enabled: open && !!playerName }
+  );
+
+  // Fetch upgrade history grouped by user
+  const { data: upgradesByUser = [] } = trpc.upgradeHistory.getPlayerUpgradesByUser.useQuery(
+    { playerId: currentPlayer?.id || "" },
+    { enabled: open && !!currentPlayer?.id }
   );
 
   // Fetch player info to check if rookie
@@ -282,6 +288,34 @@ export function PlayerUpgradeHistoryDialog({ playerName, open, onClose }: Player
             </div>
           )}
         </div>
+
+        {/* Upgrade History by User */}
+        {upgradesByUser.length > 0 && (
+          <div className="bg-slate-700/30 rounded-lg p-4 border border-slate-600">
+            <div className="flex items-center gap-2 mb-3">
+              <Users className="w-4 h-4 text-blue-400" />
+              <span className="text-sm font-semibold text-slate-300">Upgrades by User</span>
+            </div>
+            <div className="space-y-3">
+              {upgradesByUser.map((userSummary: any) => (
+                <div key={userSummary.userId} className="bg-slate-700/50 rounded-lg p-3 border border-slate-600">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <User className="w-4 h-4 text-blue-400" />
+                      <span className="font-semibold text-white">{userSummary.userName}</span>
+                    </div>
+                    <Badge className="bg-blue-600 text-white">
+                      {userSummary.upgradeCount} upgrade{userSummary.upgradeCount !== 1 ? 's' : ''}
+                    </Badge>
+                  </div>
+                  <div className="text-xs text-slate-400 leading-relaxed">
+                    {userSummary.upgrades}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Statistics Cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

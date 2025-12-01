@@ -900,3 +900,17 @@ Add ability to rollback or correct incorrectly logged upgrades with full audit t
 - [x] Build UI for correction/edit functionality in Upgrade Summary page
 - [x] Add confirmation dialogs for rollback and correction actions
 - [x] Test rollback and correction features
+
+
+## Upgrade History Tracking
+
+### Goal
+Track and display specific upgrades (attribute name, date, user) for each player to verify upgrade counts and resolve discrepancies
+
+### Tasks
+- [x] Create upgrade_history database table (player_id, attribute_name, user_id, timestamp)
+- [x] Update upgrade procedures to record history entries
+- [x] Create TRPC endpoint to fetch upgrade history for a player
+- [x] Display upgrade history in player details modal
+- [x] Show upgrade count summaries by user
+- [x] Test upgrade history tracking end-to-end

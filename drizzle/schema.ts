@@ -974,5 +974,26 @@ export const tradeLogs = mysqlTable("trade_logs", {
 export type TradeLog = typeof tradeLogs.$inferSelect;
 export type InsertTradeLog = typeof tradeLogs.$inferInsert;
 
+/**
+ * Upgrade History table - detailed tracking of each individual upgrade
+ * Provides audit trail showing attribute name, date, and user for each upgrade
+ */
+export const upgradeHistory = mysqlTable("upgrade_history", {
+  id: int("id").autoincrement().primaryKey(),
+  playerId: varchar("playerId", { length: 64 }).notNull(), // Reference to players.id
+  playerName: varchar("playerName", { length: 255 }).notNull(), // Denormalized for history
+  attributeName: varchar("attributeName", { length: 255 }).notNull(), // Specific attribute upgraded (e.g., "3PT", "Finishing", "Welcome")
+  upgradeType: varchar("upgradeType", { length: 50 }).notNull(), // Type of upgrade (e.g., "Welcome", "Game", "Badge", "Attribute")
+  userId: varchar("userId", { length: 64 }).notNull(), // Discord user ID who performed upgrade
+  userName: varchar("userName", { length: 255 }).notNull(), // Discord username (denormalized)
+  team: varchar("team", { length: 100 }).notNull(), // Team at time of upgrade
+  previousValue: varchar("previousValue", { length: 50 }), // Value before upgrade (if applicable)
+  newValue: varchar("newValue", { length: 50 }), // Value after upgrade (if applicable)
+  createdAt: timestamp("createdAt").defaultNow().notNull(), // When upgrade was performed
+});
+
+export type UpgradeHistory = typeof upgradeHistory.$inferSelect;
+export type InsertUpgradeHistory = typeof upgradeHistory.$inferInsert;
+
 // Export upgrade compliance tables
 export * from "./upgradeRules";
