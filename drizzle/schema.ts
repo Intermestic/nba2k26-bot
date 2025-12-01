@@ -712,6 +712,7 @@ export const badgeAdditions = mysqlTable("badge_additions", {
   badgeName: varchar("badgeName", { length: 100 }).notNull(), // Badge abbreviation that was added
   addedAt: timestamp("addedAt").defaultNow().notNull(), // When badge was added
   upgradeId: int("upgradeId"), // Reference to playerUpgrades.id that added this badge
+  usedForSilver: int("usedForSilver").default(0).notNull(), // 1 if badge was used for silver upgrade, 0 otherwise
   metadata: text("metadata"), // JSON metadata (source, admin, etc.)
 });
 

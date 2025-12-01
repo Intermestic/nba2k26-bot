@@ -31,6 +31,7 @@ import { upgradeLogRouter } from "./routers/upgradeLog";
 import { playerSwapsRouter } from "./routers/playerSwaps";
 import { upgradeComplianceRouter } from './routers/upgradeCompliance';
 import { upgradeLimitsRouter } from './routers/upgradeLimits';
+import { badgeAdditionsRouter } from './routers/badgeAdditions';
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -132,6 +133,9 @@ export const appRouter = router({
   
   // Upgrade limits dashboard
   upgradeLimits: upgradeLimitsRouter,
+  
+  // Badge additions tracking for rookies
+  badgeAdditions: badgeAdditionsRouter,
 });
 
 export type AppRouter = typeof appRouter;

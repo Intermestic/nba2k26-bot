@@ -853,3 +853,29 @@ Track which badges are added to rookie players and enforce the rule: "Only 2 add
 - [x] Implement backend logic to enforce "only 2 added badges can be upgraded to silver" rule
 - [x] Update upgrade validator to check added badge silver upgrade limit
 - [x] Test enforcement with various scenarios
+
+
+## Badge Addition Admin UI
+
+### Goal
+Create admin page to view rookie badge additions and their silver upgrade status
+
+### Tasks
+- [x] Create TRPC router endpoint to fetch badge additions with player info
+- [x] Build admin UI page at /admin/badge-additions
+- [x] Display rookies with added badges, showing which are at silver
+- [x] Add filtering by player, badge, and silver status
+- [x] Show statistics (total additions, silver upgrades used)
+- [x] Add to admin dashboard navigation
+
+## Historical Badge Addition Migration
+
+### Goal
+Populate badge_additions table with historical data from player_upgrades
+
+### Tasks
+- [x] Create migration script to analyze player_upgrades table
+- [x] Identify badge additions (upgrades with upgradeType='new_badge')
+- [x] Distinguish between original badges and added badges
+- [x] Insert historical records into badge_additions table
+- [x] Verify data accuracy with spot checks

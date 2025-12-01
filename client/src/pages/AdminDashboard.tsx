@@ -289,6 +289,14 @@ export default function AdminDashboard() {
       section: "system"
     },
     {
+      title: "Badge Additions Tracking",
+      description: "View rookie badge additions and silver upgrade usage",
+      href: "/admin/badge-additions",
+      icon: <Award className="w-6 h-6" />,
+      color: "bg-yellow-500",
+      section: "system"
+    },
+    {
       title: "Match Logs",
       description: "View fuzzy matching logs for debugging",
       href: "/admin/match-logs",
