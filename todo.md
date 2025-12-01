@@ -775,3 +775,18 @@ Create a comprehensive dashboard showing all players near or at their upgrade ca
 - [x] Add CSV export functionality
 - [x] Display summary statistics (total at cap, total near cap)
 - [x] Add direct link to player upgrade history from dashboard
+
+
+## UG Data Integration
+
+### Goal
+Ensure all existing upgrade_log data is properly integrated and accessible throughout the system with accurate counts
+
+### Tasks
+- [x] Create API endpoint to fetch upgrade_log data with filtering and pagination
+- [x] Create new "Upgrade Log Dashboard" page to display all historical UG data
+- [x] Add statistics cards showing total upgrades by type and source
+- [x] Add player-level upgrade tracking and history view
+- [x] Add team-level upgrade statistics
+- [x] Ensure accurate upgrade counts are displayed throughout the system
+- [x] Add export functionality for upgrade log data

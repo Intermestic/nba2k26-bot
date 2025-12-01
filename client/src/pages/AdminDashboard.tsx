@@ -264,6 +264,14 @@ export default function AdminDashboard() {
       section: "system"
     },
     {
+      title: "Upgrade Log Dashboard",
+      description: "View complete history and statistics of all player upgrades from all sources",
+      href: "/admin/upgrade-log-dashboard",
+      icon: <BarChart3 className="w-6 h-6" />,
+      color: "bg-indigo-500",
+      section: "system"
+    },
+    {
       title: "Validation Rules",
       description: "Configure upgrade validation rules",
       href: "/admin/validation-rules",

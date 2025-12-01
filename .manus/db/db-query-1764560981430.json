@@ -1,0 +1,13 @@
+{
+  "query": "SELECT COUNT(*) as total_upgrades FROM upgrade_log;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT COUNT(*) as total_upgrades FROM upgrade_log;",
+  "rows": [
+    {
+      "total_upgrades": "334"
+    }
+  ],
+  "messages": [],
+  "stdout": "total_upgrades\n334\n",
+  "stderr": "",
+  "execution_time_ms": 89
+}

@@ -37,6 +37,7 @@ import HealthAlerts from "./pages/admin/HealthAlerts";
 import BotActivity from "./pages/admin/BotActivity";
 import TradeLog from "./pages/admin/TradeLog";
 import UpgradeLog from "./pages/admin/UpgradeLog";
+import UpgradeLogDashboard from "./pages/admin/UpgradeLogDashboard";
 import PlayerSwaps from "./pages/admin/PlayerSwaps";
 import UpgradeCompliance from "./pages/admin/UpgradeCompliance";
 import UpgradeLimits from "./pages/admin/UpgradeLimits";
@@ -77,6 +78,7 @@ function Router() {
       <Route path={"/admin/health-alerts"} component={HealthAlerts} />
       <Route path={"/admin/bot-activity"} component={BotActivity} />
       <Route path={"/admin/upgrade-log"} component={UpgradeLog} />
+      <Route path={"/admin/upgrade-log-dashboard"} component={UpgradeLogDashboard} />
       <Route path={"/admin/player-swaps"} component={PlayerSwaps} />
       <Route path={"/admin/upgrade-compliance"} component={UpgradeCompliance} />
       <Route path={"/admin/upgrade-limits"} component={UpgradeLimits} />
