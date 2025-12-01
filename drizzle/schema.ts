@@ -920,3 +920,6 @@ export const tradeLogs = mysqlTable("trade_logs", {
 
 export type TradeLog = typeof tradeLogs.$inferSelect;
 export type InsertTradeLog = typeof tradeLogs.$inferInsert;
+
+// Export upgrade compliance tables
+export * from "./upgradeRules";

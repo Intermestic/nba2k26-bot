@@ -1,5 +1,15 @@
 # NBA 2K26 Player Database - TODO
 
+## Fix Duplicate Player Entries
+
+### Issue
+Several teams are showing 15 players instead of 14, with the 15th player being a duplicate.
+
+### Tasks
+- [x] Identify duplicate players and affected teams
+- [x] Remove duplicate player entries from database
+- [x] Verify all teams have correct roster counts (14 players each)
+
 ## NEW: OneDrive to ChatGPT Photo Automation
 
 ### Goal
@@ -677,3 +687,18 @@ Track individual player swaps (DNA swaps, player replacements) at player level.
 - [x] Re-run migration script to sync previously skipped upgrades
 - [x] Add filtering UI to upgrade history modal (upgrade type, date range, source type)
 - [x] Test filtering functionality and verify all upgrades display correctly
+
+
+## Upgrade Compliance System
+
+### Goal
+Implement comprehensive upgrade validation system that checks all existing and future upgrades against detailed upgrade rules, then run dry-run audit to identify violations before finalizing.
+
+### Tasks
+- [ ] Parse upgrade rules CSV and create validation rule database
+- [ ] Design validation system architecture
+- [ ] Implement comprehensive upgrade validator with all rule checks
+- [ ] Create dry-run audit system to check existing upgrades
+- [ ] Build admin UI to view compliance reports and violations
+- [ ] Integrate validator into Discord bot upgrade approval workflow
+- [ ] Run full audit and present findings to user

@@ -1,0 +1,38 @@
+{
+  "query": "SELECT id, name, team, overall, isRookie FROM players WHERE id IN ('1628368', '1642856', '204001', '1642866') ORDER BY name",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT id, name, team, overall, isRookie FROM players WHERE id IN ('1628368', '1642856', '204001', '1642866') ORDER BY name",
+  "rows": [
+    {
+      "id": "1628368",
+      "name": "De'Aaron Fox",
+      "team": "Kings",
+      "overall": "85",
+      "isRookie": "0"
+    },
+    {
+      "id": "1642856",
+      "name": "Egor Dëmin",
+      "team": "Magic",
+      "overall": "72",
+      "isRookie": "0"
+    },
+    {
+      "id": "1642866",
+      "name": "Joan Beringer",
+      "team": "Wizards",
+      "overall": "70",
+      "isRookie": "1"
+    },
+    {
+      "id": "204001",
+      "name": "Kristaps Porziņģis",
+      "team": "Rockets",
+      "overall": "85",
+      "isRookie": "0"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\tteam\toverall\tisRookie\n1628368\tDe'Aaron Fox\tKings\t85\t0\n1642856\tEgor Dëmin\tMagic\t72\t0\n1642866\tJoan Beringer\tWizards\t70\t1\n204001\tKristaps Porziņģis\tRockets\t85\t0\n",
+  "stderr": "",
+  "execution_time_ms": 60
+}
