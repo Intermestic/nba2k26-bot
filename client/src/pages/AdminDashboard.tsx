@@ -280,6 +280,14 @@ export default function AdminDashboard() {
       section: "system"
     },
     {
+      title: "Upgrade Limits",
+      description: "Monitor players near or at upgrade caps (7-game +6 overall, rookie badges)",
+      href: "/admin/upgrade-limits",
+      icon: <AlertTriangle className="w-6 h-6" />,
+      color: "bg-orange-500",
+      section: "system"
+    },
+    {
       title: "Match Logs",
       description: "View fuzzy matching logs for debugging",
       href: "/admin/match-logs",

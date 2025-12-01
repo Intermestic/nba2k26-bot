@@ -29,7 +29,8 @@ import { healthAlertsRouter } from "./routers/healthAlerts";
 import { botActivityRouter } from "./routers/botActivity";
 import { upgradeLogRouter } from "./routers/upgradeLog";
 import { playerSwapsRouter } from "./routers/playerSwaps";
-import { upgradeComplianceRouter } from "./routers/upgradeCompliance";
+import { upgradeComplianceRouter } from './routers/upgradeCompliance';
+import { upgradeLimitsRouter } from './routers/upgradeLimits';
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -128,6 +129,9 @@ export const appRouter = router({
   
   // Upgrade compliance and audit system
   upgradeCompliance: upgradeComplianceRouter,
+  
+  // Upgrade limits dashboard
+  upgradeLimits: upgradeLimitsRouter,
 });
 
 export type AppRouter = typeof appRouter;

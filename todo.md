@@ -758,3 +758,20 @@ Add UI tracking for player upgrade limits to prevent exceeding NBA 2K26 rules
 - [x] Add tracking for rookie badge limit (max 2 added badges upgraded to silver)
 - [x] Display upgrade limits in UI with visual indicators
 - [x] Prevent exceeding upgrade limits with validation
+
+
+## Upgrade Limit Dashboard
+
+Create a comprehensive dashboard showing all players near or at their upgrade caps for proactive league management.
+
+### Requirements
+- [x] Create backend API to calculate upgrade limits for all players
+- [x] Show players at 7-game +6 overall cap (red alert)
+- [x] Show players approaching 7-game cap (+5 overall, yellow warning)
+- [x] Show rookies at 2-badge Silver cap (red alert)
+- [x] Show rookies approaching badge cap (1 badge used, yellow warning)
+- [x] Add filtering by team, status (at cap/near cap), and upgrade type
+- [x] Add sortable columns (player name, team, 7-game usage, badge usage)
+- [x] Add CSV export functionality
+- [x] Display summary statistics (total at cap, total near cap)
+- [x] Add direct link to player upgrade history from dashboard

@@ -39,6 +39,7 @@ import TradeLog from "./pages/admin/TradeLog";
 import UpgradeLog from "./pages/admin/UpgradeLog";
 import PlayerSwaps from "./pages/admin/PlayerSwaps";
 import UpgradeCompliance from "./pages/admin/UpgradeCompliance";
+import UpgradeLimits from "./pages/admin/UpgradeLimits";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -78,6 +79,7 @@ function Router() {
       <Route path={"/admin/upgrade-log"} component={UpgradeLog} />
       <Route path={"/admin/player-swaps"} component={PlayerSwaps} />
       <Route path={"/admin/upgrade-compliance"} component={UpgradeCompliance} />
+      <Route path={"/admin/upgrade-limits"} component={UpgradeLimits} />
 
       <Route path={"/admin/logs"} component={ServerLogs} />
       <Route path={"/404"} component={NotFound} />
