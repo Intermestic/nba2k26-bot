@@ -210,6 +210,14 @@ export default function AdminDashboard() {
       section: "system"
     },
     {
+      title: "Team Aliases",
+      description: "Manage team name aliases for trade parsing",
+      href: "/admin/team-aliases",
+      icon: <Shield className="w-6 h-6" />,
+      color: "bg-cyan-500",
+      section: "system"
+    },
+    {
       title: "Bot Management",
       description: "Configure Discord bot settings and commands",
       href: "/admin/bot-management",

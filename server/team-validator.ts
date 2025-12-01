@@ -43,6 +43,10 @@ const TEAM_ALIASES: Record<string, ValidTeam> = {
   '76ers': 'Sixers',
   'seventy sixers': 'Sixers',
   
+  // Cavaliers
+  'cavs': 'Cavaliers',
+  'Cavs': 'Cavaliers',
+  
   // Mavericks
   'mavericks': 'Mavs',
   'Mavericks': 'Mavs',

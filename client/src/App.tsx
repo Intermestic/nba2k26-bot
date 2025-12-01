@@ -43,6 +43,7 @@ import UpgradeCompliance from "./pages/admin/UpgradeCompliance";
 import UpgradeLimits from "./pages/admin/UpgradeLimits";
 import BadgeAdditions from "./pages/admin/BadgeAdditions";
 import UpgradeManagement from "./pages/admin/UpgradeManagement";
+import TeamAliases from "./pages/admin/TeamAliases";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -86,6 +87,7 @@ function Router() {
       <Route path={"/admin/upgrade-limits"} component={UpgradeLimits} />
       <Route path={"/admin/badge-additions"} component={BadgeAdditions} />
       <Route path={"/admin/upgrade-management"} component={UpgradeManagement} />
+      <Route path={"/admin/team-aliases"} component={TeamAliases} />
 
       <Route path={"/admin/logs"} component={ServerLogs} />
       <Route path={"/404"} component={NotFound} />

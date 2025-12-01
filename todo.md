@@ -914,3 +914,19 @@ Track and display specific upgrades (attribute name, date, user) for each player
 - [x] Display upgrade history in player details modal
 - [x] Show upgrade count summaries by user
 - [x] Test upgrade history tracking end-to-end
+
+
+## Team Aliases Management
+
+### Goal
+Fix trade parser team name issues and create admin UI to manage global team name aliases
+
+### Issues
+- Trade parser fails with "Invalid team names" for common abbreviations (Cavs, Trailblazers)
+- No self-service way to manage team aliases
+
+### Tasks
+- [x] Fix immediate trade parser issues (Cavs → Cavaliers, Trailblazers → Trail Blazers)
+- [x] Create Team Aliases management page in admin dashboard
+- [x] Add CRUD operations for team aliases
+- [x] Test trade parser with new aliases

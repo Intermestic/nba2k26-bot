@@ -1,0 +1,9 @@
+{
+  "query": "INSERT INTO `team_aliases` (`alias`, `canonicalName`) VALUES\n  ('Cavs', 'Cavaliers'),\n  ('cavs', 'Cavaliers'),\n  ('Trailblazers', 'Trail Blazers'),\n  ('trailblazers', 'Trail Blazers')\nON DUPLICATE KEY UPDATE `canonicalName` = VALUES(`canonicalName`)",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute INSERT INTO `team_aliases` (`alias`, `canonicalName`) VALUES\n  ('Cavs', 'Cavaliers'),\n  ('cavs', 'Cavaliers'),\n  ('Trailblazers', 'Trail Blazers'),\n  ('trailblazers', 'Trail Blazers')\nON DUPLICATE KEY UPDATE `canonicalName` = VALUES(`canonicalName`)",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 67
+}

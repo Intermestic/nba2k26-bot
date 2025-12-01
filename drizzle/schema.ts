@@ -995,5 +995,21 @@ export const upgradeHistory = mysqlTable("upgrade_history", {
 export type UpgradeHistory = typeof upgradeHistory.$inferSelect;
 export type InsertUpgradeHistory = typeof upgradeHistory.$inferInsert;
 
+/**
+ * Team Aliases table - stores custom team name aliases for trade parsing
+ * Allows admins to manage global team name mappings (e.g., "Cavs" -> "Cavaliers")
+ */
+export const teamAliases = mysqlTable("team_aliases", {
+  id: int("id").autoincrement().primaryKey(),
+  alias: varchar("alias", { length: 100 }).notNull().unique(), // The alias (e.g., "Cavs")
+  canonicalName: varchar("canonicalName", { length: 100 }).notNull(), // The official team name (e.g., "Cavaliers")
+  createdBy: int("createdBy"), // Reference to users.id who created this alias
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type TeamAlias = typeof teamAliases.$inferSelect;
+export type InsertTeamAlias = typeof teamAliases.$inferInsert;
+
 // Export upgrade compliance tables
 export * from "./upgradeRules";
