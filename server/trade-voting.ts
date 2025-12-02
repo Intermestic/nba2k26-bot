@@ -1,4 +1,5 @@
-import type { Message, MessageReaction, PartialMessageReaction } from 'discord.js';
+import type { Message, MessageReaction, PartialMessageReaction, User, PartialUser, TextChannel, Client } from 'discord.js';
+import { Collection, EmbedBuilder } from 'discord.js';
 import { getDb } from './db.js';
 import { tradeVotes, trades } from '../drizzle/schema.js';
 import { eq } from 'drizzle-orm';

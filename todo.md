@@ -958,3 +958,20 @@ Trade parsing still fails despite team aliases being in place
 - [x] Fix duplicate message posting (race condition or duplicate listeners)
 - [ ] Test with the stuck Cavs/Trailblazers trade
 - [ ] Verify no duplicate messages are posted
+
+## Fix Trade Voting Approval - Not Triggering at 7 Votes
+
+### Issue
+Trade with message ID 1445268293186490548 has 7 upvotes but no approval message was posted. The system should automatically approve trades when they reach 7+ upvotes.
+
+### Root Cause
+The scanTradesForMissedVotes function was crashing on bot startup due to missing Discord.js imports (Collection and EmbedBuilder). This meant trades that reached 7 votes while the bot was offline were never detected.
+
+### Tasks
+- [x] Investigate why trade 1445268293186490548 didn't trigger approval
+- [x] Check trade voting detection logic in trade-voting.ts
+- [x] Fix missing Discord.js imports (Collection, EmbedBuilder)
+- [x] Add !check-trade command to manually check any trade message
+- [x] Restart bot with fixes applied
+- [ ] Test !check-trade command with the affected trade message (user to test)
+- [ ] Verify future trades auto-approve at 7 votes
