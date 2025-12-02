@@ -930,3 +930,31 @@ Fix trade parser team name issues and create admin UI to manage global team name
 - [x] Create Team Aliases management page in admin dashboard
 - [x] Add CRUD operations for team aliases
 - [x] Test trade parser with new aliases
+
+## Fix Trade Parsing Issue
+
+### Issue
+Trade parsing still fails despite team aliases being in place
+
+### Tasks
+- [x] Investigate why trade parsing is not working
+- [x] Check server logs for error messages
+- [x] Verify trade parser logic and team name matching
+- [x] Test with sample trade data
+- [x] Fix team validator to handle case-insensitive aliases
+- [x] Update trade-voting.ts to normalize team names before storing
+- [x] Verify validateTeamName works with "Cavs" and "Trailblazers"
+
+## Fix Trade Approval Handler - Double Posting & Team Name Validation
+
+### Issues
+1. Bot is posting duplicate error messages (4+ times for same trade)
+2. Still showing "Invalid team names: Cavs, Trailblazers" error despite normalization
+
+### Tasks
+- [x] Investigate trade approval flow in trade-approval-handler.ts
+- [x] Find where team names are validated without normalization
+- [x] Apply validateTeamName() to normalize team names before validation
+- [x] Fix duplicate message posting (race condition or duplicate listeners)
+- [ ] Test with the stuck Cavs/Trailblazers trade
+- [ ] Verify no duplicate messages are posted

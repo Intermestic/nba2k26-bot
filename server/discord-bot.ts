@@ -2180,6 +2180,27 @@ export async function startDiscordBot(token: string) {
       }
     } else if (reaction.message.channelId === TRADE_CHANNEL_ID) {
       console.log(`[Discord Bot] ⚡ reaction detected in Trade channel by ${user.tag}`);
+      
+      // Deduplicate trade approval reactions (prevent double posting)
+      const reactionKey = `trade-approval-${message.id}-${user.id}`;
+      if (processedReactions.has(reactionKey)) {
+        console.log(`[Discord Bot] Skipping duplicate trade approval reaction for message ${message.id}`);
+        return;
+      }
+      
+      processedReactions.add(reactionKey);
+      
+      // Clean up old reactions after cache size limit
+      if (processedReactions.size > REACTION_CACHE_SIZE) {
+        const firstKey = processedReactions.values().next().value;
+        processedReactions.delete(firstKey);
+      }
+      
+      // Auto-expire after TTL
+      setTimeout(() => {
+        processedReactions.delete(reactionKey);
+      }, REACTION_CACHE_TTL);
+      
       // Process approved trade instead of asking for confirmation
       const { handleApprovedTradeProcessing } = await import('./trade-approval-handler');
       await handleApprovedTradeProcessing(message);

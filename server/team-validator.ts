@@ -45,11 +45,9 @@ const TEAM_ALIASES: Record<string, ValidTeam> = {
   
   // Cavaliers
   'cavs': 'Cavaliers',
-  'Cavs': 'Cavaliers',
   
   // Mavericks
   'mavericks': 'Mavs',
-  'Mavericks': 'Mavs',
   'dallas': 'Mavs',
   
   // Trail Blazers

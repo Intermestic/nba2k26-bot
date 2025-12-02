@@ -1,7 +1,8 @@
-import { Client, Message, MessageReaction, User, PartialMessageReaction, PartialUser, EmbedBuilder, TextChannel, Collection } from 'discord.js';
+import type { Message, MessageReaction, PartialMessageReaction } from 'discord.js';
 import { getDb } from './db.js';
 import { tradeVotes, trades } from '../drizzle/schema.js';
 import { eq } from 'drizzle-orm';
+import { validateTeamName } from './team-validator.js';
 
 const TRADE_CHANNEL_ID = '1087524540634116116';
 const TRADE_COMMITTEE_ROLE = 'Trade Committee';
@@ -117,8 +118,17 @@ function parseTradeFromEmbed(message: Message): { team1: string; team2: string; 
       return null;
     }
     
-    const team1 = teamMatches[0][1].trim();
-    const team2 = teamMatches[1][1].trim();
+    const team1Raw = teamMatches[0][1].trim();
+    const team2Raw = teamMatches[1][1].trim();
+    
+    // Normalize team names to canonical form
+    const team1 = validateTeamName(team1Raw);
+    const team2 = validateTeamName(team2Raw);
+    
+    if (!team1 || !team2) {
+      console.log(`[Trade Parser] Invalid team names: ${team1Raw}, ${team2Raw}`);
+      return null;
+    }
     
     // Extract player lists for each team
     // Split by team sections

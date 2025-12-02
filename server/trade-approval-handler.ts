@@ -49,13 +49,15 @@ export async function handleApprovedTradeProcessing(message: Message) {
     console.log(`[Trade Approval] Team1 sends: ${team1Players.map(p => p.name).join(', ')}`);
     console.log(`[Trade Approval] Team2 sends: ${team2Players.map(p => p.name).join(', ')}`);
     
-    // Validate team names
+    // Normalize and validate team names (handles aliases like "Cavs" → "Cavaliers")
     const validTeam1 = validateTeamName(trade.team1);
     const validTeam2 = validateTeamName(trade.team2);
     
+    console.log(`[Trade Approval] Normalized team names: ${validTeam1}, ${validTeam2}`);
+    
     if (!validTeam1 || !validTeam2) {
-      console.error(`[Trade Approval] Invalid team names: ${trade.team1}, ${trade.team2}`);
-      await message.reply(`❌ Invalid team names in trade record: ${trade.team1}, ${trade.team2}`);
+      console.error(`[Trade Approval] Invalid team names: ${trade.team1} → ${validTeam1 || 'INVALID'}, ${trade.team2} → ${validTeam2 || 'INVALID'}`);
+      await message.reply(`❌ Invalid team names in trade record: ${trade.team1} (normalized: ${validTeam1 || 'not found'}), ${trade.team2} (normalized: ${validTeam2 || 'not found'})`);
       return;
     }
     
