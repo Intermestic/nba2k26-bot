@@ -975,3 +975,13 @@ The scanTradesForMissedVotes function was crashing on bot startup due to missing
 - [x] Restart bot with fixes applied
 - [ ] Test !check-trade command with the affected trade message (user to test)
 - [ ] Verify future trades auto-approve at 7 votes
+
+## Fix !check-trade Command
+
+### Issue
+!check-trade command returns "No trade record found" error when checking message ID 1445268293186490548
+
+### Tasks
+- [x] Investigate why !check-trade command cannot find trade record
+- [x] Fix !check-trade to properly count votes from Discord message reactions
+- [ ] Test with message ID 1445268293186490548

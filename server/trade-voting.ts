@@ -693,10 +693,26 @@ export async function manuallyCheckTradeVotes(client: Client, messageId: string)
       return { success: false, message: `Message is before minimum threshold (${MIN_TRADE_MESSAGE_ID}). Only processing trades after this ID.` };
     }
     
-    // Check if already processed
+    // Check if already processed in database
+    const db = await getDb();
+    if (db) {
+      const existingVote = await db.select().from(tradeVotes).where(eq(tradeVotes.messageId, messageId)).limit(1);
+      if (existingVote.length > 0) {
+        const vote = existingVote[0];
+        const status = vote.approved ? 'approved' : 'rejected';
+        return { 
+          success: false, 
+          message: `Trade already processed on ${vote.processedAt}: ${status} with ${vote.upvotes} 👍 and ${vote.downvotes} 👎`,
+          upvotes: vote.upvotes,
+          downvotes: vote.downvotes
+        };
+      }
+    }
+    
+    // Check if already processed in memory
     const voteData = activeVotes.get(messageId);
     if (voteData && voteData.processed) {
-      return { success: false, message: 'Trade already processed' };
+      return { success: false, message: 'Trade already processed (in memory)' };
     }
     
     // Initialize vote tracking if not exists
