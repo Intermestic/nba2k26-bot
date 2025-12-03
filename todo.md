@@ -1061,3 +1061,17 @@ React error: "Rendered more hooks than during the previous render" in PlayerUpgr
 - [x] Move conditional logic inside useMemo instead of conditionally calling useMemo
 - [x] Ensure all hooks are called unconditionally on every render
 - [x] Test fix in browser with both rookie and non-rookie players
+
+## Bot Stability and Auto-Restart System
+
+### Issue
+Discord bot was crashing overnight due to database connection errors (ECONNRESET), and scheduled restarts weren't working because bot wasn't running.
+
+### Tasks
+- [x] Diagnose bot crash causes (database connection resets)
+- [x] Add database retry logic with exponential backoff
+- [x] Create independent watchdog script for monitoring
+- [x] Implement automatic crash recovery
+- [x] Set up scheduled 3 AM EST daily restarts
+- [x] Test bot stability over 30 seconds
+- [x] Document watchdog system in BOT_WATCHDOG_README.md

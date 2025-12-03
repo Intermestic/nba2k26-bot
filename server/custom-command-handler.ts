@@ -220,12 +220,31 @@ export async function cleanupExpiredCooldowns(): Promise<void> {
   
   const now = new Date();
   
-  try {
-    await db.delete(commandCooldowns)
-      .where(sql`${commandCooldowns.expiresAt} < ${now.toISOString()}`);
-    
-    console.log('[Custom Commands] Cleaned up expired cooldowns');
-  } catch (error) {
-    console.error('[Custom Commands] Failed to clean up cooldowns:', error);
+  // Retry logic for database connection issues
+  const maxRetries = 3;
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      await db.delete(commandCooldowns)
+        .where(sql`${commandCooldowns.expiresAt} < ${now.toISOString()}`);
+      
+      console.log('[Custom Commands] Cleaned up expired cooldowns');
+      return; // Success, exit function
+    } catch (error: any) {
+      // Check if it's a connection error
+      const isConnectionError = error?.cause?.code === 'ECONNRESET' || 
+                                error?.cause?.code === 'ETIMEDOUT' ||
+                                error?.cause?.code === 'ENOTFOUND';
+      
+      if (isConnectionError && attempt < maxRetries) {
+        console.warn(`[Custom Commands] Connection error on attempt ${attempt}/${maxRetries}, retrying...`);
+        // Wait before retry (exponential backoff)
+        await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+        continue;
+      }
+      
+      // Log error but don't crash the bot
+      console.error('[Custom Commands] Failed to clean up cooldowns:', error?.message || error);
+      return;
+    }
   }
 }

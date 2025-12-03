@@ -5,12 +5,19 @@ import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
 
-// Lazily create the drizzle instance so local tooling can run without a DB.
-// Drizzle with mysql2 string URL automatically creates a connection pool with reconnection
+// Lazily create the drizzle instance with connection string
+// mysql2 driver handles connection pooling and reconnection automatically
 export async function getDb() {
   if (!_db && process.env.DATABASE_URL) {
     try {
-      _db = drizzle(process.env.DATABASE_URL);
+      // Drizzle with mysql2 string URL automatically creates a connection pool
+      // Add connection pool parameters to URL for better stability
+      const url = new URL(process.env.DATABASE_URL);
+      url.searchParams.set('connectionLimit', '10');
+      url.searchParams.set('waitForConnections', 'true');
+      url.searchParams.set('connectTimeout', '10000');
+      
+      _db = drizzle(url.toString());
       console.log('[Database] Connection pool created');
     } catch (error) {
       console.warn("[Database] Failed to connect:", error);
@@ -100,5 +107,3 @@ export function assertDb(db: ReturnType<typeof drizzle> | null): asserts db is R
     throw new Error("Database not available");
   }
 }
-
-// TODO: add feature queries here as your schema grows.
