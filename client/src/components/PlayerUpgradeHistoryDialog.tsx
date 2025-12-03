@@ -46,8 +46,6 @@ export function PlayerUpgradeHistoryDialog({ playerName, open, onClose }: Player
     { enabled: open && !!currentPlayer?.id }
   );
 
-  if (!playerName) return null;
-
   // Apply filters
   let filteredUpgrades = upgrades;
   
@@ -115,6 +113,7 @@ export function PlayerUpgradeHistoryDialog({ playerName, open, onClose }: Player
   }, [upgradeLog]);
 
   const rookieSilverBadgeCount = useMemo(() => {
+    // Always call useMemo unconditionally, handle condition inside
     if (!isRookie) return 0;
     return upgradeLog
       .filter(log => 
@@ -128,10 +127,10 @@ export function PlayerUpgradeHistoryDialog({ playerName, open, onClose }: Player
 
   const OVERALL_CAP = 6;
   const ROOKIE_BADGE_CAP = 2;
-  const overallProgress = (sevenGameOverallIncrease / OVERALL_CAP) * 100;
-  const rookieBadgeProgress = (rookieSilverBadgeCount / ROOKIE_BADGE_CAP) * 100;
-  const overallExceeded = sevenGameOverallIncrease > OVERALL_CAP;
-  const rookieBadgeExceeded = rookieSilverBadgeCount > ROOKIE_BADGE_CAP;
+  const overallProgress = useMemo(() => (sevenGameOverallIncrease / OVERALL_CAP) * 100, [sevenGameOverallIncrease]);
+  const rookieBadgeProgress = useMemo(() => (rookieSilverBadgeCount / ROOKIE_BADGE_CAP) * 100, [rookieSilverBadgeCount]);
+  const overallExceeded = useMemo(() => sevenGameOverallIncrease > OVERALL_CAP, [sevenGameOverallIncrease]);
+  const rookieBadgeExceeded = useMemo(() => rookieSilverBadgeCount > ROOKIE_BADGE_CAP, [rookieSilverBadgeCount]);
 
   // Get unique source types for filter dropdown
   const uniqueSourceTypes = Array.from(new Set(upgrades.map((u: UpgradeRequest) => u.sourceType).filter(Boolean)));
@@ -140,6 +139,11 @@ export function PlayerUpgradeHistoryDialog({ playerName, open, onClose }: Player
   const approvedUpgrades = filteredUpgrades.filter((u: UpgradeRequest) => u.status === "approved");
   const pendingUpgrades = filteredUpgrades.filter((u: UpgradeRequest) => u.status === "pending");
   const rejectedUpgrades = filteredUpgrades.filter((u: UpgradeRequest) => u.status === "rejected");
+
+  // Don't render content if no playerName
+  if (!playerName) {
+    return null;
+  }
 
   return (
     <Dialog open={open} onOpenChange={onClose}>

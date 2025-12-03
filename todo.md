@@ -1045,3 +1045,19 @@ The trade-voting.ts system expects trade records to exist in the database but th
 - [x] Restart bot to apply fixes
 - [x] Manually insert Lakers/Celtics trade record for retroactive processing
 - [x] Test complete workflow: post trade → vote → approve → process
+
+
+## Fix PlayerUpgradeHistoryDialog Hooks Violation
+
+### Issue
+React error: "Rendered more hooks than during the previous render" in PlayerUpgradeHistoryDialog component. The component has conditional useMemo hooks that violate the Rules of Hooks.
+
+### Root Cause
+- Line 117-127: `rookieSilverBadgeCount` useMemo is only called when `isRookie` is true
+- This causes inconsistent hook ordering between renders when `isRookie` changes
+- React requires all hooks to be called in the same order on every render
+
+### Tasks
+- [x] Move conditional logic inside useMemo instead of conditionally calling useMemo
+- [x] Ensure all hooks are called unconditionally on every render
+- [x] Test fix in browser with both rookie and non-rookie players
