@@ -323,18 +323,21 @@ export async function handleActivityRecordsCommand(
   client: Client,
   message: Message
 ): Promise<void> {
-  // Check if this command is already being executed
+  const commandKey = `ab-records:${message.id}`;
   const now = Date.now();
-  const lastExecution = abCommandExecutions.get(message.id);
+  
+  // CRITICAL: Check if this exact command is already executing or recently completed
+  // This prevents HMR-induced duplicate executions across multiple client instances
+  const lastExecution = abCommandExecutions.get(commandKey);
   
   if (lastExecution && now - lastExecution < EXECUTION_LOCK_TTL) {
-    console.log(`[AB Command] Command ${message.id} already executing, skipping duplicate`);
+    console.log(`[AB Command] Command ${commandKey} already executing or recently completed (${now - lastExecution}ms ago), skipping duplicate`);
     return;
   }
   
-  // Mark as executing
-  abCommandExecutions.set(message.id, now);
-  console.log(`[AB Command] Locked execution for command ${message.id}`);
+  // Mark as executing IMMEDIATELY before any async operations
+  abCommandExecutions.set(commandKey, now);
+  console.log(`[AB Command] Locked execution for command ${commandKey}`);
   
   try {
     await message.reply('🔄 Scanning activity booster channel...');
@@ -348,13 +351,14 @@ export async function handleActivityRecordsCommand(
       return;
     }
     
-    // Check for existing checkpoint
+    // Get database
     const db = await getDb();
     if (!db) {
       await message.reply('❌ Database not available.');
       return;
     }
     
+    // Check for existing checkpoint to determine where to start scanning
     const checkpoints = await db.select()
       .from(activityCheckpoint)
       .orderBy(sql`${activityCheckpoint.processedAt} DESC`)
@@ -363,9 +367,11 @@ export async function handleActivityRecordsCommand(
     const lastCheckpoint = checkpoints[0];
     const afterMessageId = lastCheckpoint?.lastProcessedMessageId || CUTOFF_MESSAGE_ID;
     
-    console.log(`[AB Command] Starting scan from message ${afterMessageId}`);
+    console.log(`[AB Command] Starting incremental scan from message ${afterMessageId}`);
+    console.log(`[AB Command] Last checkpoint: ${lastCheckpoint ? `${lastCheckpoint.totalGamesProcessed} games at ${lastCheckpoint.processedAt}` : 'none'}`);
     
-    // Scan and process messages
+    // Scan and process NEW messages since last checkpoint
+    // Records will be ADDED to existing data (incremental + cumulative)
     const { processed, lastMessageId } = await scanAndProcessMessages(abChannel, afterMessageId);
     
     if (processed === 0) {
@@ -398,14 +404,17 @@ export async function handleActivityRecordsCommand(
     
     await message.reply(`✅ Processed ${processed} new games. Standings posted!`);
     
+    console.log(`[AB Command] Command ${commandKey} completed successfully`);
+    
   } catch (error) {
     console.error('[AB Command] Error:', error);
     await message.reply('❌ An error occurred while processing activity boosters.');
   } finally {
-    // Clean up execution lock after TTL
+    // Keep the lock for the full TTL to prevent any duplicate executions
+    // The lock will auto-expire after EXECUTION_LOCK_TTL
     setTimeout(() => {
-      abCommandExecutions.delete(message.id);
-      console.log(`[AB Command] Cleaned up execution lock for command ${message.id}`);
+      abCommandExecutions.delete(commandKey);
+      console.log(`[AB Command] Cleaned up execution lock for command ${commandKey}`);
     }, EXECUTION_LOCK_TTL);
   }
 }
