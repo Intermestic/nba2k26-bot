@@ -105,13 +105,17 @@ function parseTradeFromEmbed(message: Message): { team1: string; team2: string; 
     if (message.embeds.length === 0) return null;
     
     const embed = message.embeds[0];
-    const description = embed.description;
+    let description = embed.description;
     
     if (!description) return null;
     
+    // Strip markdown formatting (bold, italic, etc.) for easier parsing
+    description = description.replace(/\*\*/g, '').replace(/\*/g, '').replace(/__/g, '').replace(/_/g, '');
+    
     // Extract team names from the embed title or description
-    // Expected format: "Team1 send:\n...\n\nTeam2 send:\n..."
-    const teamPattern = /([A-Za-z\s]+)\s+send:/gi;
+    // Expected format: "Team1 Sends:\n..." or "Team1 send:\n..."
+    // Handle both "send:" and "Sends:" (case-insensitive)
+    const teamPattern = /([A-Za-z\s]+)\s+sends?:/gi;
     const teamMatches = Array.from(description.matchAll(teamPattern));
     
     if (teamMatches.length < 2) {
@@ -132,8 +136,8 @@ function parseTradeFromEmbed(message: Message): { team1: string; team2: string; 
     }
     
     // Extract player lists for each team
-    // Split by team sections
-    const sections = description.split(/[A-Za-z\s]+\s+send:/i);
+    // Split by team sections (handle both "send:" and "Sends:")
+    const sections = description.split(/[A-Za-z\s]+\s+sends?:/i);
     
     if (sections.length < 3) {
       console.log('[Trade Parser] Could not split embed into team sections');
@@ -150,8 +154,12 @@ function parseTradeFromEmbed(message: Message): { team1: string; team2: string; 
     const team1Players: any[] = [];
     let match;
     while ((match = playerPattern.exec(team1Section)) !== null) {
+      const playerName = match[1].trim();
+      // Skip summary lines (lines starting with --)
+      if (playerName === '--' || playerName.startsWith('--')) continue;
+      
       team1Players.push({
-        name: match[1].trim(),
+        name: playerName,
         overall: parseInt(match[2]),
         salary: parseInt(match[3])
       });
@@ -160,8 +168,12 @@ function parseTradeFromEmbed(message: Message): { team1: string; team2: string; 
     const team2Players: any[] = [];
     playerPattern.lastIndex = 0; // Reset regex
     while ((match = playerPattern.exec(team2Section)) !== null) {
+      const playerName = match[1].trim();
+      // Skip summary lines (lines starting with --)
+      if (playerName === '--' || playerName.startsWith('--')) continue;
+      
       team2Players.push({
-        name: match[1].trim(),
+        name: playerName,
         overall: parseInt(match[2]),
         salary: parseInt(match[3])
       });

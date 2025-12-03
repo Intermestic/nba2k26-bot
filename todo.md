@@ -1015,3 +1015,33 @@ Re-enabled Discord bot startup in the main server process with proper HMR protec
 - [x] Diagnose why bot is not connected when posting trades
 - [x] Fix bot connection initialization
 - [x] Test trade posting from Trade Machine page
+
+
+## Fix Trade Approval System - Trade Records Not Being Saved
+
+### Issue
+When trades are approved via Discord voting (7 👍), the bot shows error: "❌ No trade record found for this message. The trade may not have been voted on yet."
+
+This happened for two trades:
+1. Lakers/Celtics trade (Adou Thiero for Colin Castleton)
+2. Bucks/Pacers trade (Naz Reid + Thomas Sorber for Jaime Jaquez Jr + Kyle Kuzma)
+
+Both trades were approved with 7 votes but couldn't be processed.
+
+### Root Cause
+Trade records are not being saved to the `trades` table when:
+1. Trades are posted from the Trade Machine page, OR
+2. Trades are posted directly to Discord and voted on
+
+The trade-voting.ts system expects trade records to exist in the database but they're not being created.
+
+### Tasks
+- [x] Check if Trade Machine saves trade records when posting to Discord
+- [x] Check if trade-voting.ts saves trade records when processing votes
+- [x] Fix trade parser to handle actual Discord embed format ("Sends:" instead of "send:")
+- [x] Strip markdown formatting from embeds before parsing
+- [x] Filter out summary lines (--) from player lists
+- [x] Test parser with single-player and multi-player trades
+- [x] Restart bot to apply fixes
+- [x] Manually insert Lakers/Celtics trade record for retroactive processing
+- [x] Test complete workflow: post trade → vote → approve → process
