@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { router, publicProcedure } from "../_core/trpc.js";
-import { getDb } from "../db.js";
+import { getDb, assertDb } from "../db.js";
 import { healthAlerts, alertHistory } from "../../drizzle/schema.js";
 import { desc, eq, and, gte } from "drizzle-orm";
 import { Client } from "discord.js";
@@ -74,6 +74,12 @@ async function sendDiscordAlert(
       return null;
     }
 
+    // Type guard: ensure channel has send method
+    if (!('send' in channel)) {
+      console.error("[Health Alerts] Channel does not support sending messages");
+      return null;
+    }
+
     // Format embed based on alert type
     const colors = {
       offline: 0xff0000, // Red
@@ -111,6 +117,7 @@ async function sendDiscordAlert(
  */
 async function runHealthCheck() {
   const db = await getDb();
+  assertDb(db);
 
   // Get alert configuration
   const configs = await db
@@ -269,6 +276,7 @@ async function runHealthCheck() {
  */
 async function startHealthMonitoring() {
   const db = await getDb();
+  assertDb(db);
 
   // Get alert configuration
   const configs = await db
@@ -311,6 +319,7 @@ export const healthAlertsRouter = router({
   // Get current alert configuration
   getConfig: publicProcedure.query(async () => {
     const db = await getDb();
+  assertDb(db);
 
     const configs = await db
       .select()
@@ -348,6 +357,7 @@ export const healthAlertsRouter = router({
     )
     .mutation(async ({ input }) => {
       const db = await getDb();
+  assertDb(db);
 
       // Check if config exists
       const existing = await db.select().from(healthAlerts).limit(1);
@@ -395,6 +405,7 @@ export const healthAlertsRouter = router({
     )
     .query(async ({ input }) => {
       const db = await getDb();
+  assertDb(db);
 
       const history = await db
         .select()
@@ -414,6 +425,7 @@ export const healthAlertsRouter = router({
     )
     .mutation(async ({ input }) => {
       const db = await getDb();
+  assertDb(db);
 
       // Get config
       const configs = await db

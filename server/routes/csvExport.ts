@@ -97,7 +97,7 @@ export const csvExportRouter = router({
               value = player.draftYear?.toString() || "";
               break;
             case "salaryCap":
-              value = player.salaryCap || "";
+              value = player.salaryCap?.toString() || "";
               break;
           }
 

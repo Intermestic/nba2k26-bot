@@ -1,4 +1,4 @@
-import { getDb } from "./db.js";
+import { getDb, assertDb } from "./db.js";
 import { botLogs } from "../drizzle/schema.js";
 
 export interface BotLogEntry {
@@ -20,6 +20,7 @@ export interface BotLogEntry {
 export async function logBotActivity(entry: BotLogEntry): Promise<void> {
   try {
     const db = await getDb();
+  assertDb(db);
     await db.insert(botLogs).values({
       level: entry.level,
       eventType: entry.eventType,

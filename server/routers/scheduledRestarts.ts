@@ -1,12 +1,12 @@
 import { z } from "zod";
 import { router, publicProcedure } from "../_core/trpc.js";
-import { getDb } from "../db.js";
+import { getDb, assertDb } from "../db.js";
 import { scheduledRestarts, restartHistory } from "../../drizzle/schema.js";
 import { desc, eq } from "drizzle-orm";
-import cron from "node-cron";
+import cron, { type ScheduledTask } from "node-cron";
 
 // Store active cron job
-let activeCronJob: cron.ScheduledTask | null = null;
+let activeCronJob: ScheduledTask | null = null;
 
 /**
  * Parse cron expression to human-readable format
@@ -38,7 +38,7 @@ function cronToHumanReadable(cronExpression: string, timezone: string): string {
  */
 function getNextExecutionTime(cronExpression: string): Date | null {
   try {
-    const task = cron.schedule(cronExpression, () => {}, { scheduled: false });
+    const task = cron.schedule(cronExpression, () => {});
     // Get next date - this is a simplified approach
     // In production, you'd use a library like cron-parser
     const now = new Date();
@@ -154,6 +154,7 @@ async function executeBotRestart(triggeredBy: string = "scheduled"): Promise<{ s
  */
 async function startScheduledRestarts() {
   const db = await getDb();
+  assertDb(db);
   
   // Get active schedule
   const schedules = await db
@@ -209,7 +210,6 @@ async function startScheduledRestarts() {
         }
       },
       {
-        scheduled: true,
         timezone: schedule.timezone,
       }
     );
@@ -227,6 +227,7 @@ export const scheduledRestartsRouter = router({
   // Get current schedule configuration
   getSchedule: publicProcedure.query(async () => {
     const db = await getDb();
+  assertDb(db);
     
     const schedules = await db
       .select()
@@ -258,6 +259,7 @@ export const scheduledRestartsRouter = router({
     )
     .mutation(async ({ input }) => {
       const db = await getDb();
+  assertDb(db);
       
       // Validate cron expression
       try {
@@ -314,6 +316,7 @@ export const scheduledRestartsRouter = router({
     )
     .query(async ({ input }) => {
       const db = await getDb();
+  assertDb(db);
       
       const history = await db
         .select()
@@ -327,6 +330,7 @@ export const scheduledRestartsRouter = router({
   // Test restart (manual trigger)
   testRestart: publicProcedure.mutation(async () => {
     const db = await getDb();
+  assertDb(db);
     
     console.log("[Scheduled Restarts] Manual test restart triggered");
     

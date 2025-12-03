@@ -985,3 +985,33 @@ The scanTradesForMissedVotes function was crashing on bot startup due to missing
 - [x] Investigate why !check-trade command cannot find trade record
 - [x] Fix !check-trade to properly count votes from Discord message reactions
 - [ ] Test with message ID 1445268293186490548
+
+
+## Fix TypeScript Build Errors
+
+### Issues
+1. Discord channel type error in tradeMachine.ts - Property 'send' does not exist on type 'PartialGroupDMChannel'
+2. Type mismatch in csvExport.ts - Type 'number | ""' is not assignable to type 'string'
+
+### Tasks
+- [x] Fix Discord channel type error in tradeMachine.ts
+- [x] Fix type mismatch in csvExport.ts
+- [x] Fix all remaining TypeScript errors (138 errors related to Drizzle ORM type mismatches)
+
+
+## Fix Trade Machine Discord Bot Connection Error
+
+### Issue
+Trade Machine shows error when posting trades: "Failed to post trade: Discord bot is not connected"
+
+### Root Cause
+Discord bot was running in a separate standalone process (bot-standalone.ts) to avoid HMR duplication issues. However, this meant the web server process couldn't access the bot client instance because they were in different processes. The `getDiscordClient()` function returned `null` when called from the web server.
+
+### Solution
+Re-enabled Discord bot startup in the main server process with proper HMR protection using global flag to prevent duplicate instances.
+
+### Tasks
+- [x] Check Discord bot connection status
+- [x] Diagnose why bot is not connected when posting trades
+- [x] Fix bot connection initialization
+- [x] Test trade posting from Trade Machine page

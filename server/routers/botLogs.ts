@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { router, publicProcedure } from "../_core/trpc.js";
-import { getDb } from "../db.js";
+import { getDb, assertDb } from "../db.js";
 import { botLogs } from "../../drizzle/schema.js";
 import { desc, eq, and, gte, lte, like, sql } from "drizzle-orm";
 
@@ -20,6 +20,7 @@ export const botLogsRouter = router({
     )
     .query(async ({ input }) => {
       const db = await getDb();
+  assertDb(db);
       const { page, pageSize, level, eventType, search, startDate, endDate } = input;
       const offset = (page - 1) * pageSize;
 
@@ -75,6 +76,7 @@ export const botLogsRouter = router({
   // Get event types for filter dropdown
   getEventTypes: publicProcedure.query(async () => {
     const db = await getDb();
+  assertDb(db);
     
     const types = await db
       .select({ eventType: botLogs.eventType })
@@ -88,6 +90,7 @@ export const botLogsRouter = router({
   // Get log statistics
   getStats: publicProcedure.query(async () => {
     const db = await getDb();
+  assertDb(db);
     
     // Get counts by level for last 24 hours
     const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
@@ -136,6 +139,7 @@ export const botLogsRouter = router({
     )
     .mutation(async ({ input }) => {
       const db = await getDb();
+  assertDb(db);
       const cutoffDate = new Date(Date.now() - input.daysToKeep * 24 * 60 * 60 * 1000);
 
       const result = await db

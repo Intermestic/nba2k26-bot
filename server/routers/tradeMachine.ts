@@ -129,7 +129,7 @@ export const tradeMachineRouter = router({
    */
   scrapeBadgeCounts: publicProcedure
     .input(z.object({
-      playerIds: z.array(z.number()),
+      playerIds: z.array(z.string()),
     }))
     .mutation(async ({ input }) => {
       const db = await getDb();
@@ -221,6 +221,11 @@ export const tradeMachineRouter = router({
         
         if (!channel || !channel.isTextBased()) {
           throw new Error("Trade channel not found or not a text channel");
+        }
+
+        // Type guard: ensure channel has send method (exclude PartialGroupDMChannel)
+        if (!('send' in channel)) {
+          throw new Error("Channel does not support sending messages");
         }
 
         await channel.send(message);

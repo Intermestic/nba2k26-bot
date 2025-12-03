@@ -91,4 +91,14 @@ export async function getUserByOpenId(openId: string) {
   return result.length > 0 ? result[0] : undefined;
 }
 
+/**
+ * Assert that database is available and throw if not.
+ * Use this after getDb() to satisfy TypeScript's null checks.
+ */
+export function assertDb(db: ReturnType<typeof drizzle> | null): asserts db is ReturnType<typeof drizzle> {
+  if (!db) {
+    throw new Error("Database not available");
+  }
+}
+
 // TODO: add feature queries here as your schema grows.

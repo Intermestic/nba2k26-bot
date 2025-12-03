@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { router, publicProcedure } from "../_core/trpc.js";
-import { getDb } from "../db.js";
+import { getDb, assertDb } from "../db.js";
 import { botLogs } from "../../drizzle/schema.js";
 import { desc, eq, and, gte, lte, sql, isNotNull } from "drizzle-orm";
 
@@ -15,6 +15,7 @@ export const botActivityRouter = router({
     )
     .query(async ({ input }) => {
       const db = await getDb();
+  assertDb(db);
 
       // Build date filters
       const filters = [];
@@ -56,6 +57,7 @@ export const botActivityRouter = router({
     )
     .query(async ({ input }) => {
       const db = await getDb();
+  assertDb(db);
 
       // Build date filters
       const filters = [];
@@ -103,6 +105,7 @@ export const botActivityRouter = router({
     )
     .query(async ({ input }) => {
       const db = await getDb();
+  assertDb(db);
 
       // Build date filters
       const filters = [];
@@ -149,6 +152,7 @@ export const botActivityRouter = router({
     )
     .query(async ({ input }) => {
       const db = await getDb();
+  assertDb(db);
 
       // Build date filters
       const filters = [];
@@ -202,6 +206,7 @@ export const botActivityRouter = router({
     )
     .query(async ({ input }) => {
       const db = await getDb();
+  assertDb(db);
 
       // Build date filters
       const filters = [];
@@ -244,6 +249,7 @@ export const botActivityRouter = router({
     )
     .query(async ({ input }) => {
       const db = await getDb();
+  assertDb(db);
 
       // Build date filters
       const filters = [];
