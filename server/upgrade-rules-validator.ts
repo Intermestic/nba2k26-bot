@@ -28,11 +28,11 @@ export async function validateUpgradeRules(
     return { valid: false, errors, warnings };
   }
 
-  // Fetch player data
+  // Fetch player data (case-insensitive)
   const playerData = await db
     .select()
     .from(players)
-    .where(eq(players.name, upgrade.playerName))
+    .where(sql`LOWER(${players.name}) = LOWER(${upgrade.playerName})`)
     .limit(1);
 
   if (playerData.length === 0) {

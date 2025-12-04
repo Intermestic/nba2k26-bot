@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, sql } from "drizzle-orm";
 import { publicProcedure, router } from "../_core/trpc";
 import { getDb } from "../db";
 import { tradeLogs, players } from "../../drizzle/schema";
@@ -70,7 +70,7 @@ export const tradeLogRouter = router({
         await db
           .update(players)
           .set({ badgeCount })
-          .where(eq(players.name, playerName));
+          .where(sql`LOWER(${players.name}) = LOWER(${playerName})`);
       }
 
       // Mark trade as approved
@@ -186,7 +186,7 @@ export const tradeLogRouter = router({
             await db
               .update(players)
               .set({ badgeCount })
-              .where(eq(players.name, playerName));
+              .where(sql`LOWER(${players.name}) = LOWER(${playerName})`);
           }
 
           // Mark trade as approved

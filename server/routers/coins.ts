@@ -2,7 +2,7 @@ import { z } from "zod";
 import { router, protectedProcedure } from "../_core/trpc";
 import { getDb } from "../db";
 import { teamCoins, faTransactions } from "../../drizzle/schema";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, sql } from "drizzle-orm";
 
 export const coinsRouter = router({
   /**
@@ -156,13 +156,13 @@ export const coinsRouter = router({
       const normalizedTeam = validateTeamName(tx.team) || tx.team;
 
       // 1. Return signed player to Free Agents
-      const signedPlayers = await db.select().from(players).where(eq(players.name, tx.signPlayer));
+      const signedPlayers = await db.select().from(players).where(sql`LOWER(${players.name}) = LOWER(${tx.signPlayer})`);
       if (signedPlayers.length > 0) {
         await db.update(players).set({ team: 'Free Agents' }).where(eq(players.id, signedPlayers[0].id));
       }
 
       // 2. Restore cut player to team
-      const cutPlayers = await db.select().from(players).where(eq(players.name, tx.dropPlayer));
+      const cutPlayers = await db.select().from(players).where(sql`LOWER(${players.name}) = LOWER(${tx.dropPlayer})`);
       if (cutPlayers.length > 0) {
         await db.update(players).set({ team: normalizedTeam }).where(eq(players.id, cutPlayers[0].id));
       }
@@ -217,7 +217,7 @@ export const coinsRouter = router({
       const normalizedTeam = validateTeamName(tx.team) || tx.team;
 
       // 1. Return signed player to Free Agents
-      const signedPlayers = await db.select().from(players).where(eq(players.name, tx.signPlayer));
+      const signedPlayers = await db.select().from(players).where(sql`LOWER(${players.name}) = LOWER(${tx.signPlayer})`);
       if (signedPlayers.length > 0) {
         await db.update(players).set({ team: 'Free Agents' }).where(eq(players.id, signedPlayers[0].id));
       }
@@ -272,7 +272,7 @@ export const coinsRouter = router({
       const normalizedTeam = validateTeamName(tx.team) || tx.team;
 
       // Restore cut player to team
-      const cutPlayers = await db.select().from(players).where(eq(players.name, tx.dropPlayer));
+      const cutPlayers = await db.select().from(players).where(sql`LOWER(${players.name}) = LOWER(${tx.dropPlayer})`);
       if (cutPlayers.length > 0) {
         await db.update(players).set({ team: normalizedTeam }).where(eq(players.id, cutPlayers[0].id));
       }

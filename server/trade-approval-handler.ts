@@ -1,7 +1,7 @@
 import type { Message } from 'discord.js';
 import { getDb } from './db';
 import { trades, players } from '../drizzle/schema';
-import { eq } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 import { validateTeamName } from './team-validator';
 
 /**
@@ -70,7 +70,7 @@ export async function handleApprovedTradeProcessing(message: Message) {
       const playerRecords = await db
         .select()
         .from(players)
-        .where(eq(players.name, player.name))
+        .where(sql`LOWER(${players.name}) = LOWER(${player.name})`)
         .limit(1);
       
       if (playerRecords.length === 0) {
@@ -91,7 +91,7 @@ export async function handleApprovedTradeProcessing(message: Message) {
       const playerRecords = await db
         .select()
         .from(players)
-        .where(eq(players.name, player.name))
+        .where(sql`LOWER(${players.name}) = LOWER(${player.name})`)
         .limit(1);
       
       if (playerRecords.length === 0) {

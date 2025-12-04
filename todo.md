@@ -1,5 +1,9 @@
 # NBA 2K26 Player Database - TODO
 
+## Data Management
+
+- [x] Clear all data after post ID 1443874843090223275
+
 ## Activity Booster System
 
 ### Game Result Validation
@@ -13,6 +17,9 @@
 ### Activity Booster Record Cumulative Fix
 - [x] Fix activity booster to be incremental + cumulative (add new games to existing records, don't clear)
 - [x] Fix command triggering multiple times (3-4 duplicate executions)
+- [x] Fix duplicate message processing - bot processes same messages multiple times causing inflated records
+- [x] Fix game counting accuracy - ensure correct cumulative records (Raptors should be 12-0 based on valid posts)
+- [x] Fix Discord API message fetching direction (was fetching old messages instead of new ones)
 
 ### !ab-reset Admin Command
 - [ ] Add !ab-reset command handler in discord-bot.ts
@@ -97,3 +104,10 @@
 - Unified FA management dashboard
 - Bid monitoring and winner determination
 - Coin tracking and discrepancy fixes
+
+### Bot Duplicate Posting Fix
+- [x] Create database singleton lock table for bot instances
+- [x] Implement singleton lock in bot startup
+- [x] Remove all event listeners before destroying old client
+- [x] Fix player name parsing to be case-insensitive in trade processing
+- [x] Make ALL player lookups case-insensitive across entire codebase (trade-approval-handler, fa-window-close, upgrade-rules-validator, coins router, tradeLog router)

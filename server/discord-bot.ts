@@ -923,13 +923,92 @@ async function handleBidMessage(message: Message) {
 const INSTANCE_ID = Math.random().toString(36).substring(7);
 
 /**
+ * Acquire database-based singleton lock for bot instance
+ * Returns true if lock acquired, false otherwise
+ */
+async function acquireBotInstanceLock(): Promise<boolean> {
+  try {
+    const db = await getDb();
+    if (!db) {
+      console.error('[Discord Bot] Database not available for instance lock');
+      return false;
+    }
+    
+    const expiresAt = new Date(Date.now() + 60000); // 60 second lock
+    
+    // Try to insert the lock (only one row with id=1 allowed)
+    try {
+      await db.execute(sql`
+        INSERT INTO bot_instance_lock (id, instanceId, expiresAt)
+        VALUES (1, ${INSTANCE_ID}, ${expiresAt})
+      `);
+      console.log(`[Discord Bot] Instance ${INSTANCE_ID} acquired singleton lock`);
+      return true;
+    } catch (error: any) {
+      // Lock already exists, try to update if expired
+      if (error.code === 'ER_DUP_ENTRY' || error.errno === 1062) {
+        // Try to update if lock is expired
+        const result = await db.execute(sql`
+          UPDATE bot_instance_lock
+          SET instanceId = ${INSTANCE_ID}, lockedAt = NOW(), expiresAt = ${expiresAt}
+          WHERE id = 1 AND expiresAt < NOW()
+        `);
+        
+        if ((result as any).rowsAffected > 0) {
+          console.log(`[Discord Bot] Instance ${INSTANCE_ID} acquired expired lock`);
+          return true;
+        }
+        
+        // Lock is held by another instance
+        const existing = await db.execute(sql`SELECT instanceId FROM bot_instance_lock WHERE id = 1`);
+        const rows = (existing as any).rows || [];
+        if (rows.length > 0) {
+          console.log(`[Discord Bot] Instance ${INSTANCE_ID} blocked - lock held by ${rows[0].instanceId}`);
+        }
+        return false;
+      }
+      throw error;
+    }
+  } catch (error) {
+    console.error('[Discord Bot] Error acquiring instance lock:', error);
+    return false;
+  }
+}
+
+/**
+ * Release database-based singleton lock
+ */
+async function releaseBotInstanceLock(): Promise<void> {
+  try {
+    const db = await getDb();
+    if (!db) return;
+    
+    await db.execute(sql`
+      DELETE FROM bot_instance_lock WHERE id = 1 AND instanceId = ${INSTANCE_ID}
+    `);
+    console.log(`[Discord Bot] Instance ${INSTANCE_ID} released singleton lock`);
+  } catch (error) {
+    console.error('[Discord Bot] Error releasing instance lock:', error);
+  }
+}
+
+/**
  * Start Discord bot
  */
 export async function startDiscordBot(token: string) {
-  console.log(`[Discord Bot] Starting instance ${INSTANCE_ID}`);
+  console.log(`[Discord Bot] Instance ${INSTANCE_ID} attempting to start`);
+  
+  // Acquire database singleton lock
+  const lockAcquired = await acquireBotInstanceLock();
+  if (!lockAcquired) {
+    console.log(`[Discord Bot] Instance ${INSTANCE_ID} failed to acquire lock, aborting startup`);
+    return;
+  }
   
   if (client) {
     console.log(`[Discord Bot] Client already exists. Destroying old client from instance ${INSTANCE_ID}`);
+    // Remove all event listeners to prevent duplicate event handling
+    client.removeAllListeners();
     await client.destroy();
     client = null;
   }
@@ -1254,9 +1333,43 @@ export async function startDiscordBot(token: string) {
         return;
       }
       
-      // Mark as in progress IMMEDIATELY before any async operations
+      // CRITICAL: Acquire distributed database lock FIRST
+      // This prevents multiple bot instances from executing the same command
+      try {
+        const { getDb } = await import('./db');
+        const { sql } = await import('drizzle-orm');
+        const db = await getDb();
+        if (!db) {
+          console.error('[Activity Records] Database not available for lock check');
+          await message.reply('❌ Database not available.');
+          return;
+        }
+        
+        const expiresAt = new Date(Date.now() + 30000); // 30 second lock
+        
+        // Try to acquire lock
+        try {
+          await db.execute(sql`
+            INSERT INTO command_locks (commandKey, expiresAt)
+            VALUES (${commandKey}, ${expiresAt})
+          `);
+          console.log(`[Activity Records] Instance ${INSTANCE_ID} acquired lock for ${commandKey}`);
+        } catch (lockError: any) {
+          if (lockError.code === 'ER_DUP_ENTRY' || lockError.errno === 1062) {
+            // Lock already held by another instance
+            console.log(`[Activity Records] Instance ${INSTANCE_ID} - lock already held for ${commandKey}, skipping`);
+            return;
+          }
+          throw lockError;
+        }
+      } catch (error) {
+        console.error('[Activity Records] Lock acquisition error:', error);
+        return;
+      }
+      
+      // Mark as in progress AFTER acquiring lock
       commandsInProgress.add(commandKey);
-      console.log(`[Activity Records] Starting command execution for message ${message.id}`);
+      console.log(`[Activity Records] Instance ${INSTANCE_ID} starting command execution for message ${message.id}`);
       
       try {
         const { handleActivityRecordsCommand } = await import('./activity-booster-command');
@@ -1282,6 +1395,19 @@ export async function startDiscordBot(token: string) {
         // Always remove from in-progress set
         commandsInProgress.delete(commandKey);
         console.log(`[Activity Records] Removed in-progress lock for message ${message.id}`);
+        
+        // Release database lock
+        try {
+          const { getDb } = await import('./db');
+          const { sql } = await import('drizzle-orm');
+          const db = await getDb();
+          if (db) {
+            await db.execute(sql`DELETE FROM command_locks WHERE commandKey = ${commandKey}`);
+            console.log(`[Activity Records] Released database lock for ${commandKey}`);
+          }
+        } catch (error) {
+          console.error('[Activity Records] Failed to release lock:', error);
+        }
       }
       return;
     }
@@ -2393,10 +2519,14 @@ export async function startDiscordBot(token: string) {
  */
 export async function stopDiscordBot() {
   if (client) {
+    // Remove all event listeners before destroying
+    client.removeAllListeners();
     await client.destroy();
     client = null;
     console.log('[Discord Bot] Stopped');
   }
+  // Release the singleton lock
+  await releaseBotInstanceLock();
 }
 
 /**

@@ -1,21 +1,74 @@
 // @ts-nocheck
 import { Client, Message, TextChannel, EmbedBuilder } from 'discord.js';
 import { getDb } from './db';
-import { activityRecords, activityCheckpoint, activityHeadToHead } from '../drizzle/schema';
+import { activityRecords, activityCheckpoint, activityHeadToHead, activityProcessedMessages } from '../drizzle/schema';
 import { parseActivityBoosterMessage, ParsedActivityBooster } from './activity-booster-parser';
 import { eq, and, or, sql } from 'drizzle-orm';
 
 const ACTIVITY_BOOSTER_CHANNEL_ID = '1384397576606056579';
 const HEAD_TO_HEAD_LOG_CHANNEL_ID = '1443741234106470493';
 const CUTOFF_MESSAGE_ID = '1440851551030870147';
-
-// Global outgoing message deduplication (persist across HMR)
-const globalAny = global as any;
-if (!globalAny.__abCommandExecutions) {
-  globalAny.__abCommandExecutions = new Map<string, number>();
-}
-const abCommandExecutions: Map<string, number> = globalAny.__abCommandExecutions;
 const EXECUTION_LOCK_TTL = 30000; // 30 seconds
+
+/**
+ * Acquire a distributed lock using the database
+ * Returns true if lock acquired, false if already locked
+ */
+async function acquireCommandLock(commandKey: string): Promise<boolean> {
+  const db = await getDb();
+  if (!db) throw new Error('Database not available');
+  
+  const expiresAt = new Date(Date.now() + EXECUTION_LOCK_TTL);
+  
+  try {
+    // Try to insert the lock
+    await db.execute(sql`
+      INSERT INTO command_locks (commandKey, expiresAt)
+      VALUES (${commandKey}, ${expiresAt})
+    `);
+    console.log(`[AB Command] Acquired lock for ${commandKey}`);
+    return true;
+  } catch (error: any) {
+    // If insert fails due to unique constraint, check if lock is expired
+    if (error.code === 'ER_DUP_ENTRY' || error.errno === 1062) {
+      // Try to delete expired locks and retry
+      await db.execute(sql`
+        DELETE FROM command_locks 
+        WHERE commandKey = ${commandKey} AND expiresAt < NOW()
+      `);
+      
+      // Retry insert
+      try {
+        await db.execute(sql`
+          INSERT INTO command_locks (commandKey, expiresAt)
+          VALUES (${commandKey}, ${expiresAt})
+        `);
+        console.log(`[AB Command] Acquired lock for ${commandKey} after cleanup`);
+        return true;
+      } catch (retryError: any) {
+        if (retryError.code === 'ER_DUP_ENTRY' || retryError.errno === 1062) {
+          console.log(`[AB Command] Lock already held for ${commandKey}`);
+          return false;
+        }
+        throw retryError;
+      }
+    }
+    throw error;
+  }
+}
+
+/**
+ * Release a distributed lock
+ */
+async function releaseCommandLock(commandKey: string): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  
+  await db.execute(sql`
+    DELETE FROM command_locks WHERE commandKey = ${commandKey}
+  `);
+  console.log(`[AB Command] Released lock for ${commandKey}`);
+}
 
 /**
  * Activity Booster Records Command Handler
@@ -130,8 +183,45 @@ async function updateHeadToHead(team1: string, team2: string, team1Won: boolean)
 
 /**
  * Process parsed activity booster message
+ * Returns true if processed, false if already exists
  */
-async function processActivityBooster(parsed: ParsedActivityBooster): Promise<void> {
+async function processActivityBooster(message: Message, parsed: ParsedActivityBooster): Promise<boolean> {
+  const db = await getDb();
+  if (!db) throw new Error('Database not available');
+  
+  // Check if this message was already processed
+  const existing = await db.select()
+    .from(activityProcessedMessages)
+    .where(eq(activityProcessedMessages.messageId, message.id))
+    .limit(1);
+  
+  if (existing.length > 0) {
+    console.log(`[AB Command]   ⚠️  Message ${message.id} already processed, skipping`);
+    return false;
+  }
+  
+  // Record this message as processed FIRST (before updating records)
+  // This ensures idempotency even if concurrent executions happen
+  try {
+    await db.insert(activityProcessedMessages).values({
+      messageId: message.id,
+      authorId: message.author.id,
+      authorName: message.author.username,
+      postingTeam: parsed.postingTeam,
+      opponentTeam: parsed.opponentTeam,
+      postingTeamResult: parsed.postingTeamResult,
+      opponentTeamResult: parsed.opponentTeamResult,
+      processedAt: new Date(),
+    });
+  } catch (error: any) {
+    // If insert fails due to unique constraint, another execution already processed it
+    if (error.code === 'ER_DUP_ENTRY' || error.errno === 1062) {
+      console.log(`[AB Command]   ⚠️  Message ${message.id} already processed by concurrent execution, skipping`);
+      return false;
+    }
+    throw error;
+  }
+  
   // Update team records
   await updateTeamRecord(parsed.postingTeam, parsed.postingTeamResult === 'W');
   await updateTeamRecord(parsed.opponentTeam, parsed.opponentTeamResult === 'W');
@@ -142,6 +232,8 @@ async function processActivityBooster(parsed: ParsedActivityBooster): Promise<vo
     parsed.opponentTeam,
     parsed.postingTeamResult === 'W'
   );
+  
+  return true;
 }
 
 /**
@@ -260,28 +352,38 @@ async function scanAndProcessMessages(
 ): Promise<{ processed: number; lastMessageId: string | null }> {
   let processed = 0;
   let lastMessageId: string | null = null;
-  let fetchAfter = afterMessageId;
   
-  console.log(`[AB Command] Scanning messages after ${fetchAfter || 'start'}...`);
+  console.log(`[AB Command] Scanning messages after ${afterMessageId || 'start'}...`);
+  
+  // Fetch recent messages (Discord API fetches newest first)
+  // We'll fetch in batches and filter for messages after our checkpoint
+  let fetchBefore: string | undefined = undefined;
+  let foundCheckpoint = false;
   
   while (true) {
     const options: any = { limit: 100 };
-    if (fetchAfter) {
-      options.after = fetchAfter;
+    if (fetchBefore) {
+      options.before = fetchBefore;
     }
     
     const messages = await channel.messages.fetch(options);
     
     if (messages.size === 0) break;
     
-    // Sort messages by timestamp (oldest first)
+    // Sort messages by timestamp (newest first, matching Discord API order)
     const sortedMessages = Array.from(messages.values()).sort(
-      (a, b) => a.createdTimestamp - b.createdTimestamp
+      (a, b) => b.createdTimestamp - a.createdTimestamp
     );
     
     for (const message of sortedMessages) {
       // Skip messages before or at cutoff (use BigInt for proper comparison)
       if (BigInt(message.id) <= BigInt(CUTOFF_MESSAGE_ID)) continue;
+      
+      // If we have a checkpoint, skip messages at or before it
+      if (afterMessageId && BigInt(message.id) <= BigInt(afterMessageId)) {
+        foundCheckpoint = true;
+        continue;
+      }
       
       // Skip bot messages
       if (message.author.bot) continue;
@@ -295,8 +397,10 @@ async function scanAndProcessMessages(
       const parsed = parseActivityBoosterMessage(message);
       if (parsed) {
         console.log(`[AB Command]   ✓ Parsed: ${parsed.postingTeam} ${parsed.postingTeamResult} vs ${parsed.opponentTeam} ${parsed.opponentTeamResult}`);
-        await processActivityBooster(parsed);
-        processed++;
+        const wasProcessed = await processActivityBooster(message, parsed);
+        if (wasProcessed) {
+          processed++;
+        }
       } else {
         console.log(`[AB Command]   ✗ Failed to parse`);
       }
@@ -304,11 +408,14 @@ async function scanAndProcessMessages(
       lastMessageId = message.id;
     }
     
+    // If we found the checkpoint, we can stop scanning older messages
+    if (foundCheckpoint) break;
+    
     // If we got less than 100 messages, we've reached the end
     if (messages.size < 100) break;
     
-    // Update fetchAfter for next iteration
-    fetchAfter = sortedMessages[sortedMessages.length - 1].id;
+    // Update fetchBefore for next iteration (go further back in time)
+    fetchBefore = sortedMessages[sortedMessages.length - 1].id;
   }
   
   console.log(`[AB Command] Scan complete. Processed ${processed} games.`);
@@ -323,21 +430,8 @@ export async function handleActivityRecordsCommand(
   client: Client,
   message: Message
 ): Promise<void> {
-  const commandKey = `ab-records:${message.id}`;
-  const now = Date.now();
-  
-  // CRITICAL: Check if this exact command is already executing or recently completed
-  // This prevents HMR-induced duplicate executions across multiple client instances
-  const lastExecution = abCommandExecutions.get(commandKey);
-  
-  if (lastExecution && now - lastExecution < EXECUTION_LOCK_TTL) {
-    console.log(`[AB Command] Command ${commandKey} already executing or recently completed (${now - lastExecution}ms ago), skipping duplicate`);
-    return;
-  }
-  
-  // Mark as executing IMMEDIATELY before any async operations
-  abCommandExecutions.set(commandKey, now);
-  console.log(`[AB Command] Locked execution for command ${commandKey}`);
+  // NOTE: Lock is now acquired in discord-bot.ts before calling this function
+  // This function assumes it has exclusive access
   
   try {
     await message.reply('🔄 Scanning activity booster channel...');
@@ -409,12 +503,6 @@ export async function handleActivityRecordsCommand(
   } catch (error) {
     console.error('[AB Command] Error:', error);
     await message.reply('❌ An error occurred while processing activity boosters.');
-  } finally {
-    // Keep the lock for the full TTL to prevent any duplicate executions
-    // The lock will auto-expire after EXECUTION_LOCK_TTL
-    setTimeout(() => {
-      abCommandExecutions.delete(commandKey);
-      console.log(`[AB Command] Cleaned up execution lock for command ${commandKey}`);
-    }, EXECUTION_LOCK_TTL);
   }
+  // NOTE: Lock is released in discord-bot.ts after this function returns
 }

@@ -461,7 +461,7 @@ export async function rollbackBatch(batchId: string, rollbackBy: string) {
     
     const { getDb } = await import('./db');
     const { players, faTransactions, teamCoins } = await import('../drizzle/schema');
-    const { eq, and } = await import('drizzle-orm');
+    const { eq, and, sql } = await import('drizzle-orm');
     
     const db = await getDb();
     if (!db) {
@@ -504,11 +504,11 @@ export async function rollbackBatch(batchId: string, rollbackBy: string) {
       try {
         console.log(`[Rollback] Rolling back: ${transaction.signPlayer} from ${transaction.team} to ${transaction.previousTeam}`);
         
-        // Find the player
+        // Find the player (case-insensitive)
         const playerRecords = await db
           .select()
           .from(players)
-          .where(eq(players.name, transaction.signPlayer));
+          .where(sql`LOWER(${players.name}) = LOWER(${transaction.signPlayer})`);
         
         if (playerRecords.length === 0) {
           results.push({

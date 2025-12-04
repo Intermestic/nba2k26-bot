@@ -1,0 +1,80 @@
+{
+  "query": "\nSELECT * FROM activity_records ORDER BY id DESC LIMIT 10;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute \nSELECT * FROM activity_records ORDER BY id DESC LIMIT 10;\n",
+  "rows": [
+    {
+      "id": "60019",
+      "teamName": "Magic",
+      "wins": "0",
+      "losses": "4",
+      "lastUpdated": "2025-12-03 13:45:00"
+    },
+    {
+      "id": "60018",
+      "teamName": "Pacers",
+      "wins": "0",
+      "losses": "4",
+      "lastUpdated": "2025-12-03 13:44:59"
+    },
+    {
+      "id": "60017",
+      "teamName": "Timberwolves",
+      "wins": "0",
+      "losses": "4",
+      "lastUpdated": "2025-12-03 13:44:59"
+    },
+    {
+      "id": "60016",
+      "teamName": "Nuggets",
+      "wins": "12",
+      "losses": "0",
+      "lastUpdated": "2025-12-03 13:45:00"
+    },
+    {
+      "id": "60015",
+      "teamName": "Hawks",
+      "wins": "12",
+      "losses": "4",
+      "lastUpdated": "2025-12-03 13:45:00"
+    },
+    {
+      "id": "60014",
+      "teamName": "Trail Blazers",
+      "wins": "0",
+      "losses": "12",
+      "lastUpdated": "2025-12-03 13:45:00"
+    },
+    {
+      "id": "60013",
+      "teamName": "Knicks",
+      "wins": "0",
+      "losses": "4",
+      "lastUpdated": "2025-12-03 13:44:58"
+    },
+    {
+      "id": "60012",
+      "teamName": "Celtics",
+      "wins": "0",
+      "losses": "12",
+      "lastUpdated": "2025-12-03 13:45:00"
+    },
+    {
+      "id": "60011",
+      "teamName": "Kings",
+      "wins": "8",
+      "losses": "0",
+      "lastUpdated": "2025-12-03 13:45:00"
+    },
+    {
+      "id": "60010",
+      "teamName": "Grizzlies",
+      "wins": "0",
+      "losses": "4",
+      "lastUpdated": "2025-12-03 13:44:58"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tteamName\twins\tlosses\tlastUpdated\n60019\tMagic\t0\t4\t2025-12-03 13:45:00\n60018\tPacers\t0\t4\t2025-12-03 13:44:59\n60017\tTimberwolves\t0\t4\t2025-12-03 13:44:59\n60016\tNuggets\t12\t0\t2025-12-03 13:45:00\n60015\tHawks\t12\t4\t2025-12-03 13:45:00\n60014\tTrail Blazers\t0\t12\t2025-12-03 13:45:00\n60013\tKnicks\t0\t4\t2025-12-03 13:44:58\n60012\tCeltics\t0\t12\t2025-12-03 13:45:00\n60011\tKings\t8\t0\t2025-12-03 13:45:00\n60010\tGrizzlies\t0\t4\t2025-12-03 13:44:58\n",
+  "stderr": "",
+  "execution_time_ms": 59
+}

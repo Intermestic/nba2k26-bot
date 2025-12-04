@@ -857,6 +857,25 @@ export const activityHeadToHead = mysqlTable("activity_head_to_head", {
 export type ActivityHeadToHead = typeof activityHeadToHead.$inferSelect;
 export type InsertActivityHeadToHead = typeof activityHeadToHead.$inferInsert;
 
+/**
+ * Activity Processed Messages Table
+ * Tracks individual messages that have been processed to prevent duplicates
+ * This ensures idempotent processing even with concurrent command executions
+ */
+export const activityProcessedMessages = mysqlTable("activity_processed_messages", {
+  id: int("id").autoincrement().primaryKey(),
+  messageId: varchar("messageId", { length: 64 }).notNull().unique(),
+  authorId: varchar("authorId", { length: 64 }).notNull(),
+  authorName: varchar("authorName", { length: 255 }).notNull(),
+  postingTeam: varchar("postingTeam", { length: 100 }).notNull(),
+  opponentTeam: varchar("opponentTeam", { length: 100 }).notNull(),
+  postingTeamResult: varchar("postingTeamResult", { length: 1 }).notNull(), // W or L
+  opponentTeamResult: varchar("opponentTeamResult", { length: 1 }).notNull(), // W or L
+  processedAt: timestamp("processedAt").defaultNow().notNull(),
+});
+
+export type ActivityProcessedMessage = typeof activityProcessedMessages.$inferSelect;
+export type InsertActivityProcessedMessage = typeof activityProcessedMessages.$inferInsert;
 
 /**
  * Bot Logs Table
