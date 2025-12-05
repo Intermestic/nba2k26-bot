@@ -226,7 +226,7 @@ export async function findPlayerByFuzzyName(
       const teamMatches = extract(searchName, teamPlayers.map(p => p.name), { limit: 1 });
       if (teamMatches.length > 0 && teamMatches[0][1] >= 60) {
         const matchedName = teamMatches[0][0];
-        const player = teamPlayers.find(p => p.name === matchedName);
+        const player = teamPlayers.find(p => p.name.toLowerCase() === matchedName.toLowerCase());
         if (player) {
           console.log(`[Player Matcher] Found on ${teamContext} roster: "${name}" → "${player.name}" (${teamMatches[0][1]}% match)`);
           return {

@@ -536,7 +536,7 @@ export async function findPlayerByFuzzyName(name: string, teamFilter?: string, c
     
     if (matches.length > 0 && matches[0][1] >= 60) {
       const matchedName = matches[0][0];
-      player = allPlayers.find(p => p.name === matchedName);
+      player = allPlayers.find(p => p.name.toLowerCase() === matchedName.toLowerCase());
       
       if (player) {
         await logMatch(name, player.name, matches[0][1], 'fuzzy_full_name', context, teamFilter, true);

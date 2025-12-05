@@ -122,7 +122,7 @@ async function findPlayerByName(name: string): Promise<{ id: string; name: strin
   
   if (matches.length > 0) {
     const matchedName = matches[0][0];
-    const player = allPlayers.find(p => p.name === matchedName);
+    const player = allPlayers.find(p => p.name.toLowerCase() === matchedName.toLowerCase());
     if (player && player.team) {
       return {
         id: player.id,
@@ -587,7 +587,7 @@ async function handleBidMessage(message: Message) {
       // First check if there's an exact or very close match in the full database
       const exactMatches = extract(parsedBid.playerName, allPlayers.map(p => p.name), { limit: 1 });
       if (exactMatches.length > 0 && exactMatches[0][1] >= 90) {
-        const matchedPlayer = allPlayers.find(p => p.name === exactMatches[0][0]);
+        const matchedPlayer = allPlayers.find(p => p.name.toLowerCase() === exactMatches[0][0].toLowerCase());
         if (matchedPlayer && matchedPlayer.team && matchedPlayer.team !== 'Free Agent' && matchedPlayer.team !== 'Free Agents') {
           await message.reply(
             `❌ **Player Not Available**: ${matchedPlayer.name} is not a free agent.\n\n` +
