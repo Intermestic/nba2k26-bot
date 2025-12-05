@@ -33,6 +33,7 @@
 ## Trade System
 
 ### Trade Approval Workflow
+- [x] Fix "No trade record found" error after trade approval
 - [ ] Test trade approval workflow end-to-end
 - [ ] Test with the stuck Cavs/Trailblazers trade
 - [ ] Verify no duplicate messages are posted
@@ -43,6 +44,10 @@
 
 
 ## Player Management
+
+### Auto-Alias Learning System
+- [x] Auto-save misspellings as aliases when fuzzy matcher finds correct player
+- [x] Complete Sixers-Pacers trade with all 8 players correctly assigned
 
 ### Player Swap Tracking System (SZN 17)
 - [ ] Create playerSwaps database table (player_id, swap_type, swap_date, old_player_name, new_player_name, notes)

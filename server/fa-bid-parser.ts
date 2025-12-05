@@ -229,6 +229,16 @@ export async function findPlayerByFuzzyName(
         const player = teamPlayers.find(p => p.name.toLowerCase() === matchedName.toLowerCase());
         if (player) {
           console.log(`[Player Matcher] Found on ${teamContext} roster: "${name}" → "${player.name}" (${teamMatches[0][1]}% match)`);
+          
+          // Auto-learn: Save misspelling as alias
+          if (searchName !== player.name.toLowerCase()) {
+            try {
+              await autoLearnAlias(searchName, player.name, context);
+            } catch (error) {
+              console.log(`[Player Matcher] Failed to auto-learn alias:`, error);
+            }
+          }
+          
           return {
             id: player.id,
             name: player.name,
@@ -311,6 +321,16 @@ export async function findPlayerByFuzzyName(
           );
           if (player) {
             console.log(`[Player Matcher] Found via first+last name: "${name}" → "${player.name}" (${lastNameMatches[0][1]}% match on last name)`);
+            
+            // Auto-learn: Save misspelling as alias
+            if (searchName !== player.name.toLowerCase()) {
+              try {
+                await autoLearnAlias(searchName, player.name, context);
+              } catch (error) {
+                console.log(`[Player Matcher] Failed to auto-learn alias:`, error);
+              }
+            }
+            
             return {
               id: player.id,
               name: player.name,
@@ -333,6 +353,16 @@ export async function findPlayerByFuzzyName(
     
     if (player) {
       console.log(`[Player Matcher] Found via fuzzy match: "${name}" → "${player.name}" (${matches[0][1]}% match)`);
+      
+      // Auto-learn: If the search name differs from canonical name, save as alias
+      if (searchName !== player.name.toLowerCase()) {
+        try {
+          await autoLearnAlias(searchName, player.name, context);
+        } catch (error) {
+          console.log(`[Player Matcher] Failed to auto-learn alias:`, error);
+        }
+      }
+      
       return {
         id: player.id,
         name: player.name,
@@ -389,6 +419,52 @@ async function logFailedSearch(searchTerm: string): Promise<void> {
     });
     
     console.log(`[Auto-Learn] Logged new failed search: "${searchTerm}"`);
+  }
+}
+
+/**
+ * Auto-learn alias when fuzzy match succeeds
+ * Saves the misspelling as an alias for future instant lookups
+ */
+async function autoLearnAlias(searchTerm: string, canonicalName: string, context: string): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  
+  const { learnedAliases } = await import('../drizzle/schema');
+  const { eq, and } = await import('drizzle-orm');
+  
+  // Check if this alias already exists
+  const existing = await db
+    .select()
+    .from(learnedAliases)
+    .where(
+      and(
+        eq(learnedAliases.alias, searchTerm.toLowerCase()),
+        eq(learnedAliases.canonicalName, canonicalName)
+      )
+    );
+  
+  if (existing.length === 0) {
+    // Create new learned alias
+    await db.insert(learnedAliases).values({
+      alias: searchTerm.toLowerCase(),
+      canonicalName: canonicalName,
+      context: context,
+      useCount: 1,
+    });
+    
+    console.log(`[Auto-Learn] ✅ Saved new alias: "${searchTerm}" → "${canonicalName}" (context: ${context})`);
+  } else {
+    // Increment use count
+    await db
+      .update(learnedAliases)
+      .set({ 
+        useCount: existing[0].useCount + 1,
+        lastUsed: new Date()
+      })
+      .where(eq(learnedAliases.id, existing[0].id));
+    
+    console.log(`[Auto-Learn] ✅ Incremented alias usage: "${searchTerm}" → "${canonicalName}" (${existing[0].useCount + 1} uses)`);
   }
 }
 

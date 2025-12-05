@@ -247,7 +247,7 @@ async function processVoteResult(
         .setColor(0xff0000); // Red
     }
     
-    await message.reply({ embeds: [embed] });
+    const approvalMessage = await message.reply({ embeds: [embed] });
     console.log(`[Trade Voting] Trade ${approved ? 'approved' : 'rejected'}: ${upvotes} 👍, ${downvotes} 👎`);
     
     // Save to database to prevent duplicate processing
@@ -264,20 +264,32 @@ async function processVoteResult(
       try {
         const tradeDetails = parseTradeFromEmbed(message);
         if (tradeDetails) {
-          await db.insert(trades).values({
+          const tradeRecord = {
             messageId: message.id,
             team1: tradeDetails.team1,
             team2: tradeDetails.team2,
             team1Players: JSON.stringify(tradeDetails.team1Players),
             team2Players: JSON.stringify(tradeDetails.team2Players),
-            status: approved ? 'approved' : 'rejected',
+            status: (approved ? 'approved' : 'rejected') as 'approved' | 'rejected',
             upvotes,
             downvotes,
             approvedBy: approved ? 'Discord Vote' : undefined,
             rejectedBy: approved ? undefined : 'Discord Vote',
             processedAt: new Date(),
-          });
+          } as const;
+          
+          // Insert with original message ID
+          await db.insert(trades).values(tradeRecord);
           console.log(`[Trade Voting] Saved trade details to trades table for message ${message.id}`);
+          
+          // If approved, also insert with approval message ID so bolt reaction works
+          if (approved && approvalMessage) {
+            await db.insert(trades).values({
+              ...tradeRecord,
+              messageId: approvalMessage.id,
+            });
+            console.log(`[Trade Voting] Also saved trade with approval message ID ${approvalMessage.id} for bolt reaction processing`);
+          }
         } else {
           console.log(`[Trade Voting] Could not parse trade details from embed for message ${message.id}`);
         }

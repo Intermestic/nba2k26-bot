@@ -238,6 +238,22 @@ export type FailedSearch = typeof failedSearches.$inferSelect;
 export type InsertFailedSearch = typeof failedSearches.$inferInsert;
 
 /**
+ * Learned Aliases table - auto-saved misspellings that successfully matched via fuzzy search
+ */
+export const learnedAliases = mysqlTable("learned_aliases", {
+  id: int("id").autoincrement().primaryKey(),
+  alias: varchar("alias", { length: 255 }).notNull(), // The misspelling/variant that was searched
+  canonicalName: varchar("canonicalName", { length: 255 }).notNull(), // The correct player name it matched to
+  context: varchar("context", { length: 64 }).notNull(), // Context where it was learned (fa_bid, trade, etc.)
+  useCount: int("useCount").default(1).notNull(), // How many times this alias has been used
+  lastUsed: timestamp("lastUsed").defaultNow().notNull(), // Last time this alias was matched
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type LearnedAlias = typeof learnedAliases.$inferSelect;
+export type InsertLearnedAlias = typeof learnedAliases.$inferInsert;
+
+/**
  * Team Assignments table - maps Discord user IDs to teams
  */
 export const teamAssignments = mysqlTable("team_assignments", {
