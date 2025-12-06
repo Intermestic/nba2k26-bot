@@ -5,7 +5,7 @@
  * This prevents HMR (Hot Module Reload) from creating duplicate bot instances.
  */
 
-import { startDiscordBot } from "./discord-bot.js";
+import { startDiscordBot, stopDiscordBot } from "./discord-bot.js";
 
 async function main() {
   const botToken = process.env.DISCORD_BOT_TOKEN;
@@ -25,18 +25,33 @@ async function main() {
   }
 
   // Keep process alive
-  process.on('SIGINT', () => {
+  process.on('SIGINT', async () => {
     console.log('[Bot Standalone] Received SIGINT, shutting down...');
+    await stopDiscordBot();
     process.exit(0);
   });
 
-  process.on('SIGTERM', () => {
+  process.on('SIGTERM', async () => {
     console.log('[Bot Standalone] Received SIGTERM, shutting down...');
+    await stopDiscordBot();
     process.exit(0);
+  });
+  
+  process.on('uncaughtException', async (error) => {
+    console.error('[Bot Standalone] Uncaught exception:', error);
+    await stopDiscordBot();
+    process.exit(1);
+  });
+  
+  process.on('unhandledRejection', async (reason, promise) => {
+    console.error('[Bot Standalone] Unhandled rejection at:', promise, 'reason:', reason);
+    await stopDiscordBot();
+    process.exit(1);
   });
 }
 
-main().catch((error) => {
+main().catch(async (error) => {
   console.error('[Bot Standalone] Fatal error:', error);
+  await stopDiscordBot();
   process.exit(1);
 });

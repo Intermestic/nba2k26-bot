@@ -2465,8 +2465,21 @@ export async function startDiscordBot(token: string) {
     console.error('[Discord Bot] Shard error:', error);
   });
 
-  client.on('shardDisconnect', (event, shardId) => {
+  client.on('shardDisconnect', async (event, shardId) => {
     console.warn(`[Discord Bot] Shard ${shardId} disconnected:`, event);
+    // Update status file to offline when disconnected
+    try {
+      const statusFile = path.join(process.cwd(), 'bot-status.json');
+      await fs.promises.writeFile(statusFile, JSON.stringify({
+        online: false,
+        username: null,
+        userId: null,
+        disconnectedAt: new Date().toISOString(),
+      }, null, 2));
+      console.log('[Discord Bot] Status file updated to offline');
+    } catch (error) {
+      console.error('[Discord Bot] Failed to update status file on disconnect:', error);
+    }
   });
 
   client.on('shardReconnecting', (shardId) => {
@@ -2525,6 +2538,21 @@ export async function stopDiscordBot() {
     client = null;
     console.log('[Discord Bot] Stopped');
   }
+  
+  // Update status file to offline
+  try {
+    const statusFile = path.join(process.cwd(), 'bot-status.json');
+    await fs.promises.writeFile(statusFile, JSON.stringify({
+      online: false,
+      username: null,
+      userId: null,
+      stoppedAt: new Date().toISOString(),
+    }, null, 2));
+    console.log('[Discord Bot] Status file updated to offline');
+  } catch (error) {
+    console.error('[Discord Bot] Failed to update status file on stop:', error);
+  }
+  
   // Release the singleton lock
   await releaseBotInstanceLock();
 }

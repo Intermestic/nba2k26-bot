@@ -68,6 +68,9 @@
 
 ## Bot Management
 
+### Bot Status Display
+- [x] Fix Discord bot status showing offline in bot control page
+
 ### Bot Commands Display
 - [ ] Consider removing or renaming Custom Commands page to reduce confusion
 
