@@ -37,6 +37,7 @@
 - [ ] Test trade approval workflow end-to-end
 - [ ] Test with the stuck Cavs/Trailblazers trade
 - [ ] Verify no duplicate messages are posted
+- [x] Fix Discord bot trade recognition issue - some trades not being detected
 
 ### Trade Voting System
 - [ ] Test !check-trade command with message ID 1445268293186490548

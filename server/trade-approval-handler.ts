@@ -20,14 +20,50 @@ export async function handleApprovedTradeProcessing(message: Message) {
   
   try {
     // Look up the trade in the database
-    const tradeRecords = await db
+    // First try the current message ID
+    let tradeRecords = await db
       .select()
       .from(trades)
       .where(eq(trades.messageId, message.id))
       .limit(1);
     
+    // If not found, this might be the original trade message
+    // Check if this message has any replies that might contain the trade record
     if (tradeRecords.length === 0) {
-      console.log('[Trade Approval] No trade record found for this message');
+      console.log('[Trade Approval] No direct trade record found, checking if this is the original trade message...');
+      
+      // Fetch the channel and look for approval messages that reference this message
+      try {
+        const channel = message.channel;
+        if (channel.isTextBased()) {
+          // Fetch recent messages to find approval replies
+          const recentMessages = await channel.messages.fetch({ limit: 100 });
+          
+          // Look for messages that are replies to the current message
+          for (const [msgId, msg] of Array.from(recentMessages.entries())) {
+            if (msg.reference?.messageId === message.id) {
+              // This is a reply to our trade message, check if it has a trade record
+              const replyTradeRecords = await db
+                .select()
+                .from(trades)
+                .where(eq(trades.messageId, msgId))
+                .limit(1);
+              
+              if (replyTradeRecords.length > 0) {
+                console.log(`[Trade Approval] Found trade record in reply message ${msgId}`);
+                tradeRecords = replyTradeRecords;
+                break;
+              }
+            }
+          }
+        }
+      } catch (fetchError) {
+        console.error('[Trade Approval] Error fetching related messages:', fetchError);
+      }
+    }
+    
+    if (tradeRecords.length === 0) {
+      console.log('[Trade Approval] No trade record found for this message or its replies');
       await message.reply('❌ No trade record found for this message. The trade may not have been voted on yet.');
       return;
     }
