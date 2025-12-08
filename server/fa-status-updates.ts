@@ -197,7 +197,7 @@ export async function postStatusUpdate(client: Client) {
 }
 
 /**
- * Start hourly status updates
+ * Start status updates every 6 hours
  */
 export function startHourlyUpdates(client: Client) {
   // Stop any existing updates first
@@ -206,32 +206,32 @@ export function startHourlyUpdates(client: Client) {
   // Post initial status message immediately
   postStatusUpdate(client);
   
-  // Schedule hourly updates at the top of each hour
+  // Schedule updates every 6 hours
   const now = new Date();
-  const msUntilNextHour = (60 - now.getMinutes()) * 60 * 1000 - now.getSeconds() * 1000;
+  const msUntilNext6Hours = (6 * 60 - (now.getHours() % 6) * 60 - now.getMinutes()) * 60 * 1000 - now.getSeconds() * 1000;
   
-  console.log(`[FA Status] Next update in ${Math.round(msUntilNextHour / 1000 / 60)} minutes`);
+  console.log(`[FA Status] Next update in ${Math.round(msUntilNext6Hours / 1000 / 60)} minutes`);
   
-  // Post new message at next hour
+  // Post new message at next 6-hour mark
   setTimeout(() => {
     postStatusUpdate(client);
     
-    // Then post new message every hour
+    // Then post new message every 6 hours
     updateInterval = setInterval(() => {
       postStatusUpdate(client);
-    }, 60 * 60 * 1000); // Every hour
-  }, msUntilNextHour);
+    }, 6 * 60 * 60 * 1000); // Every 6 hours
+  }, msUntilNext6Hours);
   
-  console.log('[FA Status] Hourly updates scheduled');
+  console.log('[FA Status] Updates scheduled every 6 hours');
 }
 
 /**
- * Stop hourly status updates
+ * Stop status updates
  */
 export function stopHourlyUpdates() {
   if (updateInterval) {
     clearInterval(updateInterval);
     updateInterval = null;
-    console.log('[FA Status] Hourly updates stopped');
+    console.log('[FA Status] Status updates stopped');
   }
 }

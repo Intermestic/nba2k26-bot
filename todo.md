@@ -121,3 +121,7 @@
 - [x] Fix player name parsing to be case-insensitive in trade processing
 - [x] Make ALL player lookups case-insensitive across entire codebase (trade-approval-handler, fa-window-close, upgrade-rules-validator, coins router, tradeLog router)
 - [x] Fix remaining case sensitivity issues in player search (players router and any other remaining locations)
+
+## FA Bid Monitoring
+
+- [x] Change FA bid status alert frequency from hourly to every 6 hours
