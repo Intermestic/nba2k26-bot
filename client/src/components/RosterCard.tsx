@@ -408,16 +408,13 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                           {topPlayers[0].isRookie === 1 && (
                             <div
                               style={{
-                                background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)',
-                                color: '#000',
-                                padding: '4px 8px',
-                                borderRadius: '4px',
-                                fontSize: '12px',
+                                color: '#FFD700',
+                                fontSize: '24px',
                                 fontWeight: 'bold',
-                                letterSpacing: '0.5px',
+                                textShadow: '0 2px 4px rgba(0,0,0,0.8)',
                               }}
                             >
-                              ROOKIE
+                              R
                             </div>
                           )}
                         </div>
@@ -605,16 +602,13 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                           {topPlayers[1].isRookie === 1 && (
                             <div
                               style={{
-                                background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)',
-                                color: '#000',
-                                padding: '4px 8px',
-                                borderRadius: '4px',
-                                fontSize: '12px',
+                                color: '#FFD700',
+                                fontSize: '24px',
                                 fontWeight: 'bold',
-                                letterSpacing: '0.5px',
+                                textShadow: '0 2px 4px rgba(0,0,0,0.8)',
                               }}
                             >
-                              ROOKIE
+                              R
                             </div>
                           )}
                         </div>
@@ -746,16 +740,13 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                           {player.isRookie === 1 && (
                             <div
                               style={{
-                                background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)',
-                                color: '#000',
-                                padding: '2px 6px',
-                                borderRadius: '3px',
-                                fontSize: '10px',
+                                color: '#FFD700',
+                                fontSize: '18px',
                                 fontWeight: 'bold',
-                                letterSpacing: '0.5px',
+                                textShadow: '0 2px 4px rgba(0,0,0,0.8)',
                               }}
                             >
-                              ROOKIE
+                              R
                             </div>
                           )}
                         </div>
@@ -899,28 +890,6 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                           </div>
                         )}
                         
-                        {/* Rookie Badge for regular layout */}
-                        {player.isRookie === 1 && (
-                          <div
-                            style={{
-                              position: 'absolute',
-                              top: '6px',
-                              left: '6px',
-                              background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)',
-                              color: '#000',
-                              padding: '3px 8px',
-                              borderRadius: '4px',
-                              fontSize: '11px',
-                              fontWeight: 'bold',
-                              border: 'none',
-                              outline: 'none',
-                              boxShadow: '0 2px 6px rgba(255, 215, 0, 0.4)',
-                              letterSpacing: '0.5px',
-                            }}
-                          >
-                            ROOKIE
-                          </div>
-                        )}
                       </div>
 
                       {/* Player Info */}
@@ -931,9 +900,10 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                             fontWeight: '600',
                             color: 'white',
                             marginBottom: '4px',
-                            whiteSpace: 'nowrap',
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
+                            lineHeight: '1.2',
+                            textAlign: 'center',
+                            wordBreak: 'break-word',
+                            hyphens: 'auto',
                             border: 'none',
                             outline: 'none',
                             boxShadow: 'none',

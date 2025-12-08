@@ -129,3 +129,5 @@
 ## Roster Card Display
 
 - [x] Fix mobile roster card display - move overall and rookie badge to bottom banner
+- [x] Update rookie badge to show simple gold "R" icon instead of full "Rookie" text
+- [x] Fix player name text overflow in roster cards
