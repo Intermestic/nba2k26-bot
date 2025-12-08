@@ -125,3 +125,7 @@
 ## FA Bid Monitoring
 
 - [x] Change FA bid status alert frequency from hourly to every 6 hours
+
+## Roster Card Display
+
+- [x] Fix mobile roster card display - move overall and rookie badge to bottom banner
