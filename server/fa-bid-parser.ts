@@ -499,7 +499,8 @@ export function getCurrentBiddingWindow(): { windowId: string; startTime: Date; 
     startTime.setHours(0, 0, 0, 0);
     endTime = new Date(estTime);
     endTime.setHours(11, 49, 59, 999);
-    isLocked = (hour === 11 && minute >= 50) || hour >= 12;
+    // Lock at 11:50 AM (10 minutes before noon)
+    isLocked = (hour === 11 && minute >= 50);
   } else {
     // PM window: 12:00 PM - 11:49 PM
     windowId = `${year}-${month}-${day}-PM`;
@@ -507,6 +508,7 @@ export function getCurrentBiddingWindow(): { windowId: string; startTime: Date; 
     startTime.setHours(12, 0, 0, 0);
     endTime = new Date(estTime);
     endTime.setHours(23, 49, 59, 999);
+    // Lock at 11:50 PM (10 minutes before midnight)
     isLocked = (hour === 23 && minute >= 50);
   }
   

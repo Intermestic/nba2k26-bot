@@ -160,3 +160,11 @@
 - [x] Add navigation to FA Winners from landing page
 - [x] Verify all new player data is accurate
 - [x] Test FA winners display on frontend
+
+## Discord Bot FA Window Fix
+- [x] Remove FA Winners page and route
+- [x] Remove FA Winners navigation button from landing page
+- [x] Drop faWindowSignings database table
+- [x] Investigate Discord bot window-close summary logic
+- [x] Fix bot to post window-close summary at end of FA windows
+- [x] Manually trigger summary for most recent FA window

@@ -83,22 +83,4 @@ export const playerStats = mysqlTable("player_stats", {
     .default(sql`CURRENT_TIMESTAMP`),
 });
 
-export const faWindowSignings = mysqlTable("fa_window_signings", {
-  id: int("id").primaryKey().autoincrement(),
-  playerId: int("player_id")
-    .notNull()
-    .references(() => players.id),
-  newTeamId: int("new_team_id")
-    .notNull()
-    .references(() => teams.id),
-  formerTeamId: int("former_team_id").references(() => teams.id),
-  signedDate: datetime("signed_date").notNull(),
-  contractType: varchar("contract_type", { length: 50 }).notNull(),
-  isWaived: boolean("is_waived").default(false),
-  isRFA: boolean("is_rfa").default(false), // Restricted Free Agent
-  isSignAndTrade: boolean("is_sign_and_trade").default(false),
-  notes: text("notes"),
-  createdAt: datetime("created_at")
-    .notNull()
-    .default(sql`CURRENT_TIMESTAMP`),
-});
+
