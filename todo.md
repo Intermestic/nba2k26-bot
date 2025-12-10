@@ -147,3 +147,7 @@
 - [x] Add !reverse-trade command for reversing trades by message ID (works for old messages)
 - [x] Keep ⏪ reaction handler for new messages in cache
 - [x] Verify confirmation message is posted after successful reversal
+
+## Discord Bot Issues
+
+- [x] Fix Discord bot not responding to commands (Cut ben saraf, Sign Pat Spencer bid 3)

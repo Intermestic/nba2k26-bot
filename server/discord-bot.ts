@@ -1190,6 +1190,25 @@ export async function startDiscordBot(token: string) {
     } catch (error) {
       console.error('[Team Roles] Error handling message update:', error);
     }
+    
+    // Process edited FA bid messages
+    if (newMessage.channelId === FA_CHANNEL_ID && !newMessage.author?.bot) {
+      try {
+        // Remove from processed messages cache so it can be reprocessed
+        const messageKey = `msg:${newMessage.id}`;
+        processedMessages.delete(messageKey);
+        
+        console.log(`[FA Bids] Message ${newMessage.id} was edited, reprocessing...`);
+        
+        // Fetch the full message content if partial
+        const fullMessage = newMessage.partial ? await newMessage.fetch() : newMessage;
+        
+        // Reprocess the bid
+        await handleBidMessage(fullMessage as Message);
+      } catch (error) {
+        console.error('[FA Bids] Error reprocessing edited message:', error);
+      }
+    }
   });
   
   // Monitor message deletes for logging
