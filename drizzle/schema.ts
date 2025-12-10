@@ -33,7 +33,13 @@ export const players = mysqlTable("players", {
   name: varchar("name", { length: 255 }).notNull(),
   overall: int("overall").notNull(), // NBA 2K26 overall rating
   team: varchar("team", { length: 100 }), // Team name
+  position: varchar("position", { length: 20 }), // PG, SG, SF, PF, C
   height: varchar("height", { length: 10 }), // Player height (e.g., 6'5")
+  weight: int("weight"), // Weight in pounds
+  age: int("age"), // Player age
+  jerseyNumber: int("jerseyNumber"), // Jersey number
+  college: varchar("college", { length: 100 }), // College attended
+  country: varchar("country", { length: 100 }).default("USA"), // Country of origin
   photoUrl: text("photoUrl"), // NBA.com or 2kratings photo URL
   playerPageUrl: text("playerPageUrl"), // 2kratings player page URL
   nbaId: varchar("nbaId", { length: 64 }), // NBA.com player ID
@@ -42,6 +48,8 @@ export const players = mysqlTable("players", {
   salaryCap: int("salaryCap"), // Salary cap hit in millions (based on overall rating)
   isRookie: int("isRookie").default(0).notNull(), // 1 = rookie, 0 = veteran
   draftYear: int("draftYear"), // Draft year (e.g., 2025)
+  draftRound: int("draftRound"), // Draft round
+  draftPick: int("draftPick"), // Draft pick number
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
@@ -1045,6 +1053,27 @@ export const teamAliases = mysqlTable("team_aliases", {
 
 export type TeamAlias = typeof teamAliases.$inferSelect;
 export type InsertTeamAlias = typeof teamAliases.$inferInsert;
+
+/**
+ * FA Window Signings table - tracks 2025 free agency window winners
+ */
+export const faWindowSignings = mysqlTable("fa_window_signings", {
+  id: int("id").autoincrement().primaryKey(),
+  playerId: varchar("playerId", { length: 64 }).notNull(), // Reference to players.id
+  playerName: varchar("playerName", { length: 255 }).notNull(), // Player name (denormalized)
+  newTeam: varchar("newTeam", { length: 100 }).notNull(), // New team
+  formerTeam: varchar("formerTeam", { length: 100 }), // Former team (null for undrafted)
+  signedDate: timestamp("signedDate").notNull(), // Date signed
+  contractType: varchar("contractType", { length: 50 }).notNull(), // Free Agent, Sign-and-Trade, RFA, etc.
+  isWaived: int("isWaived").default(0).notNull(), // 1 if player was waived before signing
+  isRFA: int("isRFA").default(0).notNull(), // 1 if restricted free agent
+  isSignAndTrade: int("isSignAndTrade").default(0).notNull(), // 1 if sign-and-trade
+  notes: text("notes"), // Additional notes (e.g., "Waived on June 29")
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type FaWindowSigning = typeof faWindowSignings.$inferSelect;
+export type InsertFaWindowSigning = typeof faWindowSignings.$inferInsert;
 
 // Export upgrade compliance tables
 export * from "./upgradeRules";

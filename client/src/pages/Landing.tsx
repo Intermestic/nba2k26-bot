@@ -1,7 +1,7 @@
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeftRight, Loader2 } from "lucide-react";
+import { ArrowLeftRight, Loader2, TrendingUp } from "lucide-react";
 import { APP_TITLE } from "@/const";
 import { trpc } from "@/lib/trpc";
 import { getTeamLogo } from "@/lib/teamLogos";
@@ -34,14 +34,25 @@ export default function Landing() {
                 </p>
               </div>
             </div>
-            <Button
-              onClick={() => navigate("/trade-machine")}
-              className="gap-2"
-              size="lg"
-            >
-              <ArrowLeftRight className="h-5 w-5" />
-              Trade Machine
-            </Button>
+            <div className="flex gap-3">
+              <Button
+                onClick={() => navigate("/fa-winners")}
+                variant="outline"
+                className="gap-2"
+                size="lg"
+              >
+                <TrendingUp className="h-5 w-5" />
+                FA Winners
+              </Button>
+              <Button
+                onClick={() => navigate("/trade-machine")}
+                className="gap-2"
+                size="lg"
+              >
+                <ArrowLeftRight className="h-5 w-5" />
+                Trade Machine
+              </Button>
+            </div>
           </div>
         </div>
 

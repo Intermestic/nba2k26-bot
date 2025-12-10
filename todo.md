@@ -151,3 +151,12 @@
 ## Discord Bot Issues
 
 - [x] Fix Discord bot not responding to commands (Cut ben saraf, Sign Pat Spencer bid 3)
+
+## FA Window Winners Update
+
+- [x] Research and gather most recent FA window winners data
+- [x] Update database with latest FA signings and contract details
+- [x] Create FA Winners page with filters and search
+- [x] Add navigation to FA Winners from landing page
+- [x] Verify all new player data is accurate
+- [x] Test FA winners display on frontend
