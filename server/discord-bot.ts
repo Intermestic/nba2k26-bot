@@ -1715,6 +1715,48 @@ export async function startDiscordBot(token: string) {
       
       await handleBidMessage(message);
     } else if (message.channelId === TRADE_CHANNEL_ID) {
+      // Check for trade reversal command: !reverse-trade <messageId> (owner only)
+      if (message.content.trim().toLowerCase().startsWith('!reverse-trade')) {
+        console.log(`[Trade Reversal Command] Command received from ${message.author.tag} (${message.author.id})`);
+        
+        // Check if user is authorized (owner only)
+        if (message.author.id !== '679275787664359435') {
+          console.log(`[Trade Reversal Command] Unauthorized user ${message.author.id} attempted reversal`);
+          await message.reply('❌ Only the league owner can reverse trades.');
+          return;
+        }
+        
+        const parts = message.content.trim().split(/\s+/);
+        
+        if (parts.length !== 2) {
+          await message.reply('❌ Usage: !reverse-trade <messageId>');
+          return;
+        }
+        
+        const targetMessageId = parts[1];
+        console.log(`[Trade Reversal Command] Attempting to reverse trade for message ${targetMessageId}`);
+        
+        try {
+          // Fetch the trade message
+          const tradeMessage = await message.channel.messages.fetch(targetMessageId).catch(() => null);
+          
+          if (!tradeMessage) {
+            console.log(`[Trade Reversal Command] Could not fetch message ${targetMessageId}`);
+            await message.reply(`❌ Could not find message with ID ${targetMessageId} in this channel.`);
+            return;
+          }
+          
+          console.log(`[Trade Reversal Command] Message fetched, calling handleTradeReversal...`);
+          const { handleTradeReversal } = await import('./trade-reversal-handler');
+          await handleTradeReversal(tradeMessage, message.author.id);
+          console.log(`[Trade Reversal Command] Reversal completed successfully`);
+        } catch (error) {
+          console.error('[Trade Reversal Command] Error:', error);
+          await message.reply(`❌ Failed to reverse trade: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        }
+        return;
+      }
+      
       // Handle new trade embeds for voting
       try {
         const { handleNewTradeEmbed } = await import('./trade-voting');
@@ -1750,8 +1792,13 @@ export async function startDiscordBot(token: string) {
   
   // Handle emoji reactions for manual transaction and trade processing
   client.on('messageReactionAdd', async (reaction, user) => {
+    console.log(`[Reaction Debug] Reaction detected: ${reaction.emoji.name} on message ${reaction.message.id} by ${user.tag} (${user.id})`);
+    
     // Ignore bot reactions
-    if (user.bot) return;
+    if (user.bot) {
+      console.log(`[Reaction Debug] Ignoring bot reaction`);
+      return;
+    }
     
     // Handle reaction roles first
     try {
@@ -1774,16 +1821,28 @@ export async function startDiscordBot(token: string) {
     
     // Handle trade reversal (⏪) - owner only
     if (reaction.emoji.name === '⏪') {
+      console.log(`[Trade Reversal] ⏪ reaction detected on message ${reaction.message.id} by user ${user.id}`);
       const message = reaction.message.partial ? await reaction.message.fetch() : reaction.message;
+      console.log(`[Trade Reversal] Message fetched, channel ID: ${reaction.message.channelId}, expected: ${TRADE_CHANNEL_ID}`);
       
       // Only process in trade channel
       if (reaction.message.channelId === TRADE_CHANNEL_ID) {
+        console.log('[Trade Reversal] Channel matches, calling handleTradeReversal...');
         try {
           const { handleTradeReversal } = await import('./trade-reversal-handler');
           await handleTradeReversal(message, user.id);
+          console.log('[Trade Reversal] handleTradeReversal completed successfully');
         } catch (error) {
           console.error('[Trade Reversal] Error handling trade reversal:', error);
+          // Try to reply to message with error
+          try {
+            await message.reply(`❌ Error processing trade reversal: ${error instanceof Error ? error.message : 'Unknown error'}`);
+          } catch (replyError) {
+            console.error('[Trade Reversal] Failed to send error reply:', replyError);
+          }
         }
+      } else {
+        console.log(`[Trade Reversal] Ignoring ⏪ reaction - not in trade channel (${reaction.message.channelId})`);
       }
       return;
     }

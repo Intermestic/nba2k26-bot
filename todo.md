@@ -141,3 +141,9 @@
 ## Team Channel Management
 
 - [x] Grant admins full permissions to all team channels (read, write, edit message history, etc.)
+
+## Trade Reversal Enhancement
+
+- [x] Add !reverse-trade command for reversing trades by message ID (works for old messages)
+- [x] Keep ⏪ reaction handler for new messages in cache
+- [x] Verify confirmation message is posted after successful reversal

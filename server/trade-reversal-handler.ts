@@ -10,7 +10,9 @@ import { validateTeamName } from './team-validator';
  * OWNER ONLY - user ID 679275787664359435
  */
 export async function handleTradeReversal(message: Message, userId: string) {
+  console.log(`[Trade Reversal] ========== START REVERSAL ==========`);
   console.log(`[Trade Reversal] Processing trade reversal from message ${message.id} by user ${userId}`);
+  console.log(`[Trade Reversal] Message content preview: ${message.content.substring(0, 100)}...`);
   
   // Check if user is authorized (owner only)
   if (userId !== '679275787664359435') {
@@ -18,6 +20,7 @@ export async function handleTradeReversal(message: Message, userId: string) {
     await message.reply('❌ Only the league owner can reverse trades.');
     return;
   }
+  console.log(`[Trade Reversal] User authorized as owner`);
   
   const db = await getDb();
   if (!db) {
@@ -72,9 +75,12 @@ export async function handleTradeReversal(message: Message, userId: string) {
     
     if (tradeRecords.length === 0) {
       console.log('[Trade Reversal] No trade record found for this message or its replies');
+      console.log(`[Trade Reversal] Searched message ID: ${message.id}`);
       await message.reply('❌ No trade record found for this message.');
+      console.log(`[Trade Reversal] ========== END REVERSAL (NO RECORD) ==========`);
       return;
     }
+    console.log(`[Trade Reversal] Trade record found: ID ${tradeRecords[0].id}`);
     
     const trade = tradeRecords[0];
     
@@ -189,9 +195,15 @@ export async function handleTradeReversal(message: Message, userId: string) {
     
     await message.reply(successMessage);
     console.log(`[Trade Reversal] Trade reversed successfully: ${reversedPlayers.length} players moved back`);
+    console.log(`[Trade Reversal] ========== END REVERSAL (SUCCESS) ==========`);
     
   } catch (error) {
+    console.error('[Trade Reversal] ========== ERROR IN REVERSAL ==========');
     console.error('[Trade Reversal] Error reversing trade:', error);
+    if (error instanceof Error) {
+      console.error('[Trade Reversal] Error stack:', error.stack);
+    }
     await message.reply('❌ An error occurred while reversing the trade. Please check the logs.');
+    console.error('[Trade Reversal] ========== END REVERSAL (ERROR) ==========');
   }
 }
