@@ -52,6 +52,10 @@
 
 ## Player Management
 
+### Database Population
+- [x] Fix schema mismatch causing "0 players" display issue
+
+
 ### Auto-Alias Learning System
 - [x] Auto-save misspellings as aliases when fuzzy matcher finds correct player
 - [x] Complete Sixers-Pacers trade with all 8 players correctly assigned

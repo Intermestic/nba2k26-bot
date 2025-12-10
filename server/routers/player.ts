@@ -57,14 +57,26 @@ export const playerRouter = router({
 
       const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
 
-      const result = await db
-        .select()
-        .from(players)
-        .where(whereClause)
-        .limit(input?.limit || 1000)
-        .offset(input?.offset || 0);
+      try {
+        const result = await db
+          .select()
+          .from(players)
+          .where(whereClause)
+          .limit(input?.limit || 1000)
+          .offset(input?.offset || 0);
 
-      return result;
+        console.log('[player.list] Query successful, returned', result.length, 'players');
+        return result;
+      } catch (error: any) {
+        console.error('[player.list] Query failed:', error);
+        console.error('[player.list] Error details:', {
+          message: error.message,
+          code: error.code,
+          errno: error.errno,
+          sql: error.sql
+        });
+        throw error;
+      }
     }),
 
   // Public: Get single player by ID

@@ -32,26 +32,18 @@ export const players = mysqlTable("players", {
   id: varchar("id", { length: 64 }).primaryKey(), // NBA player ID or generated ID
   name: varchar("name", { length: 255 }).notNull(),
   overall: int("overall").notNull(), // NBA 2K26 overall rating
-  team: varchar("team", { length: 100 }), // Team name
-  position: varchar("position", { length: 20 }), // PG, SG, SF, PF, C
-  height: varchar("height", { length: 10 }), // Player height (e.g., 6'5")
-  weight: int("weight"), // Weight in pounds
-  age: int("age"), // Player age
-  jerseyNumber: int("jerseyNumber"), // Jersey number
-  college: varchar("college", { length: 100 }), // College attended
-  country: varchar("country", { length: 100 }).default("USA"), // Country of origin
   photoUrl: text("photoUrl"), // NBA.com or 2kratings photo URL
   playerPageUrl: text("playerPageUrl"), // 2kratings player page URL
   nbaId: varchar("nbaId", { length: 64 }), // NBA.com player ID
   source: varchar("source", { length: 64 }), // Data source (nba.com, 2kratings, etc.)
   badgeCount: int("badgeCount"), // Total badge count from 2kratings
-  salaryCap: int("salaryCap"), // Salary cap hit in millions (based on overall rating)
-  isRookie: int("isRookie").default(0).notNull(), // 1 = rookie, 0 = veteran
-  draftYear: int("draftYear"), // Draft year (e.g., 2025)
-  draftRound: int("draftRound"), // Draft round
-  draftPick: int("draftPick"), // Draft pick number
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  team: varchar("team", { length: 100 }), // Team name
+  salaryCap: int("salaryCap"), // Salary cap hit in millions (based on overall rating)
+  height: varchar("height", { length: 10 }), // Player height (e.g., 6'5")
+  isRookie: int("isRookie").default(0).notNull(), // 1 = rookie, 0 = veteran
+  draftYear: int("draftYear"), // Draft year (e.g., 2025)
 });
 
 export type Player = typeof players.$inferSelect;
