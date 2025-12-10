@@ -43,6 +43,12 @@
 - [ ] Test !check-trade command with message ID 1445268293186490548
 - [ ] Verify future trades auto-approve at 7 votes
 
+### Trade Reversal System
+- [x] Implement ⏪ emoji reaction handler for trade reversal (owner-only)
+- [x] Reverse player roster assignments when trade is reversed
+- [x] Update trade status to "reversed" in database
+- [x] Log reversal action with timestamp and user
+
 
 ## Player Management
 
@@ -131,3 +137,7 @@
 - [x] Fix mobile roster card display - move overall and rookie badge to bottom banner
 - [x] Update rookie badge to show simple gold "R" icon instead of full "Rookie" text
 - [x] Fix player name text overflow in roster cards
+
+## Team Channel Management
+
+- [x] Grant admins full permissions to all team channels (read, write, edit message history, etc.)

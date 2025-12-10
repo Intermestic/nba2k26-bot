@@ -1772,6 +1772,22 @@ export async function startDiscordBot(token: string) {
       return;
     }
     
+    // Handle trade reversal (⏪) - owner only
+    if (reaction.emoji.name === '⏪') {
+      const message = reaction.message.partial ? await reaction.message.fetch() : reaction.message;
+      
+      // Only process in trade channel
+      if (reaction.message.channelId === TRADE_CHANNEL_ID) {
+        try {
+          const { handleTradeReversal } = await import('./trade-reversal-handler');
+          await handleTradeReversal(message, user.id);
+        } catch (error) {
+          console.error('[Trade Reversal] Error handling trade reversal:', error);
+        }
+      }
+      return;
+    }
+    
     // Handle upgrade approval (✅ on messages with 😀)
     if (reaction.emoji.name === '✅') {
       const message = reaction.message.partial ? await reaction.message.fetch() : reaction.message;

@@ -109,6 +109,7 @@ async function createOrUpdateTeamChannel(
   guild: any,
   teamName: string,
   teamRole: Role,
+  adminRole: Role | undefined,
   category: CategoryChannel
 ): Promise<TextChannel | null> {
   try {
@@ -144,6 +145,19 @@ async function createOrUpdateTeamChannel(
               PermissionFlagsBits.EmbedLinks,
             ],
           },
+          ...(adminRole ? [{
+            id: adminRole.id,
+            allow: [
+              PermissionFlagsBits.ViewChannel,
+              PermissionFlagsBits.SendMessages,
+              PermissionFlagsBits.ReadMessageHistory,
+              PermissionFlagsBits.ManageMessages,
+              PermissionFlagsBits.AddReactions,
+              PermissionFlagsBits.AttachFiles,
+              PermissionFlagsBits.EmbedLinks,
+              PermissionFlagsBits.ManageChannels,
+            ],
+          }] : []),
         ],
       });
       console.log(`[Team Channels] Created channel: ${channelName} with topic: ${rosterSummary}`);
@@ -165,6 +179,19 @@ async function createOrUpdateTeamChannel(
             PermissionFlagsBits.EmbedLinks,
           ],
         },
+        ...(adminRole ? [{
+          id: adminRole.id,
+          allow: [
+            PermissionFlagsBits.ViewChannel,
+            PermissionFlagsBits.SendMessages,
+            PermissionFlagsBits.ReadMessageHistory,
+            PermissionFlagsBits.ManageMessages,
+            PermissionFlagsBits.AddReactions,
+            PermissionFlagsBits.AttachFiles,
+            PermissionFlagsBits.EmbedLinks,
+            PermissionFlagsBits.ManageChannels,
+          ],
+        }] : []),
       ]);
 
       // Move to category if not already there
@@ -214,6 +241,14 @@ export async function syncTeamChannels(client: Client): Promise<void> {
       return;
     }
 
+    // Find Admins role
+    const adminRole = guild.roles.cache.find((r: Role) => r.name === 'Admins');
+    if (!adminRole) {
+      console.warn('[Team Channels] Admins role not found - channels will be created without admin permissions');
+    } else {
+      console.log('[Team Channels] Found Admins role, will grant full permissions to all team channels');
+    }
+
     // Process each team in alphabetical order
     let successCount = 0;
     let failCount = 0;
@@ -232,7 +267,7 @@ export async function syncTeamChannels(client: Client): Promise<void> {
         }
 
         // Create or update channel
-        const channel = await createOrUpdateTeamChannel(guild, teamName, role, category);
+        const channel = await createOrUpdateTeamChannel(guild, teamName, role, adminRole, category);
         if (channel) {
           // Set channel position based on alphabetical order
           await channel.setPosition(i);
