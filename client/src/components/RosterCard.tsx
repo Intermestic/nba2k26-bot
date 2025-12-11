@@ -246,16 +246,15 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
           <div className="flex gap-2">
             <div className="relative">
               <Button
-                onClick={() => setShowFormatMenu(!showFormatMenu)}
+                onClick={() => handleDownload('4k')}
                 disabled={isDownloading}
                 className="bg-blue-600 hover:bg-blue-700"
               >
                 <Download className="w-4 h-4 mr-2" />
-                Download
-                <ChevronDown className="w-4 h-4 ml-2" />
+                Download 4K PNG
               </Button>
               {showFormatMenu && (
-                <div className="absolute top-full mt-2 right-0 bg-slate-800 border border-slate-700 rounded-lg shadow-lg z-10 min-w-[180px]">
+                <div className="absolute top-full mt-2 right-0 bg-slate-800 border border-slate-700 rounded-lg shadow-lg z-10 min-w-[180px]" style={{ display: 'none' }}>
                   <button
                     onClick={() => handleDownload('png')}
                     className="w-full text-left px-4 py-2 hover:bg-slate-700 rounded-t-lg"
@@ -343,6 +342,38 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                         boxShadow: 'none',
                       }}
                     >
+                      {/* Rating and Rookie Badge Above Image */}
+                      <div
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '8px',
+                          marginBottom: '8px',
+                        }}
+                        className="md:hidden"
+                      >
+                        <div
+                          style={{
+                            color: '#FFD700',
+                            fontSize: '24px',
+                            fontWeight: 'bold',
+                          }}
+                        >
+                          {topPlayers[0].overall}
+                        </div>
+                        {topPlayers[0].isRookie === 1 && (
+                          <div
+                            style={{
+                              color: '#FFD700',
+                              fontSize: '24px',
+                              fontWeight: 'bold',
+                            }}
+                          >
+                            R
+                          </div>
+                        )}
+                      </div>
                       <div
                         style={{
                           position: 'relative',
@@ -380,7 +411,7 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                           </div>
                         )}
 
-                        {/* Bottom Banner with Overall and Rookie Status */}
+                        {/* Bottom Banner with Overall and Rookie Status - Desktop Only */}
                         <div
                           style={{
                             position: 'absolute',
@@ -388,12 +419,13 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                             left: '0',
                             right: '0',
                             background: 'linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.7) 100%)',
-                            padding: '8px',
+                            padding: '6px',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
                             gap: '8px',
                           }}
+                          className="hidden md:flex"
                         >
                           <div
                             style={{
@@ -464,6 +496,7 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                       outline: 'none',
                       boxShadow: 'none',
                     }}
+                    className="w-32 md:w-[200px]"
                   >
                     <div style={{ textAlign: 'center' }}>
                       <img
@@ -479,6 +512,7 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                           outline: 'none',
                           boxShadow: 'none',
                         }}
+                        className="!w-20 !h-20 md:!w-[150px] md:!h-[150px] !mb-2 md:!mb-3"
                       />
                       <h2
                         style={{
@@ -491,6 +525,7 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                           outline: 'none',
                           boxShadow: 'none',
                         }}
+                        className="!text-xl md:!text-3xl !mb-1 md:!mb-2"
                       >
                         {teamName}
                       </h2>
@@ -502,6 +537,7 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                           outline: 'none',
                           boxShadow: 'none',
                         }}
+                        className="!text-sm md:!text-lg"
                       >
                         {sortedPlayers.length} Players
                       </div>
@@ -516,6 +552,7 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                             outline: 'none',
                             boxShadow: 'none',
                           }}
+                          className="!text-xs md:!text-base !mt-1 md:!mt-2"
                         >
                           Cap: {totalOverall} OVR{overCap > 0 && ` (+${overCap})`}
                         </div>
@@ -537,6 +574,38 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                         boxShadow: 'none',
                       }}
                     >
+                      {/* Rating and Rookie Badge Above Image */}
+                      <div
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '8px',
+                          marginBottom: '8px',
+                        }}
+                        className="md:hidden"
+                      >
+                        <div
+                          style={{
+                            color: '#FFD700',
+                            fontSize: '24px',
+                            fontWeight: 'bold',
+                          }}
+                        >
+                          {topPlayers[1].overall}
+                        </div>
+                        {topPlayers[1].isRookie === 1 && (
+                          <div
+                            style={{
+                              color: '#FFD700',
+                              fontSize: '24px',
+                              fontWeight: 'bold',
+                            }}
+                          >
+                            R
+                          </div>
+                        )}
+                      </div>
                       <div
                         style={{
                           position: 'relative',
@@ -574,7 +643,7 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                           </div>
                         )}
 
-                        {/* Bottom Banner with Overall and Rookie Status */}
+                        {/* Bottom Banner with Overall and Rookie Status - Desktop Only */}
                         <div
                           style={{
                             position: 'absolute',
@@ -582,12 +651,13 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                             left: '0',
                             right: '0',
                             background: 'linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.7) 100%)',
-                            padding: '8px',
+                            padding: '6px',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
                             gap: '8px',
                           }}
+                          className="hidden md:flex"
                         >
                           <div
                             style={{
@@ -675,6 +745,38 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                         height: '100%',
                       }}
                     >
+                      {/* Rating and Rookie Badge Above Image */}
+                      <div
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '6px',
+                          marginBottom: '6px',
+                        }}
+                        className="md:hidden"
+                      >
+                        <div
+                          style={{
+                            color: '#FFD700',
+                            fontSize: '18px',
+                            fontWeight: 'bold',
+                          }}
+                        >
+                          {player.overall}
+                        </div>
+                        {player.isRookie === 1 && (
+                          <div
+                            style={{
+                              color: '#FFD700',
+                              fontSize: '18px',
+                              fontWeight: 'bold',
+                            }}
+                          >
+                            R
+                          </div>
+                        )}
+                      </div>
                       <div
                         style={{
                           position: 'relative',
@@ -712,7 +814,7 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                           </div>
                         )}
 
-                        {/* Bottom Banner with Overall and Rookie Status */}
+                        {/* Bottom Banner with Overall and Rookie Status - Desktop Only */}
                         <div
                           style={{
                             position: 'absolute',
@@ -720,12 +822,13 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                             left: '0',
                             right: '0',
                             background: 'linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.7) 100%)',
-                            padding: '6px',
+                            padding: '4px',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
                             gap: '6px',
                           }}
+                          className="hidden md:flex"
                         >
                           <div
                             style={{

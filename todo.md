@@ -172,3 +172,9 @@
 - [x] Investigate Discord bot window-close summary logic
 - [x] Fix bot to post window-close summary at end of FA windows
 - [x] Manually trigger summary for most recent FA window
+
+## Mobile Layout Improvements
+
+- [x] Fix mobile player card layout - move ratings above names instead of on image
+- [x] Reduce banner height on mobile
+- [x] Simplify download options to only 4K PNG
