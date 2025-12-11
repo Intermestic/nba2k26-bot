@@ -102,12 +102,21 @@ async function countVotes(reaction: MessageReaction | PartialMessageReaction): P
  */
 function parseTradeFromEmbed(message: Message): { team1: string; team2: string; team1Players: any[]; team2Players: any[] } | null {
   try {
-    if (message.embeds.length === 0) return null;
+    console.log(`[Trade Parser] Parsing message ${message.id}, embeds: ${message.embeds.length}`);
+    if (message.embeds.length === 0) {
+      console.log('[Trade Parser] No embeds found in message');
+      return null;
+    }
     
     const embed = message.embeds[0];
     let description = embed.description;
     
-    if (!description) return null;
+    console.log(`[Trade Parser] Embed description length: ${description?.length || 0}`);
+    if (!description) {
+      console.log('[Trade Parser] Embed has no description');
+      return null;
+    }
+    console.log(`[Trade Parser] Raw description: ${description.substring(0, 200)}...`);
     
     // Strip markdown formatting (bold, italic, etc.) for easier parsing
     description = description.replace(/\*\*/g, '').replace(/\*/g, '').replace(/__/g, '').replace(/_/g, '');
@@ -203,6 +212,17 @@ async function processVoteResult(
   approved: boolean
 ) {
   try {
+    // Ensure message is fully fetched (not partial)
+    if (message.partial) {
+      console.log(`[Trade Voting] Message ${message.id} is partial, fetching full message...`);
+      try {
+        message = await message.fetch();
+        console.log(`[Trade Voting] Successfully fetched full message`);
+      } catch (fetchError) {
+        console.error(`[Trade Voting] Failed to fetch full message:`, fetchError);
+      }
+    }
+    
     // Check if this message is already being processed (mutex lock)
     if (processingVotes.has(message.id)) {
       console.log(`[Trade Voting] Trade ${message.id} is already being processed, skipping duplicate call`);
@@ -298,16 +318,15 @@ async function processVoteResult(
       }
     }
     
-    // Trigger Discord cap status auto-update when trade is approved
+    // Automatically process approved trades
     if (approved) {
       try {
-        const { autoUpdateDiscord } = await import('./discord.js');
-        // We don't know exact teams from the message, so trigger without team list
-        autoUpdateDiscord().catch(err => 
-          console.error('[Trade Voting] Auto-update Discord failed:', err)
-        );
+        console.log('[Trade Voting] Trade approved, automatically processing...');
+        const { handleApprovedTradeProcessing } = await import('./trade-approval-handler');
+        await handleApprovedTradeProcessing(message);
+        console.log('[Trade Voting] Trade processed successfully');
       } catch (err) {
-        console.error('[Trade Voting] Failed to trigger Discord auto-update:', err);
+        console.error('[Trade Voting] Failed to auto-process approved trade:', err);
       }
     }
     

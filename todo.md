@@ -192,3 +192,8 @@
 
 - [x] Fix banner still visible in exported roster cards
 - [x] Fix player names getting cut off in exported roster cards
+- [x] Fix trade records not being saved to database during approval (causing "No trade record found" error when processing with ⚡)
+
+## Trade Auto-Processing
+
+- [x] Auto-process approved trades (7 👍 votes) without requiring ⚡ emoji reaction
