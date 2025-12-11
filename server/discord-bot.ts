@@ -1667,32 +1667,7 @@ export async function startDiscordBot(token: string) {
         return;
       }
       
-      // Check for manual trade vote check command: !check-trade <messageId>
-      if (message.content.trim().toLowerCase().startsWith('!check-trade')) {
-        const parts = message.content.trim().split(/\s+/);
-        
-        if (parts.length !== 2) {
-          await message.reply('❌ Usage: !check-trade <messageId>');
-          return;
-        }
-        
-        const messageId = parts[1];
-        
-        try {
-          const { manuallyCheckTradeVotes } = await import('./trade-voting');
-          const result = await manuallyCheckTradeVotes(client!, messageId);
-          
-          if (result.success) {
-            await message.reply(`✅ ${result.message}`);
-          } else {
-            await message.reply(`❌ ${result.message}`);
-          }
-        } catch (error) {
-          console.error('[Trade Voting] Manual check command failed:', error);
-          await message.reply('❌ Failed to check trade votes. Check logs for details.');
-        }
-        return;
-      }
+
       
       // Check for badge lookup command: !badge <abbreviation> or !badge list
       if (message.content.trim().toLowerCase().startsWith('!badge')) {
@@ -1734,6 +1709,33 @@ export async function startDiscordBot(token: string) {
       
       await handleBidMessage(message);
     } else if (message.channelId === TRADE_CHANNEL_ID) {
+      // Check for manual trade vote check command: !check-trade <messageId>
+      if (message.content.trim().toLowerCase().startsWith('!check-trade')) {
+        const parts = message.content.trim().split(/\s+/);
+        
+        if (parts.length !== 2) {
+          await message.reply('❌ Usage: !check-trade <messageId>');
+          return;
+        }
+        
+        const messageId = parts[1];
+        
+        try {
+          const { manuallyCheckTradeVotes } = await import('./trade-voting');
+          const result = await manuallyCheckTradeVotes(client!, messageId);
+          
+          if (result.success) {
+            await message.reply(`✅ ${result.message}`);
+          } else {
+            await message.reply(`❌ ${result.message}`);
+          }
+        } catch (error) {
+          console.error('[Trade Voting] Manual check command failed:', error);
+          await message.reply('❌ Failed to check trade votes. Check logs for details.');
+        }
+        return;
+      }
+      
       // Check for trade reversal command: !reverse-trade <messageId> (owner only)
       if (message.content.trim().toLowerCase().startsWith('!reverse-trade')) {
         console.log(`[Trade Reversal Command] Command received from ${message.author.tag} (${message.author.id})`);

@@ -34,6 +34,7 @@
 
 ### Trade Approval Workflow
 - [x] Fix "No trade record found" error after trade approval
+- [ ] Fix trade approval bug - trades with 7+ yes votes showing "reversed" instead of "approved"
 - [ ] Test trade approval workflow end-to-end
 - [ ] Test with the stuck Cavs/Trailblazers trade
 - [ ] Verify no duplicate messages are posted
@@ -42,6 +43,8 @@
 ### Trade Voting System
 - [ ] Test !check-trade command with message ID 1445268293186490548
 - [ ] Verify future trades auto-approve at 7 votes
+- [x] Fix trade status update messages appearing incorrectly when reactions are added
+- [x] Fix !check-trade command not returning results
 
 ### Trade Reversal System
 - [x] Implement ⏪ emoji reaction handler for trade reversal (owner-only)
