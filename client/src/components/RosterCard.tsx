@@ -379,7 +379,7 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                           </div>
                         )}
 
-                        {/* Bottom Banner with Overall and Rookie Status - Desktop Only */}
+                        {/* Bottom Banner with Overall and Rookie Status - Always Hidden for Export */}
                         <div
                           style={{
                             position: 'absolute',
@@ -388,12 +388,11 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                             right: '0',
                             background: 'linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.7) 100%)',
                             padding: '6px',
-                            display: 'flex',
+                            display: 'none',
                             alignItems: 'center',
                             justifyContent: 'center',
                             gap: '8px',
                           }}
-                          className="hidden md:flex"
                         >
                           <div
                             style={{
@@ -419,7 +418,7 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                           )}
                         </div>
                       </div>
-                      {/* Rating and Rookie Badge Above Name - Mobile Only */}
+                      {/* Rating and Rookie Badge Above Name - Always Visible for Export */}
                       <div
                         style={{
                           display: 'flex',
@@ -428,7 +427,6 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                           gap: '8px',
                           marginBottom: '4px',
                         }}
-                        className="md:hidden"
                       >
                         <div
                           style={{
@@ -458,11 +456,13 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                         color: 'white',
                         marginBottom: '4px',
                         lineHeight: '1.3',
-                        minHeight: '44px',
+                        minHeight: '50px',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         textAlign: 'center',
+                        wordWrap: 'break-word',
+                        overflowWrap: 'break-word',
                           border: 'none',
                           outline: 'none',
                           boxShadow: 'none',
@@ -611,7 +611,7 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                           </div>
                         )}
 
-                        {/* Bottom Banner with Overall and Rookie Status - Desktop Only */}
+                        {/* Bottom Banner with Overall and Rookie Status - Always Hidden for Export */}
                         <div
                           style={{
                             position: 'absolute',
@@ -620,12 +620,11 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                             right: '0',
                             background: 'linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.7) 100%)',
                             padding: '6px',
-                            display: 'flex',
+                            display: 'none',
                             alignItems: 'center',
                             justifyContent: 'center',
                             gap: '8px',
                           }}
-                          className="hidden md:flex"
                         >
                           <div
                             style={{
@@ -651,7 +650,7 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                           )}
                         </div>
                       </div>
-                      {/* Rating and Rookie Badge Above Name - Mobile Only */}
+                      {/* Rating and Rookie Badge Above Name - Always Visible for Export */}
                       <div
                         style={{
                           display: 'flex',
@@ -660,7 +659,6 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                           gap: '8px',
                           marginBottom: '4px',
                         }}
-                        className="md:hidden"
                       >
                         <div
                           style={{
@@ -690,11 +688,13 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                           color: 'white',
                           marginBottom: '4px',
                           lineHeight: '1.3',
-                          minHeight: '44px',
+                          minHeight: '50px',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
                           textAlign: 'center',
+                          wordWrap: 'break-word',
+                          overflowWrap: 'break-word',
                           border: 'none',
                           outline: 'none',
                           boxShadow: 'none',
@@ -782,7 +782,7 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                           </div>
                         )}
 
-                        {/* Bottom Banner with Overall and Rookie Status - Desktop Only */}
+                        {/* Bottom Banner with Overall and Rookie Status - Always Hidden for Export */}
                         <div
                           style={{
                             position: 'absolute',
@@ -791,12 +791,11 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                             right: '0',
                             background: 'linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.7) 100%)',
                             padding: '4px',
-                            display: 'flex',
+                            display: 'none',
                             alignItems: 'center',
                             justifyContent: 'center',
                             gap: '6px',
                           }}
-                          className="hidden md:flex"
                         >
                           <div
                             style={{
@@ -822,7 +821,7 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                           )}
                         </div>
                       </div>
-                      {/* Rating and Rookie Badge Above Name - Mobile Only */}
+                      {/* Rating and Rookie Badge Above Name - Always Visible for Export */}
                       <div
                         style={{
                           display: 'flex',
@@ -831,7 +830,6 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                           gap: '6px',
                           marginBottom: '4px',
                         }}
-                        className="md:hidden"
                       >
                         <div
                           style={{
@@ -861,15 +859,13 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                           color: 'white',
                           marginBottom: '4px',
                           lineHeight: '1.3',
-                          minHeight: '36px',
-                          maxHeight: '36px',
+                          minHeight: '40px',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
                           textAlign: 'center',
-                          overflow: 'hidden',
-                          wordBreak: 'break-word',
-                          hyphens: 'auto',
+                          wordWrap: 'break-word',
+                          overflowWrap: 'break-word',
                           border: 'none',
                           outline: 'none',
                           boxShadow: 'none',

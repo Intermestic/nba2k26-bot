@@ -184,3 +184,8 @@
 - [x] Remove team banner completely on mobile
 - [x] Move rookie designation and rating above player name (not above picture) on mobile
 
+
+## Roster Card Export Issues
+
+- [x] Fix banner still visible in exported roster cards
+- [x] Fix player names getting cut off in exported roster cards
