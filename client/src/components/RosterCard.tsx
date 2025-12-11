@@ -342,38 +342,6 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                         boxShadow: 'none',
                       }}
                     >
-                      {/* Rating and Rookie Badge Above Image */}
-                      <div
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          gap: '8px',
-                          marginBottom: '8px',
-                        }}
-                        className="md:hidden"
-                      >
-                        <div
-                          style={{
-                            color: '#FFD700',
-                            fontSize: '24px',
-                            fontWeight: 'bold',
-                          }}
-                        >
-                          {topPlayers[0].overall}
-                        </div>
-                        {topPlayers[0].isRookie === 1 && (
-                          <div
-                            style={{
-                              color: '#FFD700',
-                              fontSize: '24px',
-                              fontWeight: 'bold',
-                            }}
-                          >
-                            R
-                          </div>
-                        )}
-                      </div>
                       <div
                         style={{
                           position: 'relative',
@@ -450,6 +418,38 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                             </div>
                           )}
                         </div>
+                      </div>
+                      {/* Rating and Rookie Badge Above Name - Mobile Only */}
+                      <div
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '8px',
+                          marginBottom: '4px',
+                        }}
+                        className="md:hidden"
+                      >
+                        <div
+                          style={{
+                            color: '#FFD700',
+                            fontSize: '24px',
+                            fontWeight: 'bold',
+                          }}
+                        >
+                          {topPlayers[0].overall}
+                        </div>
+                        {topPlayers[0].isRookie === 1 && (
+                          <div
+                            style={{
+                              color: '#FFD700',
+                              fontSize: '24px',
+                              fontWeight: 'bold',
+                            }}
+                          >
+                            R
+                          </div>
+                        )}
                       </div>
                       <div
                         style={{
@@ -574,38 +574,6 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                         boxShadow: 'none',
                       }}
                     >
-                      {/* Rating and Rookie Badge Above Image */}
-                      <div
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          gap: '8px',
-                          marginBottom: '8px',
-                        }}
-                        className="md:hidden"
-                      >
-                        <div
-                          style={{
-                            color: '#FFD700',
-                            fontSize: '24px',
-                            fontWeight: 'bold',
-                          }}
-                        >
-                          {topPlayers[1].overall}
-                        </div>
-                        {topPlayers[1].isRookie === 1 && (
-                          <div
-                            style={{
-                              color: '#FFD700',
-                              fontSize: '24px',
-                              fontWeight: 'bold',
-                            }}
-                          >
-                            R
-                          </div>
-                        )}
-                      </div>
                       <div
                         style={{
                           position: 'relative',
@@ -683,6 +651,38 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                           )}
                         </div>
                       </div>
+                      {/* Rating and Rookie Badge Above Name - Mobile Only */}
+                      <div
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '8px',
+                          marginBottom: '4px',
+                        }}
+                        className="md:hidden"
+                      >
+                        <div
+                          style={{
+                            color: '#FFD700',
+                            fontSize: '24px',
+                            fontWeight: 'bold',
+                          }}
+                        >
+                          {topPlayers[1].overall}
+                        </div>
+                        {topPlayers[1].isRookie === 1 && (
+                          <div
+                            style={{
+                              color: '#FFD700',
+                              fontSize: '24px',
+                              fontWeight: 'bold',
+                            }}
+                          >
+                            R
+                          </div>
+                        )}
+                      </div>
                       <div
                         style={{
                           fontSize: '17px',
@@ -745,38 +745,6 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                         height: '100%',
                       }}
                     >
-                      {/* Rating and Rookie Badge Above Image */}
-                      <div
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          gap: '6px',
-                          marginBottom: '6px',
-                        }}
-                        className="md:hidden"
-                      >
-                        <div
-                          style={{
-                            color: '#FFD700',
-                            fontSize: '18px',
-                            fontWeight: 'bold',
-                          }}
-                        >
-                          {player.overall}
-                        </div>
-                        {player.isRookie === 1 && (
-                          <div
-                            style={{
-                              color: '#FFD700',
-                              fontSize: '18px',
-                              fontWeight: 'bold',
-                            }}
-                          >
-                            R
-                          </div>
-                        )}
-                      </div>
                       <div
                         style={{
                           position: 'relative',
@@ -853,6 +821,38 @@ export default function RosterCard({ players, teamName, teamLogo, onClose }: Ros
                             </div>
                           )}
                         </div>
+                      </div>
+                      {/* Rating and Rookie Badge Above Name - Mobile Only */}
+                      <div
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '6px',
+                          marginBottom: '4px',
+                        }}
+                        className="md:hidden"
+                      >
+                        <div
+                          style={{
+                            color: '#FFD700',
+                            fontSize: '18px',
+                            fontWeight: 'bold',
+                          }}
+                        >
+                          {player.overall}
+                        </div>
+                        {player.isRookie === 1 && (
+                          <div
+                            style={{
+                              color: '#FFD700',
+                              fontSize: '18px',
+                              fontWeight: 'bold',
+                            }}
+                          >
+                            R
+                          </div>
+                        )}
                       </div>
                       <div
                         style={{

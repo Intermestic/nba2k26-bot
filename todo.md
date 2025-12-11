@@ -178,3 +178,9 @@
 - [x] Fix mobile player card layout - move ratings above names instead of on image
 - [x] Reduce banner height on mobile
 - [x] Simplify download options to only 4K PNG
+
+## Mobile Layout Fix (Team Detail Page)
+
+- [x] Remove team banner completely on mobile
+- [x] Move rookie designation and rating above player name (not above picture) on mobile
+
