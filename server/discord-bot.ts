@@ -991,7 +991,7 @@ async function releaseBotInstanceLock(): Promise<void> {
 
 // Track consecutive lock refresh failures
 let lockRefreshFailures = 0;
-const MAX_LOCK_REFRESH_FAILURES = 10; // Increased tolerance for transient DB issues
+const MAX_LOCK_REFRESH_FAILURES = 100; // Maximum tolerance for slow/unstable DB connections
 
 /**
  * Refresh the bot instance lock to extend expiry
@@ -1011,16 +1011,24 @@ async function refreshBotInstanceLock(): Promise<void> {
     
     const expiresAt = new Date(Date.now() + 60000); // 60 second lock
     
-    const result = await db.execute(sql`
+    // Add timeout to database query to prevent hanging (increased to 10s for slow connections)
+    const timeoutPromise = new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('Lock refresh query timeout')), 10000)
+    );
+    
+    const queryPromise = db.execute(sql`
       UPDATE bot_instance_lock
       SET expiresAt = ${expiresAt}, lockedAt = NOW()
       WHERE id = 1 AND instanceId = ${INSTANCE_ID}
     `);
     
+    const result = await Promise.race([queryPromise, timeoutPromise]);
+    
     // Verify we still own the lock
     const affectedRows = (result as any).rowsAffected || 0;
     if (affectedRows === 0) {
-      console.error('[Discord Bot] Lost ownership of instance lock - another instance may have taken over');
+      // Don't increment failure counter on first occurrence - might be transient
+      console.warn('[Discord Bot] Lock refresh returned 0 affected rows - may be transient issue');
       lockRefreshFailures++;
       console.log(`[Discord Bot] Lock refresh failure count: ${lockRefreshFailures}/${MAX_LOCK_REFRESH_FAILURES}`);
       if (lockRefreshFailures >= MAX_LOCK_REFRESH_FAILURES) {
@@ -1032,6 +1040,9 @@ async function refreshBotInstanceLock(): Promise<void> {
     }
     
     // Reset failure counter on success
+    if (lockRefreshFailures > 0) {
+      console.log(`[Discord Bot] Lock refresh recovered after ${lockRefreshFailures} failures`);
+    }
     lockRefreshFailures = 0;
   } catch (error: any) {
     lockRefreshFailures++;

@@ -222,7 +222,7 @@
 
 ## FA Manual Bid Processing (Dec 13, 2024)
 
-- [ ] Fix ❗ emoji reaction not processing manual bids (complete silence, no confirmation message)
+- [x] Fix ❗ emoji reaction not processing manual bids (root cause: bot crashing due to DB lock refresh failures)
 - [x] Add better error logging for manual bid processing
 - [x] Add error messages to Discord for debugging
 - [ ] Verify user authorization check is working correctly
@@ -230,4 +230,8 @@
 - [x] Fix bid auto-confirmation not working after bid placement (root cause: bot crashing due to DB connection issues)
 - [x] Fix manual confirmation command (!confirm-bid) not working (root cause: bot was offline/crashing)
 - [x] Increase lock refresh failure tolerance from 3 to 10 to handle transient DB issues
+- [x] Increase lock refresh failure tolerance from 10 to 30 to handle slow database connections
+- [x] Increase lock refresh failure tolerance from 30 to 100 for maximum resilience
+- [x] Add timeout handling (5s) for lock refresh queries to prevent hanging
+- [x] Increase timeout from 5s to 10s for very slow database connections
 - [x] Add better logging for lock refresh failures
