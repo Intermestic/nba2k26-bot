@@ -1,9 +1,0 @@
-{
-  "query": "SELECT team, COUNT(*) as player_count, SUM(overall) as total_overall,\n       (SUM(overall) - 1098) as over_cap\nFROM players \nWHERE team IS NOT NULL AND team != 'Free Agents' AND team != 'Free Agent'\nGROUP BY team \nHAVING SUM(overall) > 1098\nORDER BY total_overall DESC",
-  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT team, COUNT(*) as player_count, SUM(overall) as total_overall,\n       (SUM(overall) - 1098) as over_cap\nFROM players \nWHERE team IS NOT NULL AND team != 'Free Agents' AND team != 'Free Agent'\nGROUP BY team \nHAVING SUM(overall) > 1098\nORDER BY total_overall DESC",
-  "rows": [],
-  "messages": [],
-  "stdout": "",
-  "stderr": "",
-  "execution_time_ms": 1534
-}

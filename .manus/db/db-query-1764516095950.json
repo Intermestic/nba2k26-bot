@@ -1,9 +1,0 @@
-{
-  "query": "INSERT INTO scheduled_restarts (enabled, cronExpression, timezone)\nVALUES (1, '0 0 3 * * *', 'America/New_York')\nON DUPLICATE KEY UPDATE\n  enabled = 1,\n  cronExpression = '0 0 3 * * *',\n  timezone = 'America/New_York',\n  updatedAt = NOW()",
-  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute INSERT INTO scheduled_restarts (enabled, cronExpression, timezone)\nVALUES (1, '0 0 3 * * *', 'America/New_York')\nON DUPLICATE KEY UPDATE\n  enabled = 1,\n  cronExpression = '0 0 3 * * *',\n  timezone = 'America/New_York',\n  updatedAt = NOW()",
-  "rows": [],
-  "messages": [],
-  "stdout": "",
-  "stderr": "",
-  "execution_time_ms": 57
-}

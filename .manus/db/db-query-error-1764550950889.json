@@ -1,8 +1,0 @@
-{
-  "query": "SELECT id, first_name, last_name, team, position, overall, is_rookie FROM players WHERE last_name LIKE '%Richard%' OR first_name LIKE '%Richard%'",
-  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT id, first_name, last_name, team, position, overall, is_rookie FROM players WHERE last_name LIKE '%Richard%' OR first_name LIKE '%Richard%'",
-  "returncode": 1,
-  "logs": [
-    "ERROR 1054 (42S22) at line 1: Unknown column 'last_name' in 'where clause'"
-  ]
-}

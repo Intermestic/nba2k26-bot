@@ -1,9 +1,0 @@
-{
-  "query": "INSERT INTO trades (messageId, team1, team2, team1Players, team2Players, status, upvotes, downvotes, approvedBy, processedAt)\nVALUES (\n  '1445572808511062090',\n  'Lakers',\n  'Celtics',\n  '[{\"name\":\"Adou Thiero\",\"overall\":70,\"salary\":5}]',\n  '[{\"name\":\"Colin Castleton\",\"overall\":70,\"salary\":3}]',\n  'approved',\n  7,\n  1,\n  'Discord Vote',\n  NOW()\n);",
-  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute INSERT INTO trades (messageId, team1, team2, team1Players, team2Players, status, upvotes, downvotes, approvedBy, processedAt)\nVALUES (\n  '1445572808511062090',\n  'Lakers',\n  'Celtics',\n  '[{\"name\":\"Adou Thiero\",\"overall\":70,\"salary\":5}]',\n  '[{\"name\":\"Colin Castleton\",\"overall\":70,\"salary\":3}]',\n  'approved',\n  7,\n  1,\n  'Discord Vote',\n  NOW()\n);",
-  "rows": [],
-  "messages": [],
-  "stdout": "",
-  "stderr": "",
-  "execution_time_ms": 55
-}
