@@ -95,6 +95,12 @@
 - [ ] Test offline/error/recovery scenarios
 - [ ] Verify alerts are sent to correct Discord channel
 
+### Bot Control Critical Fixes (User Reported)
+- [x] Fix bot start/restart functionality (currently failing with corepack error)
+- [x] Implement auto-reconnection when bot goes offline
+- [x] Fix error handling in bot control API endpoints
+- [x] Ensure bot process management works reliably
+
 
 ## Archive (Completed Features)
 

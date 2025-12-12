@@ -134,7 +134,8 @@ export const botControlRouter = router({
       const errLog = fs.openSync(botErrorPath, "a");
       
       // Start bot in detached mode so it survives after this process
-      const child = spawn("pnpm", ["run", "start:bot"], {
+      // Use tsx directly to avoid pnpm/corepack issues
+      const child = spawn("npx", ["tsx", "server/bot-standalone.ts"], {
         cwd: projectRoot,
         detached: true,
         stdio: ["ignore", outLog, errLog],
@@ -240,9 +241,8 @@ export const botControlRouter = router({
   restart: publicProcedure.mutation(async () => {
     const isRunning = await isBotRunning();
     
-    if (!isRunning) {
-      throw new Error("Bot is not running - use Start instead");
-    }
+    // Allow restart even when offline - it will stop if running, then start
+    // This is useful when bot is stuck or disconnected
 
     try {
       console.log("[Bot Control] Restarting bot...");
@@ -271,7 +271,7 @@ export const botControlRouter = router({
       const outLog = fs.openSync(botLogPath, "a");
       const errLog = fs.openSync(botErrorPath, "a");
       
-      const child = spawn("pnpm", ["run", "start:bot"], {
+      const child = spawn("npx", ["tsx", "server/bot-standalone.ts"], {
         cwd: projectRoot,
         detached: true,
         stdio: ["ignore", outLog, errLog],

@@ -200,7 +200,7 @@ export default function BotControl() {
 
             <Button
               onClick={handleRestart}
-              disabled={!status?.isOnline || isRestarting || restartMutation.isPending}
+              disabled={isRestarting || restartMutation.isPending}
               variant="outline"
               className="flex-1 min-w-[150px]"
             >
@@ -214,7 +214,7 @@ export default function BotControl() {
             <ul className="text-sm text-muted-foreground space-y-1">
               <li>• <strong>Start:</strong> Launches the Discord bot process if it's not running</li>
               <li>• <strong>Stop:</strong> Gracefully shuts down the bot process</li>
-              <li>• <strong>Restart:</strong> Stops and starts the bot (useful when bot is stuck or offline)</li>
+              <li>• <strong>Restart:</strong> Stops and starts the bot (works even when offline - useful for recovery)</li>
               <li>• Status auto-refreshes every 5 seconds</li>
             </ul>
           </div>

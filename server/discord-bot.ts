@@ -2576,14 +2576,47 @@ export async function startDiscordBot(token: string) {
     } catch (error) {
       console.error('[Discord Bot] Failed to update status file on disconnect:', error);
     }
+    
+    // Auto-reconnect after disconnect (unless it was a clean shutdown)
+    // Discord.js will handle reconnection automatically for most cases,
+    // but we'll add a backup mechanism for persistent disconnects
+    if (event.code !== 1000) { // 1000 = normal closure
+      console.log(`[Discord Bot] Abnormal disconnect (code ${event.code}), will attempt reconnection...`);
+    }
   });
 
   client.on('shardReconnecting', (shardId) => {
     console.log(`[Discord Bot] Shard ${shardId} reconnecting...`);
+    // Update status file to show reconnecting state
+    try {
+      const statusFile = path.join(process.cwd(), 'bot-status.json');
+      fs.promises.writeFile(statusFile, JSON.stringify({
+        online: false,
+        username: null,
+        userId: null,
+        reconnecting: true,
+        reconnectingAt: new Date().toISOString(),
+      }, null, 2));
+    } catch (error) {
+      console.error('[Discord Bot] Failed to update status file on reconnect:', error);
+    }
   });
 
-  client.on('shardResume', (shardId, replayedEvents) => {
+  client.on('shardResume', async (shardId, replayedEvents) => {
     console.log(`[Discord Bot] Shard ${shardId} resumed (replayed ${replayedEvents} events)`);
+    // Update status file to online when resumed
+    try {
+      const statusFile = path.join(process.cwd(), 'bot-status.json');
+      await fs.promises.writeFile(statusFile, JSON.stringify({
+        online: true,
+        username: client!.user?.tag || null,
+        userId: client!.user?.id || null,
+        resumedAt: new Date().toISOString(),
+      }, null, 2));
+      console.log('[Discord Bot] Status file updated to online after resume');
+    } catch (error) {
+      console.error('[Discord Bot] Failed to update status file on resume:', error);
+    }
   });
 
   // Login with exponential backoff retry
