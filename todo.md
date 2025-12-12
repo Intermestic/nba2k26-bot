@@ -227,3 +227,7 @@
 - [x] Add error messages to Discord for debugging
 - [ ] Verify user authorization check is working correctly
 - [ ] Test manual bid recording with user 2kleague
+- [x] Fix bid auto-confirmation not working after bid placement (root cause: bot crashing due to DB connection issues)
+- [x] Fix manual confirmation command (!confirm-bid) not working (root cause: bot was offline/crashing)
+- [x] Increase lock refresh failure tolerance from 3 to 10 to handle transient DB issues
+- [x] Add better logging for lock refresh failures

@@ -5,8 +5,8 @@ const { Pool } = pkg;
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 const db = drizzle(pool);
 
-const result = await db.execute(`SELECT * FROM bot_instance_lock ORDER BY acquired_at DESC LIMIT 5`);
-console.log('Bot instance locks:');
-console.log(JSON.stringify(result.rows, null, 2));
+// Clear all locks
+await db.execute(`DELETE FROM bot_instance_lock`);
+console.log('✅ All bot instance locks cleared');
 
 await pool.end();

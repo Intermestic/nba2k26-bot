@@ -991,7 +991,7 @@ async function releaseBotInstanceLock(): Promise<void> {
 
 // Track consecutive lock refresh failures
 let lockRefreshFailures = 0;
-const MAX_LOCK_REFRESH_FAILURES = 3;
+const MAX_LOCK_REFRESH_FAILURES = 10; // Increased tolerance for transient DB issues
 
 /**
  * Refresh the bot instance lock to extend expiry
@@ -1022,8 +1022,10 @@ async function refreshBotInstanceLock(): Promise<void> {
     if (affectedRows === 0) {
       console.error('[Discord Bot] Lost ownership of instance lock - another instance may have taken over');
       lockRefreshFailures++;
+      console.log(`[Discord Bot] Lock refresh failure count: ${lockRefreshFailures}/${MAX_LOCK_REFRESH_FAILURES}`);
       if (lockRefreshFailures >= MAX_LOCK_REFRESH_FAILURES) {
         console.error('[Discord Bot] Lock ownership lost - triggering restart');
+        await releaseBotInstanceLock();
         process.exit(1);
       }
       return;
