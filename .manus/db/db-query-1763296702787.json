@@ -1,0 +1,73 @@
+{
+  "query": "SELECT name, overall, team, isRookie, draftYear FROM players WHERE name IN ('Ryan Kalkbrenner', 'Tre Johnson', 'Ace Bailey', 'Walter Clayton Jr', 'Asa Newell') ORDER BY overall DESC;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT name, overall, team, isRookie, draftYear FROM players WHERE name IN ('Ryan Kalkbrenner', 'Tre Johnson', 'Ace Bailey', 'Walter Clayton Jr', 'Asa Newell') ORDER BY overall DESC;",
+  "rows": [
+    {
+      "name": "Ryan Kalkbrenner",
+      "overall": "78",
+      "team": "Pelicans",
+      "isRookie": "0",
+      "draftYear": "NULL"
+    },
+    {
+      "name": "Ryan Kalkbrenner",
+      "overall": "78",
+      "team": "NULL",
+      "isRookie": "1",
+      "draftYear": "2025"
+    },
+    {
+      "name": "Tre Johnson",
+      "overall": "76",
+      "team": "Pelicans",
+      "isRookie": "0",
+      "draftYear": "NULL"
+    },
+    {
+      "name": "Tre Johnson",
+      "overall": "76",
+      "team": "NULL",
+      "isRookie": "1",
+      "draftYear": "2025"
+    },
+    {
+      "name": "Ace Bailey",
+      "overall": "73",
+      "team": "Pelicans",
+      "isRookie": "0",
+      "draftYear": "NULL"
+    },
+    {
+      "name": "Walter Clayton Jr",
+      "overall": "73",
+      "team": "Pelicans",
+      "isRookie": "0",
+      "draftYear": "NULL"
+    },
+    {
+      "name": "Asa Newell",
+      "overall": "73",
+      "team": "Pelicans",
+      "isRookie": "0",
+      "draftYear": "NULL"
+    },
+    {
+      "name": "Ace Bailey",
+      "overall": "73",
+      "team": "NULL",
+      "isRookie": "1",
+      "draftYear": "2025"
+    },
+    {
+      "name": "Asa Newell",
+      "overall": "73",
+      "team": "NULL",
+      "isRookie": "1",
+      "draftYear": "2025"
+    }
+  ],
+  "messages": [],
+  "stdout": "name\toverall\tteam\tisRookie\tdraftYear\nRyan Kalkbrenner\t78\tPelicans\t0\tNULL\nRyan Kalkbrenner\t78\tNULL\t1\t2025\nTre Johnson\t76\tPelicans\t0\tNULL\nTre Johnson\t76\tNULL\t1\t2025\nAce Bailey\t73\tPelicans\t0\tNULL\nWalter Clayton Jr\t73\tPelicans\t0\tNULL\nAsa Newell\t73\tPelicans\t0\tNULL\nAce Bailey\t73\tNULL\t1\t2025\nAsa Newell\t73\tNULL\t1\t2025\n",
+  "stderr": "",
+  "execution_time_ms": 1643
+}

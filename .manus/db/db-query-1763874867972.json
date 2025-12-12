@@ -1,0 +1,9 @@
+{
+  "query": "SELECT \n  fb.bidderName,\n  fb.team,\n  fb.bidAmount,\n  fb.dropPlayer,\n  fb.createdAt,\n  p.name as playerName,\n  p.overall\nFROM fa_bids fb\nJOIN players p ON fb.playerId = p.id\nWHERE p.name LIKE '%Gradey Dick%'\nORDER BY fb.bidAmount DESC, fb.createdAt ASC;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT \n  fb.bidderName,\n  fb.team,\n  fb.bidAmount,\n  fb.dropPlayer,\n  fb.createdAt,\n  p.name as playerName,\n  p.overall\nFROM fa_bids fb\nJOIN players p ON fb.playerId = p.id\nWHERE p.name LIKE '%Gradey Dick%'\nORDER BY fb.bidAmount DESC, fb.createdAt ASC;",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 53
+}

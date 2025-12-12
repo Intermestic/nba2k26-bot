@@ -1,0 +1,110 @@
+{
+  "query": "SELECT id, name, team FROM players WHERE name LIKE '%err%' OR name LIKE '%ing%' LIMIT 50",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT id, name, team FROM players WHERE name LIKE '%err%' OR name LIKE '%ing%' LIMIT 50",
+  "rows": [
+    {
+      "id": "1642866",
+      "name": "Joan Beringer",
+      "team": "Wizards"
+    },
+    {
+      "id": "P0087",
+      "name": "Carlton Carrington",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0106",
+      "name": "Donovan Clingan",
+      "team": "Bulls"
+    },
+    {
+      "id": "P0123",
+      "name": "Cade Cunningham",
+      "team": "Warriors"
+    },
+    {
+      "id": "P0141",
+      "name": "Rob Dillingham",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0177",
+      "name": "Rasheer Fleming",
+      "team": "Hawks"
+    },
+    {
+      "id": "P0235",
+      "name": "Tyler Herro",
+      "team": "Bucks"
+    },
+    {
+      "id": "P0259",
+      "name": "Terry Rozier III",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0267",
+      "name": "Kyrie Irving",
+      "team": "Suns"
+    },
+    {
+      "id": "P0312",
+      "name": "Derrick Jones Jr",
+      "team": "Knicks"
+    },
+    {
+      "id": "P0315",
+      "name": "Terrence Shannon Jr",
+      "team": "Raptors"
+    },
+    {
+      "id": "P0326",
+      "name": "TyTy Washington Jr.",
+      "team": "Timberwolves"
+    },
+    {
+      "id": "P0345",
+      "name": "Jonathan Kuminga",
+      "team": "Jazz"
+    },
+    {
+      "id": "P0364",
+      "name": "Chris Livingston",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0398",
+      "name": "Sam Merrill",
+      "team": "Rockets"
+    },
+    {
+      "id": "P0546",
+      "name": "Jaden Springer",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0558",
+      "name": "Terry Taylor",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0561",
+      "name": "Dalen Terry",
+      "team": "Free Agents"
+    },
+    {
+      "id": "P0604",
+      "name": "P.J. Washington",
+      "team": "Mavs"
+    },
+    {
+      "id": "P0614",
+      "name": "Derrick White",
+      "team": "Lakers"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\tteam\n1642866\tJoan Beringer\tWizards\nP0087\tCarlton Carrington\tFree Agents\nP0106\tDonovan Clingan\tBulls\nP0123\tCade Cunningham\tWarriors\nP0141\tRob Dillingham\tFree Agents\nP0177\tRasheer Fleming\tHawks\nP0235\tTyler Herro\tBucks\nP0259\tTerry Rozier III\tFree Agents\nP0267\tKyrie Irving\tSuns\nP0312\tDerrick Jones Jr\tKnicks\nP0315\tTerrence Shannon Jr\tRaptors\nP0326\tTyTy Washington Jr.\tTimberwolves\nP0345\tJonathan Kuminga\tJazz\nP0364\tChris Livingston\tFree Agents\nP0398\tSam Merrill\tRockets\nP0546\tJaden Springer\tFree Agents\nP0558\tTerry Taylor\tFree Agents\nP0561\tDalen Terry\tFree Agents\nP0604\tP.J. Washington\tMavs\nP0614\tDerrick White\tLakers\n",
+  "stderr": "",
+  "execution_time_ms": 54
+}

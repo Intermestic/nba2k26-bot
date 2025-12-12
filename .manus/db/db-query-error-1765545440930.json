@@ -1,0 +1,8 @@
+{
+  "query": "SELECT p.name, p.position, p.overall, t.name as team_name, t.abbreviation as team_abbr FROM players p LEFT JOIN teams t ON p.team_id = t.id ORDER BY t.name, p.overall DESC",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT p.name, p.position, p.overall, t.name as team_name, t.abbreviation as team_abbr FROM players p LEFT JOIN teams t ON p.team_id = t.id ORDER BY t.name, p.overall DESC",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1146 (42S02) at line 1: Table 'ds68jwruntwiz9tnrw6kxw.teams' doesn't exist"
+  ]
+}

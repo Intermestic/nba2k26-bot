@@ -1,0 +1,25 @@
+{
+  "query": "SELECT DISTINCT windowId FROM fa_bids ORDER BY windowId DESC LIMIT 5;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT DISTINCT windowId FROM fa_bids ORDER BY windowId DESC LIMIT 5;",
+  "rows": [
+    {
+      "windowId": "2025-12-10-AM"
+    },
+    {
+      "windowId": "2025-12-08-PM"
+    },
+    {
+      "windowId": "2025-12-07-PM"
+    },
+    {
+      "windowId": "2025-12-07-AM"
+    },
+    {
+      "windowId": "2025-12-06-PM"
+    }
+  ],
+  "messages": [],
+  "stdout": "windowId\n2025-12-10-AM\n2025-12-08-PM\n2025-12-07-PM\n2025-12-07-AM\n2025-12-06-PM\n",
+  "stderr": "",
+  "execution_time_ms": 1602
+}

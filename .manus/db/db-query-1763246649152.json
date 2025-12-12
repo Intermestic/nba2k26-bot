@@ -1,0 +1,9 @@
+{
+  "query": "UPDATE team_coins SET coinsRemaining = coinsRemaining + 35 WHERE team = 'Rockets'; UPDATE team_coins SET coinsRemaining = coinsRemaining + 9 WHERE team = 'Raptors'; UPDATE team_coins SET coinsRemaining = coinsRemaining + 1 WHERE team IN ('Nuggets', 'Hornets', 'Jazz');",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute UPDATE team_coins SET coinsRemaining = coinsRemaining + 35 WHERE team = 'Rockets'; UPDATE team_coins SET coinsRemaining = coinsRemaining + 9 WHERE team = 'Raptors'; UPDATE team_coins SET coinsRemaining = coinsRemaining + 1 WHERE team IN ('Nuggets', 'Hornets', 'Jazz');",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 2131
+}

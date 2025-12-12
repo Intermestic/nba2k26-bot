@@ -1,0 +1,120 @@
+{
+  "query": "SELECT playerName, userName, date, sourceType, upgradeType, badgeOrAttribute, fromValue, toValue FROM upgrade_log WHERE playerName IN ('De''Aaron Fox', 'Egor Demin', 'Kristaps Porzingis', 'Berringer') LIMIT 15",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT playerName, userName, date, sourceType, upgradeType, badgeOrAttribute, fromValue, toValue FROM upgrade_log WHERE playerName IN ('De''Aaron Fox', 'Egor Demin', 'Kristaps Porzingis', 'Berringer') LIMIT 15",
+  "rows": [
+    {
+      "playerName": "Egor Demin",
+      "userName": "cam2345.",
+      "date": "11/14/2025",
+      "sourceType": "Welcome",
+      "upgradeType": "Badge",
+      "badgeOrAttribute": "Set Shot Specialist",
+      "fromValue": "NULL",
+      "toValue": "Bronze"
+    },
+    {
+      "playerName": "Egor Demin",
+      "userName": "cam2345.",
+      "date": "11/14/2025",
+      "sourceType": "Welcome",
+      "upgradeType": "Attribute",
+      "badgeOrAttribute": "3PT",
+      "fromValue": "70",
+      "toValue": "73"
+    },
+    {
+      "playerName": "Egor Demin",
+      "userName": "cam2345.",
+      "date": "11/18/2025",
+      "sourceType": "Rookie",
+      "upgradeType": "Attribute",
+      "badgeOrAttribute": "3PT",
+      "fromValue": "73",
+      "toValue": "76"
+    },
+    {
+      "playerName": "Berringer",
+      "userName": "2kleague",
+      "date": "11/22/2025",
+      "sourceType": "Rookie",
+      "upgradeType": "Badge",
+      "badgeOrAttribute": "Paint Patroller",
+      "fromValue": "NULL",
+      "toValue": "Bronze"
+    },
+    {
+      "playerName": "De'Aaron Fox",
+      "userName": "gsjayy3",
+      "date": "11/22/2025",
+      "sourceType": "Game",
+      "upgradeType": "Badge",
+      "badgeOrAttribute": "Set Shot Specialist",
+      "fromValue": "Bronze",
+      "toValue": "Silver"
+    },
+    {
+      "playerName": "De'Aaron Fox",
+      "userName": "gsjayy3",
+      "date": "11/23/2025",
+      "sourceType": "Game",
+      "upgradeType": "Attribute",
+      "badgeOrAttribute": "3PT",
+      "fromValue": "80",
+      "toValue": "83"
+    },
+    {
+      "playerName": "De'Aaron Fox",
+      "userName": "gsjayy3",
+      "date": "11/23/2025",
+      "sourceType": "Flash",
+      "upgradeType": "Badge",
+      "badgeOrAttribute": "Limitless Range",
+      "fromValue": "NULL",
+      "toValue": "Bronze"
+    },
+    {
+      "playerName": "Kristaps Porzingis",
+      "userName": "alldayballin713",
+      "date": "11/27/2025",
+      "sourceType": "Holiday",
+      "upgradeType": "Badge",
+      "badgeOrAttribute": "Rise Up",
+      "fromValue": "Bronze",
+      "toValue": "Silver"
+    },
+    {
+      "playerName": "Egor Demin",
+      "userName": "cam2345.",
+      "date": "11/28/2025",
+      "sourceType": "Holiday",
+      "upgradeType": "Badge",
+      "badgeOrAttribute": "Dimer",
+      "fromValue": "Bronze",
+      "toValue": "Silver"
+    },
+    {
+      "playerName": "Kristaps Porzingis",
+      "userName": "alldayballin713",
+      "date": "11/29/2025",
+      "sourceType": "Game",
+      "upgradeType": "Attribute",
+      "badgeOrAttribute": "Post Control",
+      "fromValue": "85",
+      "toValue": "87"
+    },
+    {
+      "playerName": "Kristaps Porzingis",
+      "userName": "alldayballin713",
+      "date": "11/29/2025",
+      "sourceType": "Game",
+      "upgradeType": "Attribute",
+      "badgeOrAttribute": "Interior Defense",
+      "fromValue": "75",
+      "toValue": "76"
+    }
+  ],
+  "messages": [],
+  "stdout": "playerName\tuserName\tdate\tsourceType\tupgradeType\tbadgeOrAttribute\tfromValue\ttoValue\nEgor Demin\tcam2345.\t11/14/2025\tWelcome\tBadge\tSet Shot Specialist\tNULL\tBronze\nEgor Demin\tcam2345.\t11/14/2025\tWelcome\tAttribute\t3PT\t70\t73\nEgor Demin\tcam2345.\t11/18/2025\tRookie\tAttribute\t3PT\t73\t76\nBerringer\t2kleague\t11/22/2025\tRookie\tBadge\tPaint Patroller\tNULL\tBronze\nDe'Aaron Fox\tgsjayy3\t11/22/2025\tGame\tBadge\tSet Shot Specialist\tBronze\tSilver\nDe'Aaron Fox\tgsjayy3\t11/23/2025\tGame\tAttribute\t3PT\t80\t83\nDe'Aaron Fox\tgsjayy3\t11/23/2025\tFlash\tBadge\tLimitless Range\tNULL\tBronze\nKristaps Porzingis\talldayballin713\t11/27/2025\tHoliday\tBadge\tRise Up\tBronze\tSilver\nEgor Demin\tcam2345.\t11/28/2025\tHoliday\tBadge\tDimer\tBronze\tSilver\nKristaps Porzingis\talldayballin713\t11/29/2025\tGame\tAttribute\tPost Control\t85\t87\nKristaps Porzingis\talldayballin713\t11/29/2025\tGame\tAttribute\tInterior Defense\t75\t76\n",
+  "stderr": "",
+  "execution_time_ms": 53
+}

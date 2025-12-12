@@ -1,0 +1,26 @@
+{
+  "query": "SELECT playerName, bidAmount, team, bidderName, dropPlayer, createdAt FROM fa_bids WHERE windowId = '2025-11-15-PM' ORDER BY createdAt DESC",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT playerName, bidAmount, team, bidderName, dropPlayer, createdAt FROM fa_bids WHERE windowId = '2025-11-15-PM' ORDER BY createdAt DESC",
+  "rows": [
+    {
+      "playerName": "Malcolm Brogdon",
+      "bidAmount": "1",
+      "team": "Lakers",
+      "bidderName": "jayguwop.",
+      "dropPlayer": "Jaylen Nowell",
+      "createdAt": "2025-11-16 00:25:19"
+    },
+    {
+      "playerName": "Jaylen Nowell",
+      "bidAmount": "1",
+      "team": "Lakers",
+      "bidderName": "jayguwop.",
+      "dropPlayer": "Ajay Mitchell",
+      "createdAt": "2025-11-16 00:22:32"
+    }
+  ],
+  "messages": [],
+  "stdout": "playerName\tbidAmount\tteam\tbidderName\tdropPlayer\tcreatedAt\nMalcolm Brogdon\t1\tLakers\tjayguwop.\tJaylen Nowell\t2025-11-16 00:25:19\nJaylen Nowell\t1\tLakers\tjayguwop.\tAjay Mitchell\t2025-11-16 00:22:32\n",
+  "stderr": "",
+  "execution_time_ms": 1591
+}

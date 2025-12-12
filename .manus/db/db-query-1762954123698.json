@@ -1,0 +1,60 @@
+{
+  "query": "SELECT name, overall, team FROM players ORDER BY overall DESC LIMIT 10;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT name, overall, team FROM players ORDER BY overall DESC LIMIT 10;",
+  "rows": [
+    {
+      "name": "Shai Gilgeous-Alexander",
+      "overall": "98",
+      "team": "Rockets"
+    },
+    {
+      "name": "Nikola Jokić",
+      "overall": "98",
+      "team": "Bucks"
+    },
+    {
+      "name": "Luka Dončić",
+      "overall": "97",
+      "team": "Bulls"
+    },
+    {
+      "name": "Giannis Antetokounmpo",
+      "overall": "97",
+      "team": "Hornets"
+    },
+    {
+      "name": "Anthony Edwards",
+      "overall": "95",
+      "team": "Magic"
+    },
+    {
+      "name": "Victor Wembanyama",
+      "overall": "95",
+      "team": "Heat"
+    },
+    {
+      "name": "Jayson Tatum",
+      "overall": "94",
+      "team": "Raptors"
+    },
+    {
+      "name": "Steph Curry",
+      "overall": "94",
+      "team": "Mavericks"
+    },
+    {
+      "name": "LeBron James",
+      "overall": "94",
+      "team": "Spurs"
+    },
+    {
+      "name": "Jalen Brunson",
+      "overall": "93",
+      "team": "Timberwolves"
+    }
+  ],
+  "messages": [],
+  "stdout": "name\toverall\tteam\nShai Gilgeous-Alexander\t98\tRockets\nNikola Jokić\t98\tBucks\nLuka Dončić\t97\tBulls\nGiannis Antetokounmpo\t97\tHornets\nAnthony Edwards\t95\tMagic\nVictor Wembanyama\t95\tHeat\nJayson Tatum\t94\tRaptors\nSteph Curry\t94\tMavericks\nLeBron James\t94\tSpurs\nJalen Brunson\t93\tTimberwolves\n",
+  "stderr": "",
+  "execution_time_ms": 49
+}

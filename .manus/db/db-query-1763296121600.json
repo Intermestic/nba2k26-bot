@@ -1,0 +1,58 @@
+{
+  "query": "SELECT name, overall, isRookie, draftYear FROM players WHERE name IN ('VJ Edgecombe', 'Dylan Harper', 'Kon Knueppel', 'Cooper Flagg') ORDER BY overall DESC;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT name, overall, isRookie, draftYear FROM players WHERE name IN ('VJ Edgecombe', 'Dylan Harper', 'Kon Knueppel', 'Cooper Flagg') ORDER BY overall DESC;",
+  "rows": [
+    {
+      "name": "VJ Edgecombe",
+      "overall": "81",
+      "isRookie": "0",
+      "draftYear": "NULL"
+    },
+    {
+      "name": "VJ Edgecombe",
+      "overall": "81",
+      "isRookie": "1",
+      "draftYear": "2025"
+    },
+    {
+      "name": "Cooper Flagg",
+      "overall": "80",
+      "isRookie": "0",
+      "draftYear": "NULL"
+    },
+    {
+      "name": "Cooper Flagg",
+      "overall": "80",
+      "isRookie": "1",
+      "draftYear": "2025"
+    },
+    {
+      "name": "Dylan Harper",
+      "overall": "79",
+      "isRookie": "0",
+      "draftYear": "NULL"
+    },
+    {
+      "name": "Kon Knueppel",
+      "overall": "79",
+      "isRookie": "0",
+      "draftYear": "NULL"
+    },
+    {
+      "name": "Dylan Harper",
+      "overall": "79",
+      "isRookie": "1",
+      "draftYear": "2025"
+    },
+    {
+      "name": "Kon Knueppel",
+      "overall": "79",
+      "isRookie": "1",
+      "draftYear": "2025"
+    }
+  ],
+  "messages": [],
+  "stdout": "name\toverall\tisRookie\tdraftYear\nVJ Edgecombe\t81\t0\tNULL\nVJ Edgecombe\t81\t1\t2025\nCooper Flagg\t80\t0\tNULL\nCooper Flagg\t80\t1\t2025\nDylan Harper\t79\t0\tNULL\nKon Knueppel\t79\t0\tNULL\nDylan Harper\t79\t1\t2025\nKon Knueppel\t79\t1\t2025\n",
+  "stderr": "",
+  "execution_time_ms": 1543
+}

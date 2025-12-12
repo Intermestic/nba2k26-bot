@@ -1,0 +1,28 @@
+{
+  "query": "SELECT alias, canonicalName, context, useCount FROM learned_aliases ORDER BY createdAt DESC LIMIT 10;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT alias, canonicalName, context, useCount FROM learned_aliases ORDER BY createdAt DESC LIMIT 10;",
+  "rows": [
+    {
+      "alias": "dereck lively",
+      "canonicalName": "Dereck Lively II",
+      "context": "trade",
+      "useCount": "1"
+    },
+    {
+      "alias": "deangelo russell",
+      "canonicalName": "D'Angelo Russell",
+      "context": "trade",
+      "useCount": "1"
+    },
+    {
+      "alias": "jeremy sochan",
+      "canonicalName": "Jeremy Sochan",
+      "context": "trade",
+      "useCount": "1"
+    }
+  ],
+  "messages": [],
+  "stdout": "alias\tcanonicalName\tcontext\tuseCount\ndereck lively\tDereck Lively II\ttrade\t1\ndeangelo russell\tD'Angelo Russell\ttrade\t1\njeremy sochan\tJeremy Sochan\ttrade\t1\n",
+  "stderr": "",
+  "execution_time_ms": 57
+}

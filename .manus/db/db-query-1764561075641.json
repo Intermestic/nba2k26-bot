@@ -1,0 +1,17 @@
+{
+  "query": "SELECT \n  COUNT(*) as total_upgrades,\n  COUNT(DISTINCT playerName) as unique_players,\n  COUNT(DISTINCT userName) as unique_users,\n  SUM(CASE WHEN upgradeType = 'Badge' THEN 1 ELSE 0 END) as badge_upgrades,\n  SUM(CASE WHEN upgradeType = 'Attribute' THEN 1 ELSE 0 END) as attribute_upgrades\nFROM upgrade_log;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT \n  COUNT(*) as total_upgrades,\n  COUNT(DISTINCT playerName) as unique_players,\n  COUNT(DISTINCT userName) as unique_users,\n  SUM(CASE WHEN upgradeType = 'Badge' THEN 1 ELSE 0 END) as badge_upgrades,\n  SUM(CASE WHEN upgradeType = 'Attribute' THEN 1 ELSE 0 END) as attribute_upgrades\nFROM upgrade_log;",
+  "rows": [
+    {
+      "total_upgrades": "334",
+      "unique_players": "117",
+      "unique_users": "21",
+      "badge_upgrades": "206",
+      "attribute_upgrades": "128"
+    }
+  ],
+  "messages": [],
+  "stdout": "total_upgrades\tunique_players\tunique_users\tbadge_upgrades\tattribute_upgrades\n334\t117\t21\t206\t128\n",
+  "stderr": "",
+  "execution_time_ms": 50
+}

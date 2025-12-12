@@ -1,0 +1,62 @@
+{
+  "query": "SELECT name, overall FROM players WHERE team = 'Mavericks' ORDER BY overall DESC",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT name, overall FROM players WHERE team = 'Mavericks' ORDER BY overall DESC",
+  "rows": [
+    {
+      "name": "Steph Curry",
+      "overall": "94"
+    },
+    {
+      "name": "Alex Caruso",
+      "overall": "80"
+    },
+    {
+      "name": "Zach Edey",
+      "overall": "79"
+    },
+    {
+      "name": "Jusuf Nurkić",
+      "overall": "77"
+    },
+    {
+      "name": "Kelly Olynyk",
+      "overall": "76"
+    },
+    {
+      "name": "Marvin Bagley III",
+      "overall": "76"
+    },
+    {
+      "name": "Josh Okogie",
+      "overall": "75"
+    },
+    {
+      "name": "Jose Alvarado",
+      "overall": "75"
+    },
+    {
+      "name": "Will Richard",
+      "overall": "75"
+    },
+    {
+      "name": "Kevon Looney",
+      "overall": "74"
+    },
+    {
+      "name": "Deandre Jordan",
+      "overall": "74"
+    },
+    {
+      "name": "Jaylen Clark",
+      "overall": "74"
+    },
+    {
+      "name": "Brandon Williams",
+      "overall": "73"
+    }
+  ],
+  "messages": [],
+  "stdout": "name\toverall\nSteph Curry\t94\nAlex Caruso\t80\nZach Edey\t79\nJusuf Nurkić\t77\nKelly Olynyk\t76\nMarvin Bagley III\t76\nJosh Okogie\t75\nJose Alvarado\t75\nWill Richard\t75\nKevon Looney\t74\nDeandre Jordan\t74\nJaylen Clark\t74\nBrandon Williams\t73\n",
+  "stderr": "",
+  "execution_time_ms": 1630
+}

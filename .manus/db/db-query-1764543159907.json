@@ -1,0 +1,18 @@
+{
+  "query": "SELECT COUNT(*) as count, 'upgrade_requests' as table_name FROM upgrade_requests WHERE playerName LIKE '%Jaren%' UNION ALL SELECT COUNT(*) as count, 'player_upgrades' as table_name FROM player_upgrades WHERE playerName LIKE '%Jaren%'",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT COUNT(*) as count, 'upgrade_requests' as table_name FROM upgrade_requests WHERE playerName LIKE '%Jaren%' UNION ALL SELECT COUNT(*) as count, 'player_upgrades' as table_name FROM player_upgrades WHERE playerName LIKE '%Jaren%'",
+  "rows": [
+    {
+      "count": "0",
+      "table_name": "upgrade_requests"
+    },
+    {
+      "count": "3",
+      "table_name": "player_upgrades"
+    }
+  ],
+  "messages": [],
+  "stdout": "count\ttable_name\n0\tupgrade_requests\n3\tplayer_upgrades\n",
+  "stderr": "",
+  "execution_time_ms": 130
+}

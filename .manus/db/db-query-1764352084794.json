@@ -1,0 +1,9 @@
+{
+  "query": "UPDATE bot_commands SET example = CASE command\n  WHEN '!sync-team-roles' THEN '!sync-team-roles'\n  WHEN '!sync-team-channels' THEN '!sync-team-channels'\n  WHEN '!ab-records' THEN '!ab-records'\n  WHEN '!badge' THEN '!badge Curry'\n  WHEN '!update bid' THEN '!update bid Curry 50'\n  WHEN '!regenerate-summary' THEN '!regenerate-summary'\n  WHEN '/updatecap' THEN '/updatecap @Lakers 85'\n  WHEN '!updateovercap' THEN '!updateovercap @Lakers 5'\n  WHEN '!help' THEN '!help'\n  WHEN '!ab-reset' THEN '!ab-reset'\n  ELSE NULL\nEND\nWHERE command IN ('!sync-team-roles', '!sync-team-channels', '!ab-records', '!badge', '!update bid', '!regenerate-summary', '/updatecap', '!updateovercap', '!help', '!ab-reset')",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute UPDATE bot_commands SET example = CASE command\n  WHEN '!sync-team-roles' THEN '!sync-team-roles'\n  WHEN '!sync-team-channels' THEN '!sync-team-channels'\n  WHEN '!ab-records' THEN '!ab-records'\n  WHEN '!badge' THEN '!badge Curry'\n  WHEN '!update bid' THEN '!update bid Curry 50'\n  WHEN '!regenerate-summary' THEN '!regenerate-summary'\n  WHEN '/updatecap' THEN '/updatecap @Lakers 85'\n  WHEN '!updateovercap' THEN '!updateovercap @Lakers 5'\n  WHEN '!help' THEN '!help'\n  WHEN '!ab-reset' THEN '!ab-reset'\n  ELSE NULL\nEND\nWHERE command IN ('!sync-team-roles', '!sync-team-channels', '!ab-records', '!badge', '!update bid', '!regenerate-summary', '/updatecap', '!updateovercap', '!help', '!ab-reset')",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 67
+}

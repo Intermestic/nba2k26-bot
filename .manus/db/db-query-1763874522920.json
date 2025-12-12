@@ -1,0 +1,27 @@
+{
+  "query": "SELECT * FROM players WHERE name = 'Gradey Dick'",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT * FROM players WHERE name = 'Gradey Dick'",
+  "rows": [
+    {
+      "id": "P0138",
+      "name": "Gradey Dick",
+      "overall": "76",
+      "photoUrl": "https://cdn.nba.com/headshots/nba/latest/1040x760/1641711.png",
+      "playerPageUrl": "https://www.2kratings.com/gradey-dick",
+      "nbaId": "NULL",
+      "source": "NULL",
+      "badgeCount": "NULL",
+      "createdAt": "2025-11-12 13:28:16",
+      "updatedAt": "2025-11-23 05:07:36",
+      "team": "Free Agents",
+      "salaryCap": "7",
+      "height": "NULL",
+      "isRookie": "0",
+      "draftYear": "NULL"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\toverall\tphotoUrl\tplayerPageUrl\tnbaId\tsource\tbadgeCount\tcreatedAt\tupdatedAt\tteam\tsalaryCap\theight\tisRookie\tdraftYear\nP0138\tGradey Dick\t76\thttps://cdn.nba.com/headshots/nba/latest/1040x760/1641711.png\thttps://www.2kratings.com/gradey-dick\tNULL\tNULL\tNULL\t2025-11-12 13:28:16\t2025-11-23 05:07:36\tFree Agents\t7\tNULL\t0\tNULL\n",
+  "stderr": "",
+  "execution_time_ms": 56
+}

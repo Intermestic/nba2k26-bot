@@ -1,0 +1,9 @@
+{
+  "query": "INSERT INTO bot_commands (command, description, category, example) VALUES ('!check-trade', 'Manually check votes on a specific trade message', 'trade', '!check-trade 1445268293186490548')",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute INSERT INTO bot_commands (command, description, category, example) VALUES ('!check-trade', 'Manually check votes on a specific trade message', 'trade', '!check-trade 1445268293186490548')",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 74
+}

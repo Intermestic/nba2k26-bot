@@ -1,0 +1,14 @@
+{
+  "query": "SELECT DISTINCT team, COUNT(*) as player_count FROM players WHERE team NOT IN ('Hawks', 'Celtics', 'Nets', 'Hornets', 'Bulls', 'Cavaliers', 'Mavericks', 'Nuggets', 'Pistons', 'Warriors', 'Rockets', 'Pacers', 'Clippers', 'Lakers', 'Grizzlies', 'Heat', 'Bucks', 'Timberwolves', 'Pelicans', 'Knicks', 'Thunder', 'Magic', 'Sixers', 'Suns', 'Trail Blazers', 'Kings', 'Spurs', 'Raptors', 'Jazz', 'Wizards') AND team IS NOT NULL GROUP BY team ORDER BY team;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT DISTINCT team, COUNT(*) as player_count FROM players WHERE team NOT IN ('Hawks', 'Celtics', 'Nets', 'Hornets', 'Bulls', 'Cavaliers', 'Mavericks', 'Nuggets', 'Pistons', 'Warriors', 'Rockets', 'Pacers', 'Clippers', 'Lakers', 'Grizzlies', 'Heat', 'Bucks', 'Timberwolves', 'Pelicans', 'Knicks', 'Thunder', 'Magic', 'Sixers', 'Suns', 'Trail Blazers', 'Kings', 'Spurs', 'Raptors', 'Jazz', 'Wizards') AND team IS NOT NULL GROUP BY team ORDER BY team;",
+  "rows": [
+    {
+      "team": "Free Agents",
+      "player_count": "250"
+    }
+  ],
+  "messages": [],
+  "stdout": "team\tplayer_count\nFree Agents\t250\n",
+  "stderr": "",
+  "execution_time_ms": 1507
+}

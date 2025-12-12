@@ -1,0 +1,460 @@
+{
+  "query": "SELECT \n  fb.bidderName,\n  fb.team,\n  fb.bidAmount,\n  fb.dropPlayer,\n  fb.createdAt,\n  p.name as playerName,\n  p.overall\nFROM fa_bids fb\nJOIN players p ON fb.playerId = p.id\nORDER BY p.name, fb.bidAmount DESC, fb.createdAt ASC\nLIMIT 50;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT \n  fb.bidderName,\n  fb.team,\n  fb.bidAmount,\n  fb.dropPlayer,\n  fb.createdAt,\n  p.name as playerName,\n  p.overall\nFROM fa_bids fb\nJOIN players p ON fb.playerId = p.id\nORDER BY p.name, fb.bidAmount DESC, fb.createdAt ASC\nLIMIT 50;",
+  "rows": [
+    {
+      "bidderName": "kuroko4",
+      "team": "Nuggets",
+      "bidAmount": "1",
+      "dropPlayer": "Chris Paul",
+      "createdAt": "2025-11-20 00:06:32",
+      "playerName": "Ajay Mitchell",
+      "overall": "79"
+    },
+    {
+      "bidderName": "xpoloxhawk",
+      "team": "Hawks",
+      "bidAmount": "1",
+      "dropPlayer": "Terrance Mann",
+      "createdAt": "2025-11-16 04:49:33",
+      "playerName": "Alec Burks",
+      "overall": "74"
+    },
+    {
+      "bidderName": ".wooman",
+      "team": "Free Agents",
+      "bidAmount": "1",
+      "dropPlayer": "Doug mcmormont",
+      "createdAt": "2025-11-16 21:40:16",
+      "playerName": "Amari Williams",
+      "overall": "70"
+    },
+    {
+      "bidderName": ".wooman",
+      "team": "Jazz",
+      "bidAmount": "1",
+      "dropPlayer": "Kevin porter jr",
+      "createdAt": "2025-11-17 14:34:00",
+      "playerName": "Ayo Dosunmu",
+      "overall": "77"
+    },
+    {
+      "bidderName": "itzbreezyyy",
+      "team": "Nets",
+      "bidAmount": "1",
+      "dropPlayer": "Malik Beasley",
+      "createdAt": "2025-11-19 19:51:49",
+      "playerName": "Bojan Bogdanovic",
+      "overall": "74"
+    },
+    {
+      "bidderName": "kuroko4",
+      "team": "Nuggets",
+      "bidAmount": "1",
+      "dropPlayer": "Kenrich Williams",
+      "createdAt": "2025-11-16 19:11:48",
+      "playerName": "Bruce Brown",
+      "overall": "75"
+    },
+    {
+      "bidderName": "itzbreezyyy",
+      "team": "Nets",
+      "bidAmount": "1",
+      "dropPlayer": "Jordan Clarkson",
+      "createdAt": "2025-11-19 17:30:14",
+      "playerName": "Caris LeVert",
+      "overall": "76"
+    },
+    {
+      "bidderName": "alldayballin713",
+      "team": "Rockets",
+      "bidAmount": "1",
+      "dropPlayer": "Cole Anthony",
+      "createdAt": "2025-11-22 16:48:20",
+      "playerName": "Carlton Carrington",
+      "overall": "76"
+    },
+    {
+      "bidderName": "frostychild",
+      "team": "Unknown",
+      "bidAmount": "80",
+      "dropPlayer": "NULL",
+      "createdAt": "2025-11-15 16:50:00",
+      "playerName": "Charles Bassey",
+      "overall": "72"
+    },
+    {
+      "bidderName": "alldayballin713",
+      "team": "Rockets",
+      "bidAmount": "75",
+      "dropPlayer": "NULL",
+      "createdAt": "2025-11-15 16:49:31",
+      "playerName": "Charles Bassey",
+      "overall": "72"
+    },
+    {
+      "bidderName": "coogie33",
+      "team": "Celtics",
+      "bidAmount": "1",
+      "dropPlayer": "NULL",
+      "createdAt": "2025-11-15 07:24:28",
+      "playerName": "Colin Castleton",
+      "overall": "70"
+    },
+    {
+      "bidderName": "took3mm",
+      "team": "Hornets",
+      "bidAmount": "1",
+      "dropPlayer": "NULL",
+      "createdAt": "2025-11-15 15:55:58",
+      "playerName": "Collin Gillespie",
+      "overall": "76"
+    },
+    {
+      "bidderName": "seabaschin",
+      "team": "Spurs",
+      "bidAmount": "35",
+      "dropPlayer": "Mark Sears",
+      "createdAt": "2025-11-21 21:50:31",
+      "playerName": "Daniss Jenkins",
+      "overall": "70"
+    },
+    {
+      "bidderName": "wavyy12",
+      "team": "Grizzlies",
+      "bidAmount": "31",
+      "dropPlayer": "Jakob Poeltl",
+      "createdAt": "2025-11-21 20:52:17",
+      "playerName": "Daniss Jenkins",
+      "overall": "70"
+    },
+    {
+      "bidderName": "wavyy12",
+      "team": "Grizzlies",
+      "bidAmount": "31",
+      "dropPlayer": "Jakob Poeltl",
+      "createdAt": "2025-11-21 20:52:17",
+      "playerName": "Daniss Jenkins",
+      "overall": "70"
+    },
+    {
+      "bidderName": "2kleague",
+      "team": "Wizards",
+      "bidAmount": "30",
+      "dropPlayer": "Eugene Omoruyi",
+      "createdAt": "2025-11-21 19:27:19",
+      "playerName": "Daniss Jenkins",
+      "overall": "70"
+    },
+    {
+      "bidderName": "itzbreezyyy",
+      "team": "Nets",
+      "bidAmount": "6",
+      "dropPlayer": "James Wiseman",
+      "createdAt": "2025-11-21 18:10:10",
+      "playerName": "Daniss Jenkins",
+      "overall": "70"
+    },
+    {
+      "bidderName": "kuroko4",
+      "team": "Nuggets",
+      "bidAmount": "5",
+      "dropPlayer": "Ty Jerome",
+      "createdAt": "2025-11-21 16:49:40",
+      "playerName": "Daniss Jenkins",
+      "overall": "70"
+    },
+    {
+      "bidderName": "kuroko4",
+      "team": "Nuggets",
+      "bidAmount": "5",
+      "dropPlayer": "Ty Jerome",
+      "createdAt": "2025-11-21 16:49:40",
+      "playerName": "Daniss Jenkins",
+      "overall": "70"
+    },
+    {
+      "bidderName": "lameloballcashed",
+      "team": "Raptors",
+      "bidAmount": "1",
+      "dropPlayer": "NULL",
+      "createdAt": "2025-11-15 07:22:30",
+      "playerName": "Dario Saric",
+      "overall": "74"
+    },
+    {
+      "bidderName": "took3mm",
+      "team": "Hornets",
+      "bidAmount": "1",
+      "dropPlayer": "Daniel theis",
+      "createdAt": "2025-11-19 23:07:29",
+      "playerName": "Day'Ron Sharpe",
+      "overall": "74"
+    },
+    {
+      "bidderName": "yoname2300",
+      "team": "Timberwolves",
+      "bidAmount": "1",
+      "dropPlayer": "NULL",
+      "createdAt": "2025-11-15 13:22:11",
+      "playerName": "Drew Timme",
+      "overall": "70"
+    },
+    {
+      "bidderName": ".wooman",
+      "team": "Jazz",
+      "bidAmount": "20",
+      "dropPlayer": "Kevin Porter Jr",
+      "createdAt": "2025-11-17 21:44:57",
+      "playerName": "Gary Harris",
+      "overall": "73"
+    },
+    {
+      "bidderName": "itzbreezyyy",
+      "team": "Nets",
+      "bidAmount": "1",
+      "dropPlayer": "Bismack Biyombo",
+      "createdAt": "2025-11-17 19:14:07",
+      "playerName": "Gary Harris",
+      "overall": "73"
+    },
+    {
+      "bidderName": "itzbreezyyy",
+      "team": "Nets",
+      "bidAmount": "1",
+      "dropPlayer": "Noah Penda",
+      "createdAt": "2025-11-21 12:59:51",
+      "playerName": "Grant Williams",
+      "overall": "73"
+    },
+    {
+      "bidderName": "kuroko4",
+      "team": "Nuggets",
+      "bidAmount": "1",
+      "dropPlayer": "Bruce brown",
+      "createdAt": "2025-11-18 03:26:24",
+      "playerName": "JD Davison",
+      "overall": "70"
+    },
+    {
+      "bidderName": "took3mm",
+      "team": "Hornets",
+      "bidAmount": "1",
+      "dropPlayer": "Daniel theis",
+      "createdAt": "2025-11-21 00:07:34",
+      "playerName": "Jabari Walker",
+      "overall": "72"
+    },
+    {
+      "bidderName": "rickflair_",
+      "team": "Bulls",
+      "bidAmount": "1",
+      "dropPlayer": "Kyle Filipowski",
+      "createdAt": "2025-11-20 20:47:32",
+      "playerName": "James Johnson",
+      "overall": "70"
+    },
+    {
+      "bidderName": "coogie33",
+      "team": "Celtics",
+      "bidAmount": "1",
+      "dropPlayer": "NULL",
+      "createdAt": "2025-11-15 07:26:22",
+      "playerName": "Johnny Davis",
+      "overall": "70"
+    },
+    {
+      "bidderName": "gsjayy3",
+      "team": "Kings",
+      "bidAmount": "5",
+      "dropPlayer": "Wendell Moore",
+      "createdAt": "2025-11-20 18:55:09",
+      "playerName": "Jordan Walsh",
+      "overall": "70"
+    },
+    {
+      "bidderName": "2kleague",
+      "team": "Wizards",
+      "bidAmount": "1",
+      "dropPlayer": "NULL",
+      "createdAt": "2025-11-15 16:49:07",
+      "playerName": "Josh Richardson",
+      "overall": "71"
+    },
+    {
+      "bidderName": "yoname2300",
+      "team": "Timberwolves",
+      "bidAmount": "1",
+      "dropPlayer": "NULL",
+      "createdAt": "2025-11-15 13:26:27",
+      "playerName": "Kevin Knox II",
+      "overall": "70"
+    },
+    {
+      "bidderName": ".wooman",
+      "team": "Jazz",
+      "bidAmount": "1",
+      "dropPlayer": "Gary Harris 10",
+      "createdAt": "2025-11-18 15:59:39",
+      "playerName": "Kevin Porter Jr",
+      "overall": "76"
+    },
+    {
+      "bidderName": "alldayballin713",
+      "team": "Rockets",
+      "bidAmount": "10",
+      "dropPlayer": "Carlton Carrington",
+      "createdAt": "2025-11-23 04:49:27",
+      "playerName": "Malik Beasley",
+      "overall": "78"
+    },
+    {
+      "bidderName": "sirjordan10",
+      "team": "Trail Blazers",
+      "bidAmount": "9",
+      "dropPlayer": "Mike Conley",
+      "createdAt": "2025-11-22 22:21:42",
+      "playerName": "Malik Beasley",
+      "overall": "78"
+    },
+    {
+      "bidderName": "itzbreezyyy",
+      "team": "Nets",
+      "bidAmount": "1",
+      "dropPlayer": "Bismack Biyombo",
+      "createdAt": "2025-11-18 08:49:39",
+      "playerName": "Malik Beasley",
+      "overall": "78"
+    },
+    {
+      "bidderName": "itzbreezyyy",
+      "team": "Nets",
+      "bidAmount": "1",
+      "dropPlayer": "Bismack Biyombo",
+      "createdAt": "2025-11-18 08:49:39",
+      "playerName": "Malik Beasley",
+      "overall": "78"
+    },
+    {
+      "bidderName": "took3mm",
+      "team": "Hornets",
+      "bidAmount": "54",
+      "dropPlayer": "Carlton Carrington",
+      "createdAt": "2025-11-17 03:16:29",
+      "playerName": "Miles McBride",
+      "overall": "76"
+    },
+    {
+      "bidderName": "jayguwop.",
+      "team": "Lakers",
+      "bidAmount": "46",
+      "dropPlayer": "Malcolm Brogdon",
+      "createdAt": "2025-11-16 23:42:53",
+      "playerName": "Miles McBride",
+      "overall": "76"
+    },
+    {
+      "bidderName": "took3mm",
+      "team": "Hornets",
+      "bidAmount": "5",
+      "dropPlayer": "NULL",
+      "createdAt": "2025-11-15 14:18:02",
+      "playerName": "Moses Moody",
+      "overall": "78"
+    },
+    {
+      "bidderName": ".wooman",
+      "team": "Jazz",
+      "bidAmount": "2",
+      "dropPlayer": "NULL",
+      "createdAt": "2025-11-15 14:21:40",
+      "playerName": "Moses Moody",
+      "overall": "78"
+    },
+    {
+      "bidderName": "mikeybvf",
+      "team": "Bucks",
+      "bidAmount": "1",
+      "dropPlayer": "Seth Curry",
+      "createdAt": "2025-11-16 20:06:33",
+      "playerName": "Moussa Cisse",
+      "overall": "70"
+    },
+    {
+      "bidderName": "jayguwop.",
+      "team": "Lakers",
+      "bidAmount": "20",
+      "dropPlayer": "Patrick Baldwin jr",
+      "createdAt": "2025-11-21 22:21:08",
+      "playerName": "Noah Penda",
+      "overall": "72"
+    },
+    {
+      "bidderName": "lameloballcashed",
+      "team": "Raptors",
+      "bidAmount": "13",
+      "dropPlayer": "Kyle Anderson",
+      "createdAt": "2025-11-21 20:55:46",
+      "playerName": "Noah Penda",
+      "overall": "72"
+    },
+    {
+      "bidderName": "mikeybvf",
+      "team": "Bucks",
+      "bidAmount": "1",
+      "dropPlayer": "Rui Hachimura",
+      "createdAt": "2025-11-19 20:36:50",
+      "playerName": "Oso Ighodaro",
+      "overall": "73"
+    },
+    {
+      "bidderName": "wavyy12",
+      "team": "Grizzlies",
+      "bidAmount": "1",
+      "dropPlayer": "Rasheer Fleming",
+      "createdAt": "2025-11-19 16:08:02",
+      "playerName": "Pacôme Dadiet",
+      "overall": "70"
+    },
+    {
+      "bidderName": "mikeybvf",
+      "team": "Bucks",
+      "bidAmount": "1",
+      "dropPlayer": "Amari Williams",
+      "createdAt": "2025-11-16 16:30:00",
+      "playerName": "Seth Curry",
+      "overall": "74"
+    },
+    {
+      "bidderName": "rickflair_",
+      "team": "Bulls",
+      "bidAmount": "1",
+      "dropPlayer": "James Johnson",
+      "createdAt": "2025-11-23 04:39:05",
+      "playerName": "Simone Fontecchio",
+      "overall": "75"
+    },
+    {
+      "bidderName": "mikeybvf",
+      "team": "Bucks",
+      "bidAmount": "1",
+      "dropPlayer": "Ariel Hukporti",
+      "createdAt": "2025-11-19 03:56:50",
+      "playerName": "Terance Mann",
+      "overall": "77"
+    },
+    {
+      "bidderName": "lameloballcashed",
+      "team": "Raptors",
+      "bidAmount": "3",
+      "dropPlayer": "NULL",
+      "createdAt": "2025-11-15 07:23:21",
+      "playerName": "Tim Hardaway Jr.",
+      "overall": "79"
+    }
+  ],
+  "messages": [],
+  "stdout": "bidderName\tteam\tbidAmount\tdropPlayer\tcreatedAt\tplayerName\toverall\nkuroko4\tNuggets\t1\tChris Paul\t2025-11-20 00:06:32\tAjay Mitchell\t79\nxpoloxhawk\tHawks\t1\tTerrance Mann\t2025-11-16 04:49:33\tAlec Burks\t74\n.wooman\tFree Agents\t1\tDoug mcmormont\t2025-11-16 21:40:16\tAmari Williams\t70\n.wooman\tJazz\t1\tKevin porter jr\t2025-11-17 14:34:00\tAyo Dosunmu\t77\nitzbreezyyy\tNets\t1\tMalik Beasley\t2025-11-19 19:51:49\tBojan Bogdanovic\t74\nkuroko4\tNuggets\t1\tKenrich Williams\t2025-11-16 19:11:48\tBruce Brown\t75\nitzbreezyyy\tNets\t1\tJordan Clarkson\t2025-11-19 17:30:14\tCaris LeVert\t76\nalldayballin713\tRockets\t1\tCole Anthony\t2025-11-22 16:48:20\tCarlton Carrington\t76\nfrostychild\tUnknown\t80\tNULL\t2025-11-15 16:50:00\tCharles Bassey\t72\nalldayballin713\tRockets\t75\tNULL\t2025-11-15 16:49:31\tCharles Bassey\t72\ncoogie33\tCeltics\t1\tNULL\t2025-11-15 07:24:28\tColin Castleton\t70\ntook3mm\tHornets\t1\tNULL\t2025-11-15 15:55:58\tCollin Gillespie\t76\nseabaschin\tSpurs\t35\tMark Sears\t2025-11-21 21:50:31\tDaniss Jenkins\t70\nwavyy12\tGrizzlies\t31\tJakob Poeltl\t2025-11-21 20:52:17\tDaniss Jenkins\t70\nwavyy12\tGrizzlies\t31\tJakob Poeltl\t2025-11-21 20:52:17\tDaniss Jenkins\t70\n2kleague\tWizards\t30\tEugene Omoruyi\t2025-11-21 19:27:19\tDaniss Jenkins\t70\nitzbreezyyy\tNets\t6\tJames Wiseman\t2025-11-21 18:10:10\tDaniss Jenkins\t70\nkuroko4\tNuggets\t5\tTy Jerome\t2025-11-21 16:49:40\tDaniss Jenkins\t70\nkuroko4\tNuggets\t5\tTy Jerome\t2025-11-21 16:49:40\tDaniss Jenkins\t70\nlameloballcashed\tRaptors\t1\tNULL\t2025-11-15 07:22:30\tDario Saric\t74\ntook3mm\tHornets\t1\tDaniel theis\t2025-11-19 23:07:29\tDay'Ron Sharpe\t74\nyoname2300\tTimberwolves\t1\tNULL\t2025-11-15 13:22:11\tDrew Timme\t70\n.wooman\tJazz\t20\tKevin Porter Jr\t2025-11-17 21:44:57\tGary Harris\t73\nitzbreezyyy\tNets\t1\tBismack Biyombo\t2025-11-17 19:14:07\tGary Harris\t73\nitzbreezyyy\tNets\t1\tNoah Penda\t2025-11-21 12:59:51\tGrant Williams\t73\nkuroko4\tNuggets\t1\tBruce brown\t2025-11-18 03:26:24\tJD Davison\t70\ntook3mm\tHornets\t1\tDaniel theis\t2025-11-21 00:07:34\tJabari Walker\t72\nrickflair_\tBulls\t1\tKyle Filipowski\t2025-11-20 20:47:32\tJames Johnson\t70\ncoogie33\tCeltics\t1\tNULL\t2025-11-15 07:26:22\tJohnny Davis\t70\ngsjayy3\tKings\t5\tWendell Moore\t2025-11-20 18:55:09\tJordan Walsh\t70\n2kleague\tWizards\t1\tNULL\t2025-11-15 16:49:07\tJosh Richardson\t71\nyoname2300\tTimberwolves\t1\tNULL\t2025-11-15 13:26:27\tKevin Knox II\t70\n.wooman\tJazz\t1\tGary Harris 10\t2025-11-18 15:59:39\tKevin Porter Jr\t76\nalldayballin713\tRockets\t10\tCarlton Carrington\t2025-11-23 04:49:27\tMalik Beasley\t78\nsirjordan10\tTrail Blazers\t9\tMike Conley\t2025-11-22 22:21:42\tMalik Beasley\t78\nitzbreezyyy\tNets\t1\tBismack Biyombo\t2025-11-18 08:49:39\tMalik Beasley\t78\nitzbreezyyy\tNets\t1\tBismack Biyombo\t2025-11-18 08:49:39\tMalik Beasley\t78\ntook3mm\tHornets\t54\tCarlton Carrington\t2025-11-17 03:16:29\tMiles McBride\t76\njayguwop.\tLakers\t46\tMalcolm Brogdon\t2025-11-16 23:42:53\tMiles McBride\t76\ntook3mm\tHornets\t5\tNULL\t2025-11-15 14:18:02\tMoses Moody\t78\n.wooman\tJazz\t2\tNULL\t2025-11-15 14:21:40\tMoses Moody\t78\nmikeybvf\tBucks\t1\tSeth Curry\t2025-11-16 20:06:33\tMoussa Cisse\t70\njayguwop.\tLakers\t20\tPatrick Baldwin jr\t2025-11-21 22:21:08\tNoah Penda\t72\nlameloballcashed\tRaptors\t13\tKyle Anderson\t2025-11-21 20:55:46\tNoah Penda\t72\nmikeybvf\tBucks\t1\tRui Hachimura\t2025-11-19 20:36:50\tOso Ighodaro\t73\nwavyy12\tGrizzlies\t1\tRasheer Fleming\t2025-11-19 16:08:02\tPacôme Dadiet\t70\nmikeybvf\tBucks\t1\tAmari Williams\t2025-11-16 16:30:00\tSeth Curry\t74\nrickflair_\tBulls\t1\tJames Johnson\t2025-11-23 04:39:05\tSimone Fontecchio\t75\nmikeybvf\tBucks\t1\tAriel Hukporti\t2025-11-19 03:56:50\tTerance Mann\t77\nlameloballcashed\tRaptors\t3\tNULL\t2025-11-15 07:23:21\tTim Hardaway Jr.\t79\n",
+  "stderr": "",
+  "execution_time_ms": 58
+}

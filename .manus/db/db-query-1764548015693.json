@@ -1,0 +1,9 @@
+{
+  "query": "CREATE TABLE IF NOT EXISTS upgrade_audits (\n  id INT AUTO_INCREMENT PRIMARY KEY,\n  auditType VARCHAR(100) NOT NULL,\n  status VARCHAR(50) NOT NULL,\n  totalChecked INT NOT NULL DEFAULT 0,\n  violationsFound INT NOT NULL DEFAULT 0,\n  startedAt TIMESTAMP NOT NULL,\n  completedAt TIMESTAMP NULL,\n  results TEXT,\n  createdBy VARCHAR(255)\n)",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute CREATE TABLE IF NOT EXISTS upgrade_audits (\n  id INT AUTO_INCREMENT PRIMARY KEY,\n  auditType VARCHAR(100) NOT NULL,\n  status VARCHAR(50) NOT NULL,\n  totalChecked INT NOT NULL DEFAULT 0,\n  violationsFound INT NOT NULL DEFAULT 0,\n  startedAt TIMESTAMP NOT NULL,\n  completedAt TIMESTAMP NULL,\n  results TEXT,\n  createdBy VARCHAR(255)\n)",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 200
+}

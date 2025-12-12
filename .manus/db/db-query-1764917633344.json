@@ -1,0 +1,18 @@
+{
+  "query": "SELECT team, COUNT(*) as player_count FROM players WHERE team IN ('Sixers', 'Pacers') GROUP BY team ORDER BY team;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT team, COUNT(*) as player_count FROM players WHERE team IN ('Sixers', 'Pacers') GROUP BY team ORDER BY team;",
+  "rows": [
+    {
+      "team": "Pacers",
+      "player_count": "14"
+    },
+    {
+      "team": "Sixers",
+      "player_count": "14"
+    }
+  ],
+  "messages": [],
+  "stdout": "team\tplayer_count\nPacers\t14\nSixers\t14\n",
+  "stderr": "",
+  "execution_time_ms": 78
+}
