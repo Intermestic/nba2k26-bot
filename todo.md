@@ -95,6 +95,9 @@
 - [ ] Test offline/error/recovery scenarios
 - [ ] Verify alerts are sent to correct Discord channel
 
+### Bot Instance Protection
+- [x] Add safeguards to ensure only one Discord bot instance runs at a time
+
 ### Bot Control Critical Fixes (User Reported)
 - [x] Fix bot start/restart functionality (currently failing with corepack error)
 - [x] Implement auto-reconnection when bot goes offline

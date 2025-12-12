@@ -993,6 +993,43 @@ async function releaseBotInstanceLock(): Promise<void> {
 }
 
 /**
+ * Refresh the bot instance lock to extend expiry
+ */
+async function refreshBotInstanceLock(): Promise<void> {
+  try {
+    const db = await getDb();
+    if (!db) return;
+    
+    const expiresAt = new Date(Date.now() + 60000); // 60 second lock
+    
+    await db.execute(sql`
+      UPDATE bot_instance_lock
+      SET expiresAt = ${expiresAt}, lockedAt = NOW()
+      WHERE id = 1 AND instanceId = ${INSTANCE_ID}
+    `);
+  } catch (error) {
+    console.error('[Discord Bot] Error refreshing instance lock:', error);
+  }
+}
+
+// Periodically refresh the lock to prevent expiry while bot is running
+let lockRefreshInterval: NodeJS.Timeout | null = null;
+
+function startLockRefresh(): void {
+  // Refresh lock every 30 seconds (half of the 60s expiry)
+  lockRefreshInterval = setInterval(async () => {
+    await refreshBotInstanceLock();
+  }, 30000);
+}
+
+function stopLockRefresh(): void {
+  if (lockRefreshInterval) {
+    clearInterval(lockRefreshInterval);
+    lockRefreshInterval = null;
+  }
+}
+
+/**
  * Start Discord bot
  */
 export async function startDiscordBot(token: string) {
@@ -2628,6 +2665,9 @@ export async function startDiscordBot(token: string) {
       await client!.login(token);
       loginAttempts = 0; // Reset on success
       console.log('[Discord Bot] Login successful');
+      
+      // Start periodic lock refresh to keep this instance active
+      startLockRefresh();
     } catch (error) {
       loginAttempts++;
       const delay = Math.min(1000 * Math.pow(2, loginAttempts), 30000); // Max 30s
@@ -2638,6 +2678,15 @@ export async function startDiscordBot(token: string) {
         setTimeout(loginWithRetry, delay);
       } else {
         console.error('[Discord Bot] Max login attempts reached. Bot will not start.');
+        // Stop lock refresh and release lock on permanent failure
+        stopLockRefresh();
+        await releaseBotInstanceLock();
+        // Clean up client
+        if (client) {
+          client.removeAllListeners();
+          await client.destroy();
+          client = null;
+        }
         throw error;
       }
     }
@@ -2660,6 +2709,9 @@ export async function startDiscordBot(token: string) {
  * Stop Discord bot
  */
 export async function stopDiscordBot() {
+  // Stop lock refresh first
+  stopLockRefresh();
+  
   if (client) {
     // Remove all event listeners before destroying
     client.removeAllListeners();
