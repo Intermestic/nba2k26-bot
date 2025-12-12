@@ -219,3 +219,11 @@
 
 - [ ] Fix automatic trade processing after approval - trade approved but players not moved to new teams (database connection timeout issue)
 - [ ] Investigate why ⚡ emoji processing isn't working on approved trades (needs further debugging)
+
+## FA Manual Bid Processing (Dec 13, 2024)
+
+- [ ] Fix ❗ emoji reaction not processing manual bids (complete silence, no confirmation message)
+- [x] Add better error logging for manual bid processing
+- [x] Add error messages to Discord for debugging
+- [ ] Verify user authorization check is working correctly
+- [ ] Test manual bid recording with user 2kleague

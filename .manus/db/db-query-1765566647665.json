@@ -1,0 +1,28 @@
+{
+  "query": "SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND (TABLE_NAME LIKE '%sign%' OR TABLE_NAME LIKE '%bid%' OR TABLE_NAME LIKE '%approval%' OR TABLE_NAME LIKE '%fa%');",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND (TABLE_NAME LIKE '%sign%' OR TABLE_NAME LIKE '%bid%' OR TABLE_NAME LIKE '%approval%' OR TABLE_NAME LIKE '%fa%');",
+  "rows": [
+    {
+      "TABLE_NAME": "fa_transactions"
+    },
+    {
+      "TABLE_NAME": "bid_windows"
+    },
+    {
+      "TABLE_NAME": "fa_bids"
+    },
+    {
+      "TABLE_NAME": "failed_searches"
+    },
+    {
+      "TABLE_NAME": "team_assignments"
+    },
+    {
+      "TABLE_NAME": "team_assignment_history"
+    }
+  ],
+  "messages": [],
+  "stdout": "TABLE_NAME\nfa_transactions\nbid_windows\nfa_bids\nfailed_searches\nteam_assignments\nteam_assignment_history\n",
+  "stderr": "",
+  "execution_time_ms": 1550
+}

@@ -1989,10 +1989,13 @@ export async function startDiscordBot(token: string) {
       
       // Handle ❗ emoji - manually record a single bid (authorized user only)
       if (reaction.emoji.name === '❗') {
+        console.log(`[Discord Bot] ❗ reaction detected by ${user.tag} (${user.id}) on message ${message.id}`);
+        
         // Deduplication check
         const reactionKey = `${message.id}-❗-${user.id}`;
         if (processedReactions.has(reactionKey)) {
           console.log(`[Discord Bot] Skipping duplicate ❗ reaction for message ${message.id}`);
+          await message.reply('⚠️ This bid has already been processed.');
           return;
         }
         processedReactions.add(reactionKey);
@@ -2008,61 +2011,80 @@ export async function startDiscordBot(token: string) {
         
         // Check if user is authorized
         if (user.id !== '679275787664359435') {
-          console.log(`[Discord Bot] Unauthorized user ${user.tag} (${user.id}) attempted manual processing`);
+          console.log(`[Discord Bot] Unauthorized user ${user.tag} (${user.id}) attempted manual bid processing`);
+          await message.reply(`❌ You are not authorized to manually process bids. (Your ID: ${user.id})`);
           return;
         }
         
-        console.log('[Discord Bot] Authorized user triggered manual bid recording');
+        console.log('[Discord Bot] ✅ Authorized user triggered manual bid recording');
         const { parseBidMessage, findPlayerByFuzzyName, recordBid, getCurrentBiddingWindow } = await import('./fa-bid-parser');
         const { getDb } = await import('./db');
         const { players: playersTable, teamAssignments } = await import('../drizzle/schema');
         const { eq } = await import('drizzle-orm');
         
         try {
+          console.log('[Discord Bot] Parsing bid message:', message.content);
           // Parse the bid
           const parsedBid = parseBidMessage(message.content);
           if (!parsedBid) {
-            await message.reply('❌ Could not parse bid from message.');
+            console.log('[Discord Bot] ❌ Failed to parse bid message');
+            await message.reply('❌ Could not parse bid from message. Expected format: "Cut [player]\nSign [player]\nBid [amount]"');
             return;
           }
+          console.log('[Discord Bot] ✅ Parsed bid:', parsedBid);
           
           // Get team from message author's Discord ID
+          console.log('[Discord Bot] Getting database connection...');
           const db = await getDb();
   assertDb(db);
           if (!db) {
+            console.log('[Discord Bot] ❌ Database connection failed');
             await message.reply('❌ Database connection failed.');
             return;
           }
+          console.log('[Discord Bot] ✅ Database connected');
           
+          console.log('[Discord Bot] Looking up team for author:', message.author.id);
           const teamAssignment = await db.select().from(teamAssignments).where(eq(teamAssignments.discordUserId, message.author.id));
           if (!teamAssignment || teamAssignment.length === 0) {
           assertDb(db);
-            await message.reply('❌ Message author has no team assignment.');
+            console.log('[Discord Bot] ❌ No team assignment found for user:', message.author.id);
+            await message.reply(`❌ Message author has no team assignment. (Author ID: ${message.author.id})`);
             return;
           }
           
           const team = teamAssignment[0].team;
+          console.log('[Discord Bot] ✅ Found team:', team);
           
           // Validate players
+          console.log('[Discord Bot] Finding player to sign:', parsedBid.playerName);
           const signPlayer = await findPlayerByFuzzyName(parsedBid.playerName, undefined, true);
           if (!signPlayer) {
+            console.log('[Discord Bot] ❌ Could not find player to sign:', parsedBid.playerName);
             await message.reply(`❌ Could not find player to sign: ${parsedBid.playerName}`);
             return;
           }
+          console.log('[Discord Bot] ✅ Found player to sign:', signPlayer.name, signPlayer.overall);
           
           let dropPlayer = null;
           if (parsedBid.dropPlayer) {
+            console.log('[Discord Bot] Finding player to drop:', parsedBid.dropPlayer);
             dropPlayer = await findPlayerByFuzzyName(parsedBid.dropPlayer, team, false);
             if (!dropPlayer) {
+              console.log('[Discord Bot] ❌ Could not find player to drop:', parsedBid.dropPlayer);
               await message.reply(`❌ Could not find player to drop: ${parsedBid.dropPlayer}`);
               return;
             }
+            console.log('[Discord Bot] ✅ Found player to drop:', dropPlayer.name, dropPlayer.overall);
           }
           
           // Get current window
+          console.log('[Discord Bot] Getting current bidding window...');
           const window = getCurrentBiddingWindow();
+          console.log('[Discord Bot] ✅ Current window:', window.windowId);
           
           // Record the bid
+          console.log('[Discord Bot] Recording bid to database...');
           await recordBid(
             signPlayer.name,
             signPlayer.id,
@@ -2074,17 +2096,22 @@ export async function startDiscordBot(token: string) {
             message.id,
             dropPlayer?.name
           );
+          console.log('[Discord Bot] ✅ Bid recorded successfully');
           
-          await message.reply(
-            `✅ **Manual Bid Recorded**\n\n` +
+          const confirmationMessage = `✅ **Manual Bid Recorded**\n\n` +
             `**Team:** ${team}\n` +
             `**Sign:** ${signPlayer.name} (${signPlayer.overall} OVR)\n` +
             (dropPlayer ? `**Drop:** ${dropPlayer.name} (${dropPlayer.overall} OVR)\n` : '') +
-            `**Bid:** $${parsedBid.bidAmount}`
-          );
+            `**Bid:** $${parsedBid.bidAmount}\n` +
+            `**Window:** ${window.windowId}`;
+          
+          console.log('[Discord Bot] Sending confirmation message...');
+          await message.reply(confirmationMessage);
+          console.log('[Discord Bot] ✅ Confirmation message sent');
         } catch (error) {
-          console.error('[Discord Bot] Manual bid processing failed:', error);
-          await message.reply('❌ Manual bid processing failed. Check logs for details.');
+          console.error('[Discord Bot] ❌ Manual bid processing failed:', error);
+          const errorMessage = error instanceof Error ? error.message : String(error);
+          await message.reply(`❌ Manual bid processing failed: ${errorMessage}`);
         }
         return;
       }
