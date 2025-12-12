@@ -134,8 +134,8 @@ export const botControlRouter = router({
       const errLog = fs.openSync(botErrorPath, "a");
       
       // Start bot in detached mode so it survives after this process
-      // Use tsx directly to avoid pnpm/corepack issues
-      const child = spawn("npx", ["tsx", "server/bot-standalone.ts"], {
+      // Use pnpm to ensure proper dependency resolution
+      const child = spawn("pnpm", ["start:bot"], {
         cwd: projectRoot,
         detached: true,
         stdio: ["ignore", outLog, errLog],
@@ -271,7 +271,7 @@ export const botControlRouter = router({
       const outLog = fs.openSync(botLogPath, "a");
       const errLog = fs.openSync(botErrorPath, "a");
       
-      const child = spawn("npx", ["tsx", "server/bot-standalone.ts"], {
+      const child = spawn("pnpm", ["start:bot"], {
         cwd: projectRoot,
         detached: true,
         stdio: ["ignore", outLog, errLog],

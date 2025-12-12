@@ -206,3 +206,8 @@
 ## Trade Auto-Processing
 
 - [x] Auto-process approved trades (7 👍 votes) without requiring ⚡ emoji reaction
+
+## Discord Bot Startup Fix
+
+- [x] Fix Discord bot startup failure (missing tsx dependency)
+- [x] Ensure bot auto-restart functionality works correctly

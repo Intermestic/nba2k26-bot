@@ -1007,8 +1007,15 @@ async function refreshBotInstanceLock(): Promise<void> {
       SET expiresAt = ${expiresAt}, lockedAt = NOW()
       WHERE id = 1 AND instanceId = ${INSTANCE_ID}
     `);
-  } catch (error) {
+  } catch (error: any) {
     console.error('[Discord Bot] Error refreshing instance lock:', error);
+    
+    // Reset database connection on connection errors to allow reconnection
+    if (error?.cause?.code === 'ECONNRESET' || error?.message?.includes('ECONNRESET')) {
+      console.log('[Discord Bot] Database connection lost, resetting connection pool...');
+      const { resetDbConnection } = await import('./db.js');
+      resetDbConnection();
+    }
   }
 }
 

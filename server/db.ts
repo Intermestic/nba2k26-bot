@@ -4,6 +4,8 @@ import { InsertUser, users } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
+let connectionAttempts = 0;
+const MAX_CONNECTION_ATTEMPTS = 3;
 
 // Lazily create the drizzle instance with connection string
 // mysql2 driver handles connection pooling and reconnection automatically
@@ -11,20 +13,43 @@ export async function getDb() {
   if (!_db && process.env.DATABASE_URL) {
     try {
       // Drizzle with mysql2 string URL automatically creates a connection pool
-      // Add connection pool parameters to URL for better stability
+      // Add connection pool parameters to URL for better stability and reconnection
       const url = new URL(process.env.DATABASE_URL);
       url.searchParams.set('connectionLimit', '10');
       url.searchParams.set('waitForConnections', 'true');
       url.searchParams.set('connectTimeout', '10000');
+      url.searchParams.set('enableKeepAlive', 'true');
+      url.searchParams.set('keepAliveInitialDelay', '10000');
       
       _db = drizzle(url.toString());
+      connectionAttempts = 0; // Reset on success
       console.log('[Database] Connection pool created');
     } catch (error) {
-      console.warn("[Database] Failed to connect:", error);
+      connectionAttempts++;
+      console.warn(`[Database] Failed to connect (attempt ${connectionAttempts}/${MAX_CONNECTION_ATTEMPTS}):`, error);
+      
+      // Reset db reference on connection error to allow retry
       _db = null;
+      
+      // If we haven't exceeded max attempts, try again after a delay
+      if (connectionAttempts < MAX_CONNECTION_ATTEMPTS) {
+        const delay = 1000 * connectionAttempts; // Incremental backoff
+        console.log(`[Database] Retrying connection in ${delay}ms...`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+        return getDb(); // Recursive retry
+      }
     }
   }
   return _db;
+}
+
+// Reset connection on critical errors (allows reconnection on next query)
+export function resetDbConnection() {
+  if (_db) {
+    console.log('[Database] Resetting connection pool');
+    _db = null;
+    connectionAttempts = 0;
+  }
 }
 
 export async function upsertUser(user: InsertUser): Promise<void> {
