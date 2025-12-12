@@ -72,31 +72,12 @@ async function startServer() {
     console.log(`Server running on http://localhost:${port}/`);
   });
 
-  // Start Discord bot in the main server process with HMR protection
-  // This ensures the web server can access the bot client for trade posting
+  // Discord bot is now managed by a separate standalone process (server/bot-standalone.ts)
+  // The web server should NOT start the bot to avoid conflicts with the standalone process
+  // Bot control is handled through the bot control API endpoints
+  console.log('[Discord Bot] Bot is managed by standalone process - web server will not start bot');
   const globalAny = global as any;
-  if (!globalAny.__discordBotStarted) {
-    const botToken = process.env.DISCORD_BOT_TOKEN;
-    console.log('[Discord Bot] Checking for DISCORD_BOT_TOKEN...', botToken ? 'Found' : 'Not found');
-    if (botToken) {
-      try {
-        console.log('[Discord Bot] Attempting to start bot...');
-        await startDiscordBot(botToken);
-        globalAny.__discordBotStarted = true;
-        console.log('[Discord Bot] ✅ Started successfully');
-      } catch (error) {
-        console.error('[Discord Bot] ❌ Failed to start:', error);
-        if (error instanceof Error) {
-          console.error('[Discord Bot] Error details:', error.message);
-          console.error('[Discord Bot] Stack trace:', error.stack);
-        }
-      }
-    } else {
-      console.log('[Discord Bot] ⚠️  DISCORD_BOT_TOKEN not found, bot will not start');
-    }
-  } else {
-    console.log('[Discord Bot] Already started, skipping initialization (HMR)');
-  }
+  globalAny.__discordBotStarted = false; // Always false for web server
 }
 
 startServer().catch(console.error);

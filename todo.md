@@ -99,10 +99,9 @@
 - [x] Add safeguards to ensure only one Discord bot instance runs at a time
 
 ### Bot Control Critical Fixes (User Reported)
-- [x] Fix bot start/restart functionality (currently failing with corepack error)
-- [x] Implement auto-reconnection when bot goes offline
-- [x] Fix error handling in bot control API endpoints
-- [x] Ensure bot process management works reliably
+- [x] Fix bot not auto-restarting after crashes
+- [x] Fix manual bot restart failing due to stale database lock
+- [x] Improve lock acquisition logic to handle expired locks properly
 
 
 ## Archive (Completed Features)

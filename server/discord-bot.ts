@@ -936,7 +936,13 @@ async function acquireBotInstanceLock(): Promise<boolean> {
     
     const expiresAt = new Date(Date.now() + 60000); // 60 second lock
     
-    // Try to insert the lock (only one row with id=1 allowed)
+    // Step 1: Try to delete any expired locks
+    await db.execute(sql`
+      DELETE FROM bot_instance_lock
+      WHERE id = 1 AND expiresAt < NOW()
+    `);
+    
+    // Step 2: Try to insert our lock
     try {
       await db.execute(sql`
         INSERT INTO bot_instance_lock (id, instanceId, expiresAt)
@@ -944,30 +950,21 @@ async function acquireBotInstanceLock(): Promise<boolean> {
       `);
       console.log(`[Discord Bot] Instance ${INSTANCE_ID} acquired singleton lock`);
       return true;
-    } catch (error: any) {
-      // Lock already exists, try to update if expired
-      if (error.code === 'ER_DUP_ENTRY' || error.errno === 1062) {
-        // Try to update if lock is expired
-        const result = await db.execute(sql`
-          UPDATE bot_instance_lock
-          SET instanceId = ${INSTANCE_ID}, lockedAt = NOW(), expiresAt = ${expiresAt}
-          WHERE id = 1 AND expiresAt < NOW()
-        `);
-        
-        if ((result as any).rowsAffected > 0) {
-          console.log(`[Discord Bot] Instance ${INSTANCE_ID} acquired expired lock`);
-          return true;
-        }
-        
-        // Lock is held by another instance
-        const existing = await db.execute(sql`SELECT instanceId FROM bot_instance_lock WHERE id = 1`);
+    } catch (insertError: any) {
+      // Lock already exists and is not expired
+      if (insertError.code === 'ER_DUP_ENTRY' || insertError.errno === 1062) {
+        // Check who owns it
+        const existing = await db.execute(sql`SELECT instanceId, expiresAt FROM bot_instance_lock WHERE id = 1`);
         const rows = (existing as any).rows || [];
+        
         if (rows.length > 0) {
-          console.log(`[Discord Bot] Instance ${INSTANCE_ID} blocked - lock held by ${rows[0].instanceId}`);
+          const lockExpiry = new Date(rows[0].expiresAt);
+          const timeUntilExpiry = Math.max(0, lockExpiry.getTime() - Date.now());
+          console.log(`[Discord Bot] Instance ${INSTANCE_ID} blocked - lock held by ${rows[0].instanceId} (expires in ${Math.ceil(timeUntilExpiry / 1000)}s)`);
         }
         return false;
       }
-      throw error;
+      throw insertError;
     }
   } catch (error) {
     console.error('[Discord Bot] Error acquiring instance lock:', error);
@@ -992,29 +989,64 @@ async function releaseBotInstanceLock(): Promise<void> {
   }
 }
 
+// Track consecutive lock refresh failures
+let lockRefreshFailures = 0;
+const MAX_LOCK_REFRESH_FAILURES = 3;
+
 /**
  * Refresh the bot instance lock to extend expiry
  */
 async function refreshBotInstanceLock(): Promise<void> {
   try {
     const db = await getDb();
-    if (!db) return;
+    if (!db) {
+      lockRefreshFailures++;
+      console.error(`[Discord Bot] Database not available for lock refresh (failure ${lockRefreshFailures}/${MAX_LOCK_REFRESH_FAILURES})`);
+      if (lockRefreshFailures >= MAX_LOCK_REFRESH_FAILURES) {
+        console.error('[Discord Bot] Too many lock refresh failures - triggering restart');
+        process.exit(1); // Exit to trigger auto-restart
+      }
+      return;
+    }
     
     const expiresAt = new Date(Date.now() + 60000); // 60 second lock
     
-    await db.execute(sql`
+    const result = await db.execute(sql`
       UPDATE bot_instance_lock
       SET expiresAt = ${expiresAt}, lockedAt = NOW()
       WHERE id = 1 AND instanceId = ${INSTANCE_ID}
     `);
+    
+    // Verify we still own the lock
+    const affectedRows = (result as any).rowsAffected || 0;
+    if (affectedRows === 0) {
+      console.error('[Discord Bot] Lost ownership of instance lock - another instance may have taken over');
+      lockRefreshFailures++;
+      if (lockRefreshFailures >= MAX_LOCK_REFRESH_FAILURES) {
+        console.error('[Discord Bot] Lock ownership lost - triggering restart');
+        process.exit(1);
+      }
+      return;
+    }
+    
+    // Reset failure counter on success
+    lockRefreshFailures = 0;
   } catch (error: any) {
-    console.error('[Discord Bot] Error refreshing instance lock:', error);
+    lockRefreshFailures++;
+    console.error(`[Discord Bot] Error refreshing instance lock (failure ${lockRefreshFailures}/${MAX_LOCK_REFRESH_FAILURES}):`, error);
     
     // Reset database connection on connection errors to allow reconnection
     if (error?.cause?.code === 'ECONNRESET' || error?.message?.includes('ECONNRESET')) {
       console.log('[Discord Bot] Database connection lost, resetting connection pool...');
       const { resetDbConnection } = await import('./db.js');
       resetDbConnection();
+    }
+    
+    // Exit if too many failures
+    if (lockRefreshFailures >= MAX_LOCK_REFRESH_FAILURES) {
+      console.error('[Discord Bot] Too many consecutive lock refresh failures - triggering restart');
+      await releaseBotInstanceLock(); // Try to release lock before exit
+      process.exit(1);
     }
   }
 }
@@ -1045,8 +1077,9 @@ export async function startDiscordBot(token: string) {
   // Acquire database singleton lock
   const lockAcquired = await acquireBotInstanceLock();
   if (!lockAcquired) {
-    console.log(`[Discord Bot] Instance ${INSTANCE_ID} failed to acquire lock, aborting startup`);
-    return;
+    const errorMsg = `Instance ${INSTANCE_ID} failed to acquire lock, aborting startup`;
+    console.error(`[Discord Bot] ${errorMsg}`);
+    throw new Error(errorMsg);
   }
   
   if (client) {
