@@ -235,14 +235,17 @@ async function processVoteResult(
     // Check if this trade vote has already been processed in the database
     const db = await getDb();
     if (!db) {
-      console.error('[Trade Voting] Database not available, cannot check for duplicate votes');
-      return;
+      console.error('[Trade Voting] Database not available, will post message anyway');
+      // Don't return - still post the approval/rejection message even if DB is down
     }
     
-    const existingVote = await db.select().from(tradeVotes).where(eq(tradeVotes.messageId, message.id)).limit(1);
-    if (existingVote.length > 0) {
-      console.log(`[Trade Voting] Trade ${message.id} already processed at ${existingVote[0].processedAt}, skipping duplicate`);
-      return;
+    // Only check database if connection is available
+    if (db) {
+      const existingVote = await db.select().from(tradeVotes).where(eq(tradeVotes.messageId, message.id)).limit(1);
+      if (existingVote.length > 0) {
+        console.log(`[Trade Voting] Trade ${message.id} already processed at ${existingVote[0].processedAt}, skipping duplicate`);
+        return;
+      }
     }
     
     const voteData = activeVotes.get(message.id);
@@ -737,19 +740,26 @@ export async function manuallyCheckTradeVotes(client: Client, messageId: string)
     }
     
     // Check if already processed in database
-    const db = await getDb();
-    if (db) {
-      const existingVote = await db.select().from(tradeVotes).where(eq(tradeVotes.messageId, messageId)).limit(1);
-      if (existingVote.length > 0) {
-        const vote = existingVote[0];
-        const status = vote.approved ? 'approved' : 'rejected';
-        return { 
-          success: false, 
-          message: `Trade already processed on ${vote.processedAt}: ${status} with ${vote.upvotes} 👍 and ${vote.downvotes} 👎`,
-          upvotes: vote.upvotes,
-          downvotes: vote.downvotes
-        };
+    try {
+      const db = await getDb();
+      if (db) {
+        const existingVote = await db.select().from(tradeVotes).where(eq(tradeVotes.messageId, messageId)).limit(1);
+        if (existingVote.length > 0) {
+          const vote = existingVote[0];
+          const status = vote.approved ? 'approved' : 'rejected';
+          return { 
+            success: false, 
+            message: `Trade already processed on ${vote.processedAt}: ${status} with ${vote.upvotes} 👍 and ${vote.downvotes} 👎`,
+            upvotes: vote.upvotes,
+            downvotes: vote.downvotes
+          };
+        }
+      } else {
+        console.log('[Trade Voting] Database unavailable during manual check, will proceed anyway');
       }
+    } catch (dbError) {
+      console.error('[Trade Voting] Database error during manual check:', dbError);
+      console.log('[Trade Voting] Continuing with manual check despite database error');
     }
     
     // Check if already processed in memory

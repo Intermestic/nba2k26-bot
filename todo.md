@@ -210,3 +210,12 @@
 
 - [x] Fix Discord bot startup failure (missing tsx dependency)
 - [x] Ensure bot auto-restart functionality works correctly
+
+## Trade Approval Critical Fixes (Dec 12, 2024)
+
+- [x] Fix trade 1448866682893500436 not posting approval message despite 7-3 vote
+- [x] Fix !check-trade command not returning results for valid trade IDs
+- [x] Investigate why auto-approval at 7 votes isn't triggering message posts
+
+- [ ] Fix automatic trade processing after approval - trade approved but players not moved to new teams (database connection timeout issue)
+- [ ] Investigate why ⚡ emoji processing isn't working on approved trades (needs further debugging)

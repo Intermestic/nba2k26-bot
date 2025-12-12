@@ -143,19 +143,6 @@ export async function handleApprovedTradeProcessing(message: Message) {
       updatedPlayers.push(`${player.name} → ${validTeam2}`);
     }
     
-    // Update overcap roles
-    try {
-      const { updateOvercapRoles } = await import('./overcap-roles');
-      const { getDiscordClient } = await import('./discord-bot');
-      const client = getDiscordClient();
-      if (client) {
-        await updateOvercapRoles(client);
-        console.log('[Trade Approval] Overcap roles updated after trade');
-      }
-    } catch (error) {
-      console.error('[Trade Approval] Failed to update overcap roles:', error);
-    }
-    
     // Check if trade involves 90+ OVR player → trigger story generation (non-blocking)
     const allPlayers = [...team1Players, ...team2Players];
     const hasStarPlayer = allPlayers.some(p => p.overall >= 90);
@@ -212,6 +199,21 @@ export async function handleApprovedTradeProcessing(message: Message) {
     
     await message.reply(successMessage);
     console.log(`[Trade Approval] Trade processed successfully: ${updatedPlayers.length} players updated`);
+    
+    // Update overcap roles AFTER posting success message (non-blocking)
+    (async () => {
+      try {
+        const { updateOvercapRoles } = await import('./overcap-roles');
+        const { getDiscordClient } = await import('./discord-bot');
+        const client = getDiscordClient();
+        if (client) {
+          await updateOvercapRoles(client);
+          console.log('[Trade Approval] Overcap roles updated after trade');
+        }
+      } catch (error) {
+        console.error('[Trade Approval] Failed to update overcap roles:', error);
+      }
+    })();
     
   } catch (error) {
     console.error('[Trade Approval] Error processing trade:', error);

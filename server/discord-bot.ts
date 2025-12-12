@@ -1798,8 +1798,11 @@ export async function startDiscordBot(token: string) {
         const messageId = parts[1];
         
         try {
+          console.log(`[Trade Voting] !check-trade command received for message ${messageId}`);
           const { manuallyCheckTradeVotes } = await import('./trade-voting');
           const result = await manuallyCheckTradeVotes(client!, messageId);
+          
+          console.log(`[Trade Voting] Manual check result:`, result);
           
           if (result.success) {
             await message.reply(`✅ ${result.message}`);
@@ -1808,7 +1811,8 @@ export async function startDiscordBot(token: string) {
           }
         } catch (error) {
           console.error('[Trade Voting] Manual check command failed:', error);
-          await message.reply('❌ Failed to check trade votes. Check logs for details.');
+          console.error('[Trade Voting] Error stack:', error instanceof Error ? error.stack : 'No stack trace');
+          await message.reply(`❌ Failed to check trade votes. Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
         }
         return;
       }
