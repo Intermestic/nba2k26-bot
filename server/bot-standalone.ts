@@ -5,7 +5,12 @@
  * This prevents HMR (Hot Module Reload) from creating duplicate bot instances.
  */
 
-import { startDiscordBot, stopDiscordBot } from "./discord-bot.js";
+import { startDiscordBot, stopDiscordBot, getDiscordClient } from "./discord-bot";
+import express from 'express';
+import { getDb } from "./db";
+import { tradeLogs } from "../drizzle/schema";
+
+const TRADE_CHANNEL_ID = "1336156955722645535";
 
 async function main() {
   const botToken = process.env.DISCORD_BOT_TOKEN;
@@ -23,6 +28,109 @@ async function main() {
     console.error('[Bot Standalone] Failed to start Discord bot:', error);
     process.exit(1);
   }
+
+  // Start HTTP server for bot commands
+  const app = express();
+  app.use(express.json());
+  
+  // Health check endpoint
+  app.get('/health', (req, res) => {
+    const client = getDiscordClient();
+    res.json({
+      status: 'ok',
+      botReady: client?.isReady() || false,
+      botUsername: client?.user?.tag || null
+    });
+  });
+  
+  // Post trade to Discord endpoint
+  app.post('/post-trade', async (req, res) => {
+    try {
+      const { team1Name, team1Players, team2Name, team2Players } = req.body;
+      
+      const client = getDiscordClient();
+      if (!client || !client.isReady()) {
+        return res.status(503).json({ error: 'Discord bot is not connected' });
+      }
+      
+      // Calculate totals
+      const team1TotalOvr = team1Players.reduce((sum: number, p: any) => sum + p.overall, 0);
+      const team1TotalBadges = team1Players.reduce((sum: number, p: any) => sum + p.badges, 0);
+      const team2TotalOvr = team2Players.reduce((sum: number, p: any) => sum + p.overall, 0);
+      const team2TotalBadges = team2Players.reduce((sum: number, p: any) => sum + p.badges, 0);
+      
+      // Format trade message
+      const lines: string[] = [];
+      
+      lines.push(`**${team1Name} Sends:**`);
+      lines.push('');
+      team1Players.forEach((player: any) => {
+        lines.push(`${player.name} ${player.overall} (${player.badges})`);
+      });
+      lines.push('--');
+      lines.push(`${team1TotalOvr} (${team1TotalBadges})`);
+      lines.push('');
+      
+      lines.push(`**${team2Name} Sends:**`);
+      lines.push('');
+      team2Players.forEach((player: any) => {
+        lines.push(`${player.name} ${player.overall} (${player.badges})`);
+      });
+      lines.push('--');
+      lines.push(`${team2TotalOvr} (${team2TotalBadges})`);
+      
+      const message = lines.join('\n');
+      
+      // Post to Discord channel
+      const channel = await client.channels.fetch(TRADE_CHANNEL_ID);
+      
+      if (!channel || !channel.isTextBased()) {
+        return res.status(400).json({ error: 'Trade channel not found or not a text channel' });
+      }
+      
+      if (!('send' in channel)) {
+        return res.status(400).json({ error: 'Channel does not support sending messages' });
+      }
+      
+      await channel.send(message);
+      
+      console.log(`[Bot Standalone] Posted trade to Discord: ${team1Name} ↔ ${team2Name}`);
+      
+      // Save trade to database for admin review
+      const db = await getDb();
+      if (db) {
+        const playerBadgesMap: Record<string, number> = {};
+        team1Players.forEach((p: any) => {
+          playerBadgesMap[p.name] = p.badges;
+        });
+        team2Players.forEach((p: any) => {
+          playerBadgesMap[p.name] = p.badges;
+        });
+        
+        await db.insert(tradeLogs).values({
+          team1: team1Name,
+          team2: team2Name,
+          team1Players: JSON.stringify(team1Players),
+          team2Players: JSON.stringify(team2Players),
+          playerBadges: JSON.stringify(playerBadgesMap),
+          status: "pending",
+          submittedBy: "Trade Machine",
+        });
+        
+        console.log(`[Bot Standalone] Saved trade to database for review`);
+      }
+      
+      res.json({ success: true, message: 'Trade posted to Discord successfully' });
+    } catch (error) {
+      console.error('[Bot Standalone] Error posting trade:', error);
+      res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
+    }
+  });
+  
+  const BOT_HTTP_PORT = process.env.BOT_HTTP_PORT || 3001;
+  app.listen(BOT_HTTP_PORT, () => {
+    console.log(`[Bot Standalone] HTTP server listening on port ${BOT_HTTP_PORT}`);
+  });
 
   // Keep process alive
   process.on('SIGINT', async () => {

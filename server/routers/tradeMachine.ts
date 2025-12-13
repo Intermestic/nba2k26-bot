@@ -180,85 +180,32 @@ export const tradeMachineRouter = router({
     }))
     .mutation(async ({ input }) => {
       try {
-        // Import Discord client
-        const { getDiscordClient } = await import("../discord-bot");
-        const client = getDiscordClient();
-
-        if (!client || !client.isReady()) {
-          throw new Error("Discord bot is not connected");
-        }
-
-        // Calculate totals
-        const team1TotalOvr = input.team1Players.reduce((sum, p) => sum + p.overall, 0);
-        const team1TotalBadges = input.team1Players.reduce((sum, p) => sum + p.badges, 0);
-        const team2TotalOvr = input.team2Players.reduce((sum, p) => sum + p.overall, 0);
-        const team2TotalBadges = input.team2Players.reduce((sum, p) => sum + p.badges, 0);
-
-        // Format trade message
-        const lines: string[] = [];
-        
-        lines.push(`**${input.team1Name} Sends:**`);
-        lines.push('');
-        input.team1Players.forEach(player => {
-          lines.push(`${player.name} ${player.overall} (${player.badges})`);
+        // Call bot HTTP endpoint to post trade
+        const BOT_HTTP_PORT = process.env.BOT_HTTP_PORT || 3001;
+        const response = await fetch(`http://localhost:${BOT_HTTP_PORT}/post-trade`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            team1Name: input.team1Name,
+            team1Players: input.team1Players,
+            team2Name: input.team2Name,
+            team2Players: input.team2Players,
+          }),
         });
-        lines.push('--');
-        lines.push(`${team1TotalOvr} (${team1TotalBadges})`);
-        lines.push('');
-        
-        lines.push(`**${input.team2Name} Sends:**`);
-        lines.push('');
-        input.team2Players.forEach(player => {
-          lines.push(`${player.name} ${player.overall} (${player.badges})`);
-        });
-        lines.push('--');
-        lines.push(`${team2TotalOvr} (${team2TotalBadges})`);
 
-        const message = lines.join('\n');
-
-        // Post to Discord channel
-        const channel = await client.channels.fetch(TRADE_CHANNEL_ID);
-        
-        if (!channel || !channel.isTextBased()) {
-          throw new Error("Trade channel not found or not a text channel");
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.error || 'Failed to post trade');
         }
 
-        // Type guard: ensure channel has send method (exclude PartialGroupDMChannel)
-        if (!('send' in channel)) {
-          throw new Error("Channel does not support sending messages");
-        }
-
-        await channel.send(message);
-
-        console.log(`[Trade Machine] Posted trade to Discord: ${input.team1Name} ↔ ${input.team2Name}`);
-
-        // Save trade to database for admin review
-        const db = await getDb();
-        if (db) {
-          const playerBadgesMap: Record<string, number> = {};
-          input.team1Players.forEach(p => {
-            playerBadgesMap[p.name] = p.badges;
-          });
-          input.team2Players.forEach(p => {
-            playerBadgesMap[p.name] = p.badges;
-          });
-
-          await db.insert(tradeLogs).values({
-            team1: input.team1Name,
-            team2: input.team2Name,
-            team1Players: JSON.stringify(input.team1Players),
-            team2Players: JSON.stringify(input.team2Players),
-            playerBadges: JSON.stringify(playerBadgesMap),
-            status: "pending",
-            submittedBy: "Trade Machine",
-          });
-
-          console.log(`[Trade Machine] Saved trade to database for review`);
-        }
+        const result = await response.json();
+        console.log(`[Trade Machine] Trade posted via bot HTTP endpoint: ${input.team1Name} ↔ ${input.team2Name}`);
 
         return {
           success: true,
-          message: "Trade posted to Discord successfully",
+          message: result.message || "Trade posted to Discord successfully",
         };
       } catch (error) {
         console.error("[Trade Machine] Error posting trade to Discord:", error);
