@@ -239,3 +239,17 @@
 ## Discord Bot Manual Controls (Dec 13, 2024)
 
 - [x] Fix manual bid controls not working (Cut, Sign, Bid buttons in Discord)
+
+## Discord Trade Posting (Dec 13, 2024)
+
+- [x] Fix Discord bot connection issue - "Post to Discord" feature shows "Discord bot is not connected"
+
+## Discord Bot Crash Loop Fix (Dec 13, 2024)
+
+- [x] Fix bot crash loop caused by lock refresh failures
+- [x] Increase tolerance for transient lock refresh failures (don't exit on first 0 affected rows)
+- [x] Improve lock refresh error handling to distinguish between transient and permanent failures
+- [x] Add lock recreation logic when lock is missing from database
+- [x] Handle race conditions in lock recreation (duplicate entry errors)
+- [x] Add health check logging to track lock refresh status
+- [x] Test bot stability under database latency conditions
