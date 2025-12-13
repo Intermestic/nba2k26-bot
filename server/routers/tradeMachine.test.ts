@@ -103,3 +103,62 @@ describe("Trade Machine", () => {
     });
   });
 });
+
+describe('Trade Machine - Discord Bot Integration', () => {
+  const BOT_HTTP_PORT = process.env.BOT_HTTP_PORT || 3001;
+  const botHealthUrl = `http://127.0.0.1:${BOT_HTTP_PORT}/health`;
+  const botTradeUrl = `http://127.0.0.1:${BOT_HTTP_PORT}/post-trade`;
+
+  it('should have bot HTTP server running', async () => {
+    const response = await fetch(botHealthUrl);
+    expect(response.ok).toBe(true);
+    
+    const data = await response.json();
+    expect(data.status).toBe('ok');
+  });
+
+  it('should have Discord bot ready', async () => {
+    const response = await fetch(botHealthUrl);
+    const data = await response.json();
+    
+    expect(data.botReady).toBe(true);
+    expect(data.botUsername).toBeTruthy();
+  });
+
+  it('should successfully post a trade to Discord', async () => {
+    const tradeData = {
+      team1Name: 'Test Team A',
+      team1Players: [
+        { name: 'Test Player 1', overall: 85, badges: 10 }
+      ],
+      team2Name: 'Test Team B',
+      team2Players: [
+        { name: 'Test Player 2', overall: 80, badges: 8 }
+      ]
+    };
+
+    const response = await fetch(botTradeUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(tradeData),
+      signal: AbortSignal.timeout(10000),
+    });
+
+    expect(response.ok).toBe(true);
+    
+    const result = await response.json();
+    expect(result.success).toBe(true);
+    expect(result.message).toContain('Discord');
+  }, 15000); // 15 second timeout for this test
+
+  it('should handle AbortSignal.timeout correctly', async () => {
+    // This test verifies that AbortSignal.timeout works
+    const response = await fetch(botHealthUrl, {
+      signal: AbortSignal.timeout(5000),
+    });
+    
+    expect(response.ok).toBe(true);
+  });
+});
