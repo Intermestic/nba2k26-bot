@@ -15,9 +15,9 @@ export async function getDb() {
       // Drizzle with mysql2 string URL automatically creates a connection pool
       // Add connection pool parameters to URL for better stability and reconnection
       const url = new URL(process.env.DATABASE_URL);
-      url.searchParams.set('connectionLimit', '10');
+      url.searchParams.set('connectionLimit', '15'); // Increased pool size
       url.searchParams.set('waitForConnections', 'true');
-      url.searchParams.set('connectTimeout', '10000');
+      url.searchParams.set('connectTimeout', '15000'); // Increased timeout
       url.searchParams.set('enableKeepAlive', 'true');
       url.searchParams.set('keepAliveInitialDelay', '10000');
       

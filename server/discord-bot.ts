@@ -1011,9 +1011,9 @@ async function releaseBotInstanceLock(): Promise<void> {
 
 // Track consecutive lock refresh failures
 let lockRefreshFailures = 0;
-const MAX_LOCK_REFRESH_FAILURES = 100; // Maximum tolerance for slow/unstable DB connections
+const MAX_LOCK_REFRESH_FAILURES = 200; // Maximum tolerance for slow/unstable DB connections (increased)
 let consecutiveZeroRows = 0; // Track consecutive 0 affected rows separately
-const MAX_ZERO_ROWS_BEFORE_EXIT = 5; // Allow more tolerance for transient 0-row issues
+const MAX_ZERO_ROWS_BEFORE_EXIT = 10; // Allow more tolerance for transient 0-row issues (increased)
 
 /**
  * Refresh the bot instance lock to extend expiry
@@ -1033,9 +1033,9 @@ async function refreshBotInstanceLock(): Promise<void> {
     
     const expiresAt = new Date(Date.now() + 60000); // 60 second lock
     
-    // Add timeout to database query to prevent hanging (increased to 10s for slow connections)
+    // Add timeout to database query to prevent hanging (increased to 20s for very slow connections)
     const timeoutPromise = new Promise((_, reject) => 
-      setTimeout(() => reject(new Error('Lock refresh query timeout')), 10000)
+      setTimeout(() => reject(new Error('Lock refresh query timeout')), 20000)
     );
     
     const queryPromise = db.execute(sql`

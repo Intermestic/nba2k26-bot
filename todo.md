@@ -257,3 +257,7 @@
 ## Discord Trade Posting Fix (Dec 13, 2024)
 
 - [x] Debug and fix Discord bot posting error - "fetch failed" when posting trades (increased timeouts, improved error handling, made DB save non-blocking)
+
+## Discord Bot Startup Fix (Dec 13, 2024 - Corepack Issue)
+
+- [x] Fix Discord bot startup error - "Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.25.0.tgz"
