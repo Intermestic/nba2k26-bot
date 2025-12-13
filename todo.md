@@ -253,3 +253,7 @@
 - [x] Handle race conditions in lock recreation (duplicate entry errors)
 - [x] Add health check logging to track lock refresh status
 - [x] Test bot stability under database latency conditions
+
+## Discord Trade Posting Fix (Dec 13, 2024)
+
+- [x] Fix "Post to Discord" button failing with "fetch failed" error when posting confirmed trades

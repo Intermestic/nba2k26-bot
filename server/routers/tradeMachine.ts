@@ -182,31 +182,47 @@ export const tradeMachineRouter = router({
       try {
         // Call bot HTTP endpoint to post trade
         const BOT_HTTP_PORT = process.env.BOT_HTTP_PORT || 3001;
-        const response = await fetch(`http://localhost:${BOT_HTTP_PORT}/post-trade`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            team1Name: input.team1Name,
-            team1Players: input.team1Players,
-            team2Name: input.team2Name,
-            team2Players: input.team2Players,
-          }),
-        });
+        
+        // Create abort controller for timeout
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+        
+        try {
+          const response = await fetch(`http://127.0.0.1:${BOT_HTTP_PORT}/post-trade`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              team1Name: input.team1Name,
+              team1Players: input.team1Players,
+              team2Name: input.team2Name,
+              team2Players: input.team2Players,
+            }),
+            signal: controller.signal,
+          });
+          
+          clearTimeout(timeoutId);
 
-        if (!response.ok) {
-          const error = await response.json();
-          throw new Error(error.error || 'Failed to post trade');
+          if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.error || 'Failed to post trade');
+          }
+
+          const result = await response.json();
+          console.log(`[Trade Machine] Trade posted via bot HTTP endpoint: ${input.team1Name} ↔ ${input.team2Name}`);
+
+          return {
+            success: true,
+            message: result.message || "Trade posted to Discord successfully",
+          };
+        } catch (fetchError) {
+          clearTimeout(timeoutId);
+          if (fetchError instanceof Error && fetchError.name === 'AbortError') {
+            throw new Error('Request timed out - Discord bot may be slow to respond');
+          }
+          throw fetchError;
         }
-
-        const result = await response.json();
-        console.log(`[Trade Machine] Trade posted via bot HTTP endpoint: ${input.team1Name} ↔ ${input.team2Name}`);
-
-        return {
-          success: true,
-          message: result.message || "Trade posted to Discord successfully",
-        };
       } catch (error) {
         console.error("[Trade Machine] Error posting trade to Discord:", error);
         throw new Error(`Failed to post trade: ${error instanceof Error ? error.message : 'Unknown error'}`);
