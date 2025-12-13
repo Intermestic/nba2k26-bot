@@ -190,7 +190,7 @@ export const tradeMachineRouter = router({
         try {
           const healthCheck = await fetch(`http://127.0.0.1:${BOT_HTTP_PORT}/health`, {
             method: 'GET',
-            signal: AbortSignal.timeout(5000),
+            signal: AbortSignal.timeout(15000), // Increased from 5s to 15s
           });
           
           if (!healthCheck.ok) {
@@ -205,7 +205,13 @@ export const tradeMachineRouter = router({
           }
         } catch (healthError) {
           console.error('[Trade Machine] Bot health check error:', healthError);
-          throw new Error(`Discord bot is not available: ${healthError instanceof Error ? healthError.message : 'Unknown error'}`);
+          const errorMsg = healthError instanceof Error ? healthError.message : 'Unknown error';
+          if (errorMsg.includes('ECONNREFUSED')) {
+            throw new Error('Discord bot is not running. Please contact an administrator.');
+          } else if (errorMsg.includes('timeout') || errorMsg.includes('AbortError')) {
+            throw new Error('Discord bot is not responding (timeout). The bot may be experiencing issues.');
+          }
+          throw new Error(`Discord bot is not available: ${errorMsg}`);
         }
         
         // Now post the trade
@@ -221,7 +227,7 @@ export const tradeMachineRouter = router({
               team2Name: input.team2Name,
               team2Players: input.team2Players,
             }),
-            signal: AbortSignal.timeout(30000), // 30 second timeout
+            signal: AbortSignal.timeout(60000), // 60 second timeout (increased from 30s)
           });
 
           if (!response.ok) {
@@ -247,7 +253,13 @@ export const tradeMachineRouter = router({
           console.error('[Trade Machine] Fetch error:', fetchError);
           if (fetchError instanceof Error) {
             if (fetchError.name === 'AbortError' || fetchError.name === 'TimeoutError') {
-              throw new Error('Request timed out - Discord bot may be slow to respond');
+              throw new Error('Request timed out after 60 seconds. The Discord bot may be experiencing database connection issues.');
+            }
+            if (fetchError.message.includes('ECONNREFUSED')) {
+              throw new Error('Discord bot connection refused. The bot may have crashed.');
+            }
+            if (fetchError.message.includes('fetch failed')) {
+              throw new Error('Network error connecting to Discord bot. Please try again in a moment.');
             }
             throw new Error(`Failed to connect to Discord bot: ${fetchError.message}`);
           }

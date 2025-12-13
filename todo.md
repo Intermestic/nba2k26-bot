@@ -256,4 +256,4 @@
 
 ## Discord Trade Posting Fix (Dec 13, 2024)
 
-- [x] Fix "Post to Discord" button failing with "fetch failed" error when posting confirmed trades
+- [x] Debug and fix Discord bot posting error - "fetch failed" when posting trades (increased timeouts, improved error handling, made DB save non-blocking)

@@ -96,28 +96,33 @@ async function main() {
       
       console.log(`[Bot Standalone] Posted trade to Discord: ${team1Name} ↔ ${team2Name}`);
       
-      // Save trade to database for admin review
-      const db = await getDb();
-      if (db) {
-        const playerBadgesMap: Record<string, number> = {};
-        team1Players.forEach((p: any) => {
-          playerBadgesMap[p.name] = p.badges;
-        });
-        team2Players.forEach((p: any) => {
-          playerBadgesMap[p.name] = p.badges;
-        });
-        
-        await db.insert(tradeLogs).values({
-          team1: team1Name,
-          team2: team2Name,
-          team1Players: JSON.stringify(team1Players),
-          team2Players: JSON.stringify(team2Players),
-          playerBadges: JSON.stringify(playerBadgesMap),
-          status: "pending",
-          submittedBy: "Trade Machine",
-        });
-        
-        console.log(`[Bot Standalone] Saved trade to database for review`);
+      // Save trade to database for admin review (non-blocking, don't fail if DB is down)
+      try {
+        const db = await getDb();
+        if (db) {
+          const playerBadgesMap: Record<string, number> = {};
+          team1Players.forEach((p: any) => {
+            playerBadgesMap[p.name] = p.badges;
+          });
+          team2Players.forEach((p: any) => {
+            playerBadgesMap[p.name] = p.badges;
+          });
+          
+          await db.insert(tradeLogs).values({
+            team1: team1Name,
+            team2: team2Name,
+            team1Players: JSON.stringify(team1Players),
+            team2Players: JSON.stringify(team2Players),
+            playerBadges: JSON.stringify(playerBadgesMap),
+            status: "pending",
+            submittedBy: "Trade Machine",
+          });
+          
+          console.log(`[Bot Standalone] Saved trade to database for review`);
+        }
+      } catch (dbError) {
+        console.error(`[Bot Standalone] Failed to save trade to database (non-critical):`, dbError);
+        // Don't fail the request - Discord post was successful
       }
       
       res.json({ success: true, message: 'Trade posted to Discord successfully' });
