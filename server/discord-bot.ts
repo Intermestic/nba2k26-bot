@@ -774,6 +774,26 @@ async function handleBidMessage(message: Message) {
   
   const confirmationReply = await message.reply(confirmationMessage);
   
+  // Add button to original message for easy processing
+  try {
+    const processBidButton = new ButtonBuilder()
+      .setCustomId(`process_bid_${message.id}`)
+      .setLabel(`⚡ ${parsedBid.bidAmount}`)
+      .setStyle(ButtonStyle.Primary);
+    
+    const row = new ActionRowBuilder<ButtonBuilder>()
+      .addComponents(processBidButton);
+    
+    // Edit original message to add button
+    await message.edit({
+      content: message.content,
+      components: [row]
+    });
+    console.log('[FA Bids] ✅ Added process button to bid message');
+  } catch (buttonError) {
+    console.error('[FA Bids] Failed to add button to message:', buttonError);
+  }
+  
   // Add ❌ reaction for admin override
   try {
     await confirmationReply.react('❌');
@@ -1901,6 +1921,143 @@ export async function startDiscordBot(token: string) {
             console.error('[Upgrade Handler] Error processing upgrade request:', error);
           }
         }
+      }
+    }
+  });
+  
+  // Handle button interactions for bid processing
+  client.on('interactionCreate', async (interaction) => {
+    if (!interaction.isButton()) return;
+    
+    // Check if this is a process_bid button
+    if (interaction.customId.startsWith('process_bid_')) {
+      const messageId = interaction.customId.replace('process_bid_', '');
+      
+      // Check if user is authorized (admin only)
+      const AUTHORIZED_ADMIN_ID = '679275787664359435';
+      if (interaction.user.id !== AUTHORIZED_ADMIN_ID) {
+        await interaction.reply({
+          content: `❌ You are not authorized to process bids. Only admins can use this button.`,
+          ephemeral: true
+        });
+        return;
+      }
+      
+      // Acknowledge the interaction immediately
+      await interaction.deferReply();
+      
+      try {
+        // Fetch the original message
+        const message = await interaction.channel?.messages.fetch(messageId);
+        if (!message) {
+          await interaction.editReply('❌ Could not find the original bid message.');
+          return;
+        }
+        
+        console.log('[Bid Button] Processing bid from message:', message.id);
+        const { parseBidMessage, findPlayerByFuzzyName } = await import('./fa-bid-parser');
+        const { getDb } = await import('./db');
+        const { players: playersTable, teamAssignments, teamCoins } = await import('../drizzle/schema');
+        const { eq } = await import('drizzle-orm');
+        
+        // Parse the bid
+        const parsedBid = parseBidMessage(message.content);
+        if (!parsedBid) {
+          await interaction.editReply('❌ Could not parse bid from message.');
+          return;
+        }
+        
+        // Get team from message author's Discord ID
+        const db = await getDb();
+        assertDb(db);
+        if (!db) {
+          await interaction.editReply('❌ Database connection failed.');
+          return;
+        }
+        
+        const { userTeamMappings } = await import('../drizzle/schema');
+        const userMapping = await db.select().from(userTeamMappings).where(eq(userTeamMappings.discordId, message.author.id)).limit(1);
+        
+        if (userMapping.length === 0) {
+          await interaction.editReply(`❌ No team found for user ${message.author.username}. Please set up team mapping first.`);
+          return;
+        }
+        
+        const team = userMapping[0].teamName;
+        
+        // Validate drop player
+        const dropPlayerValidated = await findPlayerByFuzzyName(parsedBid.dropPlayer, team);
+        if (!dropPlayerValidated) {
+          await interaction.editReply(`❌ Could not find player "${parsedBid.dropPlayer}" on ${team}'s roster.`);
+          return;
+        }
+        
+        // Validate sign player (free agent)
+        const signPlayerValidated = await findPlayerByFuzzyName(parsedBid.playerName, undefined, true);
+        if (!signPlayerValidated) {
+          await interaction.editReply(`❌ Could not find free agent "${parsedBid.playerName}".`);
+          return;
+        }
+        
+        // Process the transaction
+        console.log('[Bid Button] Executing transaction...');
+        
+        // 1. Cut the drop player
+        await db.update(teamAssignments)
+          .set({ team: null })
+          .where(eq(teamAssignments.playerId, dropPlayerValidated.id));
+        
+        // 2. Sign the new player
+        const existingAssignment = await db.select().from(teamAssignments).where(eq(teamAssignments.playerId, signPlayerValidated.id)).limit(1);
+        
+        if (existingAssignment.length > 0) {
+          await db.update(teamAssignments)
+            .set({ team })
+            .where(eq(teamAssignments.playerId, signPlayerValidated.id));
+        } else {
+          await db.insert(teamAssignments).values({
+            playerId: signPlayerValidated.id,
+            team
+          });
+        }
+        
+        // 3. Deduct coins
+        await db.update(teamCoins)
+          .set({ coinsRemaining: sql`${teamCoins.coinsRemaining} - ${parsedBid.bidAmount}` })
+          .where(eq(teamCoins.team, team));
+        
+        // 4. Record transaction
+        const { faTransactions } = await import('../drizzle/schema');
+        await db.insert(faTransactions).values({
+          playerId: signPlayerValidated.id,
+          team,
+          bidAmount: parsedBid.bidAmount,
+          dropPlayerId: dropPlayerValidated.id,
+          transactionDate: new Date(),
+          status: 'completed'
+        });
+        
+        console.log('[Bid Button] ✅ Transaction completed successfully');
+        
+        // Remove button from original message
+        await message.edit({
+          content: message.content,
+          components: []
+        });
+        
+        // Send success message
+        await interaction.editReply(
+          `✅ **Transaction Processed**\n\n` +
+          `**Team**: ${team}\n` +
+          `**Cut**: ${dropPlayerValidated.name}\n` +
+          `**Signed**: ${signPlayerValidated.name} (${signPlayerValidated.overall} OVR)\n` +
+          `**Bid Amount**: $${parsedBid.bidAmount}\n\n` +
+          `Transaction completed by ${interaction.user.tag}`
+        );
+        
+      } catch (error) {
+        console.error('[Bid Button] Error processing bid:', error);
+        await interaction.editReply(`❌ Failed to process bid: ${error instanceof Error ? error.message : String(error)}`);
       }
     }
   });

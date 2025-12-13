@@ -235,3 +235,7 @@
 - [x] Add timeout handling (5s) for lock refresh queries to prevent hanging
 - [x] Increase timeout from 5s to 10s for very slow database connections
 - [x] Add better logging for lock refresh failures
+
+## Discord Bot Manual Controls (Dec 13, 2024)
+
+- [x] Fix manual bid controls not working (Cut, Sign, Bid buttons in Discord)
