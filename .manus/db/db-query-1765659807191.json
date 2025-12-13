@@ -1,0 +1,80 @@
+{
+  "query": "SELECT * FROM fa_bids ORDER BY createdAt DESC LIMIT 5",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT * FROM fa_bids ORDER BY createdAt DESC LIMIT 5",
+  "rows": [
+    {
+      "id": "2400001",
+      "playerId": "player-1765514040825",
+      "playerName": "Cole Swider",
+      "bidderDiscordId": "265682789326782465",
+      "bidderName": "rickflair_",
+      "team": "Bulls",
+      "bidAmount": "1",
+      "windowId": "2025-12-12-AM",
+      "messageId": "1448810683969048728",
+      "createdAt": "2025-12-12 05:44:01",
+      "updatedAt": "2025-12-12 05:44:01",
+      "dropPlayer": "Simone Fontecchio"
+    },
+    {
+      "id": "2370002",
+      "playerId": "P0280",
+      "playerName": "Ty Jerome",
+      "bidderDiscordId": "459172069641289739",
+      "bidderName": "kuroko4",
+      "team": "Nuggets",
+      "bidAmount": "1",
+      "windowId": "2025-12-11-PM",
+      "messageId": "1448413356414468199",
+      "createdAt": "2025-12-12 04:30:35",
+      "updatedAt": "2025-12-12 04:30:35",
+      "dropPlayer": "Jae Crowder"
+    },
+    {
+      "id": "2370001",
+      "playerId": "P0280",
+      "playerName": "Ty Jerome",
+      "bidderDiscordId": "459172069641289739",
+      "bidderName": "kuroko4",
+      "team": "Nuggets",
+      "bidAmount": "1",
+      "windowId": "2025-12-11-PM",
+      "messageId": "1448413356414468199",
+      "createdAt": "2025-12-12 04:30:35",
+      "updatedAt": "2025-12-12 04:30:35",
+      "dropPlayer": "Jae Crowder"
+    },
+    {
+      "id": "2340001",
+      "playerId": "P0545",
+      "playerName": "Pat Spencer",
+      "bidderDiscordId": "679275787664359435",
+      "bidderName": "2kleague",
+      "team": "Wizards",
+      "bidAmount": "18",
+      "windowId": "2025-12-10-AM",
+      "messageId": "1448355769639768114",
+      "createdAt": "2025-12-10 16:48:48",
+      "updatedAt": "2025-12-10 16:48:48",
+      "dropPlayer": "ben saraf"
+    },
+    {
+      "id": "2310009",
+      "playerId": "player-1765352851638",
+      "playerName": "Markieff Morris",
+      "bidderDiscordId": "643544792399085568",
+      "bidderName": "ykdagod",
+      "team": "Pacers",
+      "bidAmount": "1",
+      "windowId": "2025-12-10-AM",
+      "messageId": "1448218762661724190",
+      "createdAt": "2025-12-10 07:47:54",
+      "updatedAt": "2025-12-10 07:47:54",
+      "dropPlayer": "Larry Nance Jr"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tplayerId\tplayerName\tbidderDiscordId\tbidderName\tteam\tbidAmount\twindowId\tmessageId\tcreatedAt\tupdatedAt\tdropPlayer\n2400001\tplayer-1765514040825\tCole Swider\t265682789326782465\trickflair_\tBulls\t1\t2025-12-12-AM\t1448810683969048728\t2025-12-12 05:44:01\t2025-12-12 05:44:01\tSimone Fontecchio\n2370002\tP0280\tTy Jerome\t459172069641289739\tkuroko4\tNuggets\t1\t2025-12-11-PM\t1448413356414468199\t2025-12-12 04:30:35\t2025-12-12 04:30:35\tJae Crowder\n2370001\tP0280\tTy Jerome\t459172069641289739\tkuroko4\tNuggets\t1\t2025-12-11-PM\t1448413356414468199\t2025-12-12 04:30:35\t2025-12-12 04:30:35\tJae Crowder\n2340001\tP0545\tPat Spencer\t679275787664359435\t2kleague\tWizards\t18\t2025-12-10-AM\t1448355769639768114\t2025-12-10 16:48:48\t2025-12-10 16:48:48\tben saraf\n2310009\tplayer-1765352851638\tMarkieff Morris\t643544792399085568\tykdagod\tPacers\t1\t2025-12-10-AM\t1448218762661724190\t2025-12-10 07:47:54\t2025-12-10 07:47:54\tLarry Nance Jr\n",
+  "stderr": "",
+  "execution_time_ms": 1907
+}

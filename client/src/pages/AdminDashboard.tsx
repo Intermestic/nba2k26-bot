@@ -104,23 +104,7 @@ export default function AdminDashboard() {
       section: "team",
       statKey: "totalPlayers"
     },
-    {
-      title: "Cap Compliance",
-      description: "Monitor salary cap violations and alerts",
-      href: "/admin/cap-compliance",
-      icon: <AlertTriangle className="w-6 h-6" />,
-      color: "bg-red-500",
-      section: "team",
-      statKey: "capViolations"
-    },
-    {
-      title: "Bulk Transactions",
-      description: "Process multiple player assignments at once",
-      href: "/admin/transactions",
-      icon: <Zap className="w-6 h-6" />,
-      color: "bg-purple-500",
-      section: "team"
-    },
+
     {
       title: "Trade Management",
       description: "View, approve, reject, and reverse trades",
@@ -185,23 +169,6 @@ export default function AdminDashboard() {
     
     // System Admin Section
     {
-      title: "Upgrade Requests",
-      description: "Review and approve pending badge upgrades",
-      href: "/admin/upgrade-summary",
-      icon: <TrendingUp className="w-6 h-6" />,
-      color: "bg-green-500",
-      section: "system",
-      statKey: "pendingUpgrades"
-    },
-    {
-      title: "Upgrade Management",
-      description: "Rollback or correct completed upgrades",
-      href: "/admin/upgrade-management",
-      icon: <RotateCcw className="w-6 h-6" />,
-      color: "bg-orange-500",
-      section: "system"
-    },
-    {
       title: "Player Aliases",
       description: "Manage player name aliases for fuzzy matching",
       href: "/admin/player-aliases",
@@ -217,111 +184,7 @@ export default function AdminDashboard() {
       color: "bg-cyan-500",
       section: "system"
     },
-    {
-      title: "Bot Management",
-      description: "Configure Discord bot settings and commands",
-      href: "/admin/bot-management",
-      icon: <Settings className="w-6 h-6" />,
-      color: "bg-gray-500",
-      section: "system"
-    },
-    {
-      title: "Custom Commands",
-      description: "Create and manage custom Discord commands",
-      href: "/admin/custom-commands",
-      icon: <MessageSquare className="w-6 h-6" />,
-      color: "bg-violet-500",
-      section: "system"
-    },
-    {
-      title: "Welcome & Goodbye",
-      description: "Configure welcome and goodbye messages",
-      href: "/admin/welcome-goodbye",
-      icon: <MessageSquare className="w-6 h-6" />,
-      color: "bg-lime-500",
-      section: "system"
-    },
-    {
-      title: "Reaction Roles",
-      description: "Set up reaction role panels",
-      href: "/admin/reaction-roles",
-      icon: <Award className="w-6 h-6" />,
-      color: "bg-emerald-500",
-      section: "system"
-    },
-    {
-      title: "Analytics",
-      description: "View server activity and user statistics",
-      href: "/admin/analytics",
-      icon: <BarChart3 className="w-6 h-6" />,
-      color: "bg-sky-500",
-      section: "system"
-    },
-    {
-      title: "Server Logs",
-      description: "View comprehensive server event logs",
-      href: "/admin/logs",
-      icon: <FileText className="w-6 h-6" />,
-      color: "bg-slate-500",
-      section: "system"
-    },
 
-    {
-      title: "Upgrade Log",
-      description: "Track player badge and attribute upgrades with notes and flags",
-      href: "/admin/upgrade-log",
-      icon: <ScrollText className="w-6 h-6" />,
-      color: "bg-amber-500",
-      section: "system"
-    },
-    {
-      title: "Upgrade Log Dashboard",
-      description: "View complete history and statistics of all player upgrades from all sources",
-      href: "/admin/upgrade-log-dashboard",
-      icon: <BarChart3 className="w-6 h-6" />,
-      color: "bg-indigo-500",
-      section: "system"
-    },
-    {
-      title: "Validation Rules",
-      description: "Configure upgrade validation rules",
-      href: "/admin/validation-rules",
-      icon: <Settings className="w-6 h-6" />,
-      color: "bg-rose-500",
-      section: "system"
-    },
-    {
-      title: "Upgrade Compliance",
-      description: "Audit and validate all player upgrades against official rules",
-      href: "/admin/upgrade-compliance",
-      icon: <ShieldCheck className="w-6 h-6" />,
-      color: "bg-purple-500",
-      section: "system"
-    },
-    {
-      title: "Player Upgrade Progress",
-      description: "Track all player upgrades and monitor progress toward limits (7GM, Welcome, 5GM, Rookie, OG, etc.)",
-      href: "/admin/upgrade-limits",
-      icon: <AlertTriangle className="w-6 h-6" />,
-      color: "bg-orange-500",
-      section: "system"
-    },
-    {
-      title: "Badge Additions Tracking",
-      description: "View rookie badge additions and silver upgrade usage",
-      href: "/admin/badge-additions",
-      icon: <Award className="w-6 h-6" />,
-      color: "bg-yellow-500",
-      section: "system"
-    },
-    {
-      title: "Match Logs",
-      description: "View fuzzy matching logs for debugging",
-      href: "/admin/match-logs",
-      icon: <Database className="w-6 h-6" />,
-      color: "bg-gray-500",
-      section: "system"
-    },
     {
       title: "CSV Export",
       description: "Export player data with customizable columns",
@@ -338,46 +201,7 @@ export default function AdminDashboard() {
       color: "bg-red-500",
       section: "system"
     },
-    {
-      title: "Bot Activity Logs",
-      description: "View Discord bot commands, errors, and events",
-      href: "/admin/bot-logs",
-      icon: <ScrollText className="w-6 h-6" />,
-      color: "bg-purple-500",
-      section: "system"
-    },
-    {
-      title: "Scheduled Restarts",
-      description: "Configure automatic bot restarts for stability",
-      href: "/admin/scheduled-restarts",
-      icon: <Clock className="w-6 h-6" />,
-      color: "bg-indigo-500",
-      section: "system"
-    },
-    {
-      title: "Health Alerts",
-      description: "Monitor bot health and receive Discord alerts",
-      href: "/admin/health-alerts",
-      icon: <Heart className="w-6 h-6" />,
-      color: "bg-pink-500",
-      section: "system"
-    },
-    {
-      title: "Bot Activity Dashboard",
-      description: "View command usage statistics and performance metrics",
-      href: "/admin/bot-activity",
-      icon: <BarChart3 className="w-6 h-6" />,
-      color: "bg-cyan-500",
-      section: "system"
-    },
-    {
-      title: "Player Swaps",
-      description: "Track DNA swaps and player replacements for Season 17",
-      href: "/admin/player-swaps",
-      icon: <ArrowLeftRight className="w-6 h-6" />,
-      color: "bg-amber-500",
-      section: "team"
-    },
+
 
   ];
 

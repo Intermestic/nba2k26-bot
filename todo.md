@@ -268,3 +268,73 @@
 - [x] Investigate why bot shows "No active bids at this time" for valid bid message
 - [x] Test bid recognition with various message formats
 - [x] Add helpful error message when users post bids in wrong channel
+
+## Discord Bot Bid Processing Issues (Dec 14, 2024)
+
+- [ ] Fix Discord bot not accepting bids (investigate why bid was not processed)
+- [ ] Fix manual bid processing failure (❗ emoji reaction not working)
+- [ ] Check if bot is properly connected and processing messages
+- [ ] Verify bid recognition logic is working correctly
+- [ ] Test end-to-end bid flow: recognition → confirmation → manual processing
+
+## System Simplification (Dec 14, 2024)
+
+### Remove Non-Essential Admin UI
+- [x] Remove Bot Activity Dashboard page and route
+- [x] Remove Bot Activity Logs page and route
+- [x] Remove Scheduled Restarts page and route
+- [x] Remove Badge Additions Tracking page and route
+- [x] Remove Upgrade Log Dashboard page and route
+- [x] Remove Validation Rules page and route
+- [x] Remove Upgrade Compliance page and route
+- [x] Remove Player Upgrade Progress page and route
+- [x] Remove Upgrade Requests page and route
+- [x] Remove Upgrade Management page and route
+- [x] Remove Custom Commands page and route
+- [x] Remove Welcome & Goodbye page and route
+- [x] Remove Reaction Roles pages and routes
+- [x] Remove Analytics page and route
+- [x] Remove Server Logs page and route
+- [x] Remove Player Swaps page and route
+- [x] Remove Cap Compliance page and route
+- [x] Remove Bulk Transactions page and route
+
+### Simplify Discord Bot
+- [ ] Remove activity booster system from bot
+- [ ] Remove cap violation alerts from bot (keep salary cap auto-update posting)
+- [ ] Remove health alerts system from bot
+- [ ] Remove scheduled restarts from bot
+- [ ] Remove welcome/goodbye messages from bot
+- [ ] Remove custom commands system from bot
+- [ ] Remove reaction roles from bot
+- [ ] Simplify bot lock mechanism (keep basic stability lock)
+
+### Clean Up Player Cards
+- [x] Remove "Upgrades" button from player detail cards
+
+### Database Cleanup
+- [ ] Drop bot_logs table
+- [ ] Drop scheduled_restarts table
+- [ ] Drop health_alerts table
+- [ ] Drop activity_records table
+- [ ] Drop activity_head_to_head table
+- [ ] Drop activity_checkpoint table
+- [ ] Drop activity_conflicts table
+- [ ] Drop player_swaps table
+- [ ] Drop all upgrade-related tables
+
+### API Cleanup
+- [ ] Remove botActivity router
+- [ ] Remove botLogs router
+- [ ] Remove scheduledRestarts router
+- [ ] Remove healthAlerts router
+- [ ] Remove activityBooster router
+- [ ] Remove upgrades router
+- [ ] Remove playerSwaps router
+- [ ] Remove capCompliance router
+
+### Final Testing
+- [ ] Test trade voting and approval
+- [ ] Test trade auto-processing
+- [ ] Test FA bidding process
+- [ ] Create checkpoint after cleanup

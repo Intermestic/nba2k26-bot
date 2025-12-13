@@ -56,7 +56,7 @@ export default function Home() {
   const [showRosterCard, setShowRosterCard] = useState(false);
   const [showTeamAssignment, setShowTeamAssignment] = useState(false);
   const [editingPlayer, setEditingPlayer] = useState<Player | null>(null);
-  const [viewingUpgradesPlayer, setViewingUpgradesPlayer] = useState<Player | null>(null);
+
   const [playerForm, setPlayerForm] = useState({
     id: "",
     name: "",
@@ -561,13 +561,7 @@ export default function Home() {
                           View Details →
                         </a>
                       )}
-                      <button
-                        onClick={() => setViewingUpgradesPlayer(player)}
-                        className="text-xs text-purple-400 hover:text-purple-300 inline-flex items-center gap-1"
-                      >
-                        <History className="w-3 h-3" />
-                        Upgrades
-                      </button>
+
                       {user?.role === "admin" && (
                         <button
                           onClick={() => handleEditPlayer(player)}
@@ -736,12 +730,7 @@ export default function Home() {
         </DialogContent>
       </Dialog>
 
-      {/* Player Upgrade History Dialog */}
-      <PlayerUpgradeHistoryDialog
-        playerName={viewingUpgradesPlayer?.name || null}
-        open={viewingUpgradesPlayer !== null}
-        onClose={() => setViewingUpgradesPlayer(null)}
-      />
+
 
       {/* Footer */}
       <footer className="border-t border-slate-700 bg-slate-900/50 mt-12">
