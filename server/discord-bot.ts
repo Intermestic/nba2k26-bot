@@ -1982,6 +1982,24 @@ export async function startDiscordBot(token: string) {
             console.error('[Upgrade Handler] Error processing upgrade request:', error);
           }
         }
+      } else {
+        // Check if message looks like an FA bid but is in wrong channel
+        const { parseBidMessage } = await import('./fa-bid-parser');
+        const parsedBid = parseBidMessage(message.content);
+        
+        if (parsedBid) {
+          // This looks like a bid but it's in the wrong channel
+          console.log(`[FA Bids] Detected bid in wrong channel (${message.channelId}): ${message.content.substring(0, 50)}...`);
+          await message.reply(
+            `❌ **Wrong Channel**: FA bids must be posted in <#${FA_CHANNEL_ID}>\n\n` +
+            `💡 **Your bid was detected but not processed because it's in the wrong channel.**\n\n` +
+            `**Detected bid:**\n` +
+            `• Cut: ${parsedBid.dropPlayer || 'None'}\n` +
+            `• Sign: ${parsedBid.playerName}\n` +
+            `• Bid: $${parsedBid.bidAmount}\n\n` +
+            `Please repost your bid in the FA bids channel.`
+          );
+        }
       }
     }
   });

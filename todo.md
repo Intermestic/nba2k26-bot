@@ -261,3 +261,10 @@
 ## Discord Bot Startup Fix (Dec 13, 2024 - Corepack Issue)
 
 - [x] Fix Discord bot startup error - "Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.25.0.tgz"
+
+## Discord Bot Bid Recognition Bug (Dec 14, 2024)
+
+- [x] Fix Discord bot bid recognition - bot failed to auto-recognize bid with format "Cut [Player]\nSign [Player]\nBid [Amount]"
+- [x] Investigate why bot shows "No active bids at this time" for valid bid message
+- [x] Test bid recognition with various message formats
+- [x] Add helpful error message when users post bids in wrong channel
