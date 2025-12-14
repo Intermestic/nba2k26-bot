@@ -1329,6 +1329,15 @@ export async function startDiscordBot(token: string) {
       console.error('[Scheduled Messages] Failed to initialize:', error);
     }
     
+    // Initialize roster auto-update
+    try {
+      const { initializeRosterAutoUpdate } = await import('./roster-auto-update.js');
+      initializeRosterAutoUpdate(client!);
+      console.log('[Roster Auto-Update] Initialization complete');
+    } catch (error) {
+      console.error('[Roster Auto-Update] Failed to initialize:', error);
+    }
+    
     // Initialize team channel manager (after roles are synced)
     try {
       const { syncTeamChannels } = await import('./team-channel-manager');
@@ -3084,6 +3093,14 @@ export async function startDiscordBot(token: string) {
 export async function stopDiscordBot() {
   // Stop lock refresh first
   stopLockRefresh();
+  
+  // Stop roster auto-update
+  try {
+    const { stopRosterAutoUpdate } = await import('./roster-auto-update.js');
+    stopRosterAutoUpdate();
+  } catch (error) {
+    console.error('[Roster Auto-Update] Failed to stop:', error);
+  }
   
   if (client) {
     // Remove all event listeners before destroying

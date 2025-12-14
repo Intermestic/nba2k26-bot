@@ -378,3 +378,9 @@
 - [x] Write and pass tests for fuzzy matching and placeholder handling
 - [ ] Restart Discord bot to apply fixes
 - [ ] Test trade processing with real Discord trade data (message ID: 1449814470850383884)
+
+## Roster Auto-Update System (Dec 15, 2024)
+
+- [x] Create scheduled task for daily roster cap status updates (check rosters, update overcap roles, post to Discord channel 1280019275679137865)
+- [x] Verify auto-update runs daily and posts both part 1 and part 2 messages
+- [x] Test overcap role assignment/removal based on roster totals

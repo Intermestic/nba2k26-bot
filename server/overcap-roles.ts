@@ -124,10 +124,7 @@ export async function updateOvercapRoles(client: Client): Promise<void> {
       return;
     }
     
-    // Fetch all members to ensure cache is populated
-    await guild.members.fetch();
-    
-    // Process each team
+    // Process each team (fetch members individually to avoid timeout)
     for (const [teamName, totalOVR] of Array.from(teamTotals.entries())) {
       const isOvercap = totalOVR > OVR_CAP;
       const discordUserId = TEAM_TO_DISCORD_USER[teamName];
