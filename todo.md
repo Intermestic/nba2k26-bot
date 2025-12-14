@@ -362,3 +362,9 @@
 - [x] Process Kings-Raptors trade (Ben Sheppard, Kelly Olynyk → Raptors; Kyle Lowry, Day'Ron Sharpe → Kings)
 - [x] Process Rockets-Pacers trade (Cam Thomas, Rasheer Fleming → Pacers; D'Angelo Russell, Mohammed Bamba → Rockets)
 - [x] Process Jazz-Knicks trade (Lauri Markkanen, Scottie Barnes, Kelly Oubre Jr. → Knicks; Kawhi Leonard, Derrick Jones Jr., Kris Dunn → Jazz)
+
+## Discord Bot Bid Processing Issues (Dec 14, 2024 - Part 2)
+
+- [x] Fix Diawara bid not processing after manual activation with ❗ emoji (Duncan Robinson bid processed successfully, but Diawara bid stuck)
+- [x] Fix reaction deduplication cache blocking retries after failures
+- [x] Move cache addition to after successful processing for both ❗ and ⚡ handlers

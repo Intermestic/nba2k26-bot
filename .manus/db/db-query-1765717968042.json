@@ -1,0 +1,16 @@
+{
+  "query": "SHOW TABLES LIKE '%bid%'",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SHOW TABLES LIKE '%bid%'",
+  "rows": [
+    {
+      "Tables_in_DS68jwRuNTWiz9tNrw6KXW (%bid%)": "bid_windows"
+    },
+    {
+      "Tables_in_DS68jwRuNTWiz9tNrw6KXW (%bid%)": "fa_bids"
+    }
+  ],
+  "messages": [],
+  "stdout": "Tables_in_DS68jwRuNTWiz9tNrw6KXW (%bid%)\nbid_windows\nfa_bids\n",
+  "stderr": "",
+  "execution_time_ms": 1779
+}

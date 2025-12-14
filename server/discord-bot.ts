@@ -2268,22 +2268,12 @@ export async function startDiscordBot(token: string) {
       if (reaction.emoji.name === '❗') {
         console.log(`[Discord Bot] ❗ reaction detected by ${user.tag} (${user.id}) on message ${message.id}`);
         
-        // Deduplication check
+        // Check deduplication before authorization to avoid spam
         const reactionKey = `${message.id}-❗-${user.id}`;
         if (processedReactions.has(reactionKey)) {
           console.log(`[Discord Bot] Skipping duplicate ❗ reaction for message ${message.id}`);
           await message.reply('⚠️ This bid has already been processed.');
           return;
-        }
-        processedReactions.add(reactionKey);
-        
-        // Auto-cleanup after TTL
-        setTimeout(() => processedReactions.delete(reactionKey), REACTION_CACHE_TTL);
-        
-        // Enforce cache size limit
-        if (processedReactions.size > REACTION_CACHE_SIZE) {
-          const firstKey = processedReactions.values().next().value;
-          if (firstKey) processedReactions.delete(firstKey);
         }
         
         // Check if user is authorized
@@ -2385,10 +2375,21 @@ export async function startDiscordBot(token: string) {
           console.log('[Discord Bot] Sending confirmation message...');
           await message.reply(confirmationMessage);
           console.log('[Discord Bot] ✅ Confirmation message sent');
+          
+          // Add to cache only after successful processing
+          processedReactions.add(reactionKey);
+          setTimeout(() => processedReactions.delete(reactionKey), REACTION_CACHE_TTL);
+          
+          // Enforce cache size limit
+          if (processedReactions.size > REACTION_CACHE_SIZE) {
+            const firstKey = processedReactions.values().next().value;
+            if (firstKey) processedReactions.delete(firstKey);
+          }
         } catch (error) {
           console.error('[Discord Bot] ❌ Manual bid processing failed:', error);
           const errorMessage = error instanceof Error ? error.message : String(error);
           await message.reply(`❌ Manual bid processing failed: ${errorMessage}`);
+          // Do NOT add to cache on failure - allow retry
         }
         return;
       }
@@ -2684,16 +2685,6 @@ export async function startDiscordBot(token: string) {
           console.log(`[Discord Bot] Skipping duplicate reaction ${reactionKey}`);
           return;
         }
-        processedReactions.add(reactionKey);
-        
-        // Clean up old entries to prevent memory leak
-        if (processedReactions.size > REACTION_CACHE_SIZE) {
-          const toDelete = Array.from(processedReactions).slice(0, REACTION_CACHE_SIZE / 2);
-          toDelete.forEach(id => processedReactions.delete(id));
-        }
-        
-        // Auto-cleanup after TTL
-        setTimeout(() => processedReactions.delete(reactionKey), REACTION_CACHE_TTL);
         
         console.log('[Discord Bot] Authorized user triggered manual bid processing (execute transaction)');
         const { parseBidMessage, findPlayerByFuzzyName } = await import('./fa-bid-parser');
@@ -2829,9 +2820,20 @@ export async function startDiscordBot(token: string) {
             (dropPlayer ? `**Dropped:** ${dropPlayer.name} (${dropPlayer.overall} OVR)\n` : '') +
             `**Cost:** $${parsedBid.bidAmount}`
           );
+          
+          // Add to cache only after successful processing
+          processedReactions.add(reactionKey);
+          setTimeout(() => processedReactions.delete(reactionKey), REACTION_CACHE_TTL);
+          
+          // Clean up old entries to prevent memory leak
+          if (processedReactions.size > REACTION_CACHE_SIZE) {
+            const toDelete = Array.from(processedReactions).slice(0, REACTION_CACHE_SIZE / 2);
+            toDelete.forEach(id => processedReactions.delete(id));
+          }
         } catch (error) {
           console.error('[Discord Bot] Manual bid processing failed:', error);
           await message.reply('❌ Manual bid processing failed. Check logs for details.');
+          // Do NOT add to cache on failure - allow retry
         }
       }
     } else if (reaction.message.channelId === TRADE_CHANNEL_ID) {
