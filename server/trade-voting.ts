@@ -99,6 +99,10 @@ async function countVotes(reaction: MessageReaction | PartialMessageReaction): P
 
 /**
  * Parse trade details from Discord embed message
+ * Handles multiple formats:
+ * 1. "PlayerNameOVR (salary)" - e.g., "Ben Sheppard74 (2)"
+ * 2. "Player Name OVR (salary)" - e.g., "Cam Thomas 81 (10)"
+ * 3. "Player Name (OVR) salary" - e.g., "Lauri Markkanen (88) 15"
  */
 function parseTradeFromEmbed(message: Message): { team1: string; team2: string; team1Players: any[]; team2Players: any[] } | null {
   try {
@@ -121,10 +125,9 @@ function parseTradeFromEmbed(message: Message): { team1: string; team2: string; 
     // Strip markdown formatting (bold, italic, etc.) for easier parsing
     description = description.replace(/\*\*/g, '').replace(/\*/g, '').replace(/__/g, '').replace(/_/g, '');
     
-    // Extract team names from the embed title or description
-    // Expected format: "Team1 Sends:\n..." or "Team1 send:\n..."
-    // Handle both "send:" and "Sends:" (case-insensitive)
-    const teamPattern = /([A-Za-z\s]+)\s+sends?:/gi;
+    // Extract team names - handle both "send" and "sends" with optional colon
+    // Only match at start of line or after newline to avoid matching "badges\nRaptors Sends:"
+    const teamPattern = /(?:^|[\r\n]+)([A-Za-z\s]+)\s+sends?\s*:?/gim;
     const teamMatches = Array.from(description.matchAll(teamPattern));
     
     if (teamMatches.length < 2) {
@@ -144,9 +147,8 @@ function parseTradeFromEmbed(message: Message): { team1: string; team2: string; 
       return null;
     }
     
-    // Extract player lists for each team
-    // Split by team sections (handle both "send:" and "Sends:")
-    const sections = description.split(/[A-Za-z\s]+\s+sends?:/i);
+    // Split by team sections
+    const sections = description.split(/[A-Za-z\s]+\s+sends?\s*:?/i);
     
     if (sections.length < 3) {
       console.log('[Trade Parser] Could not split embed into team sections');
@@ -156,37 +158,12 @@ function parseTradeFromEmbed(message: Message): { team1: string; team2: string; 
     const team1Section = sections[1];
     const team2Section = sections[2];
     
-    // Parse players from each section
-    // Expected format: "Player Name OVR(salary)\n"
-    const playerPattern = /([A-Za-z\s\.'-]+)\s+(\d+)\s*\((\d+)\)/g;
+    console.log(`[Trade Parser] Team1 section: ${team1Section.substring(0, 100)}`);
+    console.log(`[Trade Parser] Team2 section: ${team2Section.substring(0, 100)}`);
     
-    const team1Players: any[] = [];
-    let match;
-    while ((match = playerPattern.exec(team1Section)) !== null) {
-      const playerName = match[1].trim();
-      // Skip summary lines (lines starting with --)
-      if (playerName === '--' || playerName.startsWith('--')) continue;
-      
-      team1Players.push({
-        name: playerName,
-        overall: parseInt(match[2]),
-        salary: parseInt(match[3])
-      });
-    }
-    
-    const team2Players: any[] = [];
-    playerPattern.lastIndex = 0; // Reset regex
-    while ((match = playerPattern.exec(team2Section)) !== null) {
-      const playerName = match[1].trim();
-      // Skip summary lines (lines starting with --)
-      if (playerName === '--' || playerName.startsWith('--')) continue;
-      
-      team2Players.push({
-        name: playerName,
-        overall: parseInt(match[2]),
-        salary: parseInt(match[3])
-      });
-    }
+    // Parse players - try multiple patterns
+    const team1Players = parsePlayers(team1Section);
+    const team2Players = parsePlayers(team2Section);
     
     console.log(`[Trade Parser] Parsed trade: ${team1} (${team1Players.length} players) ↔ ${team2} (${team2Players.length} players)`);
     
@@ -200,6 +177,55 @@ function parseTradeFromEmbed(message: Message): { team1: string; team2: string; 
     console.error('[Trade Parser] Error parsing trade from embed:', error);
     return null;
   }
+}
+
+/**
+ * Parse players from a section of text
+ * Handles multiple formats:
+ * 1. "PlayerNameOVR (salary)" - e.g., "Ben Sheppard74 (2)"
+ * 2. "Player Name OVR (salary)" - e.g., "Cam Thomas 81 (10)"
+ * 3. "Player Name (OVR) salary" - e.g., "Lauri Markkanen (88) 15"
+ */
+function parsePlayers(section: string): Array<{ name: string; overall: number; salary: number }> {
+  const players: Array<{ name: string; overall: number; salary: number }> = [];
+  
+  // Pattern 1 & 2: "PlayerName OVR (salary)" or "PlayerNameOVR (salary)"
+  // Also handle "Player Name OVR OVR (salary)" where the word "OVR" appears
+  const pattern1 = /([A-Za-z\s\.'-]+?)(\d+)\s*(?:OVR)?\s*\((\d+)\)/gi;
+  let match;
+  while ((match = pattern1.exec(section)) !== null) {
+    const playerName = match[1].trim();
+    // Skip summary lines and lines with just numbers
+    if (!playerName || playerName.match(/^\d+$/) || playerName.toLowerCase().includes('ovr') || playerName.toLowerCase().includes('badge')) {
+      continue;
+    }
+    
+    players.push({
+      name: playerName,
+      overall: parseInt(match[2]),
+      salary: parseInt(match[3])
+    });
+  }
+  
+  // Pattern 3: "Player Name (OVR) salary"
+  if (players.length === 0) {
+    const pattern2 = /([A-Za-z\s\.'-]+)\s*\((\d+)\)\s+(\d+)/g;
+    while ((match = pattern2.exec(section)) !== null) {
+      const playerName = match[1].trim();
+      // Skip summary lines
+      if (!playerName || playerName.match(/^\d+$/) || playerName.toLowerCase().includes('ovr')) {
+        continue;
+      }
+      
+      players.push({
+        name: playerName,
+        overall: parseInt(match[2]),
+        salary: parseInt(match[3])
+      });
+    }
+  }
+  
+  return players;
 }
 
 /**

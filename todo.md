@@ -338,3 +338,14 @@
 - [ ] Test trade auto-processing
 - [ ] Test FA bidding process
 - [ ] Create checkpoint after cleanup
+
+## Discord Bot Trade Auto-Processing Bug (Dec 14, 2024)
+
+- [x] Fix trade auto-processing not working - trades with 7+ yes votes are approved but not automatically processed (players not moved to new teams)
+- [x] Investigate why handleApprovedTradeProcessing is not being called after trade approval
+- [x] Test with stuck trades: 1449555431881048136, 1449555517377613844, 1449555550357557272
+- [x] Verify bot is online and listening to reaction events
+- [x] Check if trade-voting.ts processVoteResult is calling handleApprovedTradeProcessing correctly
+- [x] Fix trade parser to handle multiple embed formats (PlayerNameOVR (salary), Player Name OVR (salary), Player Name (OVR) salary, Player Name OVR OVR (salary))
+- [x] Fix team name parsing to avoid capturing "badges\nRaptors" as team name
+- [x] Manually process all three stuck trades (Kings/Raptors: 4 players, Rockets/Pacers: 2 players, Jazz/Knicks: 4 players)
