@@ -908,12 +908,14 @@ export async function scanTradesForMissedVotes(client: Client) {
     let lastMessageId: string | undefined = undefined;
     
     // Fetch messages in batches of 100 (Discord limit)
+    // We fetch from newest to oldest (using 'before' option)
     while (true) {
       const options: any = { limit: 100 };
       if (lastMessageId) {
         options.before = lastMessageId;
       }
       
+      console.log(`[Trade Voting] Fetching batch of messages${lastMessageId ? ` before ${lastMessageId}` : ' (most recent)'}...`);
       const fetchedMessages = await textChannel.messages.fetch(options);
       
       // Handle both single message and collection returns
@@ -939,18 +941,32 @@ export async function scanTradesForMissedVotes(client: Client) {
         
         messagesChecked++;
         
-        // Check if this is a trade post (has embeds and is from a bot)
-        if (message.embeds.length > 0 && message.author.bot) {
-          console.log(`[Trade Voting] 🔍 Found trade message ${messageId}, checking votes...`);
+        // Check if this is a trade post (has embeds)
+        // Note: We check for embeds only, not author.bot, because trade posts might come from webhooks or apps
+        if (message.embeds.length > 0) {
+          // Additional check: embed should have description (trade details)
+          const hasTradeContent = message.embeds[0]?.description?.toLowerCase().includes('send');
           
-          // Use the manual check function to process this trade
-          const result = await manuallyCheckTradeVotes(client, messageId);
-          
-          if (result.success) {
-            tradesProcessed++;
-            console.log(`[Trade Voting] ✅ ${result.message}`);
-          } else {
-            console.log(`[Trade Voting] ⚠️  ${result.message}`);
+          if (hasTradeContent) {
+            console.log(`[Trade Voting] 🔍 Found potential trade message ${messageId}, checking votes...`);
+            
+            // Use the manual check function to process this trade
+            const result = await manuallyCheckTradeVotes(client, messageId);
+            
+            if (result.success) {
+              // Only count as processed if threshold was reached
+              if (result.message.includes('approved') || result.message.includes('rejected')) {
+                tradesProcessed++;
+                console.log(`[Trade Voting] ✅ ${result.message}`);
+              } else {
+                console.log(`[Trade Voting] ℹ️  ${result.message}`);
+              }
+            } else {
+              // Log but don't spam for already processed trades
+              if (!result.message.includes('already processed')) {
+                console.log(`[Trade Voting] ⚠️  ${result.message}`);
+              }
+            }
           }
         }
       }

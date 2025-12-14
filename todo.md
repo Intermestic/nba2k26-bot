@@ -45,6 +45,7 @@
 - [ ] Verify future trades auto-approve at 7 votes
 - [x] Fix trade status update messages appearing incorrectly when reactions are added
 - [x] Fix !check-trade command not returning results
+- [x] Fix voting bug - trade with 7 yes and 4 no votes not auto-processing or showing approval message
 
 ### Trade Reversal System
 - [x] Implement ⏪ emoji reaction handler for trade reversal (owner-only)

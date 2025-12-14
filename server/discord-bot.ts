@@ -1939,6 +1939,29 @@ export async function startDiscordBot(token: string) {
         return;
       }
       
+      // Check for trade scan command: !scan-trades (owner only)
+      if (message.content.trim().toLowerCase() === '!scan-trades') {
+        console.log(`[Trade Scan Command] Command received from ${message.author.tag} (${message.author.id})`);
+        
+        // Check if user is authorized (owner only)
+        if (message.author.id !== '679275787664359435') {
+          console.log(`[Trade Scan Command] Unauthorized user ${message.author.id} attempted scan`);
+          await message.reply('❌ Only the league owner can trigger trade scans.');
+          return;
+        }
+        
+        try {
+          await message.reply('🔍 Scanning all recent trades for missed votes... This may take a moment.');
+          const { scanTradesForMissedVotes } = await import('./trade-voting');
+          await scanTradesForMissedVotes(client!);
+          await message.reply('✅ Trade scan complete! Check console logs for details.');
+        } catch (error) {
+          console.error('[Trade Scan Command] Error:', error);
+          await message.reply(`❌ Failed to scan trades: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        }
+        return;
+      }
+      
       // Check for trade reversal command: !reverse-trade <messageId> (owner only)
       if (message.content.trim().toLowerCase().startsWith('!reverse-trade')) {
         console.log(`[Trade Reversal Command] Command received from ${message.author.tag} (${message.author.id})`);
