@@ -339,7 +339,9 @@
 - [ ] Test FA bidding process
 - [ ] Create checkpoint after cleanup
 
-## Discord Bot Trade Auto-Processing Bug (Dec 14, 2024)
+## Discord Bot Trade Processing Bugs (Dec 14, 2024)
+
+- [x] Fix trade 1449569426373349408 (Hawks/Rockets) - approved 7-0 but showing "No trade record found" error when processing
 
 - [x] Fix trade auto-processing not working - trades with 7+ yes votes are approved but not automatically processed (players not moved to new teams)
 - [x] Investigate why handleApprovedTradeProcessing is not being called after trade approval
@@ -356,3 +358,6 @@
 - [x] Improve alias system to handle Jr./Jr suffix variations (Derrick Jones Jr. → Derrick Jones Jr, Kelly Oubre Jr. → Kelly Oubre Jr)
 - [ ] Add better handling for single letter names (R → proper player identification)
 - [ ] Prevent duplicate "Could not find these players" warnings for the same trade
+- [x] Process Kings-Raptors trade (Ben Sheppard, Kelly Olynyk → Raptors; Kyle Lowry, Day'Ron Sharpe → Kings)
+- [x] Process Rockets-Pacers trade (Cam Thomas, Rasheer Fleming → Pacers; D'Angelo Russell, Mohammed Bamba → Rockets)
+- [x] Process Jazz-Knicks trade (Lauri Markkanen, Scottie Barnes, Kelly Oubre Jr. → Knicks; Kawhi Leonard, Derrick Jones Jr., Kris Dunn → Jazz)

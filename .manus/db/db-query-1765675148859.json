@@ -1,0 +1,26 @@
+{
+  "query": "SELECT name, team FROM players WHERE name IN ('Ben Sheppard', 'Kelly Olynyk', 'Kyle Lowry', 'Day''Ron Sharpe')",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT name, team FROM players WHERE name IN ('Ben Sheppard', 'Kelly Olynyk', 'Kyle Lowry', 'Day''Ron Sharpe')",
+  "rows": [
+    {
+      "name": "Kelly Olynyk",
+      "team": "Raptors"
+    },
+    {
+      "name": "Day'Ron Sharpe",
+      "team": "Kings"
+    },
+    {
+      "name": "Ben Sheppard",
+      "team": "Raptors"
+    },
+    {
+      "name": "Kyle Lowry",
+      "team": "Kings"
+    }
+  ],
+  "messages": [],
+  "stdout": "name\tteam\nKelly Olynyk\tRaptors\nDay'Ron Sharpe\tKings\nBen Sheppard\tRaptors\nKyle Lowry\tKings\n",
+  "stderr": "",
+  "execution_time_ms": 1681
+}

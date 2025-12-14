@@ -130,6 +130,11 @@ function parseTradeFromEmbed(message: Message): { team1: string; team2: string; 
     const teamPattern = /(?:^|[\r\n]+)([A-Za-z\s]+)\s+sends?\s*:?/gim;
     const teamMatches = Array.from(description.matchAll(teamPattern));
     
+    console.log(`[Trade Parser] Team pattern matches: ${teamMatches.length}`);
+    teamMatches.forEach((match, i) => {
+      console.log(`[Trade Parser] Match ${i}: team='${match[1]}', full='${match[0].replace(/\n/g, '\\n')}'`);
+    });
+    
     if (teamMatches.length < 2) {
       console.log('[Trade Parser] Could not find two teams in embed');
       return null;
