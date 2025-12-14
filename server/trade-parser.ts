@@ -348,6 +348,12 @@ export async function findPlayerByFuzzyName(name: string, teamFilter?: string, c
   const db = await getDb();
   if (!db) return null;
   
+  // Reject empty strings and placeholders
+  if (!name || name.trim() === '' || name === '--') {
+    console.log(`[Player Matcher] Rejecting invalid name: "${name}"`);
+    return null;
+  }
+  
   try {
     // Get all players (optionally filtered by team)
     let allPlayers = await db.select().from(players);

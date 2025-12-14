@@ -200,8 +200,12 @@ function parsePlayers(section: string): Array<{ name: string; overall: number; s
   let match;
   while ((match = pattern1.exec(section)) !== null) {
     const playerName = match[1].trim();
-    // Skip summary lines and lines with just numbers
-    if (!playerName || playerName.match(/^\d+$/) || playerName.toLowerCase().includes('ovr') || playerName.toLowerCase().includes('badge')) {
+    // Skip summary lines, placeholders, and lines with just numbers
+    if (!playerName || 
+        playerName === '--' || 
+        playerName.match(/^\d+$/) || 
+        playerName.toLowerCase().includes('ovr') || 
+        playerName.toLowerCase().includes('badge')) {
       continue;
     }
     
@@ -217,8 +221,11 @@ function parsePlayers(section: string): Array<{ name: string; overall: number; s
     const pattern2 = /([A-Za-z\s\.'-]+)\s*\((\d+)\)\s+(\d+)/g;
     while ((match = pattern2.exec(section)) !== null) {
       const playerName = match[1].trim();
-      // Skip summary lines
-      if (!playerName || playerName.match(/^\d+$/) || playerName.toLowerCase().includes('ovr')) {
+      // Skip summary lines and placeholders
+      if (!playerName || 
+          playerName === '--' || 
+          playerName.match(/^\d+$/) || 
+          playerName.toLowerCase().includes('ovr')) {
         continue;
       }
       

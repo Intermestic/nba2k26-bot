@@ -369,3 +369,12 @@
 - [x] Fix Diawara bid not processing after manual activation with ❗ emoji (Duncan Robinson bid processed successfully, but Diawara bid stuck)
 - [x] Fix reaction deduplication cache blocking retries after failures
 - [x] Move cache addition to after successful processing for both ❗ and ⚡ handlers
+
+## Trade Processing Fixes (Dec 15, 2024)
+
+- [x] Fix player name parsing in trade processing to handle all player formats correctly
+- [x] Skip placeholder entries ("--") in trade processing
+- [x] Use fuzzy matching for player lookups in trade approval handler
+- [x] Write and pass tests for fuzzy matching and placeholder handling
+- [ ] Restart Discord bot to apply fixes
+- [ ] Test trade processing with real Discord trade data (message ID: 1449814470850383884)

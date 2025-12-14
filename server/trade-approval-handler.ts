@@ -3,6 +3,7 @@ import { getDb } from './db';
 import { trades, players } from '../drizzle/schema';
 import { eq, sql } from 'drizzle-orm';
 import { validateTeamName } from './team-validator';
+import { findPlayerByFuzzyName } from './trade-parser';
 
 /**
  * Handle bolt emoji (⚡) reaction on approved trades
@@ -103,13 +104,16 @@ export async function handleApprovedTradeProcessing(message: Message) {
     
     // Team1 receives Team2's players
     for (const player of team2Players) {
-      const playerRecords = await db
-        .select()
-        .from(players)
-        .where(sql`LOWER(${players.name}) = LOWER(${player.name})`)
-        .limit(1);
+      // Skip placeholder entries
+      if (!player.name || player.name === '--' || player.name.trim() === '') {
+        console.log(`[Trade Approval] Skipping placeholder entry: "${player.name}"`);
+        continue;
+      }
       
-      if (playerRecords.length === 0) {
+      // Use fuzzy matching to find player
+      const foundPlayer = await findPlayerByFuzzyName(player.name, validTeam2, 'trade_approval');
+      
+      if (!foundPlayer) {
         notFoundPlayers.push(player.name);
         continue;
       }
@@ -117,20 +121,23 @@ export async function handleApprovedTradeProcessing(message: Message) {
       await db
         .update(players)
         .set({ team: validTeam1 })
-        .where(eq(players.id, playerRecords[0].id));
+        .where(eq(players.id, foundPlayer.id));
       
-      updatedPlayers.push(`${player.name} → ${validTeam1}`);
+      updatedPlayers.push(`${foundPlayer.name} → ${validTeam1}`);
     }
     
     // Team2 receives Team1's players
     for (const player of team1Players) {
-      const playerRecords = await db
-        .select()
-        .from(players)
-        .where(sql`LOWER(${players.name}) = LOWER(${player.name})`)
-        .limit(1);
+      // Skip placeholder entries
+      if (!player.name || player.name === '--' || player.name.trim() === '') {
+        console.log(`[Trade Approval] Skipping placeholder entry: "${player.name}"`);
+        continue;
+      }
       
-      if (playerRecords.length === 0) {
+      // Use fuzzy matching to find player
+      const foundPlayer = await findPlayerByFuzzyName(player.name, validTeam1, 'trade_approval');
+      
+      if (!foundPlayer) {
         notFoundPlayers.push(player.name);
         continue;
       }
@@ -138,9 +145,9 @@ export async function handleApprovedTradeProcessing(message: Message) {
       await db
         .update(players)
         .set({ team: validTeam2 })
-        .where(eq(players.id, playerRecords[0].id));
+        .where(eq(players.id, foundPlayer.id));
       
-      updatedPlayers.push(`${player.name} → ${validTeam2}`);
+      updatedPlayers.push(`${foundPlayer.name} → ${validTeam2}`);
     }
     
     // Check if trade involves 90+ OVR player → trigger story generation (non-blocking)
