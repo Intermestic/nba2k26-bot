@@ -177,6 +177,23 @@ export async function findPlayerByFuzzyName(
   
   // Check nickname first
   let searchName = name.toLowerCase().trim();
+  
+  // Normalize Jr/Jr. variations
+  searchName = searchName.replace(/\bjr\.?$/i, 'jr');
+  
+  // Common name variations that should match
+  const NAME_VARIATIONS: Record<string, string> = {
+    'angelo russell': "d'angelo russell",
+    'mohammed bamba': 'mohamed bamba',
+    'mo bamba': 'mohamed bamba'
+  };
+  
+  // Check if search is a known variation
+  if (NAME_VARIATIONS[searchName]) {
+    console.log(`[Player Matcher] Name variation detected: "${searchName}" → "${NAME_VARIATIONS[searchName]}"`);
+    searchName = NAME_VARIATIONS[searchName];
+  }
+  
   if (nicknames[searchName]) {
     searchName = nicknames[searchName].toLowerCase();
   }
@@ -202,7 +219,11 @@ export async function findPlayerByFuzzyName(
         console.log('[Player Matcher] Players with "krej" in name:', krejPlayers.map(p => ({ name: p.name, lowercase: p.name.toLowerCase() })));
       }
       
-      const player = allPlayers.find(p => p.name.toLowerCase() === canonicalName.toLowerCase());
+      const player = allPlayers.find(p => {
+        const normalizedPlayerName = p.name.toLowerCase().replace(/\bjr\.?$/i, 'jr');
+        const normalizedCanonical = canonicalName.toLowerCase().replace(/\bjr\.?$/i, 'jr');
+        return normalizedPlayerName === normalizedCanonical;
+      });
       if (player) {
         console.log(`[Player Matcher] Found via alias: "${name}" → "${canonicalName}" (team: ${player.team})`);
         return {
@@ -226,7 +247,10 @@ export async function findPlayerByFuzzyName(
       const teamMatches = extract(searchName, teamPlayers.map(p => p.name), { limit: 1 });
       if (teamMatches.length > 0 && teamMatches[0][1] >= 60) {
         const matchedName = teamMatches[0][0];
-        const player = teamPlayers.find(p => p.name.toLowerCase() === matchedName.toLowerCase());
+        const player = teamPlayers.find(p => {
+          const normalizedPlayerName = p.name.toLowerCase().replace(/\bjr\.?$/i, 'jr');
+          return normalizedPlayerName === matchedName;
+        });
         if (player) {
           console.log(`[Player Matcher] Found on ${teamContext} roster: "${name}" → "${player.name}" (${teamMatches[0][1]}% match)`);
           
@@ -344,12 +368,16 @@ export async function findPlayerByFuzzyName(
     }
   }
   
-  // Strategy 4: League-wide fuzzy match (case-insensitive)
-  const matches = extract(searchName, allPlayers.map(p => p.name.toLowerCase()), { limit: 1 });
+  // Strategy 4: League-wide fuzzy match (case-insensitive, normalize Jr/Jr.)
+  const normalizedPlayerNames = allPlayers.map(p => p.name.toLowerCase().replace(/\bjr\.?$/i, 'jr'));
+  const matches = extract(searchName, normalizedPlayerNames, { limit: 1 });
   
   if (matches.length > 0 && matches[0][1] >= 70) {
     const matchedName = matches[0][0];
-    const player = allPlayers.find(p => p.name.toLowerCase() === matchedName);
+    const player = allPlayers.find(p => {
+      const normalizedPlayerName = p.name.toLowerCase().replace(/\bjr\.?$/i, 'jr');
+      return normalizedPlayerName === matchedName;
+    });
     
     if (player) {
       console.log(`[Player Matcher] Found via fuzzy match: "${name}" → "${player.name}" (${matches[0][1]}% match)`);

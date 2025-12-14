@@ -349,3 +349,10 @@
 - [x] Fix trade parser to handle multiple embed formats (PlayerNameOVR (salary), Player Name OVR (salary), Player Name (OVR) salary, Player Name OVR OVR (salary))
 - [x] Fix team name parsing to avoid capturing "badges\nRaptors" as team name
 - [x] Manually process all three stuck trades (Kings/Raptors: 4 players, Rockets/Pacers: 2 players, Jazz/Knicks: 4 players)
+
+## Player Name Parsing Issues (Dec 14, 2024)
+
+- [x] Fix fuzzy matching for player names with variations (Angelo Russell → D'Angelo Russell, Mohammed Bamba → Mohamed Bamba)
+- [x] Improve alias system to handle Jr./Jr suffix variations (Derrick Jones Jr. → Derrick Jones Jr, Kelly Oubre Jr. → Kelly Oubre Jr)
+- [ ] Add better handling for single letter names (R → proper player identification)
+- [ ] Prevent duplicate "Could not find these players" warnings for the same trade

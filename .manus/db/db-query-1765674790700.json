@@ -1,0 +1,14 @@
+{
+  "query": "SELECT name, team FROM players WHERE LOWER(name) LIKE '%bamba%'",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT name, team FROM players WHERE LOWER(name) LIKE '%bamba%'",
+  "rows": [
+    {
+      "name": "Mohamed Bamba",
+      "team": "Pacers"
+    }
+  ],
+  "messages": [],
+  "stdout": "name\tteam\nMohamed Bamba\tPacers\n",
+  "stderr": "",
+  "execution_time_ms": 1632
+}
