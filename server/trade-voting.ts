@@ -306,18 +306,30 @@ async function processVoteResult(
     
     // Save to database to prevent duplicate processing
     if (db) {
-      await db.insert(tradeVotes).values({
-      messageId: message.id,
-      upvotes,
-      downvotes,
-      approved: approved ? 1 : 0,
-      });
-      console.log(`[Trade Voting] Saved vote result to database for message ${message.id}`);
+      try {
+        await db.insert(tradeVotes).values({
+          messageId: message.id,
+          upvotes,
+          downvotes,
+          approved: approved ? 1 : 0,
+        });
+        console.log(`[Trade Voting] Saved vote result to database for message ${message.id}`);
+      } catch (voteError) {
+        console.error(`[Trade Voting] Failed to save vote result:`, voteError);
+        // Continue anyway - we still want to try to save trade details
+      }
       
       // Parse trade details from embed and save to trades table
       try {
+        console.log(`[Trade Voting] Parsing trade details from message ${message.id}...`);
         const tradeDetails = parseTradeFromEmbed(message);
-        if (tradeDetails) {
+        
+        if (!tradeDetails) {
+          console.error(`[Trade Voting] ❌ CRITICAL: Could not parse trade details from embed for message ${message.id}`);
+          console.error(`[Trade Voting] This will prevent auto-processing! Embed content:`, message.embeds[0]?.description?.substring(0, 500));
+        } else {
+          console.log(`[Trade Voting] ✅ Successfully parsed trade: ${tradeDetails.team1} (${tradeDetails.team1Players.length} players) ↔ ${tradeDetails.team2} (${tradeDetails.team2Players.length} players)`);
+          
           const tradeRecord = {
             messageId: message.id,
             team1: tradeDetails.team1,
@@ -333,22 +345,36 @@ async function processVoteResult(
           } as const;
           
           // Insert with original message ID
+          console.log(`[Trade Voting] Inserting trade record with original message ID ${message.id}...`);
           await db.insert(trades).values(tradeRecord);
-          console.log(`[Trade Voting] Saved trade details to trades table for message ${message.id}`);
+          console.log(`[Trade Voting] ✅ Saved trade details to trades table for message ${message.id}`);
           
           // If approved, also insert with approval message ID so bolt reaction works
           if (approved && approvalMessage) {
+            console.log(`[Trade Voting] Inserting trade record with approval message ID ${approvalMessage.id}...`);
             await db.insert(trades).values({
               ...tradeRecord,
               messageId: approvalMessage.id,
             });
-            console.log(`[Trade Voting] Also saved trade with approval message ID ${approvalMessage.id} for bolt reaction processing`);
+            console.log(`[Trade Voting] ✅ Also saved trade with approval message ID ${approvalMessage.id} for bolt reaction processing`);
           }
-        } else {
-          console.log(`[Trade Voting] Could not parse trade details from embed for message ${message.id}`);
         }
       } catch (error) {
-        console.error(`[Trade Voting] Error saving trade details:`, error);
+        console.error(`[Trade Voting] ❌ CRITICAL ERROR saving trade details:`, error);
+        console.error(`[Trade Voting] Stack trace:`, error instanceof Error ? error.stack : 'No stack trace');
+        // Post error to Discord so admin knows
+        try {
+          await message.reply(`⚠️ **Warning:** Trade vote was recorded, but failed to save trade details to database. Auto-processing will not work. Error: ${error instanceof Error ? error.message : String(error)}`);
+        } catch (replyError) {
+          console.error(`[Trade Voting] Could not post error message to Discord:`, replyError);
+        }
+      }
+    } else {
+      console.error(`[Trade Voting] ❌ CRITICAL: Database connection not available, cannot save trade details`);
+      try {
+        await message.reply(`⚠️ **Warning:** Database connection failed. Trade vote was recorded but cannot be auto-processed.`);
+      } catch (replyError) {
+        console.error(`[Trade Voting] Could not post error message to Discord:`, replyError);
       }
     }
     
