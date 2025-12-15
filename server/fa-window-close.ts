@@ -10,7 +10,9 @@ const processingLocks = new Map<string, boolean>();
 /**
  * Post window close summary with all winning bids
  */
-export async function postWindowCloseSummary(client: Client) {
+export async function postWindowCloseSummary(client: Client, retryCount = 0) {
+  const MAX_RETRIES = 3;
+  
   try {
     const window = getCurrentBiddingWindow();
     
@@ -20,12 +22,31 @@ export async function postWindowCloseSummary(client: Client) {
       return;
     }
     
-    const bids = await getActiveBids(window.windowId);
+    console.log(`[Window Close] Fetching active bids for window ${window.windowId}...`);
+    
+    let bids;
+    try {
+      bids = await getActiveBids(window.windowId);
+    } catch (dbError: any) {
+      console.error('[Window Close] Database error fetching bids:', dbError?.message || dbError);
+      
+      // Retry on database errors
+      if (retryCount < MAX_RETRIES) {
+        const delayMs = (retryCount + 1) * 2000; // 2s, 4s, 6s
+        console.log(`[Window Close] Retrying in ${delayMs}ms... (attempt ${retryCount + 1}/${MAX_RETRIES})`);
+        await new Promise(resolve => setTimeout(resolve, delayMs));
+        return postWindowCloseSummary(client, retryCount + 1);
+      }
+      
+      throw dbError;
+    }
     
     if (bids.length === 0) {
       console.log('[Window Close] No bids to summarize');
       return;
     }
+    
+    console.log(`[Window Close] Found ${bids.length} winning bids, posting summary...`);
     
     const channel = await client.channels.fetch(FA_CHANNEL_ID);
     if (!channel?.isTextBased()) {
@@ -66,9 +87,23 @@ export async function postWindowCloseSummary(client: Client) {
       embeds: [embed] 
     });
     
-    console.log(`[Window Close] Posted summary: ${bids.length} winning bids, $${totalCoins} total`);
-  } catch (error) {
-    console.error('[Window Close] Failed to post summary:', error);
+    console.log(`[Window Close] ✅ Successfully posted summary: ${bids.length} winning bids, $${totalCoins} total`);
+  } catch (error: any) {
+    console.error('[Window Close] ❌ Failed to post summary:', error?.message || error);
+    
+    // Don't retry on Discord API errors (rate limits, permissions, etc.)
+    if (error?.code && typeof error.code === 'number') {
+      console.error('[Window Close] Discord API error, not retrying');
+      return;
+    }
+    
+    // Retry on other errors
+    if (retryCount < MAX_RETRIES) {
+      const delayMs = (retryCount + 1) * 2000;
+      console.log(`[Window Close] Retrying in ${delayMs}ms... (attempt ${retryCount + 1}/${MAX_RETRIES})`);
+      await new Promise(resolve => setTimeout(resolve, delayMs));
+      return postWindowCloseSummary(client, retryCount + 1);
+    }
   }
 }
 
@@ -77,47 +112,87 @@ export async function postWindowCloseSummary(client: Client) {
  * Posts at 11:50 AM and 11:50 PM EST
  */
 export function scheduleWindowCloseSummaries(client: Client) {
-  // Calculate time until next 11:50 AM or 11:50 PM EST
-  const now = new Date();
-  
-  // Convert to EST (UTC-5)
-  const estOffset = -5 * 60; // minutes
-  const utcTime = now.getTime() + (now.getTimezoneOffset() * 60000);
-  const estTime = new Date(utcTime + (estOffset * 60000));
-  
-  const hour = estTime.getHours();
-  const minute = estTime.getMinutes();
-  
-  let nextSummaryTime = new Date(estTime);
-  
-  if (hour < 11 || (hour === 11 && minute < 50)) {
-    // Next summary is today at 11:50 AM
-    nextSummaryTime.setHours(11, 50, 0, 0);
-  } else if (hour < 23 || (hour === 23 && minute < 50)) {
-    // Next summary is today at 11:50 PM
-    nextSummaryTime.setHours(23, 50, 0, 0);
-  } else {
-    // Next summary is tomorrow at 11:50 AM
-    nextSummaryTime.setDate(nextSummaryTime.getDate() + 1);
-    nextSummaryTime.setHours(11, 50, 0, 0);
+  // Helper function to get current time in EST/EDT
+  function getEasternTime(): Date {
+    // Use Intl API for accurate timezone conversion (handles DST automatically)
+    const formatter = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'America/New_York',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+    });
+    
+    const parts = formatter.formatToParts(new Date());
+    const dateObj: any = {};
+    parts.forEach(part => {
+      if (part.type !== 'literal') {
+        dateObj[part.type] = part.value;
+      }
+    });
+    
+    return new Date(
+      `${dateObj.year}-${dateObj.month}-${dateObj.day}T${dateObj.hour}:${dateObj.minute}:${dateObj.second}`
+    );
   }
   
-  const msUntilNextSummary = nextSummaryTime.getTime() - estTime.getTime();
-  const minutesUntilNextSummary = Math.round(msUntilNextSummary / 1000 / 60);
-  
-  console.log(`[Window Close] Next summary in ${minutesUntilNextSummary} minutes (${nextSummaryTime.toLocaleString('en-US', { timeZone: 'America/New_York' })} EST)`);
-  
-  // Schedule first summary
-  setTimeout(() => {
-    postWindowCloseSummary(client);
+  // Helper function to schedule next window close
+  function scheduleNextWindowClose() {
+    const now = new Date();
+    const estNow = getEasternTime();
     
-    // Schedule recurring summaries every 12 hours
-    setInterval(() => {
+    const hour = estNow.getHours();
+    const minute = estNow.getMinutes();
+    
+    // Calculate next 11:50 AM or 11:50 PM in EST
+    let nextRunHour: number;
+    if (hour < 11 || (hour === 11 && minute < 50)) {
+      // Next run is today at 11:50 AM
+      nextRunHour = 11;
+    } else if (hour < 23 || (hour === 23 && minute < 50)) {
+      // Next run is today at 11:50 PM
+      nextRunHour = 23;
+    } else {
+      // Next run is tomorrow at 11:50 AM
+      nextRunHour = 11 + 24; // Will handle day rollover below
+    }
+    
+    // Create target time in EST
+    const targetEST = new Date(estNow);
+    if (nextRunHour >= 24) {
+      targetEST.setDate(targetEST.getDate() + 1);
+      targetEST.setHours(11, 50, 0, 0);
+    } else {
+      targetEST.setHours(nextRunHour, 50, 0, 0);
+    }
+    
+    // Convert EST time to UTC for setTimeout
+    // This is tricky - we need to find the UTC time that corresponds to our EST target
+    const estString = targetEST.toISOString().slice(0, 19).replace('T', ' ');
+    const targetUTC = new Date(targetEST.toLocaleString('en-US', { timeZone: 'UTC' }));
+    
+    // Calculate milliseconds until next run
+    const msUntilNext = targetEST.getTime() - estNow.getTime();
+    const minutesUntilNext = Math.round(msUntilNext / 1000 / 60);
+    
+    console.log(`[Window Close] Next summary in ${minutesUntilNext} minutes (${targetEST.toLocaleString('en-US', { hour12: true })} EST)`);
+    
+    // Schedule the next run
+    setTimeout(() => {
+      console.log('[Window Close] Executing scheduled window close summary...');
       postWindowCloseSummary(client);
-    }, 12 * 60 * 60 * 1000); // Every 12 hours
-  }, msUntilNextSummary);
+      
+      // Schedule the next one after this completes
+      scheduleNextWindowClose();
+    }, msUntilNext);
+  }
   
-  console.log('[Window Close] Summaries scheduled for 11:50 AM/PM EST');
+  // Start the scheduling chain
+  scheduleNextWindowClose();
+  console.log('[Window Close] Window close summaries scheduled for 11:50 AM/PM EST');
 }
 
 /**

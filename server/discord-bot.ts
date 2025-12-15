@@ -1033,9 +1033,9 @@ async function refreshBotInstanceLock(): Promise<void> {
     
     const expiresAt = new Date(Date.now() + 60000); // 60 second lock
     
-    // Add timeout to database query to prevent hanging (increased to 20s for very slow connections)
+    // Add timeout to database query to prevent hanging (increased to 30s for very slow connections)
     const timeoutPromise = new Promise((_, reject) => 
-      setTimeout(() => reject(new Error('Lock refresh query timeout')), 20000)
+      setTimeout(() => reject(new Error('Lock refresh query timeout')), 30000)
     );
     
     const queryPromise = db.execute(sql`
@@ -1154,9 +1154,24 @@ async function refreshBotInstanceLock(): Promise<void> {
     lockRefreshFailures = 0;
     consecutiveZeroRows = 0;
   } catch (error: any) {
-    lockRefreshFailures++;
-    console.error(`[Discord Bot] Error refreshing instance lock (failure ${lockRefreshFailures}/${MAX_LOCK_REFRESH_FAILURES}):`, error);
+    // Ignore ECONNRESET and other transient network errors - they're expected with unstable connections
+    const isTransientError = 
+      error?.code === 'ECONNRESET' || 
+      error?.cause?.code === 'ECONNRESET' ||
+      error?.message?.includes('ECONNRESET') ||
+      error?.message?.includes('timeout') ||
+      error?.message?.includes('ETIMEDOUT');
     
+    if (isTransientError) {
+      // Don't count transient errors against failure threshold
+      if (lockRefreshFailures % 20 === 0) {
+        console.warn(`[Discord Bot] Transient lock refresh error (not counted): ${error?.message || error}`);
+      }
+      return;
+    }
+    
+    lockRefreshFailures++;
+    console.error(`[Discord Bot] Error refreshing lock (failure ${lockRefreshFailures}/${MAX_LOCK_REFRESH_FAILURES}):`, error?.message || error);  
     // Reset database connection on connection errors to allow reconnection
     if (error?.cause?.code === 'ECONNRESET' || error?.message?.includes('ECONNRESET')) {
       console.log('[Discord Bot] Database connection lost, resetting connection pool...');
