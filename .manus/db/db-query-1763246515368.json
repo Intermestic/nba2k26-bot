@@ -1,0 +1,45 @@
+{
+  "query": "SELECT * FROM team_coins WHERE team IN ('Rockets', 'Raptors', 'Nuggets', 'Hornets', 'Jazz') ORDER BY team;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT * FROM team_coins WHERE team IN ('Rockets', 'Raptors', 'Nuggets', 'Hornets', 'Jazz') ORDER BY team;",
+  "rows": [
+    {
+      "id": "5",
+      "team": "Hornets",
+      "coinsRemaining": "87",
+      "createdAt": "2025-11-15 00:57:41",
+      "updatedAt": "2025-11-15 22:34:53"
+    },
+    {
+      "id": "30",
+      "team": "Jazz",
+      "coinsRemaining": "37",
+      "createdAt": "2025-11-15 00:57:47",
+      "updatedAt": "2025-11-15 22:34:55"
+    },
+    {
+      "id": "9",
+      "team": "Nuggets",
+      "coinsRemaining": "-88",
+      "createdAt": "2025-11-15 00:57:42",
+      "updatedAt": "2025-11-15 22:34:52"
+    },
+    {
+      "id": "29",
+      "team": "Raptors",
+      "coinsRemaining": "22",
+      "createdAt": "2025-11-15 00:57:46",
+      "updatedAt": "2025-11-15 22:34:51"
+    },
+    {
+      "id": "12",
+      "team": "Rockets",
+      "coinsRemaining": "65",
+      "createdAt": "2025-11-15 00:57:43",
+      "updatedAt": "2025-11-15 22:34:47"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tteam\tcoinsRemaining\tcreatedAt\tupdatedAt\n5\tHornets\t87\t2025-11-15 00:57:41\t2025-11-15 22:34:53\n30\tJazz\t37\t2025-11-15 00:57:47\t2025-11-15 22:34:55\n9\tNuggets\t-88\t2025-11-15 00:57:42\t2025-11-15 22:34:52\n29\tRaptors\t22\t2025-11-15 00:57:46\t2025-11-15 22:34:51\n12\tRockets\t65\t2025-11-15 00:57:43\t2025-11-15 22:34:47\n",
+  "stderr": "",
+  "execution_time_ms": 1675
+}

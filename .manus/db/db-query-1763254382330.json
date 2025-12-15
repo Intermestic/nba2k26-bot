@@ -1,0 +1,22 @@
+{
+  "query": "SELECT name, team FROM players WHERE name IN ('Day''Ron Sharpe', 'Bruce Brown', 'Chris Paul', 'Dayron Sharpe')",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT name, team FROM players WHERE name IN ('Day''Ron Sharpe', 'Bruce Brown', 'Chris Paul', 'Dayron Sharpe')",
+  "rows": [
+    {
+      "name": "Bruce Brown",
+      "team": "Free Agents"
+    },
+    {
+      "name": "Chris Paul",
+      "team": "Free Agents"
+    },
+    {
+      "name": "Day'Ron Sharpe",
+      "team": "Free Agents"
+    }
+  ],
+  "messages": [],
+  "stdout": "name\tteam\nBruce Brown\tFree Agents\nChris Paul\tFree Agents\nDay'Ron Sharpe\tFree Agents\n",
+  "stderr": "",
+  "execution_time_ms": 1532
+}

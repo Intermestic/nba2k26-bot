@@ -1,0 +1,24 @@
+{
+  "query": "SELECT * FROM players WHERE team = '76ers'",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT * FROM players WHERE team = '76ers'",
+  "rows": [
+    {
+      "id": "P0185",
+      "name": "Daniel Gafford",
+      "overall": "80",
+      "photoUrl": "https://cdn.nba.com/headshots/nba/latest/1040x760/1629655.png",
+      "playerPageUrl": "https://www.2kratings.com/daniel-gafford",
+      "nbaId": "NULL",
+      "source": "NULL",
+      "badgeCount": "NULL",
+      "createdAt": "2025-11-12 13:28:17",
+      "updatedAt": "2025-11-15 22:57:00",
+      "team": "76ers",
+      "salaryCap": "12"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\toverall\tphotoUrl\tplayerPageUrl\tnbaId\tsource\tbadgeCount\tcreatedAt\tupdatedAt\tteam\tsalaryCap\nP0185\tDaniel Gafford\t80\thttps://cdn.nba.com/headshots/nba/latest/1040x760/1629655.png\thttps://www.2kratings.com/daniel-gafford\tNULL\tNULL\tNULL\t2025-11-12 13:28:17\t2025-11-15 22:57:00\t76ers\t12\n",
+  "stderr": "",
+  "execution_time_ms": 1688
+}

@@ -1,0 +1,1 @@
+ALTER TABLE `fa_bids` ADD `dropPlayer` varchar(255);

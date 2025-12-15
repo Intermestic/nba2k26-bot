@@ -1,0 +1,94 @@
+{
+  "query": "SELECT \n  sourceType,\n  upgradeType,\n  COUNT(*) as count,\n  COUNT(DISTINCT playerName) as unique_players\nFROM upgrade_log\nGROUP BY sourceType, upgradeType\nORDER BY count DESC;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT \n  sourceType,\n  upgradeType,\n  COUNT(*) as count,\n  COUNT(DISTINCT playerName) as unique_players\nFROM upgrade_log\nGROUP BY sourceType, upgradeType\nORDER BY count DESC;",
+  "rows": [
+    {
+      "sourceType": "Game",
+      "upgradeType": "Badge",
+      "count": "86",
+      "unique_players": "55"
+    },
+    {
+      "sourceType": "Welcome",
+      "upgradeType": "Badge",
+      "count": "76",
+      "unique_players": "41"
+    },
+    {
+      "sourceType": "Game",
+      "upgradeType": "Attribute",
+      "count": "72",
+      "unique_players": "51"
+    },
+    {
+      "sourceType": "Welcome",
+      "upgradeType": "Attribute",
+      "count": "32",
+      "unique_players": "29"
+    },
+    {
+      "sourceType": "Rookie",
+      "upgradeType": "Badge",
+      "count": "19",
+      "unique_players": "12"
+    },
+    {
+      "sourceType": "Rookie",
+      "upgradeType": "Attribute",
+      "count": "15",
+      "unique_players": "11"
+    },
+    {
+      "sourceType": "OG",
+      "upgradeType": "Attribute",
+      "count": "8",
+      "unique_players": "7"
+    },
+    {
+      "sourceType": "Flash",
+      "upgradeType": "Badge",
+      "count": "7",
+      "unique_players": "6"
+    },
+    {
+      "sourceType": "Holiday",
+      "upgradeType": "Badge",
+      "count": "7",
+      "unique_players": "7"
+    },
+    {
+      "sourceType": "OG",
+      "upgradeType": "Badge",
+      "count": "6",
+      "unique_players": "5"
+    },
+    {
+      "sourceType": "Voting",
+      "upgradeType": "Badge",
+      "count": "3",
+      "unique_players": "3"
+    },
+    {
+      "sourceType": "Award",
+      "upgradeType": "Badge",
+      "count": "1",
+      "unique_players": "1"
+    },
+    {
+      "sourceType": "Activity",
+      "upgradeType": "Badge",
+      "count": "1",
+      "unique_players": "1"
+    },
+    {
+      "sourceType": "Award",
+      "upgradeType": "Attribute",
+      "count": "1",
+      "unique_players": "1"
+    }
+  ],
+  "messages": [],
+  "stdout": "sourceType\tupgradeType\tcount\tunique_players\nGame\tBadge\t86\t55\nWelcome\tBadge\t76\t41\nGame\tAttribute\t72\t51\nWelcome\tAttribute\t32\t29\nRookie\tBadge\t19\t12\nRookie\tAttribute\t15\t11\nOG\tAttribute\t8\t7\nFlash\tBadge\t7\t6\nHoliday\tBadge\t7\t7\nOG\tBadge\t6\t5\nVoting\tBadge\t3\t3\nAward\tBadge\t1\t1\nActivity\tBadge\t1\t1\nAward\tAttribute\t1\t1\n",
+  "stderr": "",
+  "execution_time_ms": 49
+}

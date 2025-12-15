@@ -1,0 +1,30 @@
+{
+  "query": "SELECT playerName, COUNT(*) as upgradeCount, GROUP_CONCAT(DISTINCT upgradeType) as types \nFROM upgrade_log \nWHERE playerName IN ('De''Aaron Fox', 'Egor Demin', 'Kristaps Porzingis', 'Berringer') \nGROUP BY playerName \nORDER BY playerName",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT playerName, COUNT(*) as upgradeCount, GROUP_CONCAT(DISTINCT upgradeType) as types \nFROM upgrade_log \nWHERE playerName IN ('De''Aaron Fox', 'Egor Demin', 'Kristaps Porzingis', 'Berringer') \nGROUP BY playerName \nORDER BY playerName",
+  "rows": [
+    {
+      "playerName": "Berringer",
+      "upgradeCount": "1",
+      "types": "Badge"
+    },
+    {
+      "playerName": "De'Aaron Fox",
+      "upgradeCount": "3",
+      "types": "Badge,Attribute"
+    },
+    {
+      "playerName": "Egor Demin",
+      "upgradeCount": "4",
+      "types": "Badge,Attribute"
+    },
+    {
+      "playerName": "Kristaps Porzingis",
+      "upgradeCount": "3",
+      "types": "Badge,Attribute"
+    }
+  ],
+  "messages": [],
+  "stdout": "playerName\tupgradeCount\ttypes\nBerringer\t1\tBadge\nDe'Aaron Fox\t3\tBadge,Attribute\nEgor Demin\t4\tBadge,Attribute\nKristaps Porzingis\t3\tBadge,Attribute\n",
+  "stderr": "",
+  "execution_time_ms": 49
+}

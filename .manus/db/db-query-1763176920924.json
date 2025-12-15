@@ -1,0 +1,40 @@
+{
+  "query": "SELECT id, name, team FROM players WHERE name IN ('RayJ Dennis', 'Brandon Miller', 'Jose Alvarado', 'Anthony Davis', 'Jaylen Brown', 'Paul Reed');",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT id, name, team FROM players WHERE name IN ('RayJ Dennis', 'Brandon Miller', 'Jose Alvarado', 'Anthony Davis', 'Jaylen Brown', 'Paul Reed');",
+  "rows": [
+    {
+      "id": "P0010",
+      "name": "Jose Alvarado",
+      "team": "Lakers"
+    },
+    {
+      "id": "P0067",
+      "name": "Jaylen Brown",
+      "team": "Hornets"
+    },
+    {
+      "id": "P0129",
+      "name": "Anthony Davis",
+      "team": "Hornets"
+    },
+    {
+      "id": "P0134",
+      "name": "RayJ Dennis",
+      "team": "Lakers"
+    },
+    {
+      "id": "P0401",
+      "name": "Brandon Miller",
+      "team": "Lakers"
+    },
+    {
+      "id": "P0487",
+      "name": "Paul Reed",
+      "team": "Hornets"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\tteam\nP0010\tJose Alvarado\tLakers\nP0067\tJaylen Brown\tHornets\nP0129\tAnthony Davis\tHornets\nP0134\tRayJ Dennis\tLakers\nP0401\tBrandon Miller\tLakers\nP0487\tPaul Reed\tHornets\n",
+  "stderr": "",
+  "execution_time_ms": 1547
+}

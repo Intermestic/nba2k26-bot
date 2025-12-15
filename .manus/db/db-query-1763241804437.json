@@ -1,0 +1,80 @@
+{
+  "query": "SELECT name, overall, salaryCap FROM players WHERE team = 'Raptors' ORDER BY overall DESC;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT name, overall, salaryCap FROM players WHERE team = 'Raptors' ORDER BY overall DESC;",
+  "rows": [
+    {
+      "name": "Jayson Tatum",
+      "overall": "94",
+      "salaryCap": "42"
+    },
+    {
+      "name": "Ivica Zubac",
+      "overall": "87",
+      "salaryCap": "24"
+    },
+    {
+      "name": "OG Anunoby",
+      "overall": "85",
+      "salaryCap": "20"
+    },
+    {
+      "name": "Cason Wallace",
+      "overall": "79",
+      "salaryCap": "11"
+    },
+    {
+      "name": "Tim Hardaway Jr.",
+      "overall": "79",
+      "salaryCap": "11"
+    },
+    {
+      "name": "Brandin Podziemski",
+      "overall": "79",
+      "salaryCap": "11"
+    },
+    {
+      "name": "Gradey Dick",
+      "overall": "76",
+      "salaryCap": "7"
+    },
+    {
+      "name": "Dean Wade",
+      "overall": "74",
+      "salaryCap": "5"
+    },
+    {
+      "name": "Trey Lyles",
+      "overall": "74",
+      "salaryCap": "5"
+    },
+    {
+      "name": "Dario Saric",
+      "overall": "74",
+      "salaryCap": "5"
+    },
+    {
+      "name": "Josh Green",
+      "overall": "73",
+      "salaryCap": "5"
+    },
+    {
+      "name": "Terrence Shannon Jr",
+      "overall": "73",
+      "salaryCap": "5"
+    },
+    {
+      "name": "Alex Len",
+      "overall": "70",
+      "salaryCap": "3"
+    },
+    {
+      "name": "Branden Carlson",
+      "overall": "70",
+      "salaryCap": "3"
+    }
+  ],
+  "messages": [],
+  "stdout": "name\toverall\tsalaryCap\nJayson Tatum\t94\t42\nIvica Zubac\t87\t24\nOG Anunoby\t85\t20\nCason Wallace\t79\t11\nTim Hardaway Jr.\t79\t11\nBrandin Podziemski\t79\t11\nGradey Dick\t76\t7\nDean Wade\t74\t5\nTrey Lyles\t74\t5\nDario Saric\t74\t5\nJosh Green\t73\t5\nTerrence Shannon Jr\t73\t5\nAlex Len\t70\t3\nBranden Carlson\t70\t3\n",
+  "stderr": "",
+  "execution_time_ms": 1656
+}

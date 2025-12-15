@@ -1,0 +1,14 @@
+{
+  "query": "SELECT COUNT(*) as total, SUM(CASE WHEN photoUrl IS NOT NULL AND photoUrl != '' THEN 1 ELSE 0 END) as with_photos FROM players;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT COUNT(*) as total, SUM(CASE WHEN photoUrl IS NOT NULL AND photoUrl != '' THEN 1 ELSE 0 END) as with_photos FROM players;",
+  "rows": [
+    {
+      "total": "644",
+      "with_photos": "643"
+    }
+  ],
+  "messages": [],
+  "stdout": "total\twith_photos\n644\t643\n",
+  "stderr": "",
+  "execution_time_ms": 1528
+}

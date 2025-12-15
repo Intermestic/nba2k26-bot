@@ -1,0 +1,410 @@
+{
+  "query": "SELECT playerName, sourceType, sourceDetail, badgeOrAttribute, fromValue, toValue\nFROM upgrade_log \nWHERE upgradeType = 'Attribute'\nLIMIT 50",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT playerName, sourceType, sourceDetail, badgeOrAttribute, fromValue, toValue\nFROM upgrade_log \nWHERE upgradeType = 'Attribute'\nLIMIT 50",
+  "rows": [
+    {
+      "playerName": "Amen Thompson",
+      "sourceType": "Welcome",
+      "sourceDetail": "Welcomes upgrades",
+      "badgeOrAttribute": "3PT",
+      "fromValue": "69",
+      "toValue": "74"
+    },
+    {
+      "playerName": "Egor Demin",
+      "sourceType": "Welcome",
+      "sourceDetail": "Welcomes upgrades",
+      "badgeOrAttribute": "3PT",
+      "fromValue": "70",
+      "toValue": "73"
+    },
+    {
+      "playerName": "OG Anunoby",
+      "sourceType": "Game",
+      "sourceDetail": "14 game",
+      "badgeOrAttribute": "Steal",
+      "fromValue": "84",
+      "toValue": "85"
+    },
+    {
+      "playerName": "Terrence Shannon Jr.",
+      "sourceType": "Game",
+      "sourceDetail": "14 game",
+      "badgeOrAttribute": "Driving Dunk",
+      "fromValue": "85",
+      "toValue": "87"
+    },
+    {
+      "playerName": "Watkins",
+      "sourceType": "Welcome",
+      "sourceDetail": "Welcomes",
+      "badgeOrAttribute": "Perimeter Defense",
+      "fromValue": "69",
+      "toValue": "74"
+    },
+    {
+      "playerName": "Brandon Ingram",
+      "sourceType": "Welcome",
+      "sourceDetail": "Welcomes",
+      "badgeOrAttribute": "Driving Dunk",
+      "fromValue": "80",
+      "toValue": "83"
+    },
+    {
+      "playerName": "Jalen Johnson",
+      "sourceType": "Welcome",
+      "sourceDetail": "Welcome Upgrades",
+      "badgeOrAttribute": "3PT",
+      "fromValue": "74",
+      "toValue": "79"
+    },
+    {
+      "playerName": "Dyson Daniels",
+      "sourceType": "Welcome",
+      "sourceDetail": "Welcome Upgrades",
+      "badgeOrAttribute": "3PT",
+      "fromValue": "80",
+      "toValue": "83"
+    },
+    {
+      "playerName": "Cam Whitmore",
+      "sourceType": "Game",
+      "sourceDetail": "Cam Whitmore",
+      "badgeOrAttribute": "3PT",
+      "fromValue": "77",
+      "toValue": "80"
+    },
+    {
+      "playerName": "Shaedon Sharpe",
+      "sourceType": "Game",
+      "sourceDetail": "Sharpe",
+      "badgeOrAttribute": "Perimeter Defense",
+      "fromValue": "69",
+      "toValue": "71"
+    },
+    {
+      "playerName": "Shaedon Sharpe",
+      "sourceType": "Game",
+      "sourceDetail": "Sharpe",
+      "badgeOrAttribute": "3PT",
+      "fromValue": "77",
+      "toValue": "79"
+    },
+    {
+      "playerName": "Lonzo Ball",
+      "sourceType": "Game",
+      "sourceDetail": "7 attribute ug",
+      "badgeOrAttribute": "3PT",
+      "fromValue": "77",
+      "toValue": "80"
+    },
+    {
+      "playerName": "Jarrett Allen",
+      "sourceType": "Welcome",
+      "sourceDetail": "Welcome ug",
+      "badgeOrAttribute": "3PT",
+      "fromValue": "63",
+      "toValue": "68"
+    },
+    {
+      "playerName": "Precious Achiuwa",
+      "sourceType": "Welcome",
+      "sourceDetail": "Welcome ug",
+      "badgeOrAttribute": "Driving Dunk",
+      "fromValue": "80",
+      "toValue": "83"
+    },
+    {
+      "playerName": "Jalen Johnson",
+      "sourceType": "Game",
+      "sourceDetail": "7 Game Att UG",
+      "badgeOrAttribute": "3PT",
+      "fromValue": "79",
+      "toValue": "82"
+    },
+    {
+      "playerName": "Julius Randle",
+      "sourceType": "Game",
+      "sourceDetail": "Game 7 ug",
+      "badgeOrAttribute": "3PT",
+      "fromValue": "79",
+      "toValue": "82"
+    },
+    {
+      "playerName": "Robert Williams III",
+      "sourceType": "Game",
+      "sourceDetail": "Game 7",
+      "badgeOrAttribute": "Standing Dunk",
+      "fromValue": "80",
+      "toValue": "83"
+    },
+    {
+      "playerName": "Mouhamed Gueye",
+      "sourceType": "Game",
+      "sourceDetail": "7-Game Attribute UG",
+      "badgeOrAttribute": "3PT",
+      "fromValue": "63",
+      "toValue": "66"
+    },
+    {
+      "playerName": "Anthony Black",
+      "sourceType": "Welcome",
+      "sourceDetail": "Welcomes",
+      "badgeOrAttribute": "3PT",
+      "fromValue": "79",
+      "toValue": "82"
+    },
+    {
+      "playerName": "Donovan Clingan",
+      "sourceType": "Welcome",
+      "sourceDetail": "Welcomes",
+      "badgeOrAttribute": "3PT",
+      "fromValue": "71",
+      "toValue": "76"
+    },
+    {
+      "playerName": "Ousmane Dieng",
+      "sourceType": "Welcome",
+      "sourceDetail": "welcome ups",
+      "badgeOrAttribute": "3PT",
+      "fromValue": "68",
+      "toValue": "70"
+    },
+    {
+      "playerName": "Ousmane Dieng",
+      "sourceType": "Welcome",
+      "sourceDetail": "welcome ups",
+      "badgeOrAttribute": "Perimeter Defense",
+      "fromValue": "68",
+      "toValue": "71"
+    },
+    {
+      "playerName": "Micah Peavy",
+      "sourceType": "Welcome",
+      "sourceDetail": "welcome ups",
+      "badgeOrAttribute": "Perimeter Defense",
+      "fromValue": "71",
+      "toValue": "74"
+    },
+    {
+      "playerName": "Evan Mobley",
+      "sourceType": "Welcome",
+      "sourceDetail": "Welcome UG's",
+      "badgeOrAttribute": "3PT",
+      "fromValue": "80",
+      "toValue": "84"
+    },
+    {
+      "playerName": "Donte DiVincenzo",
+      "sourceType": "Welcome",
+      "sourceDetail": "Welcome UG's",
+      "badgeOrAttribute": "3PT",
+      "fromValue": "84",
+      "toValue": "85"
+    },
+    {
+      "playerName": "Goga Bitadze",
+      "sourceType": "Welcome",
+      "sourceDetail": "Welcome UG's",
+      "badgeOrAttribute": "3PT",
+      "fromValue": "69",
+      "toValue": "72"
+    },
+    {
+      "playerName": "Donovan Clingan",
+      "sourceType": "Game",
+      "sourceDetail": "game 7 att ug",
+      "badgeOrAttribute": "3PT",
+      "fromValue": "76",
+      "toValue": "79"
+    },
+    {
+      "playerName": "Watkins",
+      "sourceType": "Game",
+      "sourceDetail": "game 7 upgrades",
+      "badgeOrAttribute": "3PT",
+      "fromValue": "74",
+      "toValue": "77"
+    },
+    {
+      "playerName": "Stephon Castle",
+      "sourceType": "Welcome",
+      "sourceDetail": "Welcome upgrade",
+      "badgeOrAttribute": "3PT",
+      "fromValue": "78",
+      "toValue": "83"
+    },
+    {
+      "playerName": "Jamal Murray",
+      "sourceType": "Welcome",
+      "sourceDetail": "Welcome upgrade",
+      "badgeOrAttribute": "Driving Dunk",
+      "fromValue": "82",
+      "toValue": "85"
+    },
+    {
+      "playerName": "Zach Edey",
+      "sourceType": "Welcome",
+      "sourceDetail": "Welcome upgrades",
+      "badgeOrAttribute": "Interior Defense",
+      "fromValue": "79",
+      "toValue": "82"
+    },
+    {
+      "playerName": "Will Richard",
+      "sourceType": "Welcome",
+      "sourceDetail": "Welcome upgrades",
+      "badgeOrAttribute": "Perimeter Defense",
+      "fromValue": "66",
+      "toValue": "71"
+    },
+    {
+      "playerName": "Will Richard",
+      "sourceType": "Game",
+      "sourceDetail": "Game 7 attr ug",
+      "badgeOrAttribute": "Perimeter Defense",
+      "fromValue": "71",
+      "toValue": "74"
+    },
+    {
+      "playerName": "Ousmane Dieng",
+      "sourceType": "Game",
+      "sourceDetail": "Game 7",
+      "badgeOrAttribute": "3PT",
+      "fromValue": "70",
+      "toValue": "72"
+    },
+    {
+      "playerName": "Micah Peavy",
+      "sourceType": "Game",
+      "sourceDetail": "Game 7",
+      "badgeOrAttribute": "Perimeter Defense",
+      "fromValue": "74",
+      "toValue": "75"
+    },
+    {
+      "playerName": "Micah Peavy",
+      "sourceType": "Rookie",
+      "sourceDetail": "10game rookie",
+      "badgeOrAttribute": "Perimeter Defense",
+      "fromValue": "75",
+      "toValue": "78"
+    },
+    {
+      "playerName": "Jordan Poole",
+      "sourceType": "Game",
+      "sourceDetail": "Game 7 attribute ugs",
+      "badgeOrAttribute": "3PT",
+      "fromValue": "81",
+      "toValue": "84"
+    },
+    {
+      "playerName": "Shaedon Sharpe",
+      "sourceType": "Game",
+      "sourceDetail": "Game 7",
+      "badgeOrAttribute": "3PT",
+      "fromValue": "79",
+      "toValue": "82"
+    },
+    {
+      "playerName": "Ousmane Dieng",
+      "sourceType": "Game",
+      "sourceDetail": "Game 14",
+      "badgeOrAttribute": "3PT",
+      "fromValue": "72",
+      "toValue": "74"
+    },
+    {
+      "playerName": "Micah Peavy",
+      "sourceType": "Game",
+      "sourceDetail": "Game 14",
+      "badgeOrAttribute": "Perimeter Defense",
+      "fromValue": "78",
+      "toValue": "79"
+    },
+    {
+      "playerName": "Collin Murray-Boyles",
+      "sourceType": "Game",
+      "sourceDetail": "10 game",
+      "badgeOrAttribute": "Perimeter Defense",
+      "fromValue": "74",
+      "toValue": "77"
+    },
+    {
+      "playerName": "Sion James",
+      "sourceType": "OG",
+      "sourceDetail": "10 sum",
+      "badgeOrAttribute": "Perimeter Defense",
+      "fromValue": "72",
+      "toValue": "75"
+    },
+    {
+      "playerName": "Jalen Suggs",
+      "sourceType": "Game",
+      "sourceDetail": "Game 14",
+      "badgeOrAttribute": "Midrange",
+      "fromValue": "83",
+      "toValue": "86"
+    },
+    {
+      "playerName": "Dejounte Murray",
+      "sourceType": "Game",
+      "sourceDetail": "Game 7 att UG",
+      "badgeOrAttribute": "3PT",
+      "fromValue": "79",
+      "toValue": "82"
+    },
+    {
+      "playerName": "Ben Simmons",
+      "sourceType": "Welcome",
+      "sourceDetail": "Welcome upgrades",
+      "badgeOrAttribute": "Perimeter Defense",
+      "fromValue": "82",
+      "toValue": "83"
+    },
+    {
+      "playerName": "Ben Simmons",
+      "sourceType": "Welcome",
+      "sourceDetail": "Welcome upgrades",
+      "badgeOrAttribute": "Driving Dunk",
+      "fromValue": "86",
+      "toValue": "87"
+    },
+    {
+      "playerName": "Ben Simmons",
+      "sourceType": "Welcome",
+      "sourceDetail": "Welcome upgrades",
+      "badgeOrAttribute": "Defensive Rebound",
+      "fromValue": "77",
+      "toValue": "80"
+    },
+    {
+      "playerName": "Robert Williams III",
+      "sourceType": "Welcome",
+      "sourceDetail": "Welcome upgrades",
+      "badgeOrAttribute": "Midrange",
+      "fromValue": "69",
+      "toValue": "72"
+    },
+    {
+      "playerName": "Brandon Ingram",
+      "sourceType": "Game",
+      "sourceDetail": "game 14 upgrades",
+      "badgeOrAttribute": "Driving Dunk",
+      "fromValue": "83",
+      "toValue": "86"
+    },
+    {
+      "playerName": "Ja Morant",
+      "sourceType": "Game",
+      "sourceDetail": "14 game attr ug",
+      "badgeOrAttribute": "3PT",
+      "fromValue": "74",
+      "toValue": "77"
+    }
+  ],
+  "messages": [],
+  "stdout": "playerName\tsourceType\tsourceDetail\tbadgeOrAttribute\tfromValue\ttoValue\nAmen Thompson\tWelcome\tWelcomes upgrades\t3PT\t69\t74\nEgor Demin\tWelcome\tWelcomes upgrades\t3PT\t70\t73\nOG Anunoby\tGame\t14 game\tSteal\t84\t85\nTerrence Shannon Jr.\tGame\t14 game\tDriving Dunk\t85\t87\nWatkins\tWelcome\tWelcomes\tPerimeter Defense\t69\t74\nBrandon Ingram\tWelcome\tWelcomes\tDriving Dunk\t80\t83\nJalen Johnson\tWelcome\tWelcome Upgrades\t3PT\t74\t79\nDyson Daniels\tWelcome\tWelcome Upgrades\t3PT\t80\t83\nCam Whitmore\tGame\tCam Whitmore\t3PT\t77\t80\nShaedon Sharpe\tGame\tSharpe\tPerimeter Defense\t69\t71\nShaedon Sharpe\tGame\tSharpe\t3PT\t77\t79\nLonzo Ball\tGame\t7 attribute ug\t3PT\t77\t80\nJarrett Allen\tWelcome\tWelcome ug\t3PT\t63\t68\nPrecious Achiuwa\tWelcome\tWelcome ug\tDriving Dunk\t80\t83\nJalen Johnson\tGame\t7 Game Att UG\t3PT\t79\t82\nJulius Randle\tGame\tGame 7 ug\t3PT\t79\t82\nRobert Williams III\tGame\tGame 7\tStanding Dunk\t80\t83\nMouhamed Gueye\tGame\t7-Game Attribute UG\t3PT\t63\t66\nAnthony Black\tWelcome\tWelcomes\t3PT\t79\t82\nDonovan Clingan\tWelcome\tWelcomes\t3PT\t71\t76\nOusmane Dieng\tWelcome\twelcome ups\t3PT\t68\t70\nOusmane Dieng\tWelcome\twelcome ups\tPerimeter Defense\t68\t71\nMicah Peavy\tWelcome\twelcome ups\tPerimeter Defense\t71\t74\nEvan Mobley\tWelcome\tWelcome UG's\t3PT\t80\t84\nDonte DiVincenzo\tWelcome\tWelcome UG's\t3PT\t84\t85\nGoga Bitadze\tWelcome\tWelcome UG's\t3PT\t69\t72\nDonovan Clingan\tGame\tgame 7 att ug\t3PT\t76\t79\nWatkins\tGame\tgame 7 upgrades\t3PT\t74\t77\nStephon Castle\tWelcome\tWelcome upgrade\t3PT\t78\t83\nJamal Murray\tWelcome\tWelcome upgrade\tDriving Dunk\t82\t85\nZach Edey\tWelcome\tWelcome upgrades\tInterior Defense\t79\t82\nWill Richard\tWelcome\tWelcome upgrades\tPerimeter Defense\t66\t71\nWill Richard\tGame\tGame 7 attr ug\tPerimeter Defense\t71\t74\nOusmane Dieng\tGame\tGame 7\t3PT\t70\t72\nMicah Peavy\tGame\tGame 7\tPerimeter Defense\t74\t75\nMicah Peavy\tRookie\t10game rookie\tPerimeter Defense\t75\t78\nJordan Poole\tGame\tGame 7 attribute ugs\t3PT\t81\t84\nShaedon Sharpe\tGame\tGame 7\t3PT\t79\t82\nOusmane Dieng\tGame\tGame 14\t3PT\t72\t74\nMicah Peavy\tGame\tGame 14\tPerimeter Defense\t78\t79\nCollin Murray-Boyles\tGame\t10 game\tPerimeter Defense\t74\t77\nSion James\tOG\t10 sum\tPerimeter Defense\t72\t75\nJalen Suggs\tGame\tGame 14\tMidrange\t83\t86\nDejounte Murray\tGame\tGame 7 att UG\t3PT\t79\t82\nBen Simmons\tWelcome\tWelcome upgrades\tPerimeter Defense\t82\t83\nBen Simmons\tWelcome\tWelcome upgrades\tDriving Dunk\t86\t87\nBen Simmons\tWelcome\tWelcome upgrades\tDefensive Rebound\t77\t80\nRobert Williams III\tWelcome\tWelcome upgrades\tMidrange\t69\t72\nBrandon Ingram\tGame\tgame 14 upgrades\tDriving Dunk\t83\t86\nJa Morant\tGame\t14 game attr ug\t3PT\t74\t77\n",
+  "stderr": "",
+  "execution_time_ms": 51
+}

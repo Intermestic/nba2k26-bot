@@ -1,0 +1,9 @@
+{
+  "query": "UPDATE fa_bids SET playerName = 'Day''Ron Sharpe' WHERE playerName = 'Dayron Sharpe' AND windowId = '2025-01-15-PM'",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute UPDATE fa_bids SET playerName = 'Day''Ron Sharpe' WHERE playerName = 'Dayron Sharpe' AND windowId = '2025-01-15-PM'",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 1656
+}

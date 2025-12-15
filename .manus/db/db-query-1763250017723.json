@@ -1,0 +1,20 @@
+{
+  "query": "SELECT * FROM bid_windows WHERE windowId LIKE '%-PM' ORDER BY startTime DESC LIMIT 1",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT * FROM bid_windows WHERE windowId LIKE '%-PM' ORDER BY startTime DESC LIMIT 1",
+  "rows": [
+    {
+      "id": "30001",
+      "windowId": "2025-11-15-PM",
+      "startTime": "2025-11-15 17:00:00",
+      "endTime": "2025-11-16 04:50:00",
+      "status": "active",
+      "statusMessageId": "1439398029873381608",
+      "createdAt": "2025-11-15 17:00:02",
+      "updatedAt": "2025-11-15 23:33:53"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\twindowId\tstartTime\tendTime\tstatus\tstatusMessageId\tcreatedAt\tupdatedAt\n30001\t2025-11-15-PM\t2025-11-15 17:00:00\t2025-11-16 04:50:00\tactive\t1439398029873381608\t2025-11-15 17:00:02\t2025-11-15 23:33:53\n",
+  "stderr": "",
+  "execution_time_ms": 1677
+}

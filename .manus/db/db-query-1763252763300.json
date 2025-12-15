@@ -1,0 +1,91 @@
+{
+  "query": "\nSELECT team FROM team_assignments ORDER BY team;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute \nSELECT team FROM team_assignments ORDER BY team;\n",
+  "rows": [
+    {
+      "team": "Bucks"
+    },
+    {
+      "team": "Bulls"
+    },
+    {
+      "team": "Cavaliers"
+    },
+    {
+      "team": "Celtics"
+    },
+    {
+      "team": "Hawks"
+    },
+    {
+      "team": "Heat"
+    },
+    {
+      "team": "Hornets"
+    },
+    {
+      "team": "Jazz"
+    },
+    {
+      "team": "Kings"
+    },
+    {
+      "team": "Knicks"
+    },
+    {
+      "team": "Lakers"
+    },
+    {
+      "team": "Magic"
+    },
+    {
+      "team": "Mavs"
+    },
+    {
+      "team": "Nets"
+    },
+    {
+      "team": "Nuggets"
+    },
+    {
+      "team": "Pacers"
+    },
+    {
+      "team": "Pelicans"
+    },
+    {
+      "team": "Pistons"
+    },
+    {
+      "team": "Raptors"
+    },
+    {
+      "team": "Rockets"
+    },
+    {
+      "team": "Sixers"
+    },
+    {
+      "team": "Spurs"
+    },
+    {
+      "team": "Suns"
+    },
+    {
+      "team": "Timberwolves"
+    },
+    {
+      "team": "Trail Blazers"
+    },
+    {
+      "team": "Warriors"
+    },
+    {
+      "team": "Wizards"
+    }
+  ],
+  "messages": [],
+  "stdout": "team\nBucks\nBulls\nCavaliers\nCeltics\nHawks\nHeat\nHornets\nJazz\nKings\nKnicks\nLakers\nMagic\nMavs\nNets\nNuggets\nPacers\nPelicans\nPistons\nRaptors\nRockets\nSixers\nSpurs\nSuns\nTimberwolves\nTrail Blazers\nWarriors\nWizards\n",
+  "stderr": "",
+  "execution_time_ms": 1504
+}

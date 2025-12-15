@@ -1,0 +1,8 @@
+{
+  "query": "SELECT \n  COUNT(*) as total_upgrades,\n  COUNT(DISTINCT player_name) as unique_players,\n  COUNT(DISTINCT team_abbrev) as unique_teams,\n  MIN(timestamp) as earliest_upgrade,\n  MAX(timestamp) as latest_upgrade\nFROM upgrade_log;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT \n  COUNT(*) as total_upgrades,\n  COUNT(DISTINCT player_name) as unique_players,\n  COUNT(DISTINCT team_abbrev) as unique_teams,\n  MIN(timestamp) as earliest_upgrade,\n  MAX(timestamp) as latest_upgrade\nFROM upgrade_log;",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1054 (42S22) at line 1: Unknown column 'player_name' in ''"
+  ]
+}

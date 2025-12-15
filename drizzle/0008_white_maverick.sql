@@ -1,0 +1,1 @@
+ALTER TABLE `discord_config` ADD `lastNotificationMessageId` varchar(64);

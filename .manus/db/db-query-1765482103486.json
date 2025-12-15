@@ -1,0 +1,9 @@
+{
+  "query": "SELECT id, messageId, team1, team2, team1Players, team2Players, status, upvotes, downvotes, createdAt, processedAt, reversedAt \nFROM trades \nWHERE team1Players LIKE '%Zach LaVine%' OR team2Players LIKE '%Zach LaVine%'\n   OR team1Players LIKE '%Luguentz Dort%' OR team2Players LIKE '%Luguentz Dort%'\nORDER BY createdAt DESC \nLIMIT 10",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT id, messageId, team1, team2, team1Players, team2Players, status, upvotes, downvotes, createdAt, processedAt, reversedAt \nFROM trades \nWHERE team1Players LIKE '%Zach LaVine%' OR team2Players LIKE '%Zach LaVine%'\n   OR team1Players LIKE '%Luguentz Dort%' OR team2Players LIKE '%Luguentz Dort%'\nORDER BY createdAt DESC \nLIMIT 10",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 1581
+}

@@ -1,0 +1,38 @@
+{
+  "query": "SELECT playerName, team, bidAmount, dropPlayer, createdAt \nFROM fa_bids \nWHERE windowId = '2025-01-15-PM' AND playerName LIKE '%Sharpe%'\nORDER BY bidAmount DESC, createdAt DESC",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT playerName, team, bidAmount, dropPlayer, createdAt \nFROM fa_bids \nWHERE windowId = '2025-01-15-PM' AND playerName LIKE '%Sharpe%'\nORDER BY bidAmount DESC, createdAt DESC",
+  "rows": [
+    {
+      "playerName": "Day'Ron Sharpe",
+      "team": "Rockets",
+      "bidAmount": "35",
+      "dropPlayer": "Hunter Dickinson",
+      "createdAt": "2025-01-15 15:48:00"
+    },
+    {
+      "playerName": "Day'Ron Sharpe",
+      "team": "Raptors",
+      "bidAmount": "29",
+      "dropPlayer": "Alex Len",
+      "createdAt": "2025-01-15 15:34:00"
+    },
+    {
+      "playerName": "Day'Ron Sharpe",
+      "team": "Rockets",
+      "bidAmount": "25",
+      "dropPlayer": "Hunter Dickinson",
+      "createdAt": "2025-01-15 11:58:00"
+    },
+    {
+      "playerName": "Day'Ron Sharpe",
+      "team": "Hawks",
+      "bidAmount": "1",
+      "dropPlayer": "Terrance Mann",
+      "createdAt": "2025-01-15 11:49:00"
+    }
+  ],
+  "messages": [],
+  "stdout": "playerName\tteam\tbidAmount\tdropPlayer\tcreatedAt\nDay'Ron Sharpe\tRockets\t35\tHunter Dickinson\t2025-01-15 15:48:00\nDay'Ron Sharpe\tRaptors\t29\tAlex Len\t2025-01-15 15:34:00\nDay'Ron Sharpe\tRockets\t25\tHunter Dickinson\t2025-01-15 11:58:00\nDay'Ron Sharpe\tHawks\t1\tTerrance Mann\t2025-01-15 11:49:00\n",
+  "stderr": "",
+  "execution_time_ms": 1565
+}

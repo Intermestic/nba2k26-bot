@@ -1,0 +1,85 @@
+{
+  "query": "SELECT COLUMN_NAME, DATA_TYPE, COLUMN_KEY FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'players' ORDER BY ORDINAL_POSITION;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT COLUMN_NAME, DATA_TYPE, COLUMN_KEY FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'players' ORDER BY ORDINAL_POSITION;",
+  "rows": [
+    {
+      "COLUMN_NAME": "id",
+      "DATA_TYPE": "varchar",
+      "COLUMN_KEY": "PRI"
+    },
+    {
+      "COLUMN_NAME": "name",
+      "DATA_TYPE": "varchar",
+      "COLUMN_KEY": ""
+    },
+    {
+      "COLUMN_NAME": "overall",
+      "DATA_TYPE": "int",
+      "COLUMN_KEY": ""
+    },
+    {
+      "COLUMN_NAME": "photoUrl",
+      "DATA_TYPE": "text",
+      "COLUMN_KEY": ""
+    },
+    {
+      "COLUMN_NAME": "playerPageUrl",
+      "DATA_TYPE": "text",
+      "COLUMN_KEY": ""
+    },
+    {
+      "COLUMN_NAME": "nbaId",
+      "DATA_TYPE": "varchar",
+      "COLUMN_KEY": ""
+    },
+    {
+      "COLUMN_NAME": "source",
+      "DATA_TYPE": "varchar",
+      "COLUMN_KEY": ""
+    },
+    {
+      "COLUMN_NAME": "badgeCount",
+      "DATA_TYPE": "int",
+      "COLUMN_KEY": ""
+    },
+    {
+      "COLUMN_NAME": "createdAt",
+      "DATA_TYPE": "timestamp",
+      "COLUMN_KEY": ""
+    },
+    {
+      "COLUMN_NAME": "updatedAt",
+      "DATA_TYPE": "timestamp",
+      "COLUMN_KEY": ""
+    },
+    {
+      "COLUMN_NAME": "team",
+      "DATA_TYPE": "varchar",
+      "COLUMN_KEY": ""
+    },
+    {
+      "COLUMN_NAME": "salaryCap",
+      "DATA_TYPE": "int",
+      "COLUMN_KEY": ""
+    },
+    {
+      "COLUMN_NAME": "height",
+      "DATA_TYPE": "varchar",
+      "COLUMN_KEY": ""
+    },
+    {
+      "COLUMN_NAME": "isRookie",
+      "DATA_TYPE": "int",
+      "COLUMN_KEY": ""
+    },
+    {
+      "COLUMN_NAME": "draftYear",
+      "DATA_TYPE": "int",
+      "COLUMN_KEY": ""
+    }
+  ],
+  "messages": [],
+  "stdout": "COLUMN_NAME\tDATA_TYPE\tCOLUMN_KEY\nid\tvarchar\tPRI\nname\tvarchar\t\noverall\tint\t\nphotoUrl\ttext\t\nplayerPageUrl\ttext\t\nnbaId\tvarchar\t\nsource\tvarchar\t\nbadgeCount\tint\t\ncreatedAt\ttimestamp\t\nupdatedAt\ttimestamp\t\nteam\tvarchar\t\nsalaryCap\tint\t\nheight\tvarchar\t\nisRookie\tint\t\ndraftYear\tint\t\n",
+  "stderr": "",
+  "execution_time_ms": 1548
+}

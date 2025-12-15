@@ -1,0 +1,17 @@
+{
+  "query": "SELECT * FROM team_coins WHERE team = '76ers'",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT * FROM team_coins WHERE team = '76ers'",
+  "rows": [
+    {
+      "id": "24",
+      "team": "76ers",
+      "coinsRemaining": "0",
+      "createdAt": "2025-11-15 00:57:45",
+      "updatedAt": "2025-11-15 19:44:51"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tteam\tcoinsRemaining\tcreatedAt\tupdatedAt\n24\t76ers\t0\t2025-11-15 00:57:45\t2025-11-15 19:44:51\n",
+  "stderr": "",
+  "execution_time_ms": 1648
+}

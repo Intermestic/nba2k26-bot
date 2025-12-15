@@ -1,0 +1,52 @@
+{
+  "query": "SELECT id, name, team, overall FROM players WHERE name IN ('Zion Williamson', 'Ausar Thompson', 'Shaedon Sharpe', 'Aden Bona', 'Trae Young', 'Alex Caruso', 'Zach Edey', 'Deandre Jordan');",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT id, name, team, overall FROM players WHERE name IN ('Zion Williamson', 'Ausar Thompson', 'Shaedon Sharpe', 'Aden Bona', 'Trae Young', 'Alex Caruso', 'Zach Edey', 'Deandre Jordan');",
+  "rows": [
+    {
+      "id": "P0090",
+      "name": "Alex Caruso",
+      "team": "Hawks",
+      "overall": "80"
+    },
+    {
+      "id": "P0158",
+      "name": "Zach Edey",
+      "team": "Hawks",
+      "overall": "79"
+    },
+    {
+      "id": "P0298",
+      "name": "Deandre Jordan",
+      "team": "Hawks",
+      "overall": "74"
+    },
+    {
+      "id": "P0525",
+      "name": "Shaedon Sharpe",
+      "team": "Rockets",
+      "overall": "81"
+    },
+    {
+      "id": "P0566",
+      "name": "Ausar Thompson",
+      "team": "Mavs",
+      "overall": "82"
+    },
+    {
+      "id": "P0628",
+      "name": "Zion Williamson",
+      "team": "Mavs",
+      "overall": "87"
+    },
+    {
+      "id": "P0637",
+      "name": "Trae Young",
+      "team": "Mavs",
+      "overall": "88"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\tteam\toverall\nP0090\tAlex Caruso\tHawks\t80\nP0158\tZach Edey\tHawks\t79\nP0298\tDeandre Jordan\tHawks\t74\nP0525\tShaedon Sharpe\tRockets\t81\nP0566\tAusar Thompson\tMavs\t82\nP0628\tZion Williamson\tMavs\t87\nP0637\tTrae Young\tMavs\t88\n",
+  "stderr": "",
+  "execution_time_ms": 56
+}

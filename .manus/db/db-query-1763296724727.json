@@ -1,0 +1,28 @@
+{
+  "query": "SELECT id, name, overall, team, isRookie, draftYear, photoUrl FROM players WHERE name = 'Ace Bailey';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT id, name, overall, team, isRookie, draftYear, photoUrl FROM players WHERE name = 'Ace Bailey';",
+  "rows": [
+    {
+      "id": "P0021",
+      "name": "Ace Bailey",
+      "overall": "73",
+      "team": "Pelicans",
+      "isRookie": "0",
+      "draftYear": "NULL",
+      "photoUrl": "https://cdn.nba.com/headshots/nba/latest/1040x760/1642846.png"
+    },
+    {
+      "id": "ace-bailey",
+      "name": "Ace Bailey",
+      "overall": "73",
+      "team": "NULL",
+      "isRookie": "1",
+      "draftYear": "2025",
+      "photoUrl": "NULL"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\toverall\tteam\tisRookie\tdraftYear\tphotoUrl\nP0021\tAce Bailey\t73\tPelicans\t0\tNULL\thttps://cdn.nba.com/headshots/nba/latest/1040x760/1642846.png\nace-bailey\tAce Bailey\t73\tNULL\t1\t2025\tNULL\n",
+  "stderr": "",
+  "execution_time_ms": 1557
+}

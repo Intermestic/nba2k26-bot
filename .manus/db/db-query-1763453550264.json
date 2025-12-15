@@ -1,0 +1,18 @@
+{
+  "query": "SELECT * FROM trade_votes ORDER BY processedAt DESC LIMIT 10",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT * FROM trade_votes ORDER BY processedAt DESC LIMIT 10",
+  "rows": [
+    {
+      "id": "1",
+      "messageId": "1440189781500891176",
+      "upvotes": "7",
+      "downvotes": "3",
+      "approved": "1",
+      "processedAt": "2025-11-18 08:11:21"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tmessageId\tupvotes\tdownvotes\tapproved\tprocessedAt\n1\t1440189781500891176\t7\t3\t1\t2025-11-18 08:11:21\n",
+  "stderr": "",
+  "execution_time_ms": 63
+}

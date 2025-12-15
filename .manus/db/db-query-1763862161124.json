@@ -1,0 +1,90 @@
+{
+  "query": "SELECT * FROM trade_votes LIMIT 10",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT * FROM trade_votes LIMIT 10",
+  "rows": [
+    {
+      "id": "1",
+      "messageId": "1440189781500891176",
+      "upvotes": "7",
+      "downvotes": "3",
+      "approved": "1",
+      "processedAt": "2025-11-18 08:11:21"
+    },
+    {
+      "id": "30001",
+      "messageId": "1440245839476949072",
+      "upvotes": "7",
+      "downvotes": "2",
+      "approved": "1",
+      "processedAt": "2025-11-18 13:15:19"
+    },
+    {
+      "id": "60001",
+      "messageId": "1440400202438803486",
+      "upvotes": "7",
+      "downvotes": "2",
+      "approved": "1",
+      "processedAt": "2025-11-18 20:52:38"
+    },
+    {
+      "id": "90001",
+      "messageId": "1440609228552405082",
+      "upvotes": "0",
+      "downvotes": "5",
+      "approved": "0",
+      "processedAt": "2025-11-19 07:51:12"
+    },
+    {
+      "id": "120001",
+      "messageId": "1440825868355240177",
+      "upvotes": "7",
+      "downvotes": "0",
+      "approved": "1",
+      "processedAt": "2025-11-19 22:14:22"
+    },
+    {
+      "id": "150001",
+      "messageId": "1441034839829512295",
+      "upvotes": "7",
+      "downvotes": "3",
+      "approved": "1",
+      "processedAt": "2025-11-20 18:43:38"
+    },
+    {
+      "id": "150002",
+      "messageId": "1441143776298012673",
+      "upvotes": "7",
+      "downvotes": "0",
+      "approved": "1",
+      "processedAt": "2025-11-20 19:33:45"
+    },
+    {
+      "id": "180001",
+      "messageId": "1441146684481605805",
+      "upvotes": "7",
+      "downvotes": "0",
+      "approved": "1",
+      "processedAt": "2025-11-20 20:12:31"
+    },
+    {
+      "id": "210001",
+      "messageId": "1441331767704420403",
+      "upvotes": "7",
+      "downvotes": "1",
+      "approved": "1",
+      "processedAt": "2025-11-21 16:26:19"
+    },
+    {
+      "id": "240001",
+      "messageId": "1441543876157636649",
+      "upvotes": "0",
+      "downvotes": "5",
+      "approved": "0",
+      "processedAt": "2025-11-21 21:43:46"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tmessageId\tupvotes\tdownvotes\tapproved\tprocessedAt\n1\t1440189781500891176\t7\t3\t1\t2025-11-18 08:11:21\n30001\t1440245839476949072\t7\t2\t1\t2025-11-18 13:15:19\n60001\t1440400202438803486\t7\t2\t1\t2025-11-18 20:52:38\n90001\t1440609228552405082\t0\t5\t0\t2025-11-19 07:51:12\n120001\t1440825868355240177\t7\t0\t1\t2025-11-19 22:14:22\n150001\t1441034839829512295\t7\t3\t1\t2025-11-20 18:43:38\n150002\t1441143776298012673\t7\t0\t1\t2025-11-20 19:33:45\n180001\t1441146684481605805\t7\t0\t1\t2025-11-20 20:12:31\n210001\t1441331767704420403\t7\t1\t1\t2025-11-21 16:26:19\n240001\t1441543876157636649\t0\t5\t0\t2025-11-21 21:43:46\n",
+  "stderr": "",
+  "execution_time_ms": 54
+}

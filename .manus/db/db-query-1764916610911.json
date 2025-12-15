@@ -1,0 +1,15 @@
+{
+  "query": "SELECT name, overall, team FROM players WHERE LOWER(name) LIKE '%dereck%lively%'",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT name, overall, team FROM players WHERE LOWER(name) LIKE '%dereck%lively%'",
+  "rows": [
+    {
+      "name": "Dereck Lively II",
+      "overall": "79",
+      "team": "Sixers"
+    }
+  ],
+  "messages": [],
+  "stdout": "name\toverall\tteam\nDereck Lively II\t79\tSixers\n",
+  "stderr": "",
+  "execution_time_ms": 53
+}

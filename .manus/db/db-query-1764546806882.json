@@ -1,0 +1,45 @@
+{
+  "query": "SELECT playerName, upgradeType, badgeOrAttribute, fromValue, toValue FROM upgrade_log WHERE playerName IN ('De''Aaron Fox', 'Egor Demin', 'Kristaps Porzingis', 'Berringer') AND upgradeType = 'Attribute' ORDER BY playerName, badgeOrAttribute",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT playerName, upgradeType, badgeOrAttribute, fromValue, toValue FROM upgrade_log WHERE playerName IN ('De''Aaron Fox', 'Egor Demin', 'Kristaps Porzingis', 'Berringer') AND upgradeType = 'Attribute' ORDER BY playerName, badgeOrAttribute",
+  "rows": [
+    {
+      "playerName": "De'Aaron Fox",
+      "upgradeType": "Attribute",
+      "badgeOrAttribute": "3PT",
+      "fromValue": "80",
+      "toValue": "83"
+    },
+    {
+      "playerName": "Egor Demin",
+      "upgradeType": "Attribute",
+      "badgeOrAttribute": "3PT",
+      "fromValue": "70",
+      "toValue": "73"
+    },
+    {
+      "playerName": "Egor Demin",
+      "upgradeType": "Attribute",
+      "badgeOrAttribute": "3PT",
+      "fromValue": "73",
+      "toValue": "76"
+    },
+    {
+      "playerName": "Kristaps Porzingis",
+      "upgradeType": "Attribute",
+      "badgeOrAttribute": "Interior Defense",
+      "fromValue": "75",
+      "toValue": "76"
+    },
+    {
+      "playerName": "Kristaps Porzingis",
+      "upgradeType": "Attribute",
+      "badgeOrAttribute": "Post Control",
+      "fromValue": "85",
+      "toValue": "87"
+    }
+  ],
+  "messages": [],
+  "stdout": "playerName\tupgradeType\tbadgeOrAttribute\tfromValue\ttoValue\nDe'Aaron Fox\tAttribute\t3PT\t80\t83\nEgor Demin\tAttribute\t3PT\t70\t73\nEgor Demin\tAttribute\t3PT\t73\t76\nKristaps Porzingis\tAttribute\tInterior Defense\t75\t76\nKristaps Porzingis\tAttribute\tPost Control\t85\t87\n",
+  "stderr": "",
+  "execution_time_ms": 98
+}

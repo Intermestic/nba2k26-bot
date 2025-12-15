@@ -1,0 +1,130 @@
+{
+  "query": "SELECT team, COUNT(*) as player_count FROM players GROUP BY team ORDER BY team",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT team, COUNT(*) as player_count FROM players GROUP BY team ORDER BY team",
+  "rows": [
+    {
+      "team": "Bucks",
+      "player_count": "14"
+    },
+    {
+      "team": "Bulls",
+      "player_count": "13"
+    },
+    {
+      "team": "Cavaliers",
+      "player_count": "14"
+    },
+    {
+      "team": "Celtics",
+      "player_count": "14"
+    },
+    {
+      "team": "Free Agents",
+      "player_count": "251"
+    },
+    {
+      "team": "Grizzlies",
+      "player_count": "14"
+    },
+    {
+      "team": "Hawks",
+      "player_count": "14"
+    },
+    {
+      "team": "Heat",
+      "player_count": "14"
+    },
+    {
+      "team": "Hornets",
+      "player_count": "14"
+    },
+    {
+      "team": "Jazz",
+      "player_count": "14"
+    },
+    {
+      "team": "Kings",
+      "player_count": "14"
+    },
+    {
+      "team": "Knicks",
+      "player_count": "14"
+    },
+    {
+      "team": "Lakers",
+      "player_count": "14"
+    },
+    {
+      "team": "Magic",
+      "player_count": "14"
+    },
+    {
+      "team": "Mavericks",
+      "player_count": "13"
+    },
+    {
+      "team": "Mavs",
+      "player_count": "1"
+    },
+    {
+      "team": "Nets",
+      "player_count": "14"
+    },
+    {
+      "team": "Nuggets",
+      "player_count": "14"
+    },
+    {
+      "team": "Pacers",
+      "player_count": "14"
+    },
+    {
+      "team": "Pelicans",
+      "player_count": "14"
+    },
+    {
+      "team": "Pistons",
+      "player_count": "14"
+    },
+    {
+      "team": "Raptors",
+      "player_count": "14"
+    },
+    {
+      "team": "Rockets",
+      "player_count": "14"
+    },
+    {
+      "team": "Sixers",
+      "player_count": "14"
+    },
+    {
+      "team": "Spurs",
+      "player_count": "14"
+    },
+    {
+      "team": "Suns",
+      "player_count": "14"
+    },
+    {
+      "team": "Timberwolves",
+      "player_count": "14"
+    },
+    {
+      "team": "Trail Blazers",
+      "player_count": "15"
+    },
+    {
+      "team": "Warriors",
+      "player_count": "14"
+    },
+    {
+      "team": "Wizards",
+      "player_count": "14"
+    }
+  ],
+  "messages": [],
+  "stdout": "team\tplayer_count\nBucks\t14\nBulls\t13\nCavaliers\t14\nCeltics\t14\nFree Agents\t251\nGrizzlies\t14\nHawks\t14\nHeat\t14\nHornets\t14\nJazz\t14\nKings\t14\nKnicks\t14\nLakers\t14\nMagic\t14\nMavericks\t13\nMavs\t1\nNets\t14\nNuggets\t14\nPacers\t14\nPelicans\t14\nPistons\t14\nRaptors\t14\nRockets\t14\nSixers\t14\nSpurs\t14\nSuns\t14\nTimberwolves\t14\nTrail Blazers\t15\nWarriors\t14\nWizards\t14\n",
+  "stderr": "",
+  "execution_time_ms": 1647
+}

@@ -1,0 +1,30 @@
+{
+  "query": "SELECT playerId, playerName, alias FROM player_aliases WHERE playerId IN ('1628368', '1642856', '204001', '1642866') ORDER BY playerName",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT playerId, playerName, alias FROM player_aliases WHERE playerId IN ('1628368', '1642856', '204001', '1642866') ORDER BY playerName",
+  "rows": [
+    {
+      "playerId": "1628368",
+      "playerName": "De'Aaron Fox",
+      "alias": "De'Aaron Fox"
+    },
+    {
+      "playerId": "1642856",
+      "playerName": "Egor Dëmin",
+      "alias": "Egor Demin"
+    },
+    {
+      "playerId": "1642866",
+      "playerName": "Joan Beringer",
+      "alias": "Berringer"
+    },
+    {
+      "playerId": "204001",
+      "playerName": "Kristaps Porziņģis",
+      "alias": "Kristaps Porzingis"
+    }
+  ],
+  "messages": [],
+  "stdout": "playerId\tplayerName\talias\n1628368\tDe'Aaron Fox\tDe'Aaron Fox\n1642856\tEgor Dëmin\tEgor Demin\n1642866\tJoan Beringer\tBerringer\n204001\tKristaps Porziņģis\tKristaps Porzingis\n",
+  "stderr": "",
+  "execution_time_ms": 50
+}

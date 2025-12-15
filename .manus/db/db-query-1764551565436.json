@@ -1,0 +1,58 @@
+{
+  "query": "SELECT alias, playerName FROM player_aliases WHERE alias IN ('Cooper', 'Berringer', 'Fox', 'Porzingis', 'Ja', 'Donovan', 'Devin', 'Jalen Williams', 'Jalen Johnson', 'Jalen Green', 'Jalen Duren', 'Jalen Brunson') ORDER BY alias",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT alias, playerName FROM player_aliases WHERE alias IN ('Cooper', 'Berringer', 'Fox', 'Porzingis', 'Ja', 'Donovan', 'Devin', 'Jalen Williams', 'Jalen Johnson', 'Jalen Green', 'Jalen Duren', 'Jalen Brunson') ORDER BY alias",
+  "rows": [
+    {
+      "alias": "Berringer",
+      "playerName": "Joan Beringer"
+    },
+    {
+      "alias": "Cooper",
+      "playerName": "Cooper Flagg"
+    },
+    {
+      "alias": "Devin",
+      "playerName": "Devin Booker"
+    },
+    {
+      "alias": "Donovan",
+      "playerName": "Donovan Mitchell"
+    },
+    {
+      "alias": "Fox",
+      "playerName": "De'Aaron Fox"
+    },
+    {
+      "alias": "Ja",
+      "playerName": "Ja Morant"
+    },
+    {
+      "alias": "Jalen Brunson",
+      "playerName": "Jalen Brunson"
+    },
+    {
+      "alias": "Jalen Duren",
+      "playerName": "Jalen Duren"
+    },
+    {
+      "alias": "Jalen Green",
+      "playerName": "Jalen Green"
+    },
+    {
+      "alias": "Jalen Johnson",
+      "playerName": "Jalen Johnson"
+    },
+    {
+      "alias": "Jalen Williams",
+      "playerName": "Jalen Williams"
+    },
+    {
+      "alias": "Porzingis",
+      "playerName": "Kristaps Porziņģis"
+    }
+  ],
+  "messages": [],
+  "stdout": "alias\tplayerName\nBerringer\tJoan Beringer\nCooper\tCooper Flagg\nDevin\tDevin Booker\nDonovan\tDonovan Mitchell\nFox\tDe'Aaron Fox\nJa\tJa Morant\nJalen Brunson\tJalen Brunson\nJalen Duren\tJalen Duren\nJalen Green\tJalen Green\nJalen Johnson\tJalen Johnson\nJalen Williams\tJalen Williams\nPorzingis\tKristaps Porziņģis\n",
+  "stderr": "",
+  "execution_time_ms": 50
+}
