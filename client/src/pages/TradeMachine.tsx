@@ -134,13 +134,14 @@ export default function TradeMachine() {
   const team2TotalOvr = team2PlayersWithBadges.reduce((sum, p) => sum + p.overall, 0);
   const team2TotalBadges = team2PlayersWithBadges.reduce((sum, p) => sum + p.badges, 0);
 
+  // Check if all selected players have badge counts entered (including 0 as valid)
   const canConfirmTrade =
     team1 &&
     team2 &&
     team1SelectedPlayers.size > 0 &&
     team2SelectedPlayers.size > 0 &&
-    Array.from(team1SelectedPlayers).every((id) => playerBadges.has(id)) &&
-    Array.from(team2SelectedPlayers).every((id) => playerBadges.has(id));
+    Array.from(team1SelectedPlayers).every((id) => playerBadges.has(id) && playerBadges.get(id) !== undefined) &&
+    Array.from(team2SelectedPlayers).every((id) => playerBadges.has(id) && playerBadges.get(id) !== undefined);
 
   const handleConfirmTrade = () => {
     setShowConfirmDialog(true);
@@ -291,10 +292,18 @@ export default function TradeMachine() {
                               type="number"
                               min="0"
                               placeholder="0"
-                              value={playerBadges.get(player.id) || ""}
-                              onChange={(e) =>
-                                setBadgeCount(player.id, parseInt(e.target.value) || 0)
-                              }
+                              value={playerBadges.get(player.id) ?? ""}
+                              onChange={(e) => {
+                                const val = e.target.value;
+                                // Always set the badge count, even for 0
+                                setBadgeCount(player.id, val === "" ? 0 : parseInt(val, 10) || 0);
+                              }}
+                              onBlur={(e) => {
+                                // Ensure badge is set on blur even if empty
+                                if (!playerBadges.has(player.id)) {
+                                  setBadgeCount(player.id, parseInt(e.target.value, 10) || 0);
+                                }
+                              }}
                               className="w-20 h-8"
                             />
                             <a
@@ -403,10 +412,18 @@ export default function TradeMachine() {
                               type="number"
                               min="0"
                               placeholder="0"
-                              value={playerBadges.get(player.id) || ""}
-                              onChange={(e) =>
-                                setBadgeCount(player.id, parseInt(e.target.value) || 0)
-                              }
+                              value={playerBadges.get(player.id) ?? ""}
+                              onChange={(e) => {
+                                const val = e.target.value;
+                                // Always set the badge count, even for 0
+                                setBadgeCount(player.id, val === "" ? 0 : parseInt(val, 10) || 0);
+                              }}
+                              onBlur={(e) => {
+                                // Ensure badge is set on blur even if empty
+                                if (!playerBadges.has(player.id)) {
+                                  setBadgeCount(player.id, parseInt(e.target.value, 10) || 0);
+                                }
+                              }}
                               className="w-20 h-8"
                             />
                             <a
