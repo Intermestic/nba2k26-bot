@@ -80,14 +80,36 @@ export async function postWindowCloseSummary(client: Client, retryCount = 0) {
     }
     
     // Add total coins footer
-    embed.setFooter({ text: `Total coins committed: $${totalCoins} | React with ⚡ to process bids` });
+    embed.setFooter({ text: `Total coins committed: $${totalCoins} | Processing bids automatically...` });
     
-    await (channel as TextChannel).send({ 
+    const summaryMessage = await (channel as TextChannel).send({ 
       content: '@everyone',
       embeds: [embed] 
     });
     
     console.log(`[Window Close] ✅ Successfully posted summary: ${bids.length} winning bids, $${totalCoins} total`);
+    
+    // Automatically process the winning bids
+    console.log('[Window Close] Auto-processing winning bids...');
+    try {
+      const processResult = await processBidsFromSummary(summaryMessage, 'AUTO_PROCESS');
+      if (processResult.success) {
+        console.log(`[Window Close] ✅ Auto-processing complete: ${processResult.message}`);
+        // Update the embed footer to show completion
+        embed.setFooter({ text: `Total coins committed: $${totalCoins} | ✅ Bids processed automatically` });
+        await summaryMessage.edit({ embeds: [embed] });
+      } else {
+        console.error(`[Window Close] ❌ Auto-processing failed: ${processResult.message}`);
+        // Update footer to show failure and allow manual retry
+        embed.setFooter({ text: `Total coins committed: $${totalCoins} | ❌ Auto-process failed - React with ⚡ to retry` });
+        await summaryMessage.edit({ embeds: [embed] });
+      }
+    } catch (processError: any) {
+      console.error('[Window Close] ❌ Error during auto-processing:', processError?.message || processError);
+      // Update footer to show error and allow manual retry
+      embed.setFooter({ text: `Total coins committed: $${totalCoins} | ❌ Auto-process error - React with ⚡ to retry` });
+      await summaryMessage.edit({ embeds: [embed] });
+    }
   } catch (error: any) {
     console.error('[Window Close] ❌ Failed to post summary:', error?.message || error);
     
