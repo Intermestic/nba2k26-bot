@@ -1,8 +1,0 @@
-{
-  "query": "INSERT INTO team_coins (team, coinsRemaining) VALUES ('Bucks', 99);",
-  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute INSERT INTO team_coins (team, coinsRemaining) VALUES ('Bucks', 99);",
-  "returncode": 1,
-  "logs": [
-    "ERROR 1062 (23000) at line 1: Duplicate entry '?' for key 'team_coins.team_coins_team_unique'"
-  ]
-}

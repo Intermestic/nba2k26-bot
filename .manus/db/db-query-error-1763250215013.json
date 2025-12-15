@@ -1,8 +1,0 @@
-{
-  "query": "INSERT INTO fa_bids (windowId, team, playerName, bidAmount, dropPlayer, discordUserId, discordUsername, status, createdAt) VALUES ('2025-01-15-PM', 'Hawks', 'Dayron Sharpe', 1, 'Terrance Mann', 'hawks_user', 'hawks', 'pending', '2025-01-15 11:49:00')",
-  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute INSERT INTO fa_bids (windowId, team, playerName, bidAmount, dropPlayer, discordUserId, discordUsername, status, createdAt) VALUES ('2025-01-15-PM', 'Hawks', 'Dayron Sharpe', 1, 'Terrance Mann', 'hawks_user', 'hawks', 'pending', '2025-01-15 11:49:00')",
-  "returncode": 1,
-  "logs": [
-    "ERROR 1054 (42S22) at line 1: Unknown column 'discordUserId' in 'field list'"
-  ]
-}

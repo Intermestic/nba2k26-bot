@@ -1,9 +1,0 @@
-{
-  "query": "UPDATE players \nSET team = 'Pacers'\nWHERE name IN ('Darius Garland', 'Jaden McDaniels', 'Dereck Lively II', 'D\\'Angelo Russell');",
-  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute UPDATE players \nSET team = 'Pacers'\nWHERE name IN ('Darius Garland', 'Jaden McDaniels', 'Dereck Lively II', 'D\\'Angelo Russell');",
-  "rows": [],
-  "messages": [],
-  "stdout": "",
-  "stderr": "",
-  "execution_time_ms": 70
-}
