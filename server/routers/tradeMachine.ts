@@ -66,6 +66,48 @@ async function scrapeBadgeCount(playerName: string, playerPageUrl: string | null
   }
 }
 
+/**
+ * Post message to Discord channel using Discord API directly
+ * This works from both sandbox and published environments
+ */
+async function postToDiscordChannel(channelId: string, content: string): Promise<{ success: boolean; messageId?: string; error?: string }> {
+  const botToken = process.env.DISCORD_BOT_TOKEN;
+  
+  if (!botToken) {
+    return { success: false, error: 'Discord bot token not configured' };
+  }
+  
+  try {
+    const response = await fetch(`https://discord.com/api/v10/channels/${channelId}/messages`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bot ${botToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ content }),
+    });
+    
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      console.error('[Trade Machine] Discord API error:', response.status, errorData);
+      return { 
+        success: false, 
+        error: `Discord API error: ${response.status} - ${errorData.message || 'Unknown error'}` 
+      };
+    }
+    
+    const data = await response.json();
+    console.log(`[Trade Machine] Message posted to Discord channel ${channelId}, message ID: ${data.id}`);
+    return { success: true, messageId: data.id };
+  } catch (error) {
+    console.error('[Trade Machine] Error posting to Discord:', error);
+    return { 
+      success: false, 
+      error: error instanceof Error ? error.message : 'Unknown error' 
+    };
+  }
+}
+
 export const tradeMachineRouter = router({
   /**
    * Get team owners from team assignments
@@ -162,6 +204,7 @@ export const tradeMachineRouter = router({
 
   /**
    * Post formatted trade to Discord
+   * Uses Discord API directly instead of bot HTTP endpoint for reliability
    */
   postTradeToDiscord: publicProcedure
     .input(z.object({
@@ -180,91 +223,78 @@ export const tradeMachineRouter = router({
     }))
     .mutation(async ({ input }) => {
       try {
-        // Call bot HTTP endpoint to post trade
-        const BOT_HTTP_PORT = process.env.BOT_HTTP_PORT || 3001;
-        const botUrl = `http://127.0.0.1:${BOT_HTTP_PORT}/post-trade`;
+        console.log(`[Trade Machine] Posting trade: ${input.team1Name} ↔ ${input.team2Name}`);
         
-        console.log(`[Trade Machine] Attempting to post trade to bot at ${botUrl}`);
+        // Calculate totals
+        const team1TotalOvr = input.team1Players.reduce((sum, p) => sum + p.overall, 0);
+        const team1TotalBadges = input.team1Players.reduce((sum, p) => sum + p.badges, 0);
+        const team2TotalOvr = input.team2Players.reduce((sum, p) => sum + p.overall, 0);
+        const team2TotalBadges = input.team2Players.reduce((sum, p) => sum + p.badges, 0);
         
-        // First check if bot is healthy
-        try {
-          const healthCheck = await fetch(`http://127.0.0.1:${BOT_HTTP_PORT}/health`, {
-            method: 'GET',
-            signal: AbortSignal.timeout(15000), // Increased from 5s to 15s
-          });
-          
-          if (!healthCheck.ok) {
-            throw new Error('Discord bot health check failed');
-          }
-          
-          const healthData = await healthCheck.json();
-          console.log('[Trade Machine] Bot health check:', healthData);
-          
-          if (!healthData.botReady) {
-            throw new Error('Discord bot is not ready');
-          }
-        } catch (healthError) {
-          console.error('[Trade Machine] Bot health check error:', healthError);
-          const errorMsg = healthError instanceof Error ? healthError.message : 'Unknown error';
-          if (errorMsg.includes('ECONNREFUSED')) {
-            throw new Error('Discord bot is not running. Please contact an administrator.');
-          } else if (errorMsg.includes('timeout') || errorMsg.includes('AbortError')) {
-            throw new Error('Discord bot is not responding (timeout). The bot may be experiencing issues.');
-          }
-          throw new Error(`Discord bot is not available: ${errorMsg}`);
+        // Format trade message
+        const lines: string[] = [];
+        
+        lines.push(`**${input.team1Name} Sends:**`);
+        lines.push('');
+        input.team1Players.forEach((player) => {
+          lines.push(`${player.name} ${player.overall} (${player.badges})`);
+        });
+        lines.push('--');
+        lines.push(`${team1TotalOvr} (${team1TotalBadges})`);
+        lines.push('');
+        
+        lines.push(`**${input.team2Name} Sends:**`);
+        lines.push('');
+        input.team2Players.forEach((player) => {
+          lines.push(`${player.name} ${player.overall} (${player.badges})`);
+        });
+        lines.push('--');
+        lines.push(`${team2TotalOvr} (${team2TotalBadges})`);
+        
+        const message = lines.join('\n');
+        
+        // Post directly to Discord using the API
+        const result = await postToDiscordChannel(TRADE_CHANNEL_ID, message);
+        
+        if (!result.success) {
+          throw new Error(result.error || 'Failed to post to Discord');
         }
         
-        // Now post the trade
+        console.log(`[Trade Machine] Trade posted successfully: ${input.team1Name} ↔ ${input.team2Name}`);
+        
+        // Save trade to database for admin review (non-blocking)
         try {
-          const response = await fetch(botUrl, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              team1Name: input.team1Name,
-              team1Players: input.team1Players,
-              team2Name: input.team2Name,
-              team2Players: input.team2Players,
-            }),
-            signal: AbortSignal.timeout(60000), // 60 second timeout (increased from 30s)
-          });
-
-          if (!response.ok) {
-            const errorText = await response.text();
-            let errorMessage;
-            try {
-              const errorJson = JSON.parse(errorText);
-              errorMessage = errorJson.error || 'Failed to post trade';
-            } catch {
-              errorMessage = errorText || 'Failed to post trade';
-            }
-            throw new Error(errorMessage);
+          const db = await getDb();
+          if (db) {
+            const playerBadgesMap: Record<string, number> = {};
+            input.team1Players.forEach((p) => {
+              playerBadgesMap[p.name] = p.badges;
+            });
+            input.team2Players.forEach((p) => {
+              playerBadgesMap[p.name] = p.badges;
+            });
+            
+            await db.insert(tradeLogs).values({
+              team1: input.team1Name,
+              team2: input.team2Name,
+              team1Players: JSON.stringify(input.team1Players),
+              team2Players: JSON.stringify(input.team2Players),
+              playerBadges: JSON.stringify(playerBadgesMap),
+              status: "pending",
+              submittedBy: "Trade Machine",
+            });
+            
+            console.log(`[Trade Machine] Saved trade to database for review`);
           }
-
-          const result = await response.json();
-          console.log(`[Trade Machine] Trade posted successfully: ${input.team1Name} ↔ ${input.team2Name}`);
-
-          return {
-            success: true,
-            message: result.message || "Trade posted to Discord successfully",
-          };
-        } catch (fetchError) {
-          console.error('[Trade Machine] Fetch error:', fetchError);
-          if (fetchError instanceof Error) {
-            if (fetchError.name === 'AbortError' || fetchError.name === 'TimeoutError') {
-              throw new Error('Request timed out after 60 seconds. The Discord bot may be experiencing database connection issues.');
-            }
-            if (fetchError.message.includes('ECONNREFUSED')) {
-              throw new Error('Discord bot connection refused. The bot may have crashed.');
-            }
-            if (fetchError.message.includes('fetch failed')) {
-              throw new Error('Network error connecting to Discord bot. Please try again in a moment.');
-            }
-            throw new Error(`Failed to connect to Discord bot: ${fetchError.message}`);
-          }
-          throw new Error('Failed to connect to Discord bot');
+        } catch (dbError) {
+          console.error(`[Trade Machine] Failed to save trade to database (non-critical):`, dbError);
+          // Don't fail the request - Discord post was successful
         }
+        
+        return {
+          success: true,
+          message: "Trade posted to Discord successfully",
+        };
       } catch (error) {
         console.error("[Trade Machine] Error posting trade to Discord:", error);
         throw new Error(`Failed to post trade: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -273,6 +303,7 @@ export const tradeMachineRouter = router({
 
   /**
    * Send trade offer DM to team owners
+   * Uses Discord API directly instead of bot client
    */
   sendTradeDM: publicProcedure
     .input(z.object({
@@ -292,15 +323,13 @@ export const tradeMachineRouter = router({
       team2UserId: z.string(),
     }))
     .mutation(async ({ input }) => {
+      const botToken = process.env.DISCORD_BOT_TOKEN;
+      
+      if (!botToken) {
+        throw new Error("Discord bot token not configured");
+      }
+      
       try {
-        // Import Discord client
-        const { getDiscordClient } = await import("../discord-bot");
-        const client = getDiscordClient();
-
-        if (!client || !client.isReady()) {
-          throw new Error("Discord bot is not connected");
-        }
-
         // Calculate totals
         const team1TotalOvr = input.team1Players.reduce((sum, p) => sum + p.overall, 0);
         const team1TotalBadges = input.team1Players.reduce((sum, p) => sum + p.badges, 0);
@@ -337,25 +366,64 @@ export const tradeMachineRouter = router({
           `This trade has been posted to the trade channel for voting.`,
         ].join('\n');
 
+        // Helper function to send DM via Discord API
+        const sendDM = async (userId: string, content: string): Promise<{ success: boolean; error?: string }> => {
+          try {
+            // First, create a DM channel
+            const dmChannelResponse = await fetch('https://discord.com/api/v10/users/@me/channels', {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bot ${botToken}`,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ recipient_id: userId }),
+            });
+            
+            if (!dmChannelResponse.ok) {
+              const error = await dmChannelResponse.json().catch(() => ({}));
+              return { success: false, error: `Failed to create DM channel: ${error.message || dmChannelResponse.status}` };
+            }
+            
+            const dmChannel = await dmChannelResponse.json();
+            
+            // Then send the message
+            const messageResponse = await fetch(`https://discord.com/api/v10/channels/${dmChannel.id}/messages`, {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bot ${botToken}`,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ content }),
+            });
+            
+            if (!messageResponse.ok) {
+              const error = await messageResponse.json().catch(() => ({}));
+              return { success: false, error: `Failed to send DM: ${error.message || messageResponse.status}` };
+            }
+            
+            return { success: true };
+          } catch (error) {
+            return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+          }
+        }
+
         // Send DMs to both users
         const errors: string[] = [];
         
-        try {
-          const team1User = await client.users.fetch(input.team1UserId);
-          await team1User.send(team1Message);
-          console.log(`[Trade Machine] Sent DM to ${input.team1Name} owner (${input.team1UserId})`);
-        } catch (error) {
-          console.error(`[Trade Machine] Failed to send DM to ${input.team1Name} owner:`, error);
+        const result1 = await sendDM(input.team1UserId, team1Message);
+        if (!result1.success) {
+          console.error(`[Trade Machine] Failed to send DM to ${input.team1Name} owner:`, result1.error);
           errors.push(`Failed to send DM to ${input.team1Name} owner`);
+        } else {
+          console.log(`[Trade Machine] Sent DM to ${input.team1Name} owner (${input.team1UserId})`);
         }
 
-        try {
-          const team2User = await client.users.fetch(input.team2UserId);
-          await team2User.send(team2Message);
-          console.log(`[Trade Machine] Sent DM to ${input.team2Name} owner (${input.team2UserId})`);
-        } catch (error) {
-          console.error(`[Trade Machine] Failed to send DM to ${input.team2Name} owner:`, error);
+        const result2 = await sendDM(input.team2UserId, team2Message);
+        if (!result2.success) {
+          console.error(`[Trade Machine] Failed to send DM to ${input.team2Name} owner:`, result2.error);
           errors.push(`Failed to send DM to ${input.team2Name} owner`);
+        } else {
+          console.log(`[Trade Machine] Sent DM to ${input.team2Name} owner (${input.team2UserId})`);
         }
 
         if (errors.length > 0) {
