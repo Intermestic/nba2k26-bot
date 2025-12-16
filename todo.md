@@ -401,3 +401,4 @@
 
 - [x] Fix Discord bot "fetch failed" error when posting trades from web UI (now uses Discord API directly instead of bot HTTP endpoint)
 - [x] Fix Discord bot "fetch failed" error still occurring when posting trades (requires publishing - sandbox code is already fixed)
+- [x] Fix Discord bot "fetch failed" error still occurring when posting trades (Dec 16, 2024 - second attempt) - fix already in sandbox, needs publishing
