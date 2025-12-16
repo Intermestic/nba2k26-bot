@@ -98,7 +98,7 @@ async function countVotes(reaction: MessageReaction | PartialMessageReaction): P
 }
 
 /**
- * Parse trade details from Discord embed message
+ * Parse trade details from Discord embed message or plain text
  * Handles multiple formats:
  * 1. "PlayerNameOVR (salary)" - e.g., "Ben Sheppard74 (2)"
  * 2. "Player Name OVR (salary)" - e.g., "Cam Thomas 81 (10)"
@@ -107,17 +107,21 @@ async function countVotes(reaction: MessageReaction | PartialMessageReaction): P
 function parseTradeFromEmbed(message: Message): { team1: string; team2: string; team1Players: any[]; team2Players: any[] } | null {
   try {
     console.log(`[Trade Parser] Parsing message ${message.id}, embeds: ${message.embeds.length}`);
-    if (message.embeds.length === 0) {
-      console.log('[Trade Parser] No embeds found in message');
-      return null;
+    
+    // Get text content from either embed or message content
+    let description: string | null = null;
+    
+    if (message.embeds.length > 0) {
+      const embed = message.embeds[0];
+      description = embed.description;
+      console.log(`[Trade Parser] Using embed description, length: ${description?.length || 0}`);
+    } else if (message.content) {
+      description = message.content;
+      console.log(`[Trade Parser] Using message content, length: ${description.length}`);
     }
     
-    const embed = message.embeds[0];
-    let description = embed.description;
-    
-    console.log(`[Trade Parser] Embed description length: ${description?.length || 0}`);
     if (!description) {
-      console.log('[Trade Parser] Embed has no description');
+      console.log('[Trade Parser] No text content found in message');
       return null;
     }
     console.log(`[Trade Parser] Raw description: ${description.substring(0, 200)}...`);
@@ -413,13 +417,23 @@ export async function handleNewTradeEmbed(message: Message) {
     // Only process messages in trade channel
     if (message.channelId !== TRADE_CHANNEL_ID) return;
     
-    // Only process messages with embeds (trade posts)
-    if (message.embeds.length === 0) return;
-    
     // Skip messages from our own bot
     if (message.author.id === message.client.user?.id) return;
     
-    console.log(`[Trade Voting] New trade embed detected from ${message.author.tag}, adding reactions...`);
+    // Check if message has embeds OR looks like a trade in plain text
+    const hasEmbed = message.embeds.length > 0;
+    const hasTradeKeywords = message.content && (
+      (message.content.toLowerCase().includes('send') || message.content.toLowerCase().includes('receive')) &&
+      (message.content.match(/\d{2,3}\s*\(/g) || message.content.match(/\(\d{2,3}\)/g)) // OVR pattern
+    );
+    
+    // Process if it has embeds OR looks like a trade message
+    if (!hasEmbed && !hasTradeKeywords) {
+      console.log(`[Trade Voting] Message ${message.id} in trade channel doesn't look like a trade (no embed, no trade keywords)`);
+      return;
+    }
+    
+    console.log(`[Trade Voting] New trade ${hasEmbed ? 'embed' : 'text message'} detected from ${message.author.tag}, adding reactions...`);
     
     // Add voting reactions
     await message.react('👍');
