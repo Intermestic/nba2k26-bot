@@ -305,18 +305,7 @@ export default function Home() {
                   Trade Machine
                 </Link>
               </Button>
-              <Button asChild variant="outline" className="bg-slate-800 border-slate-700 hover:bg-slate-700">
-                <a href="/players.csv" download>
-                  <Download className="w-4 h-4 mr-2" />
-                  CSV
-                </a>
-              </Button>
-              <Button asChild variant="outline" className="bg-slate-800 border-slate-700 hover:bg-slate-700">
-                <a href="/players.json" download>
-                  <Download className="w-4 h-4 mr-2" />
-                  JSON
-                </a>
-              </Button>
+
             </div>
           </div>
         </div>

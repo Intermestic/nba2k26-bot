@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { Search, Shield, Plus, Pencil, Trash2 } from "lucide-react";
+import { Search, Shield, Plus, Pencil, Trash2, Download } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -253,6 +253,12 @@ export default function Admin() {
                 <Link href="/admin/bot-management">
                   Bot Config
                 </Link>
+              </Button>
+              <Button asChild variant="outline" size="sm" className="bg-green-900 border-green-700 hover:bg-green-800">
+                <a href="/players.csv" download>
+                  <Download className="w-4 h-4 mr-1" />
+                  CSV
+                </a>
               </Button>
               <Button asChild variant="outline" size="sm" className="bg-slate-800 border-slate-700 hover:bg-slate-700">
                 <Link href="/">

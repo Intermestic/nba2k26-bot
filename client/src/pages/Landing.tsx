@@ -1,7 +1,7 @@
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeftRight, Loader2 } from "lucide-react";
+import { ArrowLeftRight, Loader2, Shield } from "lucide-react";
 import { APP_TITLE } from "@/const";
 import { trpc } from "@/lib/trpc";
 import { getTeamLogo } from "@/lib/teamLogos";
@@ -15,33 +15,46 @@ export default function Landing() {
       <div className="container py-8">
         {/* Header */}
         <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-6">
+          <div className="flex flex-col gap-4">
+            {/* Logo and Title Row */}
+            <div className="flex items-start gap-4 md:gap-6">
               <img 
                 src="/hof-logo.png" 
                 alt="Hall of Fame Basketball Association" 
-                className="h-16 w-auto object-contain drop-shadow-lg"
+                className="h-12 md:h-16 w-auto object-contain drop-shadow-lg flex-shrink-0"
               />
-              <div>
-                <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+              <div className="min-w-0">
+                <h1 className="text-2xl md:text-4xl font-bold mb-1 md:mb-2 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
                   Hall of Fame Basketball Association
                 </h1>
-                <p className="text-xl font-semibold text-primary mb-1">
+                <p className="text-lg md:text-xl font-semibold text-primary mb-1">
                   SZN 17 Player Database
                 </p>
-                <p className="text-muted-foreground">
+                <p className="text-sm md:text-base text-muted-foreground">
                   Browse teams, players, and build trades
                 </p>
               </div>
             </div>
-            <Button
-              onClick={() => navigate("/trade-machine")}
-              className="gap-2"
-              size="lg"
-            >
-              <ArrowLeftRight className="h-5 w-5" />
-              Trade Machine
-            </Button>
+            {/* Action Buttons Row */}
+            <div className="flex flex-wrap gap-2">
+              <Button
+                onClick={() => navigate("/trade-machine")}
+                className="gap-2"
+                size="default"
+              >
+                <ArrowLeftRight className="h-4 w-4" />
+                Trade Machine
+              </Button>
+              <Button
+                onClick={() => navigate("/admin")}
+                variant="outline"
+                className="gap-2"
+                size="default"
+              >
+                <Shield className="h-4 w-4" />
+                Admin
+              </Button>
+            </div>
           </div>
         </div>
 

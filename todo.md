@@ -402,3 +402,11 @@
 - [x] Fix Discord bot "fetch failed" error when posting trades from web UI (now uses Discord API directly instead of bot HTTP endpoint)
 - [x] Fix Discord bot "fetch failed" error still occurring when posting trades (requires publishing - sandbox code is already fixed)
 - [x] Fix Discord bot "fetch failed" error still occurring when posting trades (Dec 16, 2024 - second attempt) - fix already in sandbox, needs publishing
+
+## Mobile Layout & Admin Improvements (Dec 16, 2024)
+
+- [x] Fix mobile header layout - Trade Machine button overlaps text
+- [x] Add Admin link button to homepage header
+- [x] Remove JSON creator from second page
+- [x] Move CSV creator to admin page
+- [x] Set up PWA manifest icons with league logo for Chrome app
