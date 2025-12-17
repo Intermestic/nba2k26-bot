@@ -2907,8 +2907,15 @@ export async function startDiscordBot(token: string) {
       }, REACTION_CACHE_TTL);
       
       // Process approved trade instead of asking for confirmation
-      const { handleApprovedTradeProcessing } = await import('./trade-approval-handler');
-      await handleApprovedTradeProcessing(message);
+      try {
+        const { handleApprovedTradeProcessing } = await import('./trade-approval-handler');
+        await handleApprovedTradeProcessing(message);
+      } catch (error) {
+        console.error('[Discord Bot] Trade processing failed:', error);
+        // Remove from cache on failure to allow retry
+        processedReactions.delete(reactionKey);
+        await message.reply('❌ Trade processing failed. You can retry by reacting with ⚡ again.');
+      }
     }
   });
   

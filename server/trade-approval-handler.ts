@@ -86,6 +86,13 @@ export async function handleApprovedTradeProcessing(message: Message) {
     console.log(`[Trade Approval] Team1 sends: ${team1Players.map(p => p.name).join(', ')}`);
     console.log(`[Trade Approval] Team2 sends: ${team2Players.map(p => p.name).join(', ')}`);
     
+    // Validate that both teams have players
+    if (team1Players.length === 0 || team2Players.length === 0) {
+      console.error(`[Trade Approval] Trade has empty player lists - Team1: ${team1Players.length}, Team2: ${team2Players.length}`);
+      await message.reply('❌ Cannot process trade: One or both teams have no players listed. This may be a parsing error. Please check the original trade message format.');
+      return;
+    }
+    
     // Normalize and validate team names (handles aliases like "Cavs" → "Cavaliers")
     const validTeam1 = validateTeamName(trade.team1);
     const validTeam2 = validateTeamName(trade.team2);
