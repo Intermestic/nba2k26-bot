@@ -416,3 +416,9 @@
 ## Discord Bot Trade Processing (Dec 16, 2024)
 
 - [x] Fix trade message ID 1450396570573996094 not triggering approval message or auto-processing
+
+## Trade Processing Bug (Dec 17, 2024)
+
+- [x] Fix trade 1450679146547253433 (Spurs/Hawks) - approved but showing "Cannot process trade: One or both teams have no players listed"
+- [x] Debug why player names are not being extracted from embed description
+- [x] Test with embed format: "Nickeil Alexander-Walker 80 (11 badges)\nJakob Poeltl 79 (11 badges)"

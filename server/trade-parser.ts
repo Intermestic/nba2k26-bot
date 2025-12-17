@@ -270,18 +270,19 @@ function parsePlayerListWithOVR(text: string): string[] {
       continue;
     }
     
-    // Extract player name by removing all numbers, slashes, hyphens, and parentheses
+    // Extract player name by removing all numbers, slashes, and parentheses
     // This handles: "Trae young 88/16" → "Trae young"
     //               "Jarrett Allen 84-13" → "Jarrett Allen"
     //               "adem Bona75/5" → "adem Bona"
     //               "Gary trent77(8)" → "Gary trent" (missing space before number)
+    //               "Nickeil Alexander-Walker 80 (11 badges)" → "Nickeil Alexander-Walker"
     let playerName = line
-      .replace(/\d+[\/\-]\d+/g, '')  // Remove OVR/badges format (both / and -)
-      .replace(/\d+\s*\(\d+\)/g, '')  // Remove OVR (badges) format
-      .replace(/\(\d+\)/g, '')  // Remove standalone (badges)
+      .replace(/\d+[/\-]\d+/g, '')  // Remove OVR/badges format (both / and -)
+      .replace(/\d+\s*\([^)]*\)/g, '')  // Remove OVR (X badges) format - match anything inside parens
+      .replace(/\([^)]*\)/g, '')  // Remove any remaining parentheses with content
       .replace(/([a-z])(\d)/gi, '$1 $2')  // Add space before numbers (trent77 → trent 77)
       .replace(/\d+/g, '')  // Remove any remaining numbers
-      .replace(/[\-\/]/g, '')  // Remove any remaining hyphens and slashes
+      .replace(/\//g, '')  // Remove slashes only (preserve hyphens in names like Alexander-Walker)
       .replace(/\s+/g, ' ')  // Normalize multiple spaces to single space
       .trim();
     
