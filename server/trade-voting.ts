@@ -201,7 +201,8 @@ function parsePlayers(section: string): Array<{ name: string; overall: number; s
   
   // Pattern 1 & 2: "PlayerName OVR (salary)" or "PlayerNameOVR (salary)" or "Player Name OVR (X badges)"
   // Also handle "Player Name OVR OVR (salary)" where the word "OVR" appears
-  const pattern1 = /([A-Za-z\s\.'-]+?)(\d+)\s*(?:OVR)?\s*\((\d+)(?:\s+badges)?\)/gi;
+  // Also handle "Player Name : OVR (salary)" with optional colon and spaces
+  const pattern1 = /([A-Za-z\s\.'-]+?)\s*:?\s*(\d+)\s*(?:OVR)?\s*\((\d+)(?:\s+badges)?\)/gi;
   let match;
   while ((match = pattern1.exec(section)) !== null) {
     const playerName = match[1].trim();
@@ -210,7 +211,8 @@ function parsePlayers(section: string): Array<{ name: string; overall: number; s
         playerName === '--' || 
         playerName.match(/^\d+$/) || 
         playerName.toLowerCase().includes('ovr') || 
-        playerName.toLowerCase().includes('badge')) {
+        playerName.toLowerCase().includes('badge') ||
+        playerName.toLowerCase().includes('total')) {
       continue;
     }
     

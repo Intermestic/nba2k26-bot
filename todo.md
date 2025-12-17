@@ -426,3 +426,7 @@
 - [x] Fix trade 1450679146547253433 (Spurs/Hawks) - approved but showing "Cannot process trade: One or both teams have no players listed"
 - [x] Debug why player names are not being extracted from embed description
 - [x] Test with embed format: "Nickeil Alexander-Walker 80 (11 badges)\nJakob Poeltl 79 (11 badges)"
+
+## Discord Bot Trade Processing Bugs (Dec 18, 2024 - Part 2)
+
+- [x] Fix trade processing bug - bot incorrectly reports "no players" when parsing valid trade messages with 4 players (Spurs/Pacers: LeBron James, Cason Wallace → Pacers; Paolo Banchero, Mikal Bridges → Spurs)
