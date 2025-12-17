@@ -194,13 +194,14 @@ function parseTradeFromEmbed(message: Message): { team1: string; team2: string; 
  * 1. "PlayerNameOVR (salary)" - e.g., "Ben Sheppard74 (2)"
  * 2. "Player Name OVR (salary)" - e.g., "Cam Thomas 81 (10)"
  * 3. "Player Name (OVR) salary" - e.g., "Lauri Markkanen (88) 15"
+ * 4. "Player Name OVR (X badges)" - e.g., "Nickeil Alexander-Walker 80 (11 badges)"
  */
 function parsePlayers(section: string): Array<{ name: string; overall: number; salary: number }> {
   const players: Array<{ name: string; overall: number; salary: number }> = [];
   
-  // Pattern 1 & 2: "PlayerName OVR (salary)" or "PlayerNameOVR (salary)"
+  // Pattern 1 & 2: "PlayerName OVR (salary)" or "PlayerNameOVR (salary)" or "Player Name OVR (X badges)"
   // Also handle "Player Name OVR OVR (salary)" where the word "OVR" appears
-  const pattern1 = /([A-Za-z\s\.'-]+?)(\d+)\s*(?:OVR)?\s*\((\d+)\)/gi;
+  const pattern1 = /([A-Za-z\s\.'-]+?)(\d+)\s*(?:OVR)?\s*\((\d+)(?:\s+badges)?\)/gi;
   let match;
   while ((match = pattern1.exec(section)) !== null) {
     const playerName = match[1].trim();

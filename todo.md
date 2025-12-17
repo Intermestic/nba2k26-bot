@@ -40,6 +40,7 @@
 - [ ] Verify no duplicate messages are posted
 - [x] Fix Discord bot trade recognition issue - some trades not being detected
 - [x] Fix trade processing bug - approved trades not updating database and moving players (auto-process works but manual ⚡ emoji doesn't)
+- [x] Fix trade parser to handle "badges" format in trade messages (e.g., "Player Name 80 (11 badges)")
 
 ### Trade Voting System
 - [ ] Test !check-trade command with message ID 1445268293186490548
