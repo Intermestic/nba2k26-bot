@@ -1310,6 +1310,16 @@ export async function startDiscordBot(token: string) {
       console.error('[Trade Voting] Failed to initialize:', error);
     }
     
+    // Scan for missed trade votes (trades that reached threshold while bot was offline)
+    try {
+      console.log('[Trade Voting] Scanning for missed votes on startup...');
+      const { scanTradesForMissedVotes } = await import('./trade-voting');
+      await scanTradesForMissedVotes(client!);
+      console.log('[Trade Voting] Missed vote scan complete');
+    } catch (error) {
+      console.error('[Trade Voting] Failed to scan for missed votes:', error);
+    }
+    
     // Initialize cap violation monitoring
     try {
       const { initializeCapViolationMonitoring } = await import('./cap-violation-alerts');
