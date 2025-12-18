@@ -444,3 +444,7 @@
 ## Trade Parser Bug (Dec 18, 2024)
 
 - [x] Fix trade parser failing to extract player names from trade format with colons (e.g., "Lebron James : 94 (26)")
+
+## Trade Processing Critical Bug (Dec 18, 2024)
+
+- [x] Fix trade processing bug - trades approved but "Trade already processed" error prevents player movements from being executed in database

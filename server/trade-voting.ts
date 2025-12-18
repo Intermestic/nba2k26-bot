@@ -282,20 +282,10 @@ async function processVoteResult(
     // Add to processing set to prevent concurrent calls
     processingVotes.add(message.id);
     
-    // Check if this trade vote has already been processed in the database
+    // Get database connection
     const db = await getDb();
     if (!db) {
-      console.error('[Trade Voting] Database not available, will post message anyway');
-      // Don't return - still post the approval/rejection message even if DB is down
-    }
-    
-    // Only check database if connection is available
-    if (db) {
-      const existingVote = await db.select().from(tradeVotes).where(eq(tradeVotes.messageId, message.id)).limit(1);
-      if (existingVote.length > 0) {
-        console.log(`[Trade Voting] Trade ${message.id} already processed at ${existingVote[0].processedAt}, skipping duplicate`);
-        return;
-      }
+      console.error('[Trade Voting] Database not available');
     }
     
     const voteData = activeVotes.get(message.id);
@@ -323,7 +313,7 @@ async function processVoteResult(
     const approvalMessage = await message.reply({ embeds: [embed] });
     console.log(`[Trade Voting] Trade ${approved ? 'approved' : 'rejected'}: ${upvotes} 👍, ${downvotes} 👎`);
     
-    // Save to database to prevent duplicate processing
+    // Save to database (ignore if already exists)
     if (db) {
       try {
         await db.insert(tradeVotes).values({
@@ -331,11 +321,11 @@ async function processVoteResult(
           upvotes,
           downvotes,
           approved: approved ? 1 : 0,
-        });
+        }).onDuplicateKeyUpdate({ set: { messageId: message.id } }); // No-op update if duplicate
         console.log(`[Trade Voting] Saved vote result to database for message ${message.id}`);
       } catch (voteError) {
-        console.error(`[Trade Voting] Failed to save vote result:`, voteError);
-        // Continue anyway - we still want to try to save trade details
+        console.log(`[Trade Voting] Vote already saved (duplicate key), continuing...`);
+        // Continue anyway - we still want to process the trade
       }
       
       // Parse trade details from embed and save to trades table
@@ -825,27 +815,19 @@ export async function manuallyCheckTradeVotes(client: Client, messageId: string)
       return { success: false, message: `Message is before minimum threshold (${MIN_TRADE_MESSAGE_ID}). Only processing trades after this ID.` };
     }
     
-    // Check if already processed in database
+    // Check if already processed in database (for status display only, don't block execution)
+    let alreadyVoted = false;
     try {
       const db = await getDb();
       if (db) {
         const existingVote = await db.select().from(tradeVotes).where(eq(tradeVotes.messageId, messageId)).limit(1);
         if (existingVote.length > 0) {
-          const vote = existingVote[0];
-          const status = vote.approved ? 'approved' : 'rejected';
-          return { 
-            success: false, 
-            message: `Trade already processed on ${vote.processedAt}: ${status} with ${vote.upvotes} 👍 and ${vote.downvotes} 👎`,
-            upvotes: vote.upvotes,
-            downvotes: vote.downvotes
-          };
+          alreadyVoted = true;
+          console.log(`[Trade Voting] Trade ${messageId} was already voted on, but will re-check and process if needed`);
         }
-      } else {
-        console.log('[Trade Voting] Database unavailable during manual check, will proceed anyway');
       }
     } catch (dbError) {
       console.error('[Trade Voting] Database error during manual check:', dbError);
-      console.log('[Trade Voting] Continuing with manual check despite database error');
     }
     
     // Check if already processed in memory
@@ -899,9 +881,14 @@ export async function manuallyCheckTradeVotes(client: Client, messageId: string)
     
     // Check if threshold reached
     if (downvotes >= REJECTION_THRESHOLD) {
-      await processVoteResult(message, upvotes, downvotes, false);
+      if (!alreadyVoted) {
+        await processVoteResult(message, upvotes, downvotes, false);
+      }
       return { success: true, message: `Trade rejected with ${downvotes} downvotes`, upvotes, downvotes };
     } else if (upvotes >= APPROVAL_THRESHOLD) {
+      // Always process approved trades, even if already voted on
+      // This ensures player movements happen even if bot was offline during approval
+      console.log('[Trade Voting] Trade approved, processing player movements...');
       await processVoteResult(message, upvotes, downvotes, true);
       return { success: true, message: `Trade approved with ${upvotes} upvotes`, upvotes, downvotes };
     } else {
