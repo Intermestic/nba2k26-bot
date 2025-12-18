@@ -63,7 +63,7 @@ export default function Landing() {
           <CardHeader>
             <CardTitle>Team Cap Status</CardTitle>
             <CardDescription>
-              Click any team to view their full roster. Cap limit: 1098 total overall
+              View team rosters and salary cap status. Cap limit: 1098 total overall (sum of all 14 player ratings)
             </CardDescription>
           </CardHeader>
           <CardContent>
