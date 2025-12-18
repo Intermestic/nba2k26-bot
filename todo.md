@@ -440,3 +440,7 @@
 - [x] Add visual indicators for bot health (online/offline/reconnecting states)
 - [x] Test bot restart functionality from UI
 - [x] Fix bot restart logic to properly kill all bot processes using pkill
+
+## Trade Parser Bug (Dec 18, 2024)
+
+- [x] Fix trade parser failing to extract player names from trade format with colons (e.g., "Lebron James : 94 (26)")

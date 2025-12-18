@@ -201,11 +201,16 @@ function parsePlayers(section: string): Array<{ name: string; overall: number; s
   
   // Pattern 1 & 2: "PlayerName OVR (salary)" or "PlayerNameOVR (salary)" or "Player Name OVR (X badges)"
   // Also handle "Player Name OVR OVR (salary)" where the word "OVR" appears
-  // Also handle "Player Name : OVR (salary)" with optional colon and spaces
-  const pattern1 = /([A-Za-z\s\.'-]+?)\s*:?\s*(\d+)\s*(?:OVR)?\s*\((\d+)(?:\s+badges)?\)/gi;
+  // Also handle "Player Name : OVR (salary)" with colon and spaces
+  // Use greedy match before colon, then non-greedy after to handle both formats
+  const pattern1 = /([A-Za-z\s\.'-]+?)\s*:\s*(\d+)\s*\((\d+)(?:\s+badges)?\)|([A-Za-z\s\.'-]+?)\s+(\d+)\s*(?:OVR)?\s*\((\d+)(?:\s+badges)?\)/gi;
   let match;
   while ((match = pattern1.exec(section)) !== null) {
-    const playerName = match[1].trim();
+    // Handle both patterns: with colon (groups 1,2,3) or without colon (groups 4,5,6)
+    const playerName = (match[1] || match[4])?.trim();
+    const overall = match[2] || match[5];
+    const salary = match[3] || match[6];
+    
     // Skip summary lines, placeholders, and lines with just numbers
     if (!playerName || 
         playerName === '--' || 
@@ -218,8 +223,8 @@ function parsePlayers(section: string): Array<{ name: string; overall: number; s
     
     players.push({
       name: playerName,
-      overall: parseInt(match[2]),
-      salary: parseInt(match[3])
+      overall: parseInt(overall),
+      salary: parseInt(salary)
     });
   }
   
