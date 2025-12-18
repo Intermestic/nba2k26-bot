@@ -9,8 +9,8 @@ const TRADE_CHANNEL_ID = '1087524540634116116';
 const TRADE_COMMITTEE_ROLE = 'Trade Committee';
 const APPROVAL_THRESHOLD = 7; // 👍 votes needed
 const REJECTION_THRESHOLD = 5; // 👎 votes needed
-const MIN_AUTO_TRACK_MESSAGE_ID = '1439096316801060964'; // Only auto-track trades after this message
-const MIN_TRADE_MESSAGE_ID = '1440180026187321444'; // Only process trades after this message (prevents re-checking historical trades)
+const MIN_AUTO_TRACK_MESSAGE_ID = '1451093939145674763'; // Only auto-track trades after this message
+const MIN_TRADE_MESSAGE_ID = '1451093939145674763'; // Only process trades after this message (prevents re-checking historical trades)
 
 interface VoteCount {
   upvotes: number;

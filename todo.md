@@ -55,6 +55,9 @@
 - [x] Update trade status to "reversed" in database
 - [x] Log reversal action with timestamp and user
 
+### Trade Message ID Filter
+- [x] Add message ID filter to ignore trades before message ID 1451093939145674763
+
 
 ## Player Management
 
