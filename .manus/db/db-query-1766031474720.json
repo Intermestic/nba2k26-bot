@@ -1,0 +1,30 @@
+{
+  "query": "SELECT name, team, overall FROM players WHERE name IN ('Tyler Herro', 'Mouhamed Gueye', 'Keyonte George', 'Bilal Coulibaly');",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT name, team, overall FROM players WHERE name IN ('Tyler Herro', 'Mouhamed Gueye', 'Keyonte George', 'Bilal Coulibaly');",
+  "rows": [
+    {
+      "name": "Bilal Coulibaly",
+      "team": "Sixers",
+      "overall": "79"
+    },
+    {
+      "name": "Keyonte George",
+      "team": "Sixers",
+      "overall": "82"
+    },
+    {
+      "name": "Mouhamed Gueye",
+      "team": "Free Agents",
+      "overall": "74"
+    },
+    {
+      "name": "Tyler Herro",
+      "team": "Bucks",
+      "overall": "86"
+    }
+  ],
+  "messages": [],
+  "stdout": "name\tteam\toverall\nBilal Coulibaly\tSixers\t79\nKeyonte George\tSixers\t82\nMouhamed Gueye\tFree Agents\t74\nTyler Herro\tBucks\t86\n",
+  "stderr": "",
+  "execution_time_ms": 1536
+}

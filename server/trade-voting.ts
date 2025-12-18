@@ -104,7 +104,14 @@ async function countVotes(reaction: MessageReaction | PartialMessageReaction): P
  * 2. "Player Name OVR (salary)" - e.g., "Cam Thomas 81 (10)"
  * 3. "Player Name (OVR) salary" - e.g., "Lauri Markkanen (88) 15"
  */
-function parseTradeFromEmbed(message: Message): { team1: string; team2: string; team1Players: any[]; team2Players: any[] } | null {
+async function parseTradeFromEmbed(message: Message): Promise<{ team1: string; team2: string; team1Players: any[]; team2Players: any[] } | null> {
+  // Use the new simple parser
+  const { parseTradeFromMessage } = await import('./simple-trade-parser');
+  return await parseTradeFromMessage(message);
+}
+
+// OLD PARSER (keeping for reference, but not used)
+async function parseTradeFromEmbedOLD(message: Message): Promise<{ team1: string; team2: string; team1Players: any[]; team2Players: any[] } | null> {
   try {
     console.log(`[Trade Parser] Parsing message ${message.id}, embeds: ${message.embeds.length}`);
     
@@ -129,9 +136,10 @@ function parseTradeFromEmbed(message: Message): { team1: string; team2: string; 
     // Strip markdown formatting (bold, italic, etc.) for easier parsing
     description = description.replace(/\*\*/g, '').replace(/\*/g, '').replace(/__/g, '').replace(/_/g, '');
     
-    // Extract team names - handle both "send" and "sends" with optional colon
+    // Extract team names - handle both "send" and "sends" with optional colon or dashes
     // Only match at start of line or after newline to avoid matching "badges\nRaptors Sends:"
-    const teamPattern = /(?:^|[\r\n]+)([A-Za-z\s]+)\s+sends?\s*:?/gim;
+    // Handles formats: "Spurs send:", "Bucks Sends---", "76ers Sends ---"
+    const teamPattern = /(?:^|[\r\n]+)([A-Za-z\s]+)\s+sends?\s*(?:[-:]+|\s*[-:]+)?/gim;
     const teamMatches = Array.from(description.matchAll(teamPattern));
     
     console.log(`[Trade Parser] Team pattern matches: ${teamMatches.length}`);
@@ -156,8 +164,8 @@ function parseTradeFromEmbed(message: Message): { team1: string; team2: string; 
       return null;
     }
     
-    // Split by team sections
-    const sections = description.split(/[A-Za-z\s]+\s+sends?\s*:?/i);
+    // Split by team sections (handle both colons and dashes)
+    const sections = description.split(/[A-Za-z\s]+\s+sends?\s*(?:[-:]+|\s*[-:]+)?/i);
     
     if (sections.length < 3) {
       console.log('[Trade Parser] Could not split embed into team sections');
@@ -331,7 +339,7 @@ async function processVoteResult(
       // Parse trade details from embed and save to trades table
       try {
         console.log(`[Trade Voting] Parsing trade details from message ${message.id}...`);
-        const tradeDetails = parseTradeFromEmbed(message);
+        const tradeDetails = await parseTradeFromEmbed(message);
         
         if (!tradeDetails) {
           console.error(`[Trade Voting] ❌ CRITICAL: Could not parse trade details from embed for message ${message.id}`);

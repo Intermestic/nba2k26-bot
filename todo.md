@@ -448,3 +448,4 @@
 ## Trade Processing Critical Bug (Dec 18, 2024)
 
 - [x] Fix trade processing bug - trades approved but "Trade already processed" error prevents player movements from being executed in database
+- [x] Rewrite trade parser to be format-agnostic using pure fuzzy matching (no more strict format requirements)
