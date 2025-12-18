@@ -449,3 +449,4 @@
 
 - [x] Fix trade processing bug - trades approved but "Trade already processed" error prevents player movements from being executed in database
 - [x] Rewrite trade parser to be format-agnostic using pure fuzzy matching (no more strict format requirements)
+- [x] Fix bot re-processing old trades - add check to skip trades that were already successfully processed

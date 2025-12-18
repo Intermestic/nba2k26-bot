@@ -398,6 +398,23 @@ async function processVoteResult(
     // Automatically process approved trades
     if (approved) {
       try {
+        // Check if this trade was already successfully processed
+        if (db) {
+          const existingTrade = await db.select().from(trades).where(eq(trades.messageId, message.id)).limit(1);
+          if (existingTrade.length > 0 && existingTrade[0].status === 'approved') {
+            // Check if the trade has valid player data (not empty arrays)
+            const team1Players = JSON.parse(existingTrade[0].team1Players);
+            const team2Players = JSON.parse(existingTrade[0].team2Players);
+            
+            if (team1Players.length > 0 && team2Players.length > 0) {
+              console.log(`[Trade Voting] Trade ${message.id} was already successfully processed, skipping auto-processing`);
+              return;
+            } else {
+              console.log(`[Trade Voting] Trade ${message.id} exists but has empty player data, will re-process`);
+            }
+          }
+        }
+        
         console.log('[Trade Voting] Trade approved, automatically processing...');
         const { handleApprovedTradeProcessing } = await import('./trade-approval-handler');
         await handleApprovedTradeProcessing(message);
