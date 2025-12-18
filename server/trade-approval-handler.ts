@@ -19,6 +19,18 @@ export async function handleApprovedTradeProcessing(message: Message) {
     return;
   }
   
+  // First check if this trade was already processed (players already moved)
+  try {
+    const existingTrade = await db.select().from(trades).where(eq(trades.messageId, message.id)).limit(1);
+    if (existingTrade.length > 0 && existingTrade[0].playersMovedAt) {
+      console.log(`[Trade Approval] ⚠️ Trade ${message.id} was already processed on ${existingTrade[0].playersMovedAt}, skipping to prevent duplicate processing`);
+      return;
+    }
+  } catch (checkError) {
+    console.log(`[Trade Approval] Could not check if trade was already processed:`, checkError);
+    // Continue anyway - better to process than to skip
+  }
+  
   try {
     // Look up the trade in the database
     // First try the current message ID
@@ -124,6 +136,21 @@ export async function handleApprovedTradeProcessing(message: Message) {
       
       await message.reply(successMessage);
       console.log(`[Trade Approval] Trade processed successfully: ${updatedPlayers.length} players updated`);
+      
+      // Try to mark as processed in database if trade record exists
+      try {
+        const existingTrade = await db.select().from(trades).where(eq(trades.messageId, message.id)).limit(1);
+        if (existingTrade.length > 0) {
+          await db
+            .update(trades)
+            .set({ playersMovedAt: new Date() })
+            .where(eq(trades.messageId, message.id));
+          console.log(`[Trade Approval] Marked trade ${message.id} as processed (playersMovedAt set)`);
+        }
+      } catch (updateError) {
+        console.log(`[Trade Approval] Could not mark trade as processed (no record exists):`, updateError);
+      }
+      
       return;
     }
     
@@ -271,6 +298,13 @@ export async function handleApprovedTradeProcessing(message: Message) {
     
     await message.reply(successMessage);
     console.log(`[Trade Approval] Trade processed successfully: ${updatedPlayers.length} players updated`);
+    
+    // Mark trade as processed by setting playersMovedAt timestamp
+    await db
+      .update(trades)
+      .set({ playersMovedAt: new Date() })
+      .where(eq(trades.messageId, message.id));
+    console.log(`[Trade Approval] Marked trade ${message.id} as processed (playersMovedAt set)`);
     
     // Update overcap roles AFTER posting success message (non-blocking)
     (async () => {

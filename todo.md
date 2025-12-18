@@ -34,7 +34,7 @@
 
 ### Trade Approval Workflow
 - [x] Fix "No trade record found" error after trade approval
-- [ ] Fix trade approval bug - trades with 7+ yes votes showing "reversed" instead of "approved"
+- [x] Fix trade approval bug - bot re-processing old trades and causing issues (added playersMovedAt tracking)
 - [ ] Test trade approval workflow end-to-end
 - [ ] Test with the stuck Cavs/Trailblazers trade
 - [ ] Verify no duplicate messages are posted

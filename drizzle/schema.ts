@@ -822,6 +822,7 @@ export const trades = mysqlTable("trades", {
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   processedAt: timestamp("processedAt"), // When approved/rejected
   reversedAt: timestamp("reversedAt"), // When reversed
+  playersMovedAt: timestamp("playersMovedAt"), // When players were actually moved to new teams
 });
 
 export type Trade = typeof trades.$inferSelect;
