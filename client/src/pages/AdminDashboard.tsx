@@ -194,9 +194,9 @@ export default function AdminDashboard() {
       section: "system"
     },
     {
-      title: "Bot Control",
-      description: "Start, stop, and restart the Discord bot",
-      href: "/admin/bot-control",
+      title: "Bot Status Monitor",
+      description: "Monitor bot health and control Discord bot",
+      href: "/admin/bot-status",
       icon: <Power className="w-6 h-6" />,
       color: "bg-red-500",
       section: "system"

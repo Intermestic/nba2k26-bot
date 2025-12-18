@@ -430,3 +430,13 @@
 ## Discord Bot Trade Processing Bugs (Dec 18, 2024 - Part 2)
 
 - [x] Fix trade processing bug - bot incorrectly reports "no players" when parsing valid trade messages with 4 players (Spurs/Pacers: LeBron James, Cason Wallace → Pacers; Paolo Banchero, Mikal Bridges → Spurs)
+
+## Bot Status Monitoring & Auto-Restart (Dec 18, 2024)
+
+- [x] Create bot status monitoring UI component showing online/offline status
+- [x] Add one-click restart button in bot status UI
+- [x] Implement automatic bot health check (detect if bot process is running but Discord client is offline)
+- [x] Create bot status dashboard page at /admin/bot-status
+- [x] Add visual indicators for bot health (online/offline/reconnecting states)
+- [x] Test bot restart functionality from UI
+- [x] Fix bot restart logic to properly kill all bot processes using pkill

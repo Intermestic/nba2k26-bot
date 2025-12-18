@@ -19,6 +19,7 @@ import TradeManagement from "./pages/TradeManagement";
 import TradeMachine from "./pages/TradeMachine";
 import CsvExport from "./pages/admin/CsvExport";
 import BotControl from "./pages/admin/BotControl";
+import BotStatus from "./pages/admin/BotStatus";
 import TradeLog from "./pages/admin/TradeLog";
 import TeamAliases from "./pages/admin/TeamAliases";
 
@@ -43,6 +44,7 @@ function Router() {
       <Route path={"/admin/teams"} component={TeamAssignments} />
       <Route path={"/admin/csv-export"} component={CsvExport} />
       <Route path={"/admin/bot-control"} component={BotControl} />
+      <Route path={"/admin/bot-status"} component={BotStatus} />
 
       <Route path={"/admin/team-aliases"} component={TeamAliases} />
 

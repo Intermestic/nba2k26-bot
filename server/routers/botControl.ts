@@ -247,17 +247,14 @@ export const botControlRouter = router({
     try {
       console.log("[Bot Control] Restarting bot...");
       
-      // Stop the bot
-      const pid = await getBotPid();
-      if (pid) {
-        await execAsync(`kill -TERM ${pid}`);
+      // Stop the bot - kill all bot-standalone processes
+      try {
+        // Use pkill to kill all bot-standalone processes
+        await execAsync("pkill -f bot-standalone");
         await new Promise(resolve => setTimeout(resolve, 2000));
-        
-        const isStillRunning = await isBotRunning();
-        if (isStillRunning) {
-          await execAsync(`kill -9 ${pid}`);
-          await new Promise(resolve => setTimeout(resolve, 1000));
-        }
+      } catch (error) {
+        // pkill returns error if no process found, which is fine
+        console.log("[Bot Control] No bot processes to kill or already stopped");
       }
 
       // Start the bot
