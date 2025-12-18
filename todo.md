@@ -390,6 +390,7 @@
 - [x] Create scheduled task for daily roster cap status updates (check rosters, update overcap roles, post to Discord channel 1280019275679137865)
 - [x] Verify auto-update runs daily and posts both part 1 and part 2 messages
 - [x] Test overcap role assignment/removal based on roster totals
+- [x] Fix !update-cap command not working
 
 ## Discord Bot Bid Window Scheduling (Dec 15, 2024)
 

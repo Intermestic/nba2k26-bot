@@ -1712,7 +1712,8 @@ export async function startDiscordBot(token: string) {
       }
       
       // Check for update cap status command
-      if (message.content.trim().toLowerCase() === '/updatecap') {
+      const updateCapCommand = message.content.trim().toLowerCase();
+      if (updateCapCommand === '/updatecap' || updateCapCommand === '!update-cap' || updateCapCommand === '!updatecap') {
         try {
           await message.reply('🔄 Updating cap status messages...');
           
