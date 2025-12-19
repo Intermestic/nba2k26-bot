@@ -479,3 +479,14 @@
 ## 3-Team Trade Parser Fix (Dec 19, 2024)
 
 - [x] Fix trade parser to correctly handle 3-team trades
+
+## Trade Parser Bot Feature (Dec 19, 2024)
+
+- [x] Create trade parser utility that can parse multi-team trade format
+- [x] Build UI page for trade parser bot with textarea input
+- [x] Parse player names, ratings, and badge counts from trade text
+- [x] Handle multiple teams in single trade (Sends/Receives format)
+- [x] Display parsed trade data in organized format per team
+- [x] Show trade totals (sum of ratings and badges) per team
+- [x] Add error handling for invalid trade formats
+- [x] Test with provided Sixers/Wizards/Knicks trade example

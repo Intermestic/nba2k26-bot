@@ -22,6 +22,7 @@ import BotControl from "./pages/admin/BotControl";
 import BotStatus from "./pages/admin/BotStatus";
 import TradeLog from "./pages/admin/TradeLog";
 import TeamAliases from "./pages/admin/TeamAliases";
+import TradeParser from "./pages/TradeParser";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -47,7 +48,7 @@ function Router() {
       <Route path={"/admin/bot-status"} component={BotStatus} />
 
       <Route path={"/admin/team-aliases"} component={TeamAliases} />
-
+      <Route path={"/trade-parser"} component={TradeParser} />
 
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
