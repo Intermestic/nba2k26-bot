@@ -459,3 +459,7 @@
 
 - [x] Fix duplicate bot instances running
 - [x] Update cap status message to be more accurate and informative
+
+## Trade Machine Enhancement
+
+- [x] Add 3-team trade option to trade machine

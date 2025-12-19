@@ -38,10 +38,13 @@ interface PlayerWithBadges {
 
 export default function TradeMachine() {
   const [, navigate] = useLocation();
+  const [tradeMode, setTradeMode] = useState<'2-team' | '3-team'>('2-team');
   const [team1, setTeam1] = useState<string>("");
   const [team2, setTeam2] = useState<string>("");
+  const [team3, setTeam3] = useState<string>("");
   const [team1SelectedPlayers, setTeam1SelectedPlayers] = useState<Set<string>>(new Set());
   const [team2SelectedPlayers, setTeam2SelectedPlayers] = useState<Set<string>>(new Set());
+  const [team3SelectedPlayers, setTeam3SelectedPlayers] = useState<Set<string>>(new Set());
   const [playerBadges, setPlayerBadges] = useState<Map<string, number>>(new Map());
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [tradeConfirmed, setTradeConfirmed] = useState(false);
@@ -56,6 +59,10 @@ export default function TradeMachine() {
     { teamName: team2 },
     { enabled: !!team2 }
   );
+  const { data: team3Roster, isLoading: team3Loading } = trpc.tradeMachine.getTeamRoster.useQuery(
+    { teamName: team3 },
+    { enabled: !!team3 && tradeMode === '3-team' }
+  );
 
   const postTradeMutation = trpc.tradeMachine.postTradeToDiscord.useMutation({
     onSuccess: () => {
@@ -63,8 +70,10 @@ export default function TradeMachine() {
       // Reset state
       setTeam1("");
       setTeam2("");
+      setTeam3("");
       setTeam1SelectedPlayers(new Set());
       setTeam2SelectedPlayers(new Set());
+      setTeam3SelectedPlayers(new Set());
       setPlayerBadges(new Map());
       setTradeConfirmed(false);
     },
@@ -75,7 +84,7 @@ export default function TradeMachine() {
 
 
 
-  const togglePlayer = (playerId: string, team: 1 | 2) => {
+  const togglePlayer = (playerId: string, team: 1 | 2 | 3) => {
     if (team === 1) {
       const newSet = new Set(team1SelectedPlayers);
       if (newSet.has(playerId)) {
@@ -84,7 +93,7 @@ export default function TradeMachine() {
         newSet.add(playerId);
       }
       setTeam1SelectedPlayers(newSet);
-    } else {
+    } else if (team === 2) {
       const newSet = new Set(team2SelectedPlayers);
       if (newSet.has(playerId)) {
         newSet.delete(playerId);
@@ -92,6 +101,14 @@ export default function TradeMachine() {
         newSet.add(playerId);
       }
       setTeam2SelectedPlayers(newSet);
+    } else {
+      const newSet = new Set(team3SelectedPlayers);
+      if (newSet.has(playerId)) {
+        newSet.delete(playerId);
+      } else {
+        newSet.add(playerId);
+      }
+      setTeam3SelectedPlayers(newSet);
     }
   };
 
@@ -129,19 +146,38 @@ export default function TradeMachine() {
       .filter((p): p is PlayerWithBadges => p !== null);
   }, [team2Roster, team2SelectedPlayers, playerBadges]);
 
+  const team3PlayersWithBadges = useMemo(() => {
+    if (!team3Roster) return [];
+    return Array.from(team3SelectedPlayers)
+      .map((id) => {
+        const player = team3Roster.find((p) => p.id === id);
+        if (!player) return null;
+        return {
+          ...player,
+          badges: playerBadges.get(id) || 0,
+        };
+      })
+      .filter((p): p is PlayerWithBadges => p !== null);
+  }, [team3Roster, team3SelectedPlayers, playerBadges]);
+
   const team1TotalOvr = team1PlayersWithBadges.reduce((sum, p) => sum + p.overall, 0);
   const team1TotalBadges = team1PlayersWithBadges.reduce((sum, p) => sum + p.badges, 0);
   const team2TotalOvr = team2PlayersWithBadges.reduce((sum, p) => sum + p.overall, 0);
   const team2TotalBadges = team2PlayersWithBadges.reduce((sum, p) => sum + p.badges, 0);
+  const team3TotalOvr = team3PlayersWithBadges.reduce((sum, p) => sum + p.overall, 0);
+  const team3TotalBadges = team3PlayersWithBadges.reduce((sum, p) => sum + p.badges, 0);
 
   // Check if all selected players have badge counts entered (including 0 as valid)
   const canConfirmTrade =
     team1 &&
     team2 &&
+    (tradeMode === '2-team' || team3) &&
     team1SelectedPlayers.size > 0 &&
     team2SelectedPlayers.size > 0 &&
+    (tradeMode === '2-team' || team3SelectedPlayers.size > 0) &&
     Array.from(team1SelectedPlayers).every((id) => playerBadges.has(id) && playerBadges.get(id) !== undefined) &&
-    Array.from(team2SelectedPlayers).every((id) => playerBadges.has(id) && playerBadges.get(id) !== undefined);
+    Array.from(team2SelectedPlayers).every((id) => playerBadges.has(id) && playerBadges.get(id) !== undefined) &&
+    (tradeMode === '2-team' || Array.from(team3SelectedPlayers).every((id) => playerBadges.has(id) && playerBadges.get(id) !== undefined));
 
   const handleConfirmTrade = () => {
     setShowConfirmDialog(true);
@@ -154,7 +190,7 @@ export default function TradeMachine() {
   };
 
   const handlePostToDiscord = () => {
-    const tradeData = {
+    const tradeData: any = {
       team1Name: team1,
       team1Players: team1PlayersWithBadges.map((p) => ({
         name: p.name,
@@ -168,6 +204,15 @@ export default function TradeMachine() {
         badges: p.badges,
       })),
     };
+
+    if (tradeMode === '3-team') {
+      tradeData.team3Name = team3;
+      tradeData.team3Players = team3PlayersWithBadges.map((p) => ({
+        name: p.name,
+        overall: p.overall,
+        badges: p.badges,
+      }));
+    }
 
     postTradeMutation.mutate(tradeData);
 
@@ -187,7 +232,7 @@ export default function TradeMachine() {
               <div>
                 <h1 className="text-4xl font-bold mb-1">Trade Machine</h1>
                 <p className="text-muted-foreground">
-                  Build a trade between two teams, verify badge counts, and post to Discord
+                  Build a trade between {tradeMode === '2-team' ? 'two' : 'three'} teams, verify badge counts, and post to Discord
                 </p>
               </div>
             </div>
@@ -201,9 +246,29 @@ export default function TradeMachine() {
               Back to Home
             </Button>
           </div>
+          
+          {/* Trade Mode Toggle */}
+          <div className="flex gap-2 mb-4">
+            <Button
+              variant={tradeMode === '2-team' ? 'default' : 'outline'}
+              onClick={() => {
+                setTradeMode('2-team');
+                setTeam3("");
+                setTeam3SelectedPlayers(new Set());
+              }}
+            >
+              2-Team Trade
+            </Button>
+            <Button
+              variant={tradeMode === '3-team' ? 'default' : 'outline'}
+              onClick={() => setTradeMode('3-team')}
+            >
+              3-Team Trade
+            </Button>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <div className={`grid grid-cols-1 ${tradeMode === '3-team' ? 'lg:grid-cols-3' : 'lg:grid-cols-2'} gap-6 mb-6`}>
           {/* Team 1 */}
           <Card 
             className="border-2 transition-all shadow-lg hover:shadow-xl"
@@ -443,10 +508,132 @@ export default function TradeMachine() {
               )}
             </CardContent>
           </Card>
+
+          {/* Team 3 */}
+          {tradeMode === '3-team' && (
+            <Card 
+              className="border-2 transition-all shadow-lg hover:shadow-xl"
+              style={{
+                borderColor: team3 ? `${getTeamColors(team3).primary}50` : 'hsl(var(--border))',
+              }}
+            >
+              <CardHeader 
+                className="border-b"
+                style={{
+                  background: team3 ? `linear-gradient(135deg, ${getTeamColors(team3).primary}33 0%, ${getTeamColors(team3).secondary}1A 100%)` : 'transparent',
+                  borderColor: team3 ? `${getTeamColors(team3).primary}33` : 'hsl(var(--border))',
+                }}
+              >
+                <div className="flex items-center gap-3">
+                  {team3 && (
+                    <img 
+                      src={getTeamLogo(team3)} 
+                      alt={team3}
+                      className="h-10 w-10 object-contain"
+                    />
+                  )}
+                  <CardTitle className="text-xl">{team3 || "Team 3"}</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <Label>Select Team</Label>
+                  <Select value={team3} onValueChange={setTeam3}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Choose a team..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {teams?.map((team) => (
+                        <SelectItem key={team} value={team}>
+                          <div className="flex items-center gap-2">
+                            <img 
+                              src={getTeamLogo(team)} 
+                              alt={team}
+                              className="h-5 w-5 object-contain"
+                            />
+                            {team}
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {team3Loading && (
+                  <div className="flex items-center justify-center py-8">
+                    <Loader2 className="h-6 w-6 animate-spin" />
+                  </div>
+                )}
+
+                {team3Roster && team3Roster.length > 0 && (
+                  <div className="space-y-2">
+                    <Label>Select Players</Label>
+                    <div className="max-h-96 overflow-y-auto space-y-2 border rounded-md p-3">
+                      {team3Roster.map((player) => (
+                        <div key={player.id} className="space-y-2 pb-2 border-b last:border-b-0 hover:bg-muted/30 rounded-md p-2 transition-colors">
+                          <div className="flex items-center space-x-3">
+                            <Checkbox
+                              checked={team3SelectedPlayers.has(player.id)}
+                              onCheckedChange={() => togglePlayer(player.id, 3)}
+                            />
+                            {player.photoUrl && (
+                              <img 
+                                src={player.photoUrl} 
+                                alt={player.name}
+                                className="h-10 w-10 rounded-full object-cover border-2 border-primary/20"
+                              />
+                            )}
+                            <label className="text-sm font-medium flex-1 cursor-pointer">
+                              <div className="font-semibold">{player.name}</div>
+                              <div className="text-xs text-muted-foreground">{player.overall} OVR</div>
+                            </label>
+                          </div>
+                          {team3SelectedPlayers.has(player.id) && (
+                            <div className="ml-6 flex items-center gap-2">
+                              <Label htmlFor={`badges-${player.id}`} className="text-xs">
+                                Badges:
+                              </Label>
+                              <Input
+                                id={`badges-${player.id}`}
+                                type="number"
+                                min="0"
+                                placeholder="0"
+                                value={playerBadges.get(player.id) ?? ""}
+                                onChange={(e) => {
+                                  const val = e.target.value;
+                                  // Always set the badge count, even for 0
+                                  setBadgeCount(player.id, val === "" ? 0 : parseInt(val, 10) || 0);
+                                }}
+                                onBlur={(e) => {
+                                  // Ensure badge is set on blur even if empty
+                                  if (!playerBadges.has(player.id)) {
+                                    setBadgeCount(player.id, parseInt(e.target.value, 10) || 0);
+                                  }
+                                }}
+                                className="w-20 h-8"
+                              />
+                              <a
+                                href={player.playerPageUrl || "#"}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-xs text-blue-500 hover:underline"
+                              >
+                                View on 2kratings
+                              </a>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          )}
         </div>
 
         {/* Trade Preview */}
-        {team1PlayersWithBadges.length > 0 && team2PlayersWithBadges.length > 0 && (
+        {team1PlayersWithBadges.length > 0 && team2PlayersWithBadges.length > 0 && (tradeMode === '2-team' || team3PlayersWithBadges.length > 0) && (
           <Card className="mb-6 border-2 border-purple-500/30 shadow-xl">
             <CardHeader className="bg-gradient-to-r from-purple-500/20 via-pink-500/10 to-purple-500/20 border-b border-purple-500/20">
               <CardTitle className="flex items-center gap-2 text-2xl">
@@ -455,7 +642,7 @@ export default function TradeMachine() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className={`grid grid-cols-1 ${tradeMode === '3-team' ? 'md:grid-cols-3' : 'md:grid-cols-2'} gap-6`}>
                 <div 
                   className="rounded-lg p-4 border"
                   style={{
@@ -519,6 +706,40 @@ export default function TradeMachine() {
                     </div>
                   </div>
                 </div>
+
+                {tradeMode === '3-team' && team3PlayersWithBadges.length > 0 && (
+                  <div 
+                    className="rounded-lg p-4 border"
+                    style={{
+                      backgroundColor: `${getTeamColors(team3).primary}0D`,
+                      borderColor: `${getTeamColors(team3).primary}33`,
+                    }}
+                  >
+                    <h3 className="font-bold text-lg mb-3 flex items-center gap-2">
+                      <img src={getTeamLogo(team3)} alt={team3} className="h-6 w-6 object-contain" />
+                      {team3} Sends:
+                    </h3>
+                    <div className="space-y-1">
+                      {team3PlayersWithBadges.map((player) => (
+                        <div key={player.id} className="text-sm flex items-center gap-2 py-1">
+                          <span className="font-medium">{player.name}</span>
+                          <span className="text-muted-foreground">{player.overall} OVR</span>
+                          <span className="text-xs bg-primary/10 px-2 py-0.5 rounded-full">{player.badges} badges</span>
+                        </div>
+                      ))}
+                      <div 
+                        className="border-t pt-3 mt-3 font-bold flex items-center gap-3"
+                        style={{ borderColor: `${getTeamColors(team3).primary}33` }}
+                      >
+                        <span className="text-lg">{team3TotalOvr} OVR</span>
+                        <span 
+                          className="text-sm px-3 py-1 rounded-full"
+                          style={{ backgroundColor: `${getTeamColors(team3).primary}33` }}
+                        >{team3TotalBadges} badges</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
 
 
@@ -591,6 +812,20 @@ export default function TradeMachine() {
                 Total: {team2TotalOvr} OVR ({team2TotalBadges} badges)
               </div>
             </div>
+
+            {tradeMode === '3-team' && team3PlayersWithBadges.length > 0 && (
+              <div>
+                <h4 className="font-semibold mb-2">{team3} Sends:</h4>
+                {team3PlayersWithBadges.map((player) => (
+                  <div key={player.id} className="text-sm">
+                    {player.name} {player.overall} ({player.badges} badges)
+                  </div>
+                ))}
+                <div className="text-sm font-bold mt-1">
+                  Total: {team3TotalOvr} OVR ({team3TotalBadges} badges)
+                </div>
+              </div>
+            )}
           </div>
 
           <DialogFooter>
