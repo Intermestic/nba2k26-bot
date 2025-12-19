@@ -463,3 +463,15 @@
 ## Trade Machine Enhancement
 
 - [x] Add 3-team trade option to trade machine
+
+## 3-Team Draft Enhancement (Dec 19, 2024)
+
+- [ ] Add team designation functionality for 3-team draft option (allow users to specify which players go to which team)
+
+## 3-Team Trade Enhancement (Dec 19, 2024)
+
+- [x] Add team designation functionality for 3-team draft option (allow users to specify which players go to which team)
+- [x] Add destination dropdown for each player in 3-team trades
+- [x] Show player destinations in Trade Preview section
+- [x] Show player destinations in confirmation dialog
+- [x] Include player destinations in Discord post data

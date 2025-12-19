@@ -46,6 +46,7 @@ export default function TradeMachine() {
   const [team2SelectedPlayers, setTeam2SelectedPlayers] = useState<Set<string>>(new Set());
   const [team3SelectedPlayers, setTeam3SelectedPlayers] = useState<Set<string>>(new Set());
   const [playerBadges, setPlayerBadges] = useState<Map<string, number>>(new Map());
+  const [playerDestinations, setPlayerDestinations] = useState<Map<string, string>>(new Map());
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [tradeConfirmed, setTradeConfirmed] = useState(false);
 
@@ -75,6 +76,7 @@ export default function TradeMachine() {
       setTeam2SelectedPlayers(new Set());
       setTeam3SelectedPlayers(new Set());
       setPlayerBadges(new Map());
+      setPlayerDestinations(new Map());
       setTradeConfirmed(false);
     },
     onError: (error) => {
@@ -116,6 +118,12 @@ export default function TradeMachine() {
     const newMap = new Map(playerBadges);
     newMap.set(playerId, badges);
     setPlayerBadges(newMap);
+  };
+
+  const setPlayerDestination = (playerId: string, destination: string) => {
+    const newMap = new Map(playerDestinations);
+    newMap.set(playerId, destination);
+    setPlayerDestinations(newMap);
   };
 
   const team1PlayersWithBadges = useMemo(() => {
@@ -168,6 +176,7 @@ export default function TradeMachine() {
   const team3TotalBadges = team3PlayersWithBadges.reduce((sum, p) => sum + p.badges, 0);
 
   // Check if all selected players have badge counts entered (including 0 as valid)
+  // For 3-team trades, also check that all players have destinations assigned
   const canConfirmTrade =
     team1 &&
     team2 &&
@@ -177,7 +186,12 @@ export default function TradeMachine() {
     (tradeMode === '2-team' || team3SelectedPlayers.size > 0) &&
     Array.from(team1SelectedPlayers).every((id) => playerBadges.has(id) && playerBadges.get(id) !== undefined) &&
     Array.from(team2SelectedPlayers).every((id) => playerBadges.has(id) && playerBadges.get(id) !== undefined) &&
-    (tradeMode === '2-team' || Array.from(team3SelectedPlayers).every((id) => playerBadges.has(id) && playerBadges.get(id) !== undefined));
+    (tradeMode === '2-team' || Array.from(team3SelectedPlayers).every((id) => playerBadges.has(id) && playerBadges.get(id) !== undefined)) &&
+    (tradeMode === '2-team' || (
+      Array.from(team1SelectedPlayers).every((id) => playerDestinations.has(id) && playerDestinations.get(id)) &&
+      Array.from(team2SelectedPlayers).every((id) => playerDestinations.has(id) && playerDestinations.get(id)) &&
+      Array.from(team3SelectedPlayers).every((id) => playerDestinations.has(id) && playerDestinations.get(id))
+    ));
 
   const handleConfirmTrade = () => {
     setShowConfirmDialog(true);
@@ -196,12 +210,14 @@ export default function TradeMachine() {
         name: p.name,
         overall: p.overall,
         badges: p.badges,
+        ...(tradeMode === '3-team' && { destination: playerDestinations.get(p.id) }),
       })),
       team2Name: team2,
       team2Players: team2PlayersWithBadges.map((p) => ({
         name: p.name,
         overall: p.overall,
         badges: p.badges,
+        ...(tradeMode === '3-team' && { destination: playerDestinations.get(p.id) }),
       })),
     };
 
@@ -211,6 +227,7 @@ export default function TradeMachine() {
         name: p.name,
         overall: p.overall,
         badges: p.badges,
+        destination: playerDestinations.get(p.id),
       }));
     }
 
@@ -348,37 +365,58 @@ export default function TradeMachine() {
                           </label>
                         </div>
                         {team1SelectedPlayers.has(player.id) && (
-                          <div className="ml-6 flex items-center gap-2">
-                            <Label htmlFor={`badges-${player.id}`} className="text-xs">
-                              Badges:
-                            </Label>
-                            <Input
-                              id={`badges-${player.id}`}
-                              type="number"
-                              min="0"
-                              placeholder="0"
-                              value={playerBadges.get(player.id) ?? ""}
-                              onChange={(e) => {
-                                const val = e.target.value;
-                                // Always set the badge count, even for 0
-                                setBadgeCount(player.id, val === "" ? 0 : parseInt(val, 10) || 0);
-                              }}
-                              onBlur={(e) => {
-                                // Ensure badge is set on blur even if empty
-                                if (!playerBadges.has(player.id)) {
-                                  setBadgeCount(player.id, parseInt(e.target.value, 10) || 0);
-                                }
-                              }}
-                              className="w-20 h-8"
-                            />
-                            <a
-                              href={player.playerPageUrl || "#"}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-xs text-blue-500 hover:underline"
-                            >
-                              View on 2kratings
-                            </a>
+                          <div className="ml-6 space-y-2">
+                            <div className="flex items-center gap-2">
+                              <Label htmlFor={`badges-${player.id}`} className="text-xs">
+                                Badges:
+                              </Label>
+                              <Input
+                                id={`badges-${player.id}`}
+                                type="number"
+                                min="0"
+                                placeholder="0"
+                                value={playerBadges.get(player.id) ?? ""}
+                                onChange={(e) => {
+                                  const val = e.target.value;
+                                  // Always set the badge count, even for 0
+                                  setBadgeCount(player.id, val === "" ? 0 : parseInt(val, 10) || 0);
+                                }}
+                                onBlur={(e) => {
+                                  // Ensure badge is set on blur even if empty
+                                  if (!playerBadges.has(player.id)) {
+                                    setBadgeCount(player.id, parseInt(e.target.value, 10) || 0);
+                                  }
+                                }}
+                                className="w-20 h-8"
+                              />
+                              <a
+                                href={player.playerPageUrl || "#"}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-xs text-blue-500 hover:underline"
+                              >
+                                View on 2kratings
+                              </a>
+                            </div>
+                            {tradeMode === '3-team' && team2 && team3 && (
+                              <div className="flex items-center gap-2">
+                                <Label htmlFor={`dest-${player.id}`} className="text-xs">
+                                  Goes to:
+                                </Label>
+                                <Select
+                                  value={playerDestinations.get(player.id) || ""}
+                                  onValueChange={(value) => setPlayerDestination(player.id, value)}
+                                >
+                                  <SelectTrigger className="w-32 h-8">
+                                    <SelectValue placeholder="Select team" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value={team2}>{team2}</SelectItem>
+                                    <SelectItem value={team3}>{team3}</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                            )}
                           </div>
                         )}
                       </div>
@@ -468,37 +506,58 @@ export default function TradeMachine() {
                           </label>
                         </div>
                         {team2SelectedPlayers.has(player.id) && (
-                          <div className="ml-6 flex items-center gap-2">
-                            <Label htmlFor={`badges-${player.id}`} className="text-xs">
-                              Badges:
-                            </Label>
-                            <Input
-                              id={`badges-${player.id}`}
-                              type="number"
-                              min="0"
-                              placeholder="0"
-                              value={playerBadges.get(player.id) ?? ""}
-                              onChange={(e) => {
-                                const val = e.target.value;
-                                // Always set the badge count, even for 0
-                                setBadgeCount(player.id, val === "" ? 0 : parseInt(val, 10) || 0);
-                              }}
-                              onBlur={(e) => {
-                                // Ensure badge is set on blur even if empty
-                                if (!playerBadges.has(player.id)) {
-                                  setBadgeCount(player.id, parseInt(e.target.value, 10) || 0);
-                                }
-                              }}
-                              className="w-20 h-8"
-                            />
-                            <a
-                              href={player.playerPageUrl || "#"}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-xs text-blue-500 hover:underline"
-                            >
-                              View on 2kratings
-                            </a>
+                          <div className="ml-6 space-y-2">
+                            <div className="flex items-center gap-2">
+                              <Label htmlFor={`badges-${player.id}`} className="text-xs">
+                                Badges:
+                              </Label>
+                              <Input
+                                id={`badges-${player.id}`}
+                                type="number"
+                                min="0"
+                                placeholder="0"
+                                value={playerBadges.get(player.id) ?? ""}
+                                onChange={(e) => {
+                                  const val = e.target.value;
+                                  // Always set the badge count, even for 0
+                                  setBadgeCount(player.id, val === "" ? 0 : parseInt(val, 10) || 0);
+                                }}
+                                onBlur={(e) => {
+                                  // Ensure badge is set on blur even if empty
+                                  if (!playerBadges.has(player.id)) {
+                                    setBadgeCount(player.id, parseInt(e.target.value, 10) || 0);
+                                  }
+                                }}
+                                className="w-20 h-8"
+                              />
+                              <a
+                                href={player.playerPageUrl || "#"}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-xs text-blue-500 hover:underline"
+                              >
+                                View on 2kratings
+                              </a>
+                            </div>
+                            {tradeMode === '3-team' && team1 && team3 && (
+                              <div className="flex items-center gap-2">
+                                <Label htmlFor={`dest-${player.id}`} className="text-xs">
+                                  Goes to:
+                                </Label>
+                                <Select
+                                  value={playerDestinations.get(player.id) || ""}
+                                  onValueChange={(value) => setPlayerDestination(player.id, value)}
+                                >
+                                  <SelectTrigger className="w-32 h-8">
+                                    <SelectValue placeholder="Select team" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value={team1}>{team1}</SelectItem>
+                                    <SelectItem value={team3}>{team3}</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                            )}
                           </div>
                         )}
                       </div>
@@ -589,37 +648,58 @@ export default function TradeMachine() {
                             </label>
                           </div>
                           {team3SelectedPlayers.has(player.id) && (
-                            <div className="ml-6 flex items-center gap-2">
-                              <Label htmlFor={`badges-${player.id}`} className="text-xs">
-                                Badges:
-                              </Label>
-                              <Input
-                                id={`badges-${player.id}`}
-                                type="number"
-                                min="0"
-                                placeholder="0"
-                                value={playerBadges.get(player.id) ?? ""}
-                                onChange={(e) => {
-                                  const val = e.target.value;
-                                  // Always set the badge count, even for 0
-                                  setBadgeCount(player.id, val === "" ? 0 : parseInt(val, 10) || 0);
-                                }}
-                                onBlur={(e) => {
-                                  // Ensure badge is set on blur even if empty
-                                  if (!playerBadges.has(player.id)) {
-                                    setBadgeCount(player.id, parseInt(e.target.value, 10) || 0);
-                                  }
-                                }}
-                                className="w-20 h-8"
-                              />
-                              <a
-                                href={player.playerPageUrl || "#"}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-xs text-blue-500 hover:underline"
-                              >
-                                View on 2kratings
-                              </a>
+                            <div className="ml-6 space-y-2">
+                              <div className="flex items-center gap-2">
+                                <Label htmlFor={`badges-${player.id}`} className="text-xs">
+                                  Badges:
+                                </Label>
+                                <Input
+                                  id={`badges-${player.id}`}
+                                  type="number"
+                                  min="0"
+                                  placeholder="0"
+                                  value={playerBadges.get(player.id) ?? ""}
+                                  onChange={(e) => {
+                                    const val = e.target.value;
+                                    // Always set the badge count, even for 0
+                                    setBadgeCount(player.id, val === "" ? 0 : parseInt(val, 10) || 0);
+                                  }}
+                                  onBlur={(e) => {
+                                    // Ensure badge is set on blur even if empty
+                                    if (!playerBadges.has(player.id)) {
+                                      setBadgeCount(player.id, parseInt(e.target.value, 10) || 0);
+                                    }
+                                  }}
+                                  className="w-20 h-8"
+                                />
+                                <a
+                                  href={player.playerPageUrl || "#"}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-xs text-blue-500 hover:underline"
+                                >
+                                  View on 2kratings
+                                </a>
+                              </div>
+                              {team1 && team2 && (
+                                <div className="flex items-center gap-2">
+                                  <Label htmlFor={`dest-${player.id}`} className="text-xs">
+                                    Goes to:
+                                  </Label>
+                                  <Select
+                                    value={playerDestinations.get(player.id) || ""}
+                                    onValueChange={(value) => setPlayerDestination(player.id, value)}
+                                  >
+                                    <SelectTrigger className="w-32 h-8">
+                                      <SelectValue placeholder="Select team" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value={team1}>{team1}</SelectItem>
+                                      <SelectItem value={team2}>{team2}</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                              )}
                             </div>
                           )}
                         </div>
@@ -655,13 +735,19 @@ export default function TradeMachine() {
                     {team1} Sends:
                   </h3>
                   <div className="space-y-1">
-                    {team1PlayersWithBadges.map((player) => (
-                      <div key={player.id} className="text-sm flex items-center gap-2 py-1">
-                        <span className="font-medium">{player.name}</span>
-                        <span className="text-muted-foreground">{player.overall} OVR</span>
-                        <span className="text-xs bg-primary/10 px-2 py-0.5 rounded-full">{player.badges} badges</span>
-                      </div>
-                    ))}
+                      {team1PlayersWithBadges.map((player) => {
+                        const destination = tradeMode === '3-team' ? playerDestinations[player.id] : null;
+                        return (
+                          <div key={player.id} className="text-sm flex items-center gap-2 py-1">
+                            <span className="font-medium">{player.name}</span>
+                            <span className="text-muted-foreground">{player.overall} OVR</span>
+                            <span className="text-xs bg-primary/10 px-2 py-0.5 rounded-full">{player.badges} badges</span>
+                            {destination && (
+                              <span className="text-xs text-blue-400 ml-2">→ {destination}</span>
+                            )}
+                          </div>
+                        );
+                      })}
                     <div 
                       className="border-t pt-3 mt-3 font-bold flex items-center gap-3"
                       style={{ borderColor: `${getTeamColors(team1).primary}33` }}
@@ -687,13 +773,19 @@ export default function TradeMachine() {
                     {team2} Sends:
                   </h3>
                   <div className="space-y-1">
-                    {team2PlayersWithBadges.map((player) => (
-                      <div key={player.id} className="text-sm flex items-center gap-2 py-1">
-                        <span className="font-medium">{player.name}</span>
-                        <span className="text-muted-foreground">{player.overall} OVR</span>
-                        <span className="text-xs bg-primary/10 px-2 py-0.5 rounded-full">{player.badges} badges</span>
-                      </div>
-                    ))}
+                      {team2PlayersWithBadges.map((player) => {
+                        const destination = tradeMode === '3-team' ? playerDestinations[player.id] : null;
+                        return (
+                          <div key={player.id} className="text-sm flex items-center gap-2 py-1">
+                            <span className="font-medium">{player.name}</span>
+                            <span className="text-muted-foreground">{player.overall} OVR</span>
+                            <span className="text-xs bg-primary/10 px-2 py-0.5 rounded-full">{player.badges} badges</span>
+                            {destination && (
+                              <span className="text-xs text-blue-400 ml-2">→ {destination}</span>
+                            )}
+                          </div>
+                        );
+                      })}
                     <div 
                       className="border-t pt-3 mt-3 font-bold flex items-center gap-3"
                       style={{ borderColor: `${getTeamColors(team2).primary}33` }}
@@ -720,13 +812,19 @@ export default function TradeMachine() {
                       {team3} Sends:
                     </h3>
                     <div className="space-y-1">
-                      {team3PlayersWithBadges.map((player) => (
-                        <div key={player.id} className="text-sm flex items-center gap-2 py-1">
-                          <span className="font-medium">{player.name}</span>
-                          <span className="text-muted-foreground">{player.overall} OVR</span>
-                          <span className="text-xs bg-primary/10 px-2 py-0.5 rounded-full">{player.badges} badges</span>
-                        </div>
-                      ))}
+                      {team3PlayersWithBadges.map((player) => {
+                        const destination = playerDestinations[player.id];
+                        return (
+                          <div key={player.id} className="text-sm flex items-center gap-2 py-1">
+                            <span className="font-medium">{player.name}</span>
+                            <span className="text-muted-foreground">{player.overall} OVR</span>
+                            <span className="text-xs bg-primary/10 px-2 py-0.5 rounded-full">{player.badges} badges</span>
+                            {destination && (
+                              <span className="text-xs text-blue-400 ml-2">→ {destination}</span>
+                            )}
+                          </div>
+                        );
+                      })}
                       <div 
                         className="border-t pt-3 mt-3 font-bold flex items-center gap-3"
                         style={{ borderColor: `${getTeamColors(team3).primary}33` }}
@@ -791,11 +889,15 @@ export default function TradeMachine() {
           <div className="space-y-4 my-4">
             <div>
               <h4 className="font-semibold mb-2">{team1} Sends:</h4>
-              {team1PlayersWithBadges.map((player) => (
-                <div key={player.id} className="text-sm">
-                  {player.name} {player.overall} ({player.badges} badges)
-                </div>
-              ))}
+              {team1PlayersWithBadges.map((player) => {
+                const destination = tradeMode === '3-team' ? playerDestinations[player.id] : null;
+                return (
+                  <div key={player.id} className="text-sm">
+                    {player.name} {player.overall} ({player.badges} badges)
+                    {destination && <span className="text-blue-400 ml-2">→ {destination}</span>}
+                  </div>
+                );
+              })}
               <div className="text-sm font-bold mt-1">
                 Total: {team1TotalOvr} OVR ({team1TotalBadges} badges)
               </div>
@@ -803,11 +905,15 @@ export default function TradeMachine() {
 
             <div>
               <h4 className="font-semibold mb-2">{team2} Sends:</h4>
-              {team2PlayersWithBadges.map((player) => (
-                <div key={player.id} className="text-sm">
-                  {player.name} {player.overall} ({player.badges} badges)
-                </div>
-              ))}
+              {team2PlayersWithBadges.map((player) => {
+                const destination = tradeMode === '3-team' ? playerDestinations[player.id] : null;
+                return (
+                  <div key={player.id} className="text-sm">
+                    {player.name} {player.overall} ({player.badges} badges)
+                    {destination && <span className="text-blue-400 ml-2">→ {destination}</span>}
+                  </div>
+                );
+              })}
               <div className="text-sm font-bold mt-1">
                 Total: {team2TotalOvr} OVR ({team2TotalBadges} badges)
               </div>
@@ -816,11 +922,15 @@ export default function TradeMachine() {
             {tradeMode === '3-team' && team3PlayersWithBadges.length > 0 && (
               <div>
                 <h4 className="font-semibold mb-2">{team3} Sends:</h4>
-                {team3PlayersWithBadges.map((player) => (
-                  <div key={player.id} className="text-sm">
-                    {player.name} {player.overall} ({player.badges} badges)
-                  </div>
-                ))}
+                {team3PlayersWithBadges.map((player) => {
+                  const destination = playerDestinations[player.id];
+                  return (
+                    <div key={player.id} className="text-sm">
+                      {player.name} {player.overall} ({player.badges} badges)
+                      {destination && <span className="text-blue-400 ml-2">→ {destination}</span>}
+                    </div>
+                  );
+                })}
                 <div className="text-sm font-bold mt-1">
                   Total: {team3TotalOvr} OVR ({team3TotalBadges} badges)
                 </div>
