@@ -104,10 +104,22 @@ async function countVotes(reaction: MessageReaction | PartialMessageReaction): P
  * 2. "Player Name OVR (salary)" - e.g., "Cam Thomas 81 (10)"
  * 3. "Player Name (OVR) salary" - e.g., "Lauri Markkanen (88) 15"
  */
-async function parseTradeFromEmbed(message: Message): Promise<{ team1: string; team2: string; team1Players: any[]; team2Players: any[] } | null> {
+async function parseTradeFromEmbed(message: Message): Promise<{ team1: string; team2: string; team1Players: any[]; team2Players: any[]; teams?: Array<{ name: string; players: any[] }> } | null> {
   // Use the new simple parser
   const { parseTradeFromMessage } = await import('./simple-trade-parser');
-  return await parseTradeFromMessage(message);
+  const result = await parseTradeFromMessage(message);
+  
+  // Ensure backward compatibility - if it's a 2-team trade, the legacy fields are populated
+  // If it's a 3+ team trade, only the teams array is populated
+  if (result && result.teams && result.teams.length === 2 && !result.team1) {
+    // Populate legacy fields for 2-team trades if not already set
+    result.team1 = result.teams[0].name;
+    result.team2 = result.teams[1].name;
+    result.team1Players = result.teams[0].players;
+    result.team2Players = result.teams[1].players;
+  }
+  
+  return result as any;
 }
 
 // OLD PARSER (keeping for reference, but not used)

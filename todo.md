@@ -475,3 +475,7 @@
 - [x] Show player destinations in Trade Preview section
 - [x] Show player destinations in confirmation dialog
 - [x] Include player destinations in Discord post data
+
+## 3-Team Trade Parser Fix (Dec 19, 2024)
+
+- [x] Fix trade parser to correctly handle 3-team trades

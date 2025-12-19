@@ -80,10 +80,15 @@ function extractPotentialPlayerNames(text: string): string[] {
  * Format-agnostic - works with any format as long as it has team names and player names
  */
 export async function parseTradeFromMessage(message: Message): Promise<{
-  team1: string;
-  team2: string;
-  team1Players: Array<{ name: string; overall: number; salary: number }>;
-  team2Players: Array<{ name: string; overall: number; salary: number }>;
+  teams: Array<{
+    name: string;
+    players: Array<{ name: string; overall: number; salary: number }>;
+  }>;
+  // Legacy 2-team format for backward compatibility
+  team1?: string;
+  team2?: string;
+  team1Players?: Array<{ name: string; overall: number; salary: number }>;
+  team2Players?: Array<{ name: string; overall: number; salary: number }>;
 } | null> {
   try {
     // Get text from embed or message content
@@ -113,13 +118,11 @@ export async function parseTradeFromMessage(message: Message): Promise<{
     }
     
     if (foundTeams.length < 2) {
-      console.log('[Simple Parser] Could not find 2 teams. Found:', foundTeams);
+      console.log('[Simple Parser] Could not find at least 2 teams. Found:', foundTeams);
       return null;
     }
     
-    const team1 = foundTeams[0];
-    const team2 = foundTeams[1];
-    console.log('[Simple Parser] Teams:', team1, 'vs', team2);
+    console.log('[Simple Parser] Teams involved:', foundTeams.join(', '));
     
     // Step 2: Extract all potential player names
     const potentialNames = extractPotentialPlayerNames(text);
@@ -141,8 +144,9 @@ export async function parseTradeFromMessage(message: Message): Promise<{
     console.log('[Simple Parser] Loaded', allPlayers.length, 'players from database');
     
     // Step 4: Match each potential name to a real player using fuzzy matching
-    const team1Players: Array<{ name: string; overall: number; salary: number }> = [];
-    const team2Players: Array<{ name: string; overall: number; salary: number }> = [];
+    // Create a map to track players by team
+    const teamPlayersMap = new Map<string, Array<{ name: string; overall: number; salary: number }>>();
+    foundTeams.forEach(team => teamPlayersMap.set(team, []));
     
     for (const potentialName of potentialNames) {
       // Fuzzy match against all players
@@ -163,15 +167,16 @@ export async function parseTradeFromMessage(message: Message): Promise<{
           };
           
           // Assign to correct team based on player's CURRENT team
-          if (matchedPlayer.team === team1) {
-            team1Players.push(playerData);
-          } else if (matchedPlayer.team === team2) {
-            team2Players.push(playerData);
+          const playerTeam = foundTeams.find(t => t === matchedPlayer.team);
+          if (playerTeam) {
+            teamPlayersMap.get(playerTeam)!.push(playerData);
           } else {
-            // Player is on neither team - try to infer from context
-            console.log(`[Simple Parser] Player ${matchedPlayer.name} is on ${matchedPlayer.team}, not ${team1} or ${team2}`);
-            // Add to team1 by default (will be swapped to team2)
-            team1Players.push(playerData);
+            // Player is on a team not involved in the trade
+            console.log(`[Simple Parser] Player ${matchedPlayer.name} is on ${matchedPlayer.team}, which is not in the trade teams: ${foundTeams.join(', ')}`);
+            // Try to assign to first team with no players yet, otherwise first team
+            const emptyTeam = foundTeams.find(t => teamPlayersMap.get(t)!.length === 0);
+            const targetTeam = emptyTeam || foundTeams[0];
+            teamPlayersMap.get(targetTeam)!.push(playerData);
           }
         }
       } else {
@@ -179,19 +184,36 @@ export async function parseTradeFromMessage(message: Message): Promise<{
       }
     }
     
-    console.log(`[Simple Parser] Final result: ${team1} sends ${team1Players.length} players, ${team2} sends ${team2Players.length} players`);
+    // Build result with flexible team structure
+    const teams = foundTeams.map(teamName => ({
+      name: teamName,
+      players: teamPlayersMap.get(teamName) || []
+    }));
     
-    if (team1Players.length === 0 || team2Players.length === 0) {
-      console.log('[Simple Parser] One team has no players, trade invalid');
+    // Log results
+    teams.forEach(team => {
+      console.log(`[Simple Parser] ${team.name} sends ${team.players.length} players`);
+    });
+    
+    // Validate that all teams have at least one player
+    const teamsWithoutPlayers = teams.filter(t => t.players.length === 0);
+    if (teamsWithoutPlayers.length > 0) {
+      console.log('[Simple Parser] Some teams have no players:', teamsWithoutPlayers.map(t => t.name).join(', '));
       return null;
     }
     
-    return {
-      team1,
-      team2,
-      team1Players,
-      team2Players
-    };
+    // Build result with both new format and legacy format for backward compatibility
+    const result: any = { teams };
+    
+    // Add legacy 2-team format if exactly 2 teams
+    if (teams.length === 2) {
+      result.team1 = teams[0].name;
+      result.team2 = teams[1].name;
+      result.team1Players = teams[0].players;
+      result.team2Players = teams[1].players;
+    }
+    
+    return result;
     
   } catch (error) {
     console.error('[Simple Parser] Error:', error);

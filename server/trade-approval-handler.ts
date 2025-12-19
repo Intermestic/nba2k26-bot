@@ -87,55 +87,117 @@ export async function handleApprovedTradeProcessing(message: Message) {
         return;
       }
       
-      console.log(`[Trade Approval] Successfully parsed trade directly: ${parsedTrade.team1} ↔ ${parsedTrade.team2}`);
+      // Check if this is a multi-team trade (3+ teams)
+      const isMultiTeamTrade = parsedTrade.teams && parsedTrade.teams.length > 2;
       
-      // Execute the trade swap
-      const validTeam1 = validateTeamName(parsedTrade.team1);
-      const validTeam2 = validateTeamName(parsedTrade.team2);
-      
-      if (!validTeam1 || !validTeam2) {
-        await message.reply(`❌ Invalid team names: ${parsedTrade.team1}, ${parsedTrade.team2}`);
-        return;
-      }
-      
-      const updatedPlayers: string[] = [];
-      const notFoundPlayers: string[] = [];
-      
-      // Team1 receives Team2's players
-      for (const player of parsedTrade.team2Players) {
-        const foundPlayer = await findPlayerByFuzzyName(player.name, validTeam2, 'trade_approval');
-        if (!foundPlayer) {
-          notFoundPlayers.push(player.name);
-          continue;
+      if (isMultiTeamTrade) {
+        console.log(`[Trade Approval] Processing ${parsedTrade.teams.length}-team trade`);
+        
+        // Validate all team names
+        const validatedTeams = parsedTrade.teams.map(t => ({
+          original: t.name,
+          validated: validateTeamName(t.name),
+          players: t.players
+        }));
+        
+        const invalidTeams = validatedTeams.filter(t => !t.validated);
+        if (invalidTeams.length > 0) {
+          await message.reply(`❌ Invalid team names: ${invalidTeams.map(t => t.original).join(', ')}`);
+          return;
         }
-        await db.update(players).set({ team: validTeam1 }).where(eq(players.id, foundPlayer.id));
-        updatedPlayers.push(`${foundPlayer.name} → ${validTeam1}`);
-      }
-      
-      // Team2 receives Team1's players
-      for (const player of parsedTrade.team1Players) {
-        const foundPlayer = await findPlayerByFuzzyName(player.name, validTeam1, 'trade_approval');
-        if (!foundPlayer) {
-          notFoundPlayers.push(player.name);
-          continue;
+        
+        const updatedPlayers: string[] = [];
+        const notFoundPlayers: string[] = [];
+        
+        // In a multi-team trade, each team sends their players away
+        // We need to determine where each player goes based on the trade structure
+        // For now, we'll use a round-robin approach: Team1 players → Team2, Team2 players → Team3, Team3 players → Team1
+        for (let i = 0; i < validatedTeams.length; i++) {
+          const sendingTeam = validatedTeams[i];
+          const receivingTeam = validatedTeams[(i + 1) % validatedTeams.length]; // Round-robin
+          
+          for (const player of sendingTeam.players) {
+            const foundPlayer = await findPlayerByFuzzyName(player.name, sendingTeam.validated!, 'trade_approval');
+            if (!foundPlayer) {
+              notFoundPlayers.push(player.name);
+              continue;
+            }
+            await db.update(players).set({ team: receivingTeam.validated! }).where(eq(players.id, foundPlayer.id));
+            updatedPlayers.push(`${foundPlayer.name} (${sendingTeam.validated}) → ${receivingTeam.validated}`);
+          }
         }
-        await db.update(players).set({ team: validTeam2 }).where(eq(players.id, foundPlayer.id));
-        updatedPlayers.push(`${foundPlayer.name} → ${validTeam2}`);
+        
+        let successMessage = `✅ **${parsedTrade.teams.length}-Team Trade Processed Successfully!**\n\n`;
+        
+        // Show what each team received
+        for (let i = 0; i < validatedTeams.length; i++) {
+          const receivingTeam = validatedTeams[i];
+          const sendingTeam = validatedTeams[(i - 1 + validatedTeams.length) % validatedTeams.length]; // Previous team in round-robin
+          
+          successMessage += `**${receivingTeam.validated}** received:\n`;
+          successMessage += sendingTeam.players.map(p => `• ${p.name} (${p.overall} OVR)`).join('\n');
+          successMessage += '\n\n';
+        }
+        
+        if (notFoundPlayers.length > 0) {
+          successMessage += `⚠️ **Warning:** Could not find these players in database:\n`;
+          successMessage += notFoundPlayers.map(p => `• ${p}`).join('\n');
+        }
+        
+        await message.reply(successMessage);
+        console.log(`[Trade Approval] ${parsedTrade.teams.length}-team trade processed successfully: ${updatedPlayers.length} players updated`);
+      } else {
+        // 2-team trade (legacy path)
+        console.log(`[Trade Approval] Successfully parsed trade directly: ${parsedTrade.team1} ↔ ${parsedTrade.team2}`);
+        
+        // Execute the trade swap
+        const validTeam1 = validateTeamName(parsedTrade.team1!);
+        const validTeam2 = validateTeamName(parsedTrade.team2!);
+        
+        if (!validTeam1 || !validTeam2) {
+          await message.reply(`❌ Invalid team names: ${parsedTrade.team1}, ${parsedTrade.team2}`);
+          return;
+        }
+        
+        const updatedPlayers: string[] = [];
+        const notFoundPlayers: string[] = [];
+        
+        // Team1 receives Team2's players
+        for (const player of parsedTrade.team2Players!) {
+          const foundPlayer = await findPlayerByFuzzyName(player.name, validTeam2, 'trade_approval');
+          if (!foundPlayer) {
+            notFoundPlayers.push(player.name);
+            continue;
+          }
+          await db.update(players).set({ team: validTeam1 }).where(eq(players.id, foundPlayer.id));
+          updatedPlayers.push(`${foundPlayer.name} → ${validTeam1}`);
+        }
+        
+        // Team2 receives Team1's players
+        for (const player of parsedTrade.team1Players!) {
+          const foundPlayer = await findPlayerByFuzzyName(player.name, validTeam1, 'trade_approval');
+          if (!foundPlayer) {
+            notFoundPlayers.push(player.name);
+            continue;
+          }
+          await db.update(players).set({ team: validTeam2 }).where(eq(players.id, foundPlayer.id));
+          updatedPlayers.push(`${foundPlayer.name} → ${validTeam2}`);
+        }
+        
+        let successMessage = `✅ **Trade Processed Successfully!**\n\n`;
+        successMessage += `**${validTeam1}** received:\n`;
+        successMessage += parsedTrade.team2Players!.map(p => `• ${p.name} (${p.overall} OVR)`).join('\n');
+        successMessage += `\n\n**${validTeam2}** received:\n`;
+        successMessage += parsedTrade.team1Players!.map(p => `• ${p.name} (${p.overall} OVR)`).join('\n');
+        
+        if (notFoundPlayers.length > 0) {
+          successMessage += `\n\n⚠️ **Warning:** Could not find these players in database:\n`;
+          successMessage += notFoundPlayers.map(p => `• ${p}`).join('\n');
+        }
+        
+        await message.reply(successMessage);
+        console.log(`[Trade Approval] Trade processed successfully: ${updatedPlayers.length} players updated`);
       }
-      
-      let successMessage = `✅ **Trade Processed Successfully!**\n\n`;
-      successMessage += `**${validTeam1}** received:\n`;
-      successMessage += parsedTrade.team2Players.map(p => `• ${p.name} (${p.overall} OVR)`).join('\n');
-      successMessage += `\n\n**${validTeam2}** received:\n`;
-      successMessage += parsedTrade.team1Players.map(p => `• ${p.name} (${p.overall} OVR)`).join('\n');
-      
-      if (notFoundPlayers.length > 0) {
-        successMessage += `\n\n⚠️ **Warning:** Could not find these players in database:\n`;
-        successMessage += notFoundPlayers.map(p => `• ${p}`).join('\n');
-      }
-      
-      await message.reply(successMessage);
-      console.log(`[Trade Approval] Trade processed successfully: ${updatedPlayers.length} players updated`);
       
       // Try to mark as processed in database if trade record exists
       try {
