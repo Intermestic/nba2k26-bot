@@ -490,3 +490,8 @@
 - [x] Show trade totals (sum of ratings and badges) per team
 - [x] Add error handling for invalid trade formats
 - [x] Test with provided Sixers/Wizards/Knicks trade example
+
+
+## Discord Bot Reliability (Dec 20, 2024)
+
+- [x] Ensure Discord bot stays online continuously (investigate hosting solution)
