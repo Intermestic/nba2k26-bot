@@ -2,6 +2,7 @@ import express from "express";
 import { createServer } from "http";
 import path from "path";
 import { fileURLToPath } from "url";
+import { startBotMonitoring } from "./bot-monitoring-service";
 // Discord bot now runs in separate process (bot-standalone.ts)
 
 const __filename = fileURLToPath(import.meta.url);
@@ -29,6 +30,9 @@ async function startServer() {
   server.listen(port, () => {
     console.log(`Server running on http://localhost:${port}/`);
   });
+  
+  // Start bot monitoring service
+  startBotMonitoring();
   
   // Discord bot runs in separate process to avoid HMR issues
   // See bot-standalone.ts and package.json scripts

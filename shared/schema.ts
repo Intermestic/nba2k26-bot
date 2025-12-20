@@ -83,4 +83,34 @@ export const playerStats = mysqlTable("player_stats", {
     .default(sql`CURRENT_TIMESTAMP`),
 });
 
+// Bot metrics for tracking uptime, command usage, and health
+export const botMetrics = mysqlTable("bot_metrics", {
+  id: int("id").primaryKey().autoincrement(),
+  metricType: varchar("metric_type", { length: 50 }).notNull(), // 'uptime', 'command', 'error', 'health'
+  metricName: varchar("metric_name", { length: 100 }).notNull(), // command name, error type, etc.
+  metricValue: int("metric_value").notNull(), // count, duration in seconds, etc.
+  metadata: text("metadata"), // JSON string for additional data
+  recordedAt: datetime("recorded_at")
+    .notNull()
+    .default(sql`CURRENT_TIMESTAMP`),
+});
+
+// Monitoring alerts configuration and status
+export const monitoringAlerts = mysqlTable("monitoring_alerts", {
+  id: int("id").primaryKey().autoincrement(),
+  alertType: varchar("alert_type", { length: 50 }).notNull(), // 'bot_offline', 'high_error_rate', etc.
+  isEnabled: boolean("is_enabled").default(true),
+  webhookUrl: text("webhook_url"), // Discord webhook URL
+  alertFrequency: varchar("alert_frequency", { length: 20 }).default("immediate"), // 'immediate', '5min', '15min', '1hr'
+  lastTriggered: datetime("last_triggered"),
+  status: varchar("status", { length: 20 }).default("active"), // 'active', 'paused', 'error'
+  createdAt: datetime("created_at")
+    .notNull()
+    .default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: datetime("updated_at")
+    .notNull()
+    .default(sql`CURRENT_TIMESTAMP`)
+    .$onUpdateFn(() => new Date()),
+});
+
 

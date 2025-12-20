@@ -495,3 +495,31 @@
 ## Discord Bot Reliability (Dec 20, 2024)
 
 - [x] Ensure Discord bot stays online continuously (investigate hosting solution)
+
+## Next Steps (Dec 20, 2024)
+
+### 1. Publish Application
+- [ ] Create checkpoint for current stable state
+- [ ] Guide user to publish application via Manus UI for 24/7 bot hosting
+
+### 2. Monitoring Alerts System
+- [x] Create monitoring_alerts database table (id, alert_type, status, last_check, created_at, updated_at)
+- [x] Create TRPC router for monitoring alerts (getStatus, configure, testWebhook)
+- [x] Implement bot health check service (periodic ping to verify bot is online)
+- [x] Add Discord webhook integration for offline notifications
+- [x] Create monitoring alerts configuration page in admin panel
+- [x] Add webhook URL input and test button
+- [x] Add alert frequency configuration (immediate, 5min, 15min, 1hr)
+- [ ] Test offline detection and webhook notifications
+
+### 3. Bot Status Dashboard
+- [x] Create bot_metrics database table (metric_type, metric_value, recorded_at)
+- [x] Create TRPC router for bot metrics (getUptime, getCommandStats, getHealthMetrics)
+- [x] Implement metrics collection service (track uptime, command usage, errors)
+- [x] Create bot status dashboard page in admin panel
+- [x] Display bot uptime (current session, 24h, 7d, 30d)
+- [x] Display command usage statistics (top commands, usage by hour/day)
+- [x] Display health metrics (response time, error rate, memory usage)
+- [x] Add real-time status indicator (online/offline with last seen)
+- [x] Add charts for visualizing metrics over time
+- [ ] Test dashboard with real bot data

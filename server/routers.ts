@@ -34,6 +34,8 @@ import { upgradeLimitsRouter } from './routers/upgradeLimits';
 import { badgeAdditionsRouter } from './routers/badgeAdditions';
 import { upgradeHistoryRouter } from './routers/upgradeHistory';
 import { teamAliasesRouter } from './routers/teamAliases';
+import { botMetricsRouter } from './routers/botMetrics';
+import { monitoringAlertsRouter } from './routers/monitoringAlerts';
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -144,6 +146,12 @@ export const appRouter = router({
   
   // Team aliases management for trade parsing
   teamAliases: teamAliasesRouter,
+  
+  // Bot metrics for uptime and command statistics
+  botMetrics: botMetricsRouter,
+  
+  // Monitoring alerts for bot offline notifications
+  monitoringAlerts: monitoringAlertsRouter,
 });
 
 export type AppRouter = typeof appRouter;

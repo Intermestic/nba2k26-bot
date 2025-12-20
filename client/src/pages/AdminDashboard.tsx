@@ -201,6 +201,22 @@ export default function AdminDashboard() {
       color: "bg-red-500",
       section: "system"
     },
+    {
+      title: "Bot Dashboard",
+      description: "View uptime, command stats, and health metrics",
+      href: "/admin/bot-dashboard",
+      icon: <BarChart3 className="w-6 h-6" />,
+      color: "bg-purple-500",
+      section: "system"
+    },
+    {
+      title: "Monitoring Alerts",
+      description: "Configure Discord webhook notifications for bot offline",
+      href: "/admin/monitoring-alerts",
+      icon: <AlertTriangle className="w-6 h-6" />,
+      color: "bg-orange-500",
+      section: "system"
+    },
 
 
   ];
