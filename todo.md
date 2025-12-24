@@ -499,7 +499,7 @@
 ## Next Steps (Dec 20, 2024)
 
 ### 1. Publish Application
-- [ ] Create checkpoint for current stable state
+- [x] Create checkpoint for current stable state
 - [ ] Guide user to publish application via Manus UI for 24/7 bot hosting
 
 ### 2. Monitoring Alerts System
@@ -523,3 +523,11 @@
 - [x] Add real-time status indicator (online/offline with last seen)
 - [x] Add charts for visualizing metrics over time
 - [ ] Test dashboard with real bot data
+
+## Unprocessed Trades (Dec 21, 2024)
+
+- [x] Investigate trade ID 1451688967123501249 (Trail Blazers/Hawks - Sabonis/Allen) - posted 12/19/25 4:33 PM
+- [x] Investigate trade ID 1452101320034226257 (Timberwolves/Pacers - 3 for 3 trade) - posted 12/20/25 7:52 PM
+- [x] Fix bot not recognizing or processing these trades automatically
+- [x] Fix trade processing - trades with 7+ yes votes not automatically processing
+- [x] Implement automatic restart mechanism for Discord bot to prevent offline issues

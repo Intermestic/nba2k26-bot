@@ -1,0 +1,90 @@
+{
+  "query": "SELECT id, windowId, startTime, endTime, status, createdAt FROM bid_windows ORDER BY createdAt DESC LIMIT 10",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT id, windowId, startTime, endTime, status, createdAt FROM bid_windows ORDER BY createdAt DESC LIMIT 10",
+  "rows": [
+    {
+      "id": "1800001",
+      "windowId": "2025-12-20-PM",
+      "startTime": "2025-12-20 17:00:00",
+      "endTime": "2025-12-21 04:50:00",
+      "status": "active",
+      "createdAt": "2025-12-20 19:13:53"
+    },
+    {
+      "id": "1770001",
+      "windowId": "2025-12-20-AM",
+      "startTime": "2025-12-20 05:00:00",
+      "endTime": "2025-12-20 16:50:00",
+      "status": "active",
+      "createdAt": "2025-12-20 13:13:56"
+    },
+    {
+      "id": "1740001",
+      "windowId": "2025-12-19-PM",
+      "startTime": "2025-12-19 17:00:00",
+      "endTime": "2025-12-20 04:50:00",
+      "status": "active",
+      "createdAt": "2025-12-19 17:50:35"
+    },
+    {
+      "id": "1710001",
+      "windowId": "2025-12-19-AM",
+      "startTime": "2025-12-19 05:00:00",
+      "endTime": "2025-12-19 16:50:00",
+      "status": "active",
+      "createdAt": "2025-12-19 06:20:04"
+    },
+    {
+      "id": "1680001",
+      "windowId": "2025-12-18-PM",
+      "startTime": "2025-12-18 17:00:00",
+      "endTime": "2025-12-19 04:50:00",
+      "status": "active",
+      "createdAt": "2025-12-18 22:58:05"
+    },
+    {
+      "id": "1650001",
+      "windowId": "2025-12-18-AM",
+      "startTime": "2025-12-18 05:00:00",
+      "endTime": "2025-12-18 16:50:00",
+      "status": "active",
+      "createdAt": "2025-12-18 05:00:01"
+    },
+    {
+      "id": "1620001",
+      "windowId": "2025-12-17-PM",
+      "startTime": "2025-12-17 17:00:00",
+      "endTime": "2025-12-18 04:50:00",
+      "status": "active",
+      "createdAt": "2025-12-17 21:28:59"
+    },
+    {
+      "id": "1590001",
+      "windowId": "2025-12-17-AM",
+      "startTime": "2025-12-17 00:00:00",
+      "endTime": "2025-12-17 11:50:00",
+      "status": "active",
+      "createdAt": "2025-12-17 06:13:19"
+    },
+    {
+      "id": "1560001",
+      "windowId": "2025-12-16-PM",
+      "startTime": "2025-12-16 17:00:00",
+      "endTime": "2025-12-17 04:50:00",
+      "status": "active",
+      "createdAt": "2025-12-16 17:01:48"
+    },
+    {
+      "id": "1530001",
+      "windowId": "2025-12-16-AM",
+      "startTime": "2025-12-16 05:00:00",
+      "endTime": "2025-12-16 16:50:00",
+      "status": "active",
+      "createdAt": "2025-12-16 07:51:38"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\twindowId\tstartTime\tendTime\tstatus\tcreatedAt\n1800001\t2025-12-20-PM\t2025-12-20 17:00:00\t2025-12-21 04:50:00\tactive\t2025-12-20 19:13:53\n1770001\t2025-12-20-AM\t2025-12-20 05:00:00\t2025-12-20 16:50:00\tactive\t2025-12-20 13:13:56\n1740001\t2025-12-19-PM\t2025-12-19 17:00:00\t2025-12-20 04:50:00\tactive\t2025-12-19 17:50:35\n1710001\t2025-12-19-AM\t2025-12-19 05:00:00\t2025-12-19 16:50:00\tactive\t2025-12-19 06:20:04\n1680001\t2025-12-18-PM\t2025-12-18 17:00:00\t2025-12-19 04:50:00\tactive\t2025-12-18 22:58:05\n1650001\t2025-12-18-AM\t2025-12-18 05:00:00\t2025-12-18 16:50:00\tactive\t2025-12-18 05:00:01\n1620001\t2025-12-17-PM\t2025-12-17 17:00:00\t2025-12-18 04:50:00\tactive\t2025-12-17 21:28:59\n1590001\t2025-12-17-AM\t2025-12-17 00:00:00\t2025-12-17 11:50:00\tactive\t2025-12-17 06:13:19\n1560001\t2025-12-16-PM\t2025-12-16 17:00:00\t2025-12-17 04:50:00\tactive\t2025-12-16 17:01:48\n1530001\t2025-12-16-AM\t2025-12-16 05:00:00\t2025-12-16 16:50:00\tactive\t2025-12-16 07:51:38\n",
+  "stderr": "",
+  "execution_time_ms": 1516
+}

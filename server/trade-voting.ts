@@ -928,8 +928,17 @@ export async function manuallyCheckTradeVotes(client: Client, messageId: string)
       }
       return { success: true, message: `Trade rejected with ${downvotes} downvotes`, upvotes, downvotes };
     } else if (upvotes >= APPROVAL_THRESHOLD) {
-      // Always process approved trades, even if already voted on
-      // This ensures player movements happen even if bot was offline during approval
+      // Check database to see if trade was already processed
+      const db = await getDb();
+      if (db) {
+        const existingTrade = await db.select().from(trades).where(eq(trades.messageId, messageId)).limit(1);
+        if (existingTrade.length > 0 && existingTrade[0].playersMovedAt) {
+          console.log(`[Trade Voting] Trade ${messageId} was already processed on ${existingTrade[0].playersMovedAt}, skipping`);
+          return { success: false, message: 'Trade already processed (players already moved)' };
+        }
+      }
+      
+      // Process approved trade if not already processed
       console.log('[Trade Voting] Trade approved, processing player movements...');
       await processVoteResult(message, upvotes, downvotes, true);
       return { success: true, message: `Trade approved with ${upvotes} upvotes`, upvotes, downvotes };

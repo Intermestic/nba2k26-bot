@@ -1,0 +1,170 @@
+{
+  "query": "SELECT id, team1, team2, status, reviewedAt, createdAt FROM trade_logs ORDER BY createdAt DESC LIMIT 20",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT id, team1, team2, status, reviewedAt, createdAt FROM trade_logs ORDER BY createdAt DESC LIMIT 20",
+  "rows": [
+    {
+      "id": "600001",
+      "team1": "Timberwolves",
+      "team2": "Pacers",
+      "status": "pending",
+      "reviewedAt": "NULL",
+      "createdAt": "2025-12-20 21:09:19"
+    },
+    {
+      "id": "570001",
+      "team1": "Sixers",
+      "team2": "Wizards",
+      "status": "pending",
+      "reviewedAt": "NULL",
+      "createdAt": "2025-12-19 18:20:54"
+    },
+    {
+      "id": "540001",
+      "team1": "Grizzlies",
+      "team2": "Pacers",
+      "status": "pending",
+      "reviewedAt": "NULL",
+      "createdAt": "2025-12-18 21:56:11"
+    },
+    {
+      "id": "510001",
+      "team1": "Mavs",
+      "team2": "Pacers",
+      "status": "pending",
+      "reviewedAt": "NULL",
+      "createdAt": "2025-12-18 06:07:02"
+    },
+    {
+      "id": "480001",
+      "team1": "Grizzlies",
+      "team2": "Pacers",
+      "status": "pending",
+      "reviewedAt": "NULL",
+      "createdAt": "2025-12-18 01:53:04"
+    },
+    {
+      "id": "450003",
+      "team1": "Pacers",
+      "team2": "Suns",
+      "status": "pending",
+      "reviewedAt": "NULL",
+      "createdAt": "2025-12-17 23:43:50"
+    },
+    {
+      "id": "450002",
+      "team1": "Pacers",
+      "team2": "Suns",
+      "status": "pending",
+      "reviewedAt": "NULL",
+      "createdAt": "2025-12-17 21:58:12"
+    },
+    {
+      "id": "450001",
+      "team1": "Pacers",
+      "team2": "Suns",
+      "status": "pending",
+      "reviewedAt": "NULL",
+      "createdAt": "2025-12-17 21:40:49"
+    },
+    {
+      "id": "420001",
+      "team1": "Raptors",
+      "team2": "Bucks",
+      "status": "pending",
+      "reviewedAt": "NULL",
+      "createdAt": "2025-12-17 21:08:48"
+    },
+    {
+      "id": "390001",
+      "team1": "Celtics",
+      "team2": "Mavs",
+      "status": "pending",
+      "reviewedAt": "NULL",
+      "createdAt": "2025-12-17 02:50:38"
+    },
+    {
+      "id": "360001",
+      "team1": "Cavaliers",
+      "team2": "Raptors",
+      "status": "pending",
+      "reviewedAt": "NULL",
+      "createdAt": "2025-12-16 09:33:02"
+    },
+    {
+      "id": "330004",
+      "team1": "Wizards",
+      "team2": "Knicks",
+      "status": "pending",
+      "reviewedAt": "NULL",
+      "createdAt": "2025-12-15 23:36:16"
+    },
+    {
+      "id": "330003",
+      "team1": "Wizards",
+      "team2": "Knicks",
+      "status": "pending",
+      "reviewedAt": "NULL",
+      "createdAt": "2025-12-15 23:36:00"
+    },
+    {
+      "id": "330002",
+      "team1": "Test Team A",
+      "team2": "Test Team B",
+      "status": "pending",
+      "reviewedAt": "NULL",
+      "createdAt": "2025-12-15 23:00:29"
+    },
+    {
+      "id": "330001",
+      "team1": "Test Team 1",
+      "team2": "Test Team 2",
+      "status": "pending",
+      "reviewedAt": "NULL",
+      "createdAt": "2025-12-15 22:59:40"
+    },
+    {
+      "id": "300001",
+      "team1": "Wizards",
+      "team2": "Grizzlies",
+      "status": "pending",
+      "reviewedAt": "NULL",
+      "createdAt": "2025-12-14 02:17:33"
+    },
+    {
+      "id": "270010",
+      "team1": "Wizards",
+      "team2": "Pacers",
+      "status": "pending",
+      "reviewedAt": "NULL",
+      "createdAt": "2025-12-13 08:53:12"
+    },
+    {
+      "id": "270009",
+      "team1": "Pacers",
+      "team2": "Wizards",
+      "status": "pending",
+      "reviewedAt": "NULL",
+      "createdAt": "2025-12-13 08:44:44"
+    },
+    {
+      "id": "270008",
+      "team1": "Lakers",
+      "team2": "Warriors",
+      "status": "pending",
+      "reviewedAt": "NULL",
+      "createdAt": "2025-12-13 08:42:12"
+    },
+    {
+      "id": "270007",
+      "team1": "Test Team A",
+      "team2": "Test Team B",
+      "status": "pending",
+      "reviewedAt": "NULL",
+      "createdAt": "2025-12-13 08:27:24"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tteam1\tteam2\tstatus\treviewedAt\tcreatedAt\n600001\tTimberwolves\tPacers\tpending\tNULL\t2025-12-20 21:09:19\n570001\tSixers\tWizards\tpending\tNULL\t2025-12-19 18:20:54\n540001\tGrizzlies\tPacers\tpending\tNULL\t2025-12-18 21:56:11\n510001\tMavs\tPacers\tpending\tNULL\t2025-12-18 06:07:02\n480001\tGrizzlies\tPacers\tpending\tNULL\t2025-12-18 01:53:04\n450003\tPacers\tSuns\tpending\tNULL\t2025-12-17 23:43:50\n450002\tPacers\tSuns\tpending\tNULL\t2025-12-17 21:58:12\n450001\tPacers\tSuns\tpending\tNULL\t2025-12-17 21:40:49\n420001\tRaptors\tBucks\tpending\tNULL\t2025-12-17 21:08:48\n390001\tCeltics\tMavs\tpending\tNULL\t2025-12-17 02:50:38\n360001\tCavaliers\tRaptors\tpending\tNULL\t2025-12-16 09:33:02\n330004\tWizards\tKnicks\tpending\tNULL\t2025-12-15 23:36:16\n330003\tWizards\tKnicks\tpending\tNULL\t2025-12-15 23:36:00\n330002\tTest Team A\tTest Team B\tpending\tNULL\t2025-12-15 23:00:29\n330001\tTest Team 1\tTest Team 2\tpending\tNULL\t2025-12-15 22:59:40\n300001\tWizards\tGrizzlies\tpending\tNULL\t2025-12-14 02:17:33\n270010\tWizards\tPacers\tpending\tNULL\t2025-12-13 08:53:12\n270009\tPacers\tWizards\tpending\tNULL\t2025-12-13 08:44:44\n270008\tLakers\tWarriors\tpending\tNULL\t2025-12-13 08:42:12\n270007\tTest Team A\tTest Team B\tpending\tNULL\t2025-12-13 08:27:24\n",
+  "stderr": "",
+  "execution_time_ms": 1535
+}
