@@ -531,3 +531,13 @@
 - [x] Fix bot not recognizing or processing these trades automatically
 - [x] Fix trade processing - trades with 7+ yes votes not automatically processing
 - [x] Implement automatic restart mechanism for Discord bot to prevent offline issues
+
+## Frontend Player Page Bug (Dec 24, 2024)
+
+- [x] Fix API query error on /players page when filtering by team (Failed to fetch error)
+
+## User Assignment Fix (Dec 24, 2024)
+
+- [x] Ensure getslimyy (Discord ID: 696799539822198914) is assigned to Hornets team
+- [x] Verify new user message appears in Hornets team chat
+- [x] Fix player assignment updates not persisting - UI changes don't update database

@@ -45,6 +45,7 @@ function Router() {
       <Route path={"/admin/fa-management"} component={FAManagement} />
       <Route path={"/admin/player-aliases"} component={PlayerAliases} />
       <Route path={"/admin/teams"} component={TeamAssignments} />
+      <Route path={"/admin/team-assignments"} component={TeamAssignments} />
       <Route path={"/admin/csv-export"} component={CsvExport} />
       <Route path={"/admin/bot-control"} component={BotControl} />
       <Route path={"/admin/bot-status"} component={BotStatus} />
