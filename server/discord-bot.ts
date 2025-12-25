@@ -210,6 +210,12 @@ assertDb(db);
       
       const team = droppedPlayer.team;
       
+      // HORNETS ONLY: Skip transactions for all teams except Hornets
+      if (team !== 'Hornets') {
+        console.log(`[Discord Bot] Skipping transaction for ${team} (Hornets-only mode)`);
+        continue;
+      }
+      
       // Find signed player
       const signedPlayer = await findPlayerByName(transaction.signPlayer);
       
@@ -2342,6 +2348,11 @@ export async function startDiscordBot(token: string) {
         }
         
         console.log('[Discord Bot] ✅ Authorized user triggered manual bid recording');
+        
+        // Add to cache IMMEDIATELY to prevent race conditions
+        processedReactions.add(reactionKey);
+        setTimeout(() => processedReactions.delete(reactionKey), REACTION_CACHE_TTL);
+        
         const { parseBidMessage, findPlayerByFuzzyName, recordBid, getCurrentBiddingWindow } = await import('./fa-bid-parser');
         const { getDb } = await import('./db');
         const { players: playersTable, teamAssignments } = await import('../drizzle/schema');
@@ -2434,10 +2445,6 @@ export async function startDiscordBot(token: string) {
           await message.reply(confirmationMessage);
           console.log('[Discord Bot] ✅ Confirmation message sent');
           
-          // Add to cache only after successful processing
-          processedReactions.add(reactionKey);
-          setTimeout(() => processedReactions.delete(reactionKey), REACTION_CACHE_TTL);
-          
           // Enforce cache size limit
           if (processedReactions.size > REACTION_CACHE_SIZE) {
             const firstKey = processedReactions.values().next().value;
@@ -2447,7 +2454,8 @@ export async function startDiscordBot(token: string) {
           console.error('[Discord Bot] ❌ Manual bid processing failed:', error);
           const errorMessage = error instanceof Error ? error.message : String(error);
           await message.reply(`❌ Manual bid processing failed: ${errorMessage}`);
-          // Do NOT add to cache on failure - allow retry
+          // Remove from cache on failure to allow retry
+          processedReactions.delete(reactionKey);
         }
         return;
       }

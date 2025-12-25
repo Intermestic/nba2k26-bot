@@ -198,6 +198,61 @@ export async function findPlayerByFuzzyName(
     searchName = nicknames[searchName].toLowerCase();
   }
   
+  // Strategy 0: Check learned aliases FIRST (before any filtering)
+  // This prevents creating wrong aliases when filterFreeAgents is true
+  const { learnedAliases } = await import('../drizzle/schema');
+  const { eq } = await import('drizzle-orm');
+  
+  const learnedAlias = await db
+    .select()
+    .from(learnedAliases)
+    .where(eq(learnedAliases.alias, searchName))
+    .orderBy(learnedAliases.useCount); // Order by use count descending
+  
+  if (learnedAlias.length > 0) {
+    // Found learned alias - now find the actual player
+    const canonicalName = learnedAlias[0].canonicalName;
+    console.log(`[Player Matcher] Found learned alias: "${searchName}" → "${canonicalName}" (${learnedAlias[0].useCount} uses)`);
+    
+    // Get all players to find the canonical name
+    let allPlayers = await db.select().from(players);
+    const player = allPlayers.find(p => {
+      const normalizedPlayerName = p.name.toLowerCase().replace(/\bjr\.?$/i, 'jr');
+      const normalizedCanonical = canonicalName.toLowerCase().replace(/\bjr\.?$/i, 'jr');
+      return normalizedPlayerName === normalizedCanonical;
+    });
+    
+    if (player) {
+      // Check if player matches free agent filter
+      if (filterFreeAgents) {
+        const isFreeAgent = !player.team || player.team === 'Free Agent' || player.team === 'Free Agents';
+        if (!isFreeAgent) {
+          console.log(`[Player Matcher] Learned alias points to non-free agent "${player.name}" (${player.team}), but filterFreeAgents=true. Returning null to avoid wrong match.`);
+          return null; // Return null instead of continuing - the user typed a specific player name that exists but isn't a free agent
+        } else {
+          console.log(`[Player Matcher] Returning free agent from learned alias: "${player.name}"`);
+          return {
+            id: player.id,
+            name: player.name,
+            team: player.team || 'Free Agent',
+            overall: player.overall,
+            salaryCap: player.salaryCap
+          };
+        }
+      } else {
+        // No filter - return the player
+        console.log(`[Player Matcher] Returning player from learned alias: "${player.name}"`);
+        return {
+          id: player.id,
+          name: player.name,
+          team: player.team || 'Free Agent',
+          overall: player.overall,
+          salaryCap: player.salaryCap
+        };
+      }
+    }
+  }
+  
   // Get all players
   let allPlayers = await db.select().from(players);
   

@@ -541,3 +541,9 @@
 - [x] Ensure getslimyy (Discord ID: 696799539822198914) is assigned to Hornets team
 - [x] Verify new user message appears in Hornets team chat
 - [x] Fix player assignment updates not persisting - UI changes don't update database
+- [x] Update Discord bot to only process transactions for Hornets team
+
+## Discord Bot Issues (Dec 24, 2024)
+
+- [x] Fix Discord bot duplicate message posting issue
+- [x] Fix player name identification - correctly identify Nikola Djurisic (not Nikola Jovic)
