@@ -388,3 +388,145 @@ export async function handleApprovedTradeProcessing(message: Message) {
     await message.reply('❌ An error occurred while processing the trade. Please check the logs.');
   }
 }
+
+/**
+ * Process trade using data already saved in database
+ * This is called after trade approval to avoid re-parsing the message
+ */
+export async function processTradeFromDatabase(message: Message, tradeRecord: any) {
+  console.log(`[Trade Approval] Processing trade from database record for message ${message.id}`);
+  
+  const db = await getDb();
+  if (!db) {
+    console.error('[Trade Approval] Database not available');
+    await message.reply('❌ Database connection failed. Cannot process trade.');
+    return;
+  }
+  
+  // Check if already processed
+  if (tradeRecord.playersMovedAt) {
+    console.log(`[Trade Approval] ⚠️ Trade ${message.id} was already processed on ${tradeRecord.playersMovedAt}, skipping`);
+    return;
+  }
+  
+  try {
+    // Parse player data from JSON
+    const team1Players = JSON.parse(tradeRecord.team1Players) as Array<{ name: string; overall: number; salary: number }>;
+    const team2Players = JSON.parse(tradeRecord.team2Players) as Array<{ name: string; overall: number; salary: number }>;
+    
+    console.log(`[Trade Approval] Processing trade: ${tradeRecord.team1} ↔ ${tradeRecord.team2}`);
+    console.log(`[Trade Approval] Team1 sends: ${team1Players.map(p => p.name).join(', ')}`);
+    console.log(`[Trade Approval] Team2 sends: ${team2Players.map(p => p.name).join(', ')}`);
+    
+    // Validate that both teams have players
+    if (team1Players.length === 0 || team2Players.length === 0) {
+      console.error(`[Trade Approval] Trade has empty player lists - Team1: ${team1Players.length}, Team2: ${team2Players.length}`);
+      await message.reply('❌ Cannot process trade: One or both teams have no players listed.');
+      return;
+    }
+    
+    // Normalize and validate team names
+    const validTeam1 = validateTeamName(tradeRecord.team1);
+    const validTeam2 = validateTeamName(tradeRecord.team2);
+    
+    if (!validTeam1 || !validTeam2) {
+      console.error(`[Trade Approval] Invalid team names: ${tradeRecord.team1}, ${tradeRecord.team2}`);
+      await message.reply(`❌ Invalid team names: ${tradeRecord.team1}, ${tradeRecord.team2}`);
+      return;
+    }
+    
+    // Find all players and update their teams
+    const updatedPlayers: string[] = [];
+    const notFoundPlayers: string[] = [];
+    
+    // Team1 receives Team2's players
+    for (const player of team2Players) {
+      if (!player.name || player.name === '--' || player.name.trim() === '') {
+        continue;
+      }
+      
+      const foundPlayer = await findPlayerByFuzzyName(player.name, validTeam2, 'trade_approval');
+      if (!foundPlayer) {
+        notFoundPlayers.push(player.name);
+        continue;
+      }
+      
+      await db.update(players).set({ team: validTeam1 }).where(eq(players.id, foundPlayer.id));
+      updatedPlayers.push(`${foundPlayer.name} → ${validTeam1}`);
+    }
+    
+    // Team2 receives Team1's players
+    for (const player of team1Players) {
+      if (!player.name || player.name === '--' || player.name.trim() === '') {
+        continue;
+      }
+      
+      const foundPlayer = await findPlayerByFuzzyName(player.name, validTeam1, 'trade_approval');
+      if (!foundPlayer) {
+        notFoundPlayers.push(player.name);
+        continue;
+      }
+      
+      await db.update(players).set({ team: validTeam2 }).where(eq(players.id, foundPlayer.id));
+      updatedPlayers.push(`${foundPlayer.name} → ${validTeam2}`);
+    }
+    
+    // Trigger story generation (non-blocking)
+    (async () => {
+      try {
+        const storyPayload = {
+          team1: validTeam1,
+          team2: validTeam2,
+          team1Players: team1Players.map(p => p.name),
+          team2Players: team2Players.map(p => p.name),
+        };
+        
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 5000);
+        
+        const response = await fetch(`${process.env.VITE_FRONTEND_FORGE_API_URL}/v1/chat/completions`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(storyPayload),
+          signal: controller.signal
+        });
+        
+        clearTimeout(timeout);
+        
+        if (response.ok) {
+          console.log('[Trade Approval] Story generation triggered successfully');
+        } else {
+          console.error('[Trade Approval] Story generation failed:', response.statusText);
+        }
+      } catch (error) {
+        console.error('[Trade Approval] Failed to trigger story generation:', error);
+      }
+    })();
+    
+    // Post success message
+    let successMessage = `✅ **Trade Processed Successfully!**\n\n`;
+    successMessage += `**${validTeam1}** received:\n`;
+    successMessage += team2Players.map(p => `• ${p.name} (${p.overall} OVR)`).join('\n');
+    successMessage += `\n\n**${validTeam2}** received:\n`;
+    successMessage += team1Players.map(p => `• ${p.name} (${p.overall} OVR)`).join('\n');
+    
+    if (notFoundPlayers.length > 0) {
+      successMessage += `\n\n⚠️ **Warning:** Could not find these players in database:\n`;
+      successMessage += notFoundPlayers.map(p => `• ${p}`).join('\n');
+    }
+    
+    await message.reply(successMessage);
+    console.log(`[Trade Approval] Trade processed successfully: ${updatedPlayers.length} players updated`);
+    
+    // Mark trade as processed
+    await db
+      .update(trades)
+      .set({ playersMovedAt: new Date() })
+      .where(eq(trades.messageId, tradeRecord.messageId));
+    console.log(`[Trade Approval] Marked trade ${tradeRecord.messageId} as processed`);
+    
+  } catch (error) {
+    console.error('[Trade Approval] Error processing trade from database:', error);
+    await message.reply('❌ An error occurred while processing the trade. Please check the logs.');
+  }
+}

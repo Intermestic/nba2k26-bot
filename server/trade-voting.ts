@@ -302,8 +302,23 @@ async function processVoteResult(
     // Add to processing set to prevent concurrent calls
     processingVotes.add(message.id);
     
-    // Get database connection
+    // Also check database to see if this trade was already processed
     const db = await getDb();
+    if (db) {
+      try {
+        const existingVote = await db.select().from(tradeVotes).where(eq(tradeVotes.messageId, message.id)).limit(1);
+        if (existingVote.length > 0) {
+          console.log(`[Trade Voting] Trade ${message.id} already has a vote record in database, skipping duplicate processing`);
+          processingVotes.delete(message.id);
+          return;
+        }
+      } catch (checkError) {
+        console.log(`[Trade Voting] Could not check existing vote:`, checkError);
+        // Continue anyway
+      }
+    }
+    
+    // Database connection already obtained above for duplicate check
     if (!db) {
       console.error('[Trade Voting] Database not available');
     }
@@ -420,24 +435,30 @@ async function processVoteResult(
               return;
             }
             
-            // Also check if the trade has valid player data (not empty arrays)
+            // Process using the trade data we just saved to database
             const team1Players = JSON.parse(existingTrade[0].team1Players);
             const team2Players = JSON.parse(existingTrade[0].team2Players);
             
-            if (team1Players.length > 0 && team2Players.length > 0 && existingTrade[0].status === 'approved') {
-              console.log(`[Trade Voting] Trade ${message.id} has valid data but no playersMovedAt, will process`);
-            } else if (team1Players.length === 0 || team2Players.length === 0) {
-              console.log(`[Trade Voting] Trade ${message.id} exists but has empty player data, will re-process`);
+            if (team1Players.length > 0 && team2Players.length > 0) {
+              console.log('[Trade Voting] Trade approved, automatically processing using database record...');
+              const { processTradeFromDatabase } = await import('./trade-approval-handler');
+              await processTradeFromDatabase(message, existingTrade[0]);
+              console.log('[Trade Voting] Trade processed successfully');
+            } else {
+              console.error(`[Trade Voting] Trade ${message.id} has empty player data, cannot process`);
+              await message.reply('⚠️ **Warning:** Trade was approved but has no player data. Cannot auto-process.');
             }
+          } else {
+            console.error(`[Trade Voting] Trade ${message.id} was not saved to database, cannot auto-process`);
           }
         }
-        
-        console.log('[Trade Voting] Trade approved, automatically processing...');
-        const { handleApprovedTradeProcessing } = await import('./trade-approval-handler');
-        await handleApprovedTradeProcessing(message);
-        console.log('[Trade Voting] Trade processed successfully');
       } catch (err) {
         console.error('[Trade Voting] Failed to auto-process approved trade:', err);
+        try {
+          await message.reply(`⚠️ **Warning:** Trade was approved but auto-processing failed: ${err instanceof Error ? err.message : String(err)}`);
+        } catch (replyError) {
+          console.error('[Trade Voting] Could not post error message:', replyError);
+        }
       }
     }
     

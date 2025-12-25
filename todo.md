@@ -547,3 +547,8 @@
 
 - [x] Fix Discord bot duplicate message posting issue
 - [x] Fix player name identification - correctly identify Nikola Djurisic (not Nikola Jovic)
+
+## Discord Bot Issues (Dec 25, 2024)
+
+- [x] Fix Discord bot double posting trade approval messages
+- [x] Fix bot failing to parse trade details and process player moves after approval (message ID 1453801825018056707)
