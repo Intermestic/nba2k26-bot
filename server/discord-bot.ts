@@ -7,6 +7,7 @@ import { validateTeamName } from './team-validator';
 import { players, teamCoins, faTransactions, faBids } from '../drizzle/schema';
 import { eq, sql, and } from 'drizzle-orm';
 import { extract } from 'fuzzball';
+import { normalizeName } from './name-normalizer';
 import { handleTradeMessage } from './trade-handler';
 import { getConfig } from './bot-config-loader.js';
 import fs from 'fs';
@@ -122,7 +123,7 @@ async function findPlayerByName(name: string): Promise<{ id: string; name: strin
   
   if (matches.length > 0) {
     const matchedName = matches[0][0];
-    const player = allPlayers.find(p => p.name.toLowerCase() === matchedName.toLowerCase());
+    const player = allPlayers.find(p => normalizeName(p.name) === normalizeName(matchedName));
     if (player && player.team) {
       return {
         id: player.id,

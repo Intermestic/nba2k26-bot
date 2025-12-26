@@ -3,6 +3,7 @@ import { z } from "zod";
 import { getDb } from "../db";
 import { playerAliases, failedSearches } from "../../drizzle/schema";
 import { eq, desc } from "drizzle-orm";
+import { normalizeName } from '../name-normalizer';
 
 export const playerAliasesRouter = router({
   /**
@@ -35,7 +36,7 @@ export const playerAliasesRouter = router({
       const existing = await db
         .select()
         .from(playerAliases)
-        .where(eq(playerAliases.alias, input.alias.toLowerCase()));
+        .where(eq(playerAliases.alias, normalizeName(input.alias)));
 
       if (existing.length > 0) {
         throw new Error(`Alias "${input.alias}" already exists for ${existing[0].playerName}`);
@@ -45,7 +46,7 @@ export const playerAliasesRouter = router({
       await db.insert(playerAliases).values({
         playerId: input.playerId,
         playerName: input.playerName,
-        alias: input.alias.toLowerCase(),
+        alias: normalizeName(input.alias),
         matchCount: 0,
         addedBy: ctx.user?.id,
         addedByName: ctx.user?.name || undefined,
@@ -88,7 +89,7 @@ export const playerAliasesRouter = router({
       const existing = await db
         .select()
         .from(playerAliases)
-        .where(eq(playerAliases.alias, input.alias.toLowerCase()));
+        .where(eq(playerAliases.alias, normalizeName(input.alias)));
 
       if (existing.length > 0) {
         await db
@@ -136,7 +137,7 @@ export const playerAliasesRouter = router({
       const existing = await db
         .select()
         .from(playerAliases)
-        .where(eq(playerAliases.alias, input.searchTerm.toLowerCase()));
+        .where(eq(playerAliases.alias, normalizeName(input.searchTerm)));
 
       if (existing.length > 0) {
         throw new Error(`Alias "${input.searchTerm}" already exists for ${existing[0].playerName}`);
@@ -146,7 +147,7 @@ export const playerAliasesRouter = router({
       await db.insert(playerAliases).values({
         playerId: input.playerId,
         playerName: input.playerName,
-        alias: input.searchTerm.toLowerCase(),
+        alias: normalizeName(input.searchTerm),
         matchCount: 0,
         addedBy: ctx.user?.id,
         addedByName: ctx.user?.name || undefined,

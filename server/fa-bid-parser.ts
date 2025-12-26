@@ -2,6 +2,7 @@ import { getDb } from './db';
 import { players, faBids, bidWindows } from '../drizzle/schema';
 import { eq, and, sql, gt } from 'drizzle-orm';
 import { extract } from 'fuzzball';
+import { normalizeName, namesMatch, findByNormalizedName } from './name-normalizer';
 
 // Only process messages AFTER this status update message
 export const MIN_BID_MESSAGE_ID = '1438945025479282822';
@@ -175,15 +176,12 @@ export async function findPlayerByFuzzyName(
     'uncle drew': 'Kyrie Irving',
   };
   
-  // Check nickname first
-  let searchName = name.toLowerCase().trim();
+  // Normalize search name (handles diacritics, punctuation, etc.)
+  let searchName = normalizeName(name);
   
-  // Normalize Jr/Jr. variations
-  searchName = searchName.replace(/\bjr\.?$/i, 'jr');
-  
-  // Common name variations that should match
+  // Common name variations that should match (normalized)
   const NAME_VARIATIONS: Record<string, string> = {
-    'angelo russell': "d'angelo russell",
+    'angelo russell': "dangelo russell",
     'mohammed bamba': 'mohamed bamba',
     'mo bamba': 'mohamed bamba'
   };
@@ -195,7 +193,7 @@ export async function findPlayerByFuzzyName(
   }
   
   if (nicknames[searchName]) {
-    searchName = nicknames[searchName].toLowerCase();
+    searchName = normalizeName(nicknames[searchName]);
   }
   
   // Strategy 0: Check learned aliases FIRST (before any filtering)
@@ -216,11 +214,7 @@ export async function findPlayerByFuzzyName(
     
     // Get all players to find the canonical name
     let allPlayers = await db.select().from(players);
-    const player = allPlayers.find(p => {
-      const normalizedPlayerName = p.name.toLowerCase().replace(/\bjr\.?$/i, 'jr');
-      const normalizedCanonical = canonicalName.toLowerCase().replace(/\bjr\.?$/i, 'jr');
-      return normalizedPlayerName === normalizedCanonical;
-    });
+    const player = findByNormalizedName(canonicalName, allPlayers);
     
     if (player) {
       // Check if player matches free agent filter
@@ -274,11 +268,7 @@ export async function findPlayerByFuzzyName(
         console.log('[Player Matcher] Players with "krej" in name:', krejPlayers.map(p => ({ name: p.name, lowercase: p.name.toLowerCase() })));
       }
       
-      const player = allPlayers.find(p => {
-        const normalizedPlayerName = p.name.toLowerCase().replace(/\bjr\.?$/i, 'jr');
-        const normalizedCanonical = canonicalName.toLowerCase().replace(/\bjr\.?$/i, 'jr');
-        return normalizedPlayerName === normalizedCanonical;
-      });
+      const player = findByNormalizedName(canonicalName, allPlayers);
       if (player) {
         console.log(`[Player Matcher] Found via alias: "${name}" → "${canonicalName}" (team: ${player.team})`);
         return {
@@ -302,10 +292,7 @@ export async function findPlayerByFuzzyName(
       const teamMatches = extract(searchName, teamPlayers.map(p => p.name), { limit: 1 });
       if (teamMatches.length > 0 && teamMatches[0][1] >= 60) {
         const matchedName = teamMatches[0][0];
-        const player = teamPlayers.find(p => {
-          const normalizedPlayerName = p.name.toLowerCase().replace(/\bjr\.?$/i, 'jr');
-          return normalizedPlayerName === matchedName;
-        });
+        const player = teamPlayers.find(p => normalizeName(p.name) === matchedName);
         if (player) {
           console.log(`[Player Matcher] Found on ${teamContext} roster: "${name}" → "${player.name}" (${teamMatches[0][1]}% match)`);
           
@@ -396,7 +383,7 @@ export async function findPlayerByFuzzyName(
         if (lastNameMatches.length > 0 && lastNameMatches[0][1] >= 60) {
           const matchedLastName = lastNameMatches[0][0];
           const player = firstNamePlayers.find(p => 
-            p.name.split(' ').slice(-1)[0].toLowerCase() === matchedLastName
+            normalizeName(p.name.split(' ').slice(-1)[0]) === matchedLastName
           );
           if (player) {
             console.log(`[Player Matcher] Found via first+last name: "${name}" → "${player.name}" (${lastNameMatches[0][1]}% match on last name)`);
@@ -423,22 +410,19 @@ export async function findPlayerByFuzzyName(
     }
   }
   
-  // Strategy 4: League-wide fuzzy match (case-insensitive, normalize Jr/Jr.)
-  const normalizedPlayerNames = allPlayers.map(p => p.name.toLowerCase().replace(/\bjr\.?$/i, 'jr'));
+  // Strategy 4: League-wide fuzzy match (normalized names)
+  const normalizedPlayerNames = allPlayers.map(p => normalizeName(p.name));
   const matches = extract(searchName, normalizedPlayerNames, { limit: 1 });
   
   if (matches.length > 0 && matches[0][1] >= 70) {
     const matchedName = matches[0][0];
-    const player = allPlayers.find(p => {
-      const normalizedPlayerName = p.name.toLowerCase().replace(/\bjr\.?$/i, 'jr');
-      return normalizedPlayerName === matchedName;
-    });
+    const player = allPlayers.find(p => normalizeName(p.name) === matchedName);
     
     if (player) {
       console.log(`[Player Matcher] Found via fuzzy match: "${name}" → "${player.name}" (${matches[0][1]}% match)`);
       
       // Auto-learn: If the search name differs from canonical name, save as alias
-      if (searchName !== player.name.toLowerCase()) {
+      if (searchName !== normalizeName(player.name)) {
         try {
           await autoLearnAlias(searchName, player.name, context);
         } catch (error) {
@@ -480,7 +464,7 @@ async function logFailedSearch(searchTerm: string): Promise<void> {
   const existing = await db
     .select()
     .from(failedSearches)
-    .where(eq(failedSearches.searchTerm, searchTerm.toLowerCase()));
+    .where(eq(failedSearches.searchTerm, normalizeName(searchTerm)));
   
   if (existing.length > 0 && existing[0].resolved === 0) {
     // Increment attempt count
@@ -496,7 +480,7 @@ async function logFailedSearch(searchTerm: string): Promise<void> {
   } else if (existing.length === 0) {
     // Create new failed search record
     await db.insert(failedSearches).values({
-      searchTerm: searchTerm.toLowerCase(),
+      searchTerm: normalizeName(searchTerm),
       attemptCount: 1,
       resolved: 0,
     });
@@ -522,7 +506,7 @@ async function autoLearnAlias(searchTerm: string, canonicalName: string, context
     .from(learnedAliases)
     .where(
       and(
-        eq(learnedAliases.alias, searchTerm.toLowerCase()),
+        eq(learnedAliases.alias, normalizeName(searchTerm)),
         eq(learnedAliases.canonicalName, canonicalName)
       )
     );
@@ -530,7 +514,7 @@ async function autoLearnAlias(searchTerm: string, canonicalName: string, context
   if (existing.length === 0) {
     // Create new learned alias
     await db.insert(learnedAliases).values({
-      alias: searchTerm.toLowerCase(),
+      alias: normalizeName(searchTerm),
       canonicalName: canonicalName,
       context: context,
       useCount: 1,
@@ -781,12 +765,12 @@ export async function getActiveBids(windowId: string): Promise<Array<{ playerNam
     const processedPlayerNames = new Set(
       processedTransactions
         .filter(t => t.signPlayer)
-        .map(t => t.signPlayer!.toLowerCase())
+        .map(t => normalizeName(t.signPlayer!))
     );
     
     // Only return bids for players that haven't been processed yet
     const activeBids = Array.from(highestBids.values()).filter(bid => {
-      const isProcessed = processedPlayerNames.has(bid.playerName.toLowerCase());
+      const isProcessed = processedPlayerNames.has(normalizeName(bid.playerName));
       if (isProcessed) {
         console.log(`[FA Bids] Excluding already-processed player: ${bid.playerName}`);
       }
@@ -938,7 +922,7 @@ export async function validateBidCoins(
   
   // Exclude existing bid on the same player (will be replaced, not added)
   if (playerName) {
-    bidderBids = bidderBids.filter(bid => bid.playerName.toLowerCase() !== playerName.toLowerCase());
+    bidderBids = bidderBids.filter(bid => !namesMatch(bid.playerName, playerName));
   }
   
   // Calculate total commitment

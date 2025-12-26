@@ -1,6 +1,7 @@
 import { getDb } from './db';
 import { players, matchLogs } from '../drizzle/schema';
 import { extract } from 'fuzzball';
+import { normalizeName, findByNormalizedName } from './name-normalizer';
 import { eq, sql } from 'drizzle-orm';
 
 /**
@@ -368,14 +369,12 @@ export async function findPlayerByFuzzyName(name: string, teamFilter?: string, c
       console.log(`[Player Matcher] Searching for: "${name}" in ${allPlayers.length} players`);
     }
     
-    let searchName = name.trim().toLowerCase();
+    // Normalize search name (handles diacritics, punctuation, etc.)
+    let searchName = normalizeName(name);
     
-    // Normalize Jr/Jr. variations
-    searchName = searchName.replace(/\bjr\.?$/i, 'jr');
-    
-    // Common name variations that should match
+    // Common name variations that should match (normalized)
     const NAME_VARIATIONS: Record<string, string> = {
-      'angelo russell': "d'angelo russell",
+      'angelo russell': "dangelo russell",
       'mohammed bamba': 'mohamed bamba',
       'mo bamba': 'mohamed bamba'
     };
@@ -410,7 +409,7 @@ export async function findPlayerByFuzzyName(name: string, teamFilter?: string, c
     // Check if search is a known nickname
     if (NICKNAMES[searchName]) {
       console.log(`[Player Matcher] Nickname detected: "${searchName}" → "${NICKNAMES[searchName]}"`);
-      searchName = NICKNAMES[searchName];
+      searchName = normalizeName(NICKNAMES[searchName]);
     }
     
     // Debug: Check if Vanderbilt is in the list
@@ -419,11 +418,8 @@ export async function findPlayerByFuzzyName(name: string, teamFilter?: string, c
       console.log(`[Player Matcher] Vanderbilt in database:`, vanderbilt ? vanderbilt.name : 'NOT FOUND');
     }
     
-    // Strategy 1: Exact match (case insensitive, normalize Jr/Jr.)
-    let player = allPlayers.find(p => {
-      const normalizedPlayerName = p.name.toLowerCase().replace(/\bjr\.?$/i, 'jr');
-      return normalizedPlayerName === searchName;
-    });
+    // Strategy 1: Exact match (normalized)
+    let player = findByNormalizedName(searchName, allPlayers);
     if (player) {
       await logMatch(name, player.name, 100, 'exact_match', context, teamFilter, true);
       return {
@@ -440,7 +436,7 @@ export async function findPlayerByFuzzyName(name: string, teamFilter?: string, c
         const parts = p.name.split(' ');
         const initials = parts.map(part => part[0].toLowerCase()).join('');
         return initials === searchName;
-      });
+      }) || null;
       if (player) {
         await logMatch(name, player.name, 95, 'initials', context, teamFilter, true);
         return {
@@ -461,7 +457,7 @@ export async function findPlayerByFuzzyName(name: string, teamFilter?: string, c
         console.log(`[Player Matcher] Checking "${p.name}": lastName="${lastName}", matches=${matches}`);
       }
       return matches;
-    });
+    }) || null;
     if (player) {
       console.log(`[Player Matcher] Found via Strategy 3 (last name): "${player.name}"`);
       await logMatch(name, player.name, 90, 'last_name', context, teamFilter, true);
@@ -546,7 +542,7 @@ export async function findPlayerByFuzzyName(name: string, teamFilter?: string, c
       const parts = p.name.split(' ');
       const firstName = parts[0].toLowerCase();
       return firstName === searchName || firstName.startsWith(searchName);
-    });
+    }) || null;
     if (player) {
       await logMatch(name, player.name, 85, 'first_name', context, teamFilter, true);
       return {
@@ -557,16 +553,13 @@ export async function findPlayerByFuzzyName(name: string, teamFilter?: string, c
       };
     }
     
-    // Strategy 6: Fuzzy match (fallback) - normalize Jr/Jr. for comparison
-    const normalizedPlayerNames = allPlayers.map(p => p.name.toLowerCase().replace(/\bjr\.?$/i, 'jr'));
+    // Strategy 6: Fuzzy match (fallback) - normalized names
+    const normalizedPlayerNames = allPlayers.map(p => normalizeName(p.name));
     const matches = extract(searchName, normalizedPlayerNames);
     
     if (matches.length > 0 && matches[0][1] >= 60) {
       const matchedName = matches[0][0];
-      player = allPlayers.find(p => {
-        const normalizedPlayerName = p.name.toLowerCase().replace(/\bjr\.?$/i, 'jr');
-        return normalizedPlayerName === matchedName;
-      });
+      player = allPlayers.find(p => normalizeName(p.name) === matchedName) || null;
       
       if (player) {
         await logMatch(name, player.name, matches[0][1], 'fuzzy_full_name', context, teamFilter, true);

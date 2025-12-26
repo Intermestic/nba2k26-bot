@@ -552,3 +552,7 @@
 
 - [x] Fix Discord bot double posting trade approval messages
 - [x] Fix bot failing to parse trade details and process player moves after approval (message ID 1453801825018056707)
+
+## Diacritic Normalization (Dec 26, 2024)
+
+- [x] Implement diacritic normalization for player name matching (Discord bot + database queries)
