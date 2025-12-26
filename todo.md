@@ -556,3 +556,18 @@
 ## Diacritic Normalization (Dec 26, 2024)
 
 - [x] Implement diacritic normalization for player name matching (Discord bot + database queries)
+
+## Discord Bot Offline Issue (Dec 26, 2024)
+
+- [x] Fix Discord bot offline issue - bot processes running but not responding
+- [x] Investigate why bot is not connecting to Discord gateway
+- [x] Check bot token validity and permissions
+- [x] Restart bot and verify connection
+
+## Free Agent Window Summaries (Dec 26, 2024)
+
+- [x] Implement FA window close summary posting
+- [x] Add logic to detect when FA windows close
+- [x] Post summary of all winning bids to Discord channel
+- [x] Process winning bids automatically after summary
+- [ ] Test FA window close flow end-to-end (scheduled for 11:50 PM EST tonight)
