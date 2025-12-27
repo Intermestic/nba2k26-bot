@@ -363,11 +363,6 @@
 - [x] Fix team name parsing to avoid capturing "badges\nRaptors" as team name
 - [x] Manually process all three stuck trades (Kings/Raptors: 4 players, Rockets/Pacers: 2 players, Jazz/Knicks: 4 players)
 
-## Frontend Loading Issues (Dec 27, 2024)
-
-- [x] Fix player database loading issue - Team Cap Status section stuck on loading spinner
-- [x] Fix CORS issue blocking API calls from published frontend to backend
-
 ## Player Name Parsing Issues (Dec 14, 2024)
 
 - [x] Fix fuzzy matching for player names with variations (Angelo Russell → D'Angelo Russell, Mohammed Bamba → Mohamed Bamba)
@@ -628,13 +623,3 @@
 - [x] Add automatic reconnection on disconnect
 - [x] Remove unnecessary feature initializations
 - [x] Test bot stays online consistently
-
-
-## FA Coins Page Routing (Dec 27, 2024)
-
-- [x] Fix FA Coins page 404 error - add proper routing for /admin/coins (routes to FAManagement component)
-
-
-## Cap Status Display Bug (Dec 27, 2024)
-
-- [x] Fix cap status calculation - teams showing "At Cap" when they should show "Under Cap" or "Over Cap" (issue: overCap === 0 check in Landing.tsx line 134 is incorrect logic)
