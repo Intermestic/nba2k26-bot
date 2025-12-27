@@ -346,7 +346,7 @@ export default function Home() {
       {/* All Teams Overview Table */}
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          {loading || coinsLoading ? (
+          {loading || (isAuthenticated && coinsLoading) ? (
             <Card className="bg-slate-800/50 border-slate-700">
               <CardHeader>
                 <CardTitle className="text-white">Team Cap Status</CardTitle>

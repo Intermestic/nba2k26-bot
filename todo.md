@@ -366,6 +366,7 @@
 ## Frontend Loading Issues (Dec 27, 2024)
 
 - [x] Fix player database loading issue - Team Cap Status section stuck on loading spinner
+- [x] Fix CORS issue blocking API calls from published frontend to backend
 
 ## Player Name Parsing Issues (Dec 14, 2024)
 
