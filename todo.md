@@ -633,3 +633,8 @@
 ## FA Coins Page Routing (Dec 27, 2024)
 
 - [x] Fix FA Coins page 404 error - add proper routing for /admin/coins (routes to FAManagement component)
+
+
+## Cap Status Display Bug (Dec 27, 2024)
+
+- [x] Fix cap status calculation - teams showing "At Cap" when they should show "Under Cap" or "Over Cap" (issue: overCap === 0 check in Landing.tsx line 134 is incorrect logic)

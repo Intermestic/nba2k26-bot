@@ -127,17 +127,17 @@ export default function Landing() {
                             <span className="inline-flex items-center gap-1 text-blue-500 font-semibold">
                               🔵 FA Pool
                             </span>
-                          ) : team.isOverCap ? (
+                          ) : team.totalOverall > 1098 ? (
                             <span className="inline-flex items-center gap-1 text-red-500 font-semibold">
-                              🔴 +{team.overCap}
+                              🔴 +{team.totalOverall - 1098}
                             </span>
-                          ) : team.overCap === 0 ? (
+                          ) : team.totalOverall === 1098 ? (
                             <span className="inline-flex items-center gap-1 text-yellow-500 font-semibold">
                               🟡 At Cap
                             </span>
                           ) : (
                             <span className="inline-flex items-center gap-1 text-green-500 font-semibold">
-                              🟢 {team.overCap}
+                              🟢 {1098 - team.totalOverall}
                             </span>
                           )}
                         </td>
