@@ -155,9 +155,18 @@ async function main() {
   const maxCrashes = 5;
   const crashResetInterval = 5 * 60 * 1000; // Reset crash count after 5 minutes
   let lastCrashTime = 0;
+  let isRestarting = false; // Prevent concurrent restart attempts
   
   async function handleCrash(error: any, source: string) {
     console.error(`[Bot Standalone] ${source}:`, error);
+    
+    // Prevent concurrent restart attempts
+    if (isRestarting) {
+      console.log('[Bot Standalone] Restart already in progress, ignoring crash');
+      return;
+    }
+    
+    isRestarting = true;
     
     const now = Date.now();
     if (now - lastCrashTime > crashResetInterval) {
@@ -173,7 +182,12 @@ async function main() {
     }
     
     console.log(`[Bot Standalone] Crash ${crashCount}/${maxCrashes}, attempting restart in 5 seconds...`);
-    await stopDiscordBot();
+    
+    try {
+      await stopDiscordBot();
+    } catch (stopError) {
+      console.error('[Bot Standalone] Error stopping bot:', stopError);
+    }
     
     // Wait before restarting
     await new Promise(resolve => setTimeout(resolve, 5000));
@@ -183,9 +197,12 @@ async function main() {
       await startDiscordBot(process.env.DISCORD_BOT_TOKEN!);
       console.log('[Bot Standalone] Bot restarted successfully after crash');
       crashCount = 0; // Reset on successful restart
+      isRestarting = false;
     } catch (restartError) {
       console.error('[Bot Standalone] Failed to restart after crash:', restartError);
-      process.exit(1);
+      isRestarting = false;
+      // Don't exit immediately, let PM2 handle the restart
+      setTimeout(() => process.exit(1), 1000);
     }
   }
   

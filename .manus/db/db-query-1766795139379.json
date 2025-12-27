@@ -1,0 +1,54 @@
+{
+  "query": "SELECT name, overall FROM players WHERE name LIKE '%Porter%' OR name LIKE '%Bey%' OR name LIKE '%Spencer%' OR name LIKE '%Dosunmu%' OR name LIKE '%Champagnie%';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT name, overall FROM players WHERE name LIKE '%Porter%' OR name LIKE '%Bey%' OR name LIKE '%Spencer%' OR name LIKE '%Dosunmu%' OR name LIKE '%Champagnie%';",
+  "rows": [
+    {
+      "name": "Saddiq Bey",
+      "overall": "80"
+    },
+    {
+      "name": "Justin Champagnie",
+      "overall": "74"
+    },
+    {
+      "name": "Julian Champagnie",
+      "overall": "77"
+    },
+    {
+      "name": "Spencer Dinwiddie",
+      "overall": "76"
+    },
+    {
+      "name": "Ayo Dosunmu",
+      "overall": "78"
+    },
+    {
+      "name": "Spencer Jones",
+      "overall": "70"
+    },
+    {
+      "name": "Kevin Porter Jr",
+      "overall": "76"
+    },
+    {
+      "name": "Michael Porter Jr",
+      "overall": "83"
+    },
+    {
+      "name": "Craig Porter Jr.",
+      "overall": "74"
+    },
+    {
+      "name": "Cam Spencer",
+      "overall": "79"
+    },
+    {
+      "name": "Pat Spencer",
+      "overall": "76"
+    }
+  ],
+  "messages": [],
+  "stdout": "name\toverall\nSaddiq Bey\t80\nJustin Champagnie\t74\nJulian Champagnie\t77\nSpencer Dinwiddie\t76\nAyo Dosunmu\t78\nSpencer Jones\t70\nKevin Porter Jr\t76\nMichael Porter Jr\t83\nCraig Porter Jr.\t74\nCam Spencer\t79\nPat Spencer\t76\n",
+  "stderr": "",
+  "execution_time_ms": 1537
+}

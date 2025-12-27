@@ -571,3 +571,13 @@
 - [x] Post summary of all winning bids to Discord channel
 - [x] Process winning bids automatically after summary
 - [ ] Test FA window close flow end-to-end (scheduled for 11:50 PM EST tonight)
+
+## Discord Bot Reliability (Dec 26, 2024)
+
+- [x] Fix Discord bot constantly going offline
+- [x] Implement auto-restart mechanism without creating multiple instances
+- [x] Add proper error handling and recovery for bot disconnections
+- [x] Add process manager (PM2) for automatic bot recovery
+- [x] Implement graceful shutdown and cleanup on errors
+- [x] Create bot management scripts (pnpm bot:start/stop/restart/status/logs)
+- [x] Add BOT_MANAGEMENT.md documentation
