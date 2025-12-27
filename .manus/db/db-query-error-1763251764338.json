@@ -1,8 +1,0 @@
-{
-  "query": "\nSELECT 'team_coins' as table_name, team, coinsRemaining FROM team_coins WHERE team IN ('Thunder', 'Clippers')\nUNION ALL\nSELECT 'players', name, team FROM players WHERE team IN ('Thunder', 'Clippers')\nUNION ALL\nSELECT 'fa_transactions', player, team FROM fa_transactions WHERE team IN ('Thunder', 'Clippers')\nUNION ALL\nSELECT 'fa_bids', player, team FROM fa_bids WHERE team IN ('Thunder', 'Clippers');\n",
-  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute \nSELECT 'team_coins' as table_name, team, coinsRemaining FROM team_coins WHERE team IN ('Thunder', 'Clippers')\nUNION ALL\nSELECT 'players', name, team FROM players WHERE team IN ('Thunder', 'Clippers')\nUNION ALL\nSELECT 'fa_transactions', player, team FROM fa_transactions WHERE team IN ('Thunder', 'Clippers')\nUNION ALL\nSELECT 'fa_bids', player, team FROM fa_bids WHERE team IN ('Thunder', 'Clippers');\n",
-  "returncode": 1,
-  "logs": [
-    "ERROR 1054 (42S22) at line 2: Unknown column 'player' in 'field list'"
-  ]
-}

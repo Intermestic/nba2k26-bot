@@ -1,9 +1,0 @@
-{
-  "query": "SELECT * FROM fa_transactions WHERE \n  CAST(id AS CHAR) = '1449115833585500344' OR\n  team LIKE '%1449115833585500344%' OR\n  dropPlayer LIKE '%1449115833585500344%' OR\n  signPlayer LIKE '%1449115833585500344%' OR\n  adminUser LIKE '%1449115833585500344%' OR\n  batchId LIKE '%1449115833585500344%'\nLIMIT 10;",
-  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT * FROM fa_transactions WHERE \n  CAST(id AS CHAR) = '1449115833585500344' OR\n  team LIKE '%1449115833585500344%' OR\n  dropPlayer LIKE '%1449115833585500344%' OR\n  signPlayer LIKE '%1449115833585500344%' OR\n  adminUser LIKE '%1449115833585500344%' OR\n  batchId LIKE '%1449115833585500344%'\nLIMIT 10;",
-  "rows": [],
-  "messages": [],
-  "stdout": "",
-  "stderr": "",
-  "execution_time_ms": 1506
-}

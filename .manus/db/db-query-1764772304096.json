@@ -1,9 +1,0 @@
-{
-  "query": "INSERT INTO activity_checkpoint (lastProcessedMessageId, lastStandingsMessageId, processedAt, totalGamesProcessed)\nVALUES ('1443874841282478132', '1443874841282478132', '2025-11-28 03:03:00', 20)",
-  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute INSERT INTO activity_checkpoint (lastProcessedMessageId, lastStandingsMessageId, processedAt, totalGamesProcessed)\nVALUES ('1443874841282478132', '1443874841282478132', '2025-11-28 03:03:00', 20)",
-  "rows": [],
-  "messages": [],
-  "stdout": "",
-  "stderr": "",
-  "execution_time_ms": 67
-}

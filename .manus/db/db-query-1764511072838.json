@@ -1,9 +1,0 @@
-{
-  "query": "CREATE TABLE IF NOT EXISTS `scheduled_restarts` (\n  `id` INT AUTO_INCREMENT PRIMARY KEY,\n  `enabled` INT NOT NULL DEFAULT 0,\n  `cronExpression` VARCHAR(100) NOT NULL,\n  `timezone` VARCHAR(100) NOT NULL DEFAULT 'America/New_York',\n  `lastExecuted` TIMESTAMP NULL,\n  `nextExecution` TIMESTAMP NULL,\n  `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  `updatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP\n)",
-  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute CREATE TABLE IF NOT EXISTS `scheduled_restarts` (\n  `id` INT AUTO_INCREMENT PRIMARY KEY,\n  `enabled` INT NOT NULL DEFAULT 0,\n  `cronExpression` VARCHAR(100) NOT NULL,\n  `timezone` VARCHAR(100) NOT NULL DEFAULT 'America/New_York',\n  `lastExecuted` TIMESTAMP NULL,\n  `nextExecution` TIMESTAMP NULL,\n  `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  `updatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP\n)",
-  "rows": [],
-  "messages": [],
-  "stdout": "",
-  "stderr": "",
-  "execution_time_ms": 175
-}

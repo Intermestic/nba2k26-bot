@@ -1,8 +1,0 @@
-{
-  "query": "INSERT INTO bot_commands (command, description, category, requiresAdmin, example) VALUES ('!check-trade', 'Manually check votes on a specific trade message', 'trade', 0, '!check-trade 1445268293186490548')",
-  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute INSERT INTO bot_commands (command, description, category, requiresAdmin, example) VALUES ('!check-trade', 'Manually check votes on a specific trade message', 'trade', 0, '!check-trade 1445268293186490548')",
-  "returncode": 1,
-  "logs": [
-    "ERROR 1054 (42S22) at line 1: Unknown column 'requiresAdmin' in 'field list'"
-  ]
-}

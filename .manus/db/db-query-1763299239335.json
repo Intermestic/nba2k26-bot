@@ -1,9 +1,0 @@
-{
-  "query": "INSERT INTO players (id, name, overall, height, team, photoUrl, isRookie, draftYear) VALUES ('kyle-lowry', 'Kyle Lowry', 75, '6''0\"', 'Free Agents', '/kyle-lowry.jpg', 0, NULL);",
-  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute INSERT INTO players (id, name, overall, height, team, photoUrl, isRookie, draftYear) VALUES ('kyle-lowry', 'Kyle Lowry', 75, '6''0\"', 'Free Agents', '/kyle-lowry.jpg', 0, NULL);",
-  "rows": [],
-  "messages": [],
-  "stdout": "",
-  "stderr": "",
-  "execution_time_ms": 1605
-}

@@ -1,9 +1,0 @@
-{
-  "query": "CREATE TABLE IF NOT EXISTS `trade_votes` (\n  `id` int AUTO_INCREMENT NOT NULL,\n  `messageId` varchar(64) NOT NULL UNIQUE,\n  `upvotes` int NOT NULL DEFAULT 0,\n  `downvotes` int NOT NULL DEFAULT 0,\n  `approved` int NOT NULL,\n  `processedAt` timestamp NOT NULL DEFAULT (now()),\n  CONSTRAINT `trade_votes_id` PRIMARY KEY(`id`),\n  CONSTRAINT `trade_votes_messageId_unique` UNIQUE(`messageId`)\n)",
-  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute CREATE TABLE IF NOT EXISTS `trade_votes` (\n  `id` int AUTO_INCREMENT NOT NULL,\n  `messageId` varchar(64) NOT NULL UNIQUE,\n  `upvotes` int NOT NULL DEFAULT 0,\n  `downvotes` int NOT NULL DEFAULT 0,\n  `approved` int NOT NULL,\n  `processedAt` timestamp NOT NULL DEFAULT (now()),\n  CONSTRAINT `trade_votes_id` PRIMARY KEY(`id`),\n  CONSTRAINT `trade_votes_messageId_unique` UNIQUE(`messageId`)\n)",
-  "rows": [],
-  "messages": [],
-  "stdout": "",
-  "stderr": "",
-  "execution_time_ms": 225
-}

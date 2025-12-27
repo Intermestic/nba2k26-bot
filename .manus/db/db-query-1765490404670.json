@@ -1,9 +1,0 @@
-{
-  "query": "INSERT INTO trades (messageId, team1, team2, team1Players, team2Players, status, upvotes, downvotes, approvedBy, processedAt, createdAt) VALUES ('1448715744832520416', 'Bulls', 'Rockets', '[{\"name\":\"Zach LaVine\",\"overall\":86,\"salary\":14},{\"name\":\"Ryan Dunn\",\"overall\":77,\"salary\":3},{\"name\":\"Josh Richardson\",\"overall\":71,\"salary\":10}]', '[{\"name\":\"Luguentz Dort\",\"overall\":80,\"salary\":12},{\"name\":\"Matas Buzelis\",\"overall\":80,\"salary\":8},{\"name\":\"Gradey Dick\",\"overall\":76,\"salary\":8}]', 'approved', 11, 0, 'Discord Vote', NOW(), NOW())",
-  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute INSERT INTO trades (messageId, team1, team2, team1Players, team2Players, status, upvotes, downvotes, approvedBy, processedAt, createdAt) VALUES ('1448715744832520416', 'Bulls', 'Rockets', '[{\"name\":\"Zach LaVine\",\"overall\":86,\"salary\":14},{\"name\":\"Ryan Dunn\",\"overall\":77,\"salary\":3},{\"name\":\"Josh Richardson\",\"overall\":71,\"salary\":10}]', '[{\"name\":\"Luguentz Dort\",\"overall\":80,\"salary\":12},{\"name\":\"Matas Buzelis\",\"overall\":80,\"salary\":8},{\"name\":\"Gradey Dick\",\"overall\":76,\"salary\":8}]', 'approved', 11, 0, 'Discord Vote', NOW(), NOW())",
-  "rows": [],
-  "messages": [],
-  "stdout": "",
-  "stderr": "",
-  "execution_time_ms": 1516
-}

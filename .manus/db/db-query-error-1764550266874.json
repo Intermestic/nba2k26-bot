@@ -1,8 +1,0 @@
-{
-  "query": "\nSELECT \n  violation_type,\n  player_name,\n  team_name,\n  details,\n  COUNT(*) as occurrence_count\nFROM upgrade_violations\nWHERE violation_type = 'PLAYER_NOT_FOUND'\nGROUP BY player_name, team_name, details\nORDER BY occurrence_count DESC, player_name;\n",
-  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute \nSELECT \n  violation_type,\n  player_name,\n  team_name,\n  details,\n  COUNT(*) as occurrence_count\nFROM upgrade_violations\nWHERE violation_type = 'PLAYER_NOT_FOUND'\nGROUP BY player_name, team_name, details\nORDER BY occurrence_count DESC, player_name;\n",
-  "returncode": 1,
-  "logs": [
-    "ERROR 1054 (42S22) at line 2: Unknown column 'player_name' in 'group statement'"
-  ]
-}

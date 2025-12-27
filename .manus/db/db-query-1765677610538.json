@@ -1,9 +1,0 @@
-{
-  "query": "INSERT INTO trades (messageId, team1, team2, team1Players, team2Players, status, upvotes, downvotes, approvedBy, processedAt) VALUES ('1449569426373349408', 'Hawks', 'Rockets', '[{\"name\":\"Alex Caruso\",\"overall\":80,\"salary\":11},{\"name\":\"Jarace Walker\",\"overall\":76,\"salary\":6}]', '[{\"name\":\"Jarrett Allen\",\"overall\":84,\"salary\":13},{\"name\":\"Ryan Dunn\",\"overall\":77,\"salary\":3}]', 'approved', 7, 0, 'Discord Vote', NOW())",
-  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute INSERT INTO trades (messageId, team1, team2, team1Players, team2Players, status, upvotes, downvotes, approvedBy, processedAt) VALUES ('1449569426373349408', 'Hawks', 'Rockets', '[{\"name\":\"Alex Caruso\",\"overall\":80,\"salary\":11},{\"name\":\"Jarace Walker\",\"overall\":76,\"salary\":6}]', '[{\"name\":\"Jarrett Allen\",\"overall\":84,\"salary\":13},{\"name\":\"Ryan Dunn\",\"overall\":77,\"salary\":3}]', 'approved', 7, 0, 'Discord Vote', NOW())",
-  "rows": [],
-  "messages": [],
-  "stdout": "",
-  "stderr": "",
-  "execution_time_ms": 1684
-}

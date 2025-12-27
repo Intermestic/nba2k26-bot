@@ -1,9 +1,0 @@
-{
-  "query": "UPDATE players SET team = 'Free Agents' WHERE name IN ('Bruce Brown', 'Jonathan Mogbo'); UPDATE players SET team = 'Raptors' WHERE name IN ('Dean Wade', 'Dario Saric');",
-  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute UPDATE players SET team = 'Free Agents' WHERE name IN ('Bruce Brown', 'Jonathan Mogbo'); UPDATE players SET team = 'Raptors' WHERE name IN ('Dean Wade', 'Dario Saric');",
-  "rows": [],
-  "messages": [],
-  "stdout": "",
-  "stderr": "",
-  "execution_time_ms": 1856
-}

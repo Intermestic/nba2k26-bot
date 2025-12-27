@@ -1,9 +1,0 @@
-{
-  "query": "CREATE TABLE IF NOT EXISTS `bot_logs` (\n  `id` INT AUTO_INCREMENT PRIMARY KEY,\n  `level` ENUM('info', 'warn', 'error', 'debug') NOT NULL DEFAULT 'info',\n  `eventType` VARCHAR(100) NOT NULL,\n  `message` TEXT NOT NULL,\n  `details` TEXT,\n  `userId` VARCHAR(64),\n  `username` VARCHAR(255),\n  `channelId` VARCHAR(64),\n  `guildId` VARCHAR(64),\n  `commandName` VARCHAR(100),\n  `errorStack` TEXT,\n  `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP\n)",
-  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute CREATE TABLE IF NOT EXISTS `bot_logs` (\n  `id` INT AUTO_INCREMENT PRIMARY KEY,\n  `level` ENUM('info', 'warn', 'error', 'debug') NOT NULL DEFAULT 'info',\n  `eventType` VARCHAR(100) NOT NULL,\n  `message` TEXT NOT NULL,\n  `details` TEXT,\n  `userId` VARCHAR(64),\n  `username` VARCHAR(255),\n  `channelId` VARCHAR(64),\n  `guildId` VARCHAR(64),\n  `commandName` VARCHAR(100),\n  `errorStack` TEXT,\n  `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP\n)",
-  "rows": [],
-  "messages": [],
-  "stdout": "",
-  "stderr": "",
-  "execution_time_ms": 228
-}

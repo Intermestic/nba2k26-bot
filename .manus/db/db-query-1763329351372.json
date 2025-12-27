@@ -1,9 +1,0 @@
-{
-  "query": "DROP TABLE IF EXISTS badge_requirements; CREATE TABLE badge_requirements (\n  id INT AUTO_INCREMENT PRIMARY KEY,\n  badgeName VARCHAR(100) NOT NULL,\n  tier ENUM('bronze', 'silver', 'gold') NOT NULL,\n  attribute1 VARCHAR(50),\n  threshold1 INT,\n  attribute2 VARCHAR(50),\n  threshold2 INT,\n  attribute3 VARCHAR(50),\n  threshold3 INT,\n  createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  updatedAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP\n)",
-  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute DROP TABLE IF EXISTS badge_requirements; CREATE TABLE badge_requirements (\n  id INT AUTO_INCREMENT PRIMARY KEY,\n  badgeName VARCHAR(100) NOT NULL,\n  tier ENUM('bronze', 'silver', 'gold') NOT NULL,\n  attribute1 VARCHAR(50),\n  threshold1 INT,\n  attribute2 VARCHAR(50),\n  threshold2 INT,\n  attribute3 VARCHAR(50),\n  threshold3 INT,\n  createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  updatedAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP\n)",
-  "rows": [],
-  "messages": [],
-  "stdout": "",
-  "stderr": "",
-  "execution_time_ms": 2262
-}

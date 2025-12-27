@@ -1,9 +1,0 @@
-{
-  "query": "\nSELECT id, lastProcessedMessageId, processedAt, totalGamesProcessed \nFROM activity_checkpoint \nWHERE CAST(lastProcessedMessageId AS UNSIGNED) <= 1443874843090223275 \nORDER BY CAST(lastProcessedMessageId AS UNSIGNED) DESC \nLIMIT 1;\n",
-  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute \nSELECT id, lastProcessedMessageId, processedAt, totalGamesProcessed \nFROM activity_checkpoint \nWHERE CAST(lastProcessedMessageId AS UNSIGNED) <= 1443874843090223275 \nORDER BY CAST(lastProcessedMessageId AS UNSIGNED) DESC \nLIMIT 1;\n",
-  "rows": [],
-  "messages": [],
-  "stdout": "",
-  "stderr": "",
-  "execution_time_ms": 56
-}

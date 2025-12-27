@@ -1,9 +1,0 @@
-{
-  "query": "CREATE TABLE IF NOT EXISTS `player_swaps` (\n  `id` int AUTO_INCREMENT NOT NULL,\n  `playerId` varchar(64),\n  `oldPlayerName` varchar(255) NOT NULL,\n  `newPlayerName` varchar(255) NOT NULL,\n  `team` varchar(100),\n  `swapType` enum('dna_swap','player_replacement','other') NOT NULL,\n  `swapDate` varchar(20) NOT NULL,\n  `oldPlayerOvr` int,\n  `newPlayerOvr` int,\n  `notes` text,\n  `flagged` int NOT NULL DEFAULT 0,\n  `flagReason` text,\n  `addedBy` int,\n  `addedByName` varchar(255),\n  `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  `updatedAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,\n  CONSTRAINT `player_swaps_id` PRIMARY KEY(`id`)\n);",
-  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute CREATE TABLE IF NOT EXISTS `player_swaps` (\n  `id` int AUTO_INCREMENT NOT NULL,\n  `playerId` varchar(64),\n  `oldPlayerName` varchar(255) NOT NULL,\n  `newPlayerName` varchar(255) NOT NULL,\n  `team` varchar(100),\n  `swapType` enum('dna_swap','player_replacement','other') NOT NULL,\n  `swapDate` varchar(20) NOT NULL,\n  `oldPlayerOvr` int,\n  `newPlayerOvr` int,\n  `notes` text,\n  `flagged` int NOT NULL DEFAULT 0,\n  `flagReason` text,\n  `addedBy` int,\n  `addedByName` varchar(255),\n  `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  `updatedAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,\n  CONSTRAINT `player_swaps_id` PRIMARY KEY(`id`)\n);",
-  "rows": [],
-  "messages": [],
-  "stdout": "",
-  "stderr": "",
-  "execution_time_ms": 260
-}

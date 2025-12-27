@@ -1,9 +1,0 @@
-{
-  "query": "CREATE TABLE IF NOT EXISTS monitoring_alerts (\n  id INT AUTO_INCREMENT PRIMARY KEY,\n  alert_type VARCHAR(50) NOT NULL,\n  is_enabled BOOLEAN DEFAULT TRUE,\n  webhook_url TEXT,\n  alert_frequency VARCHAR(20) DEFAULT 'immediate',\n  last_triggered DATETIME,\n  status VARCHAR(20) DEFAULT 'active',\n  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,\n  INDEX idx_alert_type (alert_type),\n  INDEX idx_status (status)\n)",
-  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute CREATE TABLE IF NOT EXISTS monitoring_alerts (\n  id INT AUTO_INCREMENT PRIMARY KEY,\n  alert_type VARCHAR(50) NOT NULL,\n  is_enabled BOOLEAN DEFAULT TRUE,\n  webhook_url TEXT,\n  alert_frequency VARCHAR(20) DEFAULT 'immediate',\n  last_triggered DATETIME,\n  status VARCHAR(20) DEFAULT 'active',\n  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,\n  INDEX idx_alert_type (alert_type),\n  INDEX idx_status (status)\n)",
-  "rows": [],
-  "messages": [],
-  "stdout": "",
-  "stderr": "",
-  "execution_time_ms": 1718
-}

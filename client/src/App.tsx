@@ -5,56 +5,11 @@ import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
-import Landing from "./pages/Landing";
-import Admin from "./pages/Admin";
-import Transactions from "./pages/Transactions";
-import History from "./pages/History";
-
-import CapCompliance from "./pages/CapCompliance";
-import PlayerAliases from "./pages/admin/PlayerAliases";
-import TeamAssignments from "./pages/admin/TeamAssignments";
-import FAManagement from "./pages/admin/FAManagement";
-import AdminDashboard from "./pages/AdminDashboard";
-import TradeManagement from "./pages/TradeManagement";
-import TradeMachine from "./pages/TradeMachine";
-import CsvExport from "./pages/admin/CsvExport";
-import BotControl from "./pages/admin/BotControl";
-import BotStatus from "./pages/admin/BotStatus";
-import BotDashboard from "./pages/admin/BotDashboard";
-import MonitoringAlerts from "./pages/admin/MonitoringAlerts";
-import TradeLog from "./pages/admin/TradeLog";
-import TeamAliases from "./pages/admin/TeamAliases";
-import TradeParser from "./pages/TradeParser";
 
 function Router() {
-  // make sure to consider if you need authentication for certain routes
   return (
     <Switch>
-      <Route path={"/"} component={Landing} />
-      <Route path={"/players"} component={Home} />
-      <Route path={"/admin"} component={AdminDashboard} />
-
-      <Route path={"/admin/trades"} component={TradeManagement} />
-      <Route path={"/admin/trade-log"} component={TradeLog} />
-      <Route path={"/trade-machine"} component={TradeMachine} />
-      <Route path={"/admin/roster"} component={Admin} />
-      <Route path={"/admin/transactions"} component={Transactions} />
-      <Route path={"/admin/history"} component={History} />
-
-      <Route path={"/admin/cap-compliance"} component={CapCompliance} />
-      <Route path={"/admin/fa-management"} component={FAManagement} />
-      <Route path={"/admin/player-aliases"} component={PlayerAliases} />
-      <Route path={"/admin/teams"} component={TeamAssignments} />
-      <Route path={"/admin/team-assignments"} component={TeamAssignments} />
-      <Route path={"/admin/csv-export"} component={CsvExport} />
-      <Route path={"/admin/bot-control"} component={BotControl} />
-      <Route path={"/admin/bot-status"} component={BotStatus} />
-      <Route path={"/admin/bot-dashboard"} component={BotDashboard} />
-      <Route path={"/admin/monitoring-alerts"} component={MonitoringAlerts} />
-
-      <Route path={"/admin/team-aliases"} component={TeamAliases} />
-      <Route path={"/trade-parser"} component={TradeParser} />
-
+      <Route path={"/"} component={Home} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />
@@ -71,7 +26,7 @@ function App() {
   return (
     <ErrorBoundary>
       <ThemeProvider
-        defaultTheme="dark"
+        defaultTheme="light"
         // switchable
       >
         <TooltipProvider>

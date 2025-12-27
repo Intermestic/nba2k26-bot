@@ -1,9 +1,0 @@
-{
-  "query": "CREATE TABLE IF NOT EXISTS `upgrade_log` (\n\t`id` int AUTO_INCREMENT NOT NULL,\n\t`playerName` varchar(255) NOT NULL,\n\t`userName` varchar(255) NOT NULL,\n\t`date` varchar(20) NOT NULL,\n\t`sourceType` varchar(50) NOT NULL,\n\t`sourceDetail` text,\n\t`upgradeType` enum('Badge','Attribute') NOT NULL,\n\t`badgeOrAttribute` varchar(255) NOT NULL,\n\t`fromValue` varchar(50),\n\t`toValue` varchar(50) NOT NULL,\n\t`notes` text,\n\t`flagged` int NOT NULL DEFAULT 0,\n\t`flagReason` text,\n\t`createdAt` timestamp NOT NULL DEFAULT (now()),\n\t`updatedAt` timestamp NOT NULL DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,\n\tCONSTRAINT `upgrade_log_id` PRIMARY KEY(`id`)\n)",
-  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute CREATE TABLE IF NOT EXISTS `upgrade_log` (\n\t`id` int AUTO_INCREMENT NOT NULL,\n\t`playerName` varchar(255) NOT NULL,\n\t`userName` varchar(255) NOT NULL,\n\t`date` varchar(20) NOT NULL,\n\t`sourceType` varchar(50) NOT NULL,\n\t`sourceDetail` text,\n\t`upgradeType` enum('Badge','Attribute') NOT NULL,\n\t`badgeOrAttribute` varchar(255) NOT NULL,\n\t`fromValue` varchar(50),\n\t`toValue` varchar(50) NOT NULL,\n\t`notes` text,\n\t`flagged` int NOT NULL DEFAULT 0,\n\t`flagReason` text,\n\t`createdAt` timestamp NOT NULL DEFAULT (now()),\n\t`updatedAt` timestamp NOT NULL DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,\n\tCONSTRAINT `upgrade_log_id` PRIMARY KEY(`id`)\n)",
-  "rows": [],
-  "messages": [],
-  "stdout": "",
-  "stderr": "",
-  "execution_time_ms": 216
-}

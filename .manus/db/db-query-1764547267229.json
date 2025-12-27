@@ -1,9 +1,0 @@
-{
-  "query": "INSERT INTO player_aliases (playerId, playerName, alias, createdAt, updatedAt) VALUES \n('1628368', 'De''Aaron Fox', 'De''Aaron Fox', NOW(), NOW()),\n('1642856', 'Egor Dëmin', 'Egor Demin', NOW(), NOW()),\n('204001', 'Kristaps Porziņģis', 'Kristaps Porzingis', NOW(), NOW()),\n('1642866', 'Joan Beringer', 'Berringer', NOW(), NOW())",
-  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute INSERT INTO player_aliases (playerId, playerName, alias, createdAt, updatedAt) VALUES \n('1628368', 'De''Aaron Fox', 'De''Aaron Fox', NOW(), NOW()),\n('1642856', 'Egor Dëmin', 'Egor Demin', NOW(), NOW()),\n('204001', 'Kristaps Porziņģis', 'Kristaps Porzingis', NOW(), NOW()),\n('1642866', 'Joan Beringer', 'Berringer', NOW(), NOW())",
-  "rows": [],
-  "messages": [],
-  "stdout": "",
-  "stderr": "",
-  "execution_time_ms": 52
-}
