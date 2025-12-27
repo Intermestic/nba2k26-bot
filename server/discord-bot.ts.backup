@@ -7,6 +7,7 @@ import { validateTeamName } from './team-validator';
 import { players, teamCoins, faTransactions, faBids } from '../drizzle/schema';
 import { eq, sql, and } from 'drizzle-orm';
 import { extract } from 'fuzzball';
+import { normalizeName } from './name-normalizer';
 import { handleTradeMessage } from './trade-handler';
 import { getConfig } from './bot-config-loader.js';
 import fs from 'fs';
@@ -122,7 +123,7 @@ async function findPlayerByName(name: string): Promise<{ id: string; name: strin
   
   if (matches.length > 0) {
     const matchedName = matches[0][0];
-    const player = allPlayers.find(p => p.name.toLowerCase() === matchedName.toLowerCase());
+    const player = allPlayers.find(p => normalizeName(p.name) === normalizeName(matchedName));
     if (player && player.team) {
       return {
         id: player.id,
@@ -209,6 +210,12 @@ assertDb(db);
       }
       
       const team = droppedPlayer.team;
+      
+      // HORNETS ONLY: Skip transactions for all teams except Hornets
+      if (team !== 'Hornets') {
+        console.log(`[Discord Bot] Skipping transaction for ${team} (Hornets-only mode)`);
+        continue;
+      }
       
       // Find signed player
       const signedPlayer = await findPlayerByName(transaction.signPlayer);
@@ -1033,9 +1040,9 @@ async function refreshBotInstanceLock(): Promise<void> {
     
     const expiresAt = new Date(Date.now() + 60000); // 60 second lock
     
-    // Add timeout to database query to prevent hanging (increased to 20s for very slow connections)
+    // Add timeout to database query to prevent hanging (increased to 30s for very slow connections)
     const timeoutPromise = new Promise((_, reject) => 
-      setTimeout(() => reject(new Error('Lock refresh query timeout')), 20000)
+      setTimeout(() => reject(new Error('Lock refresh query timeout')), 30000)
     );
     
     const queryPromise = db.execute(sql`
@@ -1154,9 +1161,24 @@ async function refreshBotInstanceLock(): Promise<void> {
     lockRefreshFailures = 0;
     consecutiveZeroRows = 0;
   } catch (error: any) {
-    lockRefreshFailures++;
-    console.error(`[Discord Bot] Error refreshing instance lock (failure ${lockRefreshFailures}/${MAX_LOCK_REFRESH_FAILURES}):`, error);
+    // Ignore ECONNRESET and other transient network errors - they're expected with unstable connections
+    const isTransientError = 
+      error?.code === 'ECONNRESET' || 
+      error?.cause?.code === 'ECONNRESET' ||
+      error?.message?.includes('ECONNRESET') ||
+      error?.message?.includes('timeout') ||
+      error?.message?.includes('ETIMEDOUT');
     
+    if (isTransientError) {
+      // Don't count transient errors against failure threshold
+      if (lockRefreshFailures % 20 === 0) {
+        console.warn(`[Discord Bot] Transient lock refresh error (not counted): ${error?.message || error}`);
+      }
+      return;
+    }
+    
+    lockRefreshFailures++;
+    console.error(`[Discord Bot] Error refreshing lock (failure ${lockRefreshFailures}/${MAX_LOCK_REFRESH_FAILURES}):`, error?.message || error);  
     // Reset database connection on connection errors to allow reconnection
     if (error?.cause?.code === 'ECONNRESET' || error?.message?.includes('ECONNRESET')) {
       console.log('[Discord Bot] Database connection lost, resetting connection pool...');
@@ -1295,6 +1317,16 @@ export async function startDiscordBot(token: string) {
       console.error('[Trade Voting] Failed to initialize:', error);
     }
     
+    // Scan for missed trade votes (trades that reached threshold while bot was offline)
+    try {
+      console.log('[Trade Voting] Scanning for missed votes on startup...');
+      const { scanTradesForMissedVotes } = await import('./trade-voting');
+      await scanTradesForMissedVotes(client!);
+      console.log('[Trade Voting] Missed vote scan complete');
+    } catch (error) {
+      console.error('[Trade Voting] Failed to scan for missed votes:', error);
+    }
+    
     // Initialize cap violation monitoring
     try {
       const { initializeCapViolationMonitoring } = await import('./cap-violation-alerts');
@@ -1327,6 +1359,15 @@ export async function startDiscordBot(token: string) {
       console.log('[Scheduled Messages] Initialization complete');
     } catch (error) {
       console.error('[Scheduled Messages] Failed to initialize:', error);
+    }
+    
+    // Initialize roster auto-update
+    try {
+      const { initializeRosterAutoUpdate } = await import('./roster-auto-update.js');
+      initializeRosterAutoUpdate(client!);
+      console.log('[Roster Auto-Update] Initialization complete');
+    } catch (error) {
+      console.error('[Roster Auto-Update] Failed to initialize:', error);
     }
     
     // Initialize team channel manager (after roles are synced)
@@ -1678,7 +1719,8 @@ export async function startDiscordBot(token: string) {
       }
       
       // Check for update cap status command
-      if (message.content.trim().toLowerCase() === '/updatecap') {
+      const updateCapCommand = message.content.trim().toLowerCase();
+      if (updateCapCommand === '/updatecap' || updateCapCommand === '!update-cap' || updateCapCommand === '!updatecap') {
         try {
           await message.reply('🔄 Updating cap status messages...');
           
@@ -1935,6 +1977,29 @@ export async function startDiscordBot(token: string) {
           console.error('[Trade Voting] Manual check command failed:', error);
           console.error('[Trade Voting] Error stack:', error instanceof Error ? error.stack : 'No stack trace');
           await message.reply(`❌ Failed to check trade votes. Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        }
+        return;
+      }
+      
+      // Check for trade scan command: !scan-trades (owner only)
+      if (message.content.trim().toLowerCase() === '!scan-trades') {
+        console.log(`[Trade Scan Command] Command received from ${message.author.tag} (${message.author.id})`);
+        
+        // Check if user is authorized (owner only)
+        if (message.author.id !== '679275787664359435') {
+          console.log(`[Trade Scan Command] Unauthorized user ${message.author.id} attempted scan`);
+          await message.reply('❌ Only the league owner can trigger trade scans.');
+          return;
+        }
+        
+        try {
+          await message.reply('🔍 Scanning all recent trades for missed votes... This may take a moment.');
+          const { scanTradesForMissedVotes } = await import('./trade-voting');
+          await scanTradesForMissedVotes(client!);
+          await message.reply('✅ Trade scan complete! Check console logs for details.');
+        } catch (error) {
+          console.error('[Trade Scan Command] Error:', error);
+          await message.reply(`❌ Failed to scan trades: ${error instanceof Error ? error.message : 'Unknown error'}`);
         }
         return;
       }
@@ -2268,22 +2333,12 @@ export async function startDiscordBot(token: string) {
       if (reaction.emoji.name === '❗') {
         console.log(`[Discord Bot] ❗ reaction detected by ${user.tag} (${user.id}) on message ${message.id}`);
         
-        // Deduplication check
+        // Check deduplication before authorization to avoid spam
         const reactionKey = `${message.id}-❗-${user.id}`;
         if (processedReactions.has(reactionKey)) {
           console.log(`[Discord Bot] Skipping duplicate ❗ reaction for message ${message.id}`);
           await message.reply('⚠️ This bid has already been processed.');
           return;
-        }
-        processedReactions.add(reactionKey);
-        
-        // Auto-cleanup after TTL
-        setTimeout(() => processedReactions.delete(reactionKey), REACTION_CACHE_TTL);
-        
-        // Enforce cache size limit
-        if (processedReactions.size > REACTION_CACHE_SIZE) {
-          const firstKey = processedReactions.values().next().value;
-          if (firstKey) processedReactions.delete(firstKey);
         }
         
         // Check if user is authorized
@@ -2294,6 +2349,11 @@ export async function startDiscordBot(token: string) {
         }
         
         console.log('[Discord Bot] ✅ Authorized user triggered manual bid recording');
+        
+        // Add to cache IMMEDIATELY to prevent race conditions
+        processedReactions.add(reactionKey);
+        setTimeout(() => processedReactions.delete(reactionKey), REACTION_CACHE_TTL);
+        
         const { parseBidMessage, findPlayerByFuzzyName, recordBid, getCurrentBiddingWindow } = await import('./fa-bid-parser');
         const { getDb } = await import('./db');
         const { players: playersTable, teamAssignments } = await import('../drizzle/schema');
@@ -2385,10 +2445,18 @@ export async function startDiscordBot(token: string) {
           console.log('[Discord Bot] Sending confirmation message...');
           await message.reply(confirmationMessage);
           console.log('[Discord Bot] ✅ Confirmation message sent');
+          
+          // Enforce cache size limit
+          if (processedReactions.size > REACTION_CACHE_SIZE) {
+            const firstKey = processedReactions.values().next().value;
+            if (firstKey) processedReactions.delete(firstKey);
+          }
         } catch (error) {
           console.error('[Discord Bot] ❌ Manual bid processing failed:', error);
           const errorMessage = error instanceof Error ? error.message : String(error);
           await message.reply(`❌ Manual bid processing failed: ${errorMessage}`);
+          // Remove from cache on failure to allow retry
+          processedReactions.delete(reactionKey);
         }
         return;
       }
@@ -2684,16 +2752,6 @@ export async function startDiscordBot(token: string) {
           console.log(`[Discord Bot] Skipping duplicate reaction ${reactionKey}`);
           return;
         }
-        processedReactions.add(reactionKey);
-        
-        // Clean up old entries to prevent memory leak
-        if (processedReactions.size > REACTION_CACHE_SIZE) {
-          const toDelete = Array.from(processedReactions).slice(0, REACTION_CACHE_SIZE / 2);
-          toDelete.forEach(id => processedReactions.delete(id));
-        }
-        
-        // Auto-cleanup after TTL
-        setTimeout(() => processedReactions.delete(reactionKey), REACTION_CACHE_TTL);
         
         console.log('[Discord Bot] Authorized user triggered manual bid processing (execute transaction)');
         const { parseBidMessage, findPlayerByFuzzyName } = await import('./fa-bid-parser');
@@ -2829,9 +2887,20 @@ export async function startDiscordBot(token: string) {
             (dropPlayer ? `**Dropped:** ${dropPlayer.name} (${dropPlayer.overall} OVR)\n` : '') +
             `**Cost:** $${parsedBid.bidAmount}`
           );
+          
+          // Add to cache only after successful processing
+          processedReactions.add(reactionKey);
+          setTimeout(() => processedReactions.delete(reactionKey), REACTION_CACHE_TTL);
+          
+          // Clean up old entries to prevent memory leak
+          if (processedReactions.size > REACTION_CACHE_SIZE) {
+            const toDelete = Array.from(processedReactions).slice(0, REACTION_CACHE_SIZE / 2);
+            toDelete.forEach(id => processedReactions.delete(id));
+          }
         } catch (error) {
           console.error('[Discord Bot] Manual bid processing failed:', error);
           await message.reply('❌ Manual bid processing failed. Check logs for details.');
+          // Do NOT add to cache on failure - allow retry
         }
       }
     } else if (reaction.message.channelId === TRADE_CHANNEL_ID) {
@@ -2858,8 +2927,15 @@ export async function startDiscordBot(token: string) {
       }, REACTION_CACHE_TTL);
       
       // Process approved trade instead of asking for confirmation
-      const { handleApprovedTradeProcessing } = await import('./trade-approval-handler');
-      await handleApprovedTradeProcessing(message);
+      try {
+        const { handleApprovedTradeProcessing } = await import('./trade-approval-handler');
+        await handleApprovedTradeProcessing(message);
+      } catch (error) {
+        console.error('[Discord Bot] Trade processing failed:', error);
+        // Remove from cache on failure to allow retry
+        processedReactions.delete(reactionKey);
+        await message.reply('❌ Trade processing failed. You can retry by reacting with ⚡ again.');
+      }
     }
   });
   
@@ -3060,6 +3136,14 @@ export async function stopDiscordBot() {
   // Stop lock refresh first
   stopLockRefresh();
   
+  // Stop roster auto-update
+  try {
+    const { stopRosterAutoUpdate } = await import('./roster-auto-update.js');
+    stopRosterAutoUpdate();
+  } catch (error) {
+    console.error('[Roster Auto-Update] Failed to stop:', error);
+  }
+  
   if (client) {
     // Remove all event listeners before destroying
     client.removeAllListeners();
@@ -3214,4 +3298,18 @@ export async function updateCapStatusMessage(channelId: string, messageId: strin
     console.error('[Bot] Failed to update cap status:', error);
     throw error;
   }
+}
+
+// Start the bot if this file is run directly
+if (import.meta.url === `file://${process.argv[1]}`) {
+  const token = process.env.DISCORD_BOT_TOKEN;
+  if (!token) {
+    console.error('[Discord Bot] DISCORD_BOT_TOKEN environment variable is not set');
+    process.exit(1);
+  }
+  
+  startDiscordBot(token).catch((error) => {
+    console.error('[Discord Bot] Failed to start:', error);
+    process.exit(1);
+  });
 }
