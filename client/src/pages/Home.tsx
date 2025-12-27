@@ -4,7 +4,7 @@ import { getLoginUrl } from "@/const";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Download, Search, Filter, Shield, Check, History, ArrowLeftRight } from "lucide-react";
 import { Link, useLocation, useSearch } from "wouter";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -83,7 +83,7 @@ export default function Home() {
   });
 
   // Fetch team coins (public read-only)
-  const { data: teamCoins = [] } = trpc.coins.getTeamCoins.useQuery(undefined, {
+  const { data: teamCoins = [], isLoading: coinsLoading } = trpc.coins.getTeamCoins.useQuery(undefined, {
     enabled: isAuthenticated,
     retry: false,
   });
@@ -346,10 +346,24 @@ export default function Home() {
       {/* All Teams Overview Table */}
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <TeamSummariesTable 
-            summaries={teamSummaries} 
-            onTeamClick={(team) => setSelectedTeam(team)}
-          />
+          {loading || coinsLoading ? (
+            <Card className="bg-slate-800/50 border-slate-700">
+              <CardHeader>
+                <CardTitle className="text-white">Team Cap Status</CardTitle>
+                <p className="text-sm text-slate-400">View team rosters and salary cap status. Cap limit: 1098 total overall (sum of all 14 player ratings)</p>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center justify-center py-12">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
+                </div>
+              </CardContent>
+            </Card>
+          ) : (
+            <TeamSummariesTable 
+              summaries={teamSummaries} 
+              onTeamClick={(team) => setSelectedTeam(team)}
+            />
+          )}
         </div>
 
         {/* Filters */}

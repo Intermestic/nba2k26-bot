@@ -363,6 +363,10 @@
 - [x] Fix team name parsing to avoid capturing "badges\nRaptors" as team name
 - [x] Manually process all three stuck trades (Kings/Raptors: 4 players, Rockets/Pacers: 2 players, Jazz/Knicks: 4 players)
 
+## Frontend Loading Issues (Dec 27, 2024)
+
+- [x] Fix player database loading issue - Team Cap Status section stuck on loading spinner
+
 ## Player Name Parsing Issues (Dec 14, 2024)
 
 - [x] Fix fuzzy matching for player names with variations (Angelo Russell → D'Angelo Russell, Mohammed Bamba → Mohamed Bamba)
