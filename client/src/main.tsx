@@ -37,10 +37,16 @@ queryClient.getMutationCache().subscribe(event => {
   }
 });
 
+// Use VITE_API_URL only in production mode (published site)
+// In development, always use relative path to go through Vite dev server
+const apiUrl = import.meta.env.PROD && import.meta.env.VITE_API_URL
+  ? `${import.meta.env.VITE_API_URL}/trpc`
+  : "/api/trpc";
+
 const trpcClient = trpc.createClient({
   links: [
     httpBatchLink({
-      url: "/api/trpc",
+      url: apiUrl,
       transformer: superjson,
       fetch(input, init) {
         return globalThis.fetch(input, {
