@@ -1,0 +1,80 @@
+{
+  "query": "SELECT playerName, userName, date, sourceType, upgradeType, badgeOrAttribute, fromValue, toValue FROM upgrade_log WHERE playerName LIKE '%Richard%' LIMIT 20",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT playerName, userName, date, sourceType, upgradeType, badgeOrAttribute, fromValue, toValue FROM upgrade_log WHERE playerName LIKE '%Richard%' LIMIT 20",
+  "rows": [
+    {
+      "playerName": "Richard",
+      "userName": "leaddogak",
+      "date": "11/13/2025",
+      "sourceType": "Welcome",
+      "upgradeType": "Attribute",
+      "badgeOrAttribute": "Perimeter Defense",
+      "fromValue": "66",
+      "toValue": "71"
+    },
+    {
+      "playerName": "Richard",
+      "userName": "leaddogak",
+      "date": "11/15/2025",
+      "sourceType": "Game",
+      "upgradeType": "Attribute",
+      "badgeOrAttribute": "Perimeter Defense",
+      "fromValue": "71",
+      "toValue": "74"
+    },
+    {
+      "playerName": "Richard",
+      "userName": "leaddogak",
+      "date": "11/16/2025",
+      "sourceType": "Rookie",
+      "upgradeType": "Badge",
+      "badgeOrAttribute": "On-Ball Menace",
+      "fromValue": "NULL",
+      "toValue": "Bronze"
+    },
+    {
+      "playerName": "Richard",
+      "userName": "leaddogak",
+      "date": "11/21/2025",
+      "sourceType": "Rookie",
+      "upgradeType": "Attribute",
+      "badgeOrAttribute": "Perimeter Defense",
+      "fromValue": "74",
+      "toValue": "77"
+    },
+    {
+      "playerName": "Richard",
+      "userName": "leaddogak",
+      "date": "11/25/2025",
+      "sourceType": "Rookie",
+      "upgradeType": "Attribute",
+      "badgeOrAttribute": "Perimeter Defense",
+      "fromValue": "77",
+      "toValue": "80"
+    },
+    {
+      "playerName": "Richard",
+      "userName": "leaddogak",
+      "date": "11/25/2025",
+      "sourceType": "Rookie",
+      "upgradeType": "Badge",
+      "badgeOrAttribute": "Challenger",
+      "fromValue": "NULL",
+      "toValue": "Bronze"
+    },
+    {
+      "playerName": "Jase Richardson",
+      "userName": "ykdagod",
+      "date": "11/27/2025",
+      "sourceType": "Rookie",
+      "upgradeType": "Attribute",
+      "badgeOrAttribute": "3PT",
+      "fromValue": "83",
+      "toValue": "86"
+    }
+  ],
+  "messages": [],
+  "stdout": "playerName\tuserName\tdate\tsourceType\tupgradeType\tbadgeOrAttribute\tfromValue\ttoValue\nRichard\tleaddogak\t11/13/2025\tWelcome\tAttribute\tPerimeter Defense\t66\t71\nRichard\tleaddogak\t11/15/2025\tGame\tAttribute\tPerimeter Defense\t71\t74\nRichard\tleaddogak\t11/16/2025\tRookie\tBadge\tOn-Ball Menace\tNULL\tBronze\nRichard\tleaddogak\t11/21/2025\tRookie\tAttribute\tPerimeter Defense\t74\t77\nRichard\tleaddogak\t11/25/2025\tRookie\tAttribute\tPerimeter Defense\t77\t80\nRichard\tleaddogak\t11/25/2025\tRookie\tBadge\tChallenger\tNULL\tBronze\nJase Richardson\tykdagod\t11/27/2025\tRookie\tAttribute\t3PT\t83\t86\n",
+  "stderr": "",
+  "execution_time_ms": 50
+}

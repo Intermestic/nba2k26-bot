@@ -1,0 +1,20 @@
+{
+  "query": "SELECT messageId, team1, team2, status, upvotes, downvotes, processedAt, approvedBy FROM trades WHERE messageId = '1450771119580647539' OR messageId LIKE '%1450771119580647539%' LIMIT 5",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT messageId, team1, team2, status, upvotes, downvotes, processedAt, approvedBy FROM trades WHERE messageId = '1450771119580647539' OR messageId LIKE '%1450771119580647539%' LIMIT 5",
+  "rows": [
+    {
+      "messageId": "1450771119580647539",
+      "team1": "Spurs",
+      "team2": "Pacers",
+      "status": "approved",
+      "upvotes": "7",
+      "downvotes": "3",
+      "processedAt": "2025-12-17 21:42:22",
+      "approvedBy": "Discord Vote"
+    }
+  ],
+  "messages": [],
+  "stdout": "messageId\tteam1\tteam2\tstatus\tupvotes\tdownvotes\tprocessedAt\tapprovedBy\n1450771119580647539\tSpurs\tPacers\tapproved\t7\t3\t2025-12-17 21:42:22\tDiscord Vote\n",
+  "stderr": "",
+  "execution_time_ms": 1518
+}

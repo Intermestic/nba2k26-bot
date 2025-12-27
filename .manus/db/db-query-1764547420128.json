@@ -1,0 +1,109 @@
+{
+  "query": "SELECT ul.playerName, ul.upgradeType, ul.badgeOrAttribute, ul.fromValue, ul.toValue, p.name as matchedPlayer, p.team \nFROM upgrade_log ul \nLEFT JOIN players p ON ul.playerName = p.name \nLEFT JOIN player_aliases pa ON ul.playerName = pa.alias \nLEFT JOIN players p2 ON pa.playerId = p2.id \nWHERE ul.playerName IN ('De''Aaron Fox', 'Egor Demin', 'Kristaps Porzingis', 'Berringer') \nORDER BY ul.playerName",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT ul.playerName, ul.upgradeType, ul.badgeOrAttribute, ul.fromValue, ul.toValue, p.name as matchedPlayer, p.team \nFROM upgrade_log ul \nLEFT JOIN players p ON ul.playerName = p.name \nLEFT JOIN player_aliases pa ON ul.playerName = pa.alias \nLEFT JOIN players p2 ON pa.playerId = p2.id \nWHERE ul.playerName IN ('De''Aaron Fox', 'Egor Demin', 'Kristaps Porzingis', 'Berringer') \nORDER BY ul.playerName",
+  "rows": [
+    {
+      "playerName": "Berringer",
+      "upgradeType": "Badge",
+      "badgeOrAttribute": "Paint Patroller",
+      "fromValue": "NULL",
+      "toValue": "Bronze",
+      "matchedPlayer": "NULL",
+      "team": "NULL"
+    },
+    {
+      "playerName": "De'Aaron Fox",
+      "upgradeType": "Badge",
+      "badgeOrAttribute": "Limitless Range",
+      "fromValue": "NULL",
+      "toValue": "Bronze",
+      "matchedPlayer": "De'Aaron Fox",
+      "team": "Kings"
+    },
+    {
+      "playerName": "De'Aaron Fox",
+      "upgradeType": "Attribute",
+      "badgeOrAttribute": "3PT",
+      "fromValue": "80",
+      "toValue": "83",
+      "matchedPlayer": "De'Aaron Fox",
+      "team": "Kings"
+    },
+    {
+      "playerName": "De'Aaron Fox",
+      "upgradeType": "Badge",
+      "badgeOrAttribute": "Set Shot Specialist",
+      "fromValue": "Bronze",
+      "toValue": "Silver",
+      "matchedPlayer": "De'Aaron Fox",
+      "team": "Kings"
+    },
+    {
+      "playerName": "Egor Demin",
+      "upgradeType": "Badge",
+      "badgeOrAttribute": "Set Shot Specialist",
+      "fromValue": "NULL",
+      "toValue": "Bronze",
+      "matchedPlayer": "NULL",
+      "team": "NULL"
+    },
+    {
+      "playerName": "Egor Demin",
+      "upgradeType": "Attribute",
+      "badgeOrAttribute": "3PT",
+      "fromValue": "70",
+      "toValue": "73",
+      "matchedPlayer": "NULL",
+      "team": "NULL"
+    },
+    {
+      "playerName": "Egor Demin",
+      "upgradeType": "Attribute",
+      "badgeOrAttribute": "3PT",
+      "fromValue": "73",
+      "toValue": "76",
+      "matchedPlayer": "NULL",
+      "team": "NULL"
+    },
+    {
+      "playerName": "Egor Demin",
+      "upgradeType": "Badge",
+      "badgeOrAttribute": "Dimer",
+      "fromValue": "Bronze",
+      "toValue": "Silver",
+      "matchedPlayer": "NULL",
+      "team": "NULL"
+    },
+    {
+      "playerName": "Kristaps Porzingis",
+      "upgradeType": "Badge",
+      "badgeOrAttribute": "Rise Up",
+      "fromValue": "Bronze",
+      "toValue": "Silver",
+      "matchedPlayer": "NULL",
+      "team": "NULL"
+    },
+    {
+      "playerName": "Kristaps Porzingis",
+      "upgradeType": "Attribute",
+      "badgeOrAttribute": "Post Control",
+      "fromValue": "85",
+      "toValue": "87",
+      "matchedPlayer": "NULL",
+      "team": "NULL"
+    },
+    {
+      "playerName": "Kristaps Porzingis",
+      "upgradeType": "Attribute",
+      "badgeOrAttribute": "Interior Defense",
+      "fromValue": "75",
+      "toValue": "76",
+      "matchedPlayer": "NULL",
+      "team": "NULL"
+    }
+  ],
+  "messages": [],
+  "stdout": "playerName\tupgradeType\tbadgeOrAttribute\tfromValue\ttoValue\tmatchedPlayer\tteam\nBerringer\tBadge\tPaint Patroller\tNULL\tBronze\tNULL\tNULL\nDe'Aaron Fox\tBadge\tLimitless Range\tNULL\tBronze\tDe'Aaron Fox\tKings\nDe'Aaron Fox\tAttribute\t3PT\t80\t83\tDe'Aaron Fox\tKings\nDe'Aaron Fox\tBadge\tSet Shot Specialist\tBronze\tSilver\tDe'Aaron Fox\tKings\nEgor Demin\tBadge\tSet Shot Specialist\tNULL\tBronze\tNULL\tNULL\nEgor Demin\tAttribute\t3PT\t70\t73\tNULL\tNULL\nEgor Demin\tAttribute\t3PT\t73\t76\tNULL\tNULL\nEgor Demin\tBadge\tDimer\tBronze\tSilver\tNULL\tNULL\nKristaps Porzingis\tBadge\tRise Up\tBronze\tSilver\tNULL\tNULL\nKristaps Porzingis\tAttribute\tPost Control\t85\t87\tNULL\tNULL\nKristaps Porzingis\tAttribute\tInterior Defense\t75\t76\tNULL\tNULL\n",
+  "stderr": "",
+  "execution_time_ms": 53
+}

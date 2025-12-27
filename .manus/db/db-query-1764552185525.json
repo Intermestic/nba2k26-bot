@@ -1,0 +1,24 @@
+{
+  "query": "SELECT pa.alias, pa.playerId, p.name, p.isRookie, p.draftYear FROM player_aliases pa JOIN players p ON pa.playerId = p.id WHERE pa.alias = 'Richard'",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT pa.alias, pa.playerId, p.name, p.isRookie, p.draftYear FROM player_aliases pa JOIN players p ON pa.playerId = p.id WHERE pa.alias = 'Richard'",
+  "rows": [
+    {
+      "alias": "Richard",
+      "playerId": "P0374",
+      "name": "Terance Mann",
+      "isRookie": "0",
+      "draftYear": "NULL"
+    },
+    {
+      "alias": "Richard",
+      "playerId": "P0374",
+      "name": "Terance Mann",
+      "isRookie": "0",
+      "draftYear": "NULL"
+    }
+  ],
+  "messages": [],
+  "stdout": "alias\tplayerId\tname\tisRookie\tdraftYear\nRichard\tP0374\tTerance Mann\t0\tNULL\nRichard\tP0374\tTerance Mann\t0\tNULL\n",
+  "stderr": "",
+  "execution_time_ms": 53
+}

@@ -1,0 +1,15 @@
+{
+  "query": "SELECT name, team, overall FROM players WHERE name LIKE '%Jaden Ivey%' OR name LIKE '%Ivey%';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT name, team, overall FROM players WHERE name LIKE '%Jaden Ivey%' OR name LIKE '%Ivey%';",
+  "rows": [
+    {
+      "name": "Jaden Ivey",
+      "team": "Sixers",
+      "overall": "79"
+    }
+  ],
+  "messages": [],
+  "stdout": "name\tteam\toverall\nJaden Ivey\tSixers\t79\n",
+  "stderr": "",
+  "execution_time_ms": 1550
+}

@@ -1,0 +1,58 @@
+{
+  "query": "SELECT name, team FROM players WHERE name IN ('Ben Sheppard', 'Kelly Olynyk', 'Kyle Lowry', 'Day''Ron Sharpe', 'Cam Thomas', 'Rasheer Fleming', 'D''Angelo Russell', 'Mohamed Bamba', 'Lauri Markkanen', 'Scottie Barnes', 'Kelly Oubre Jr.', 'Kawhi Leonard', 'Derrick Jones Jr.', 'Kris Dunn') ORDER BY team, name",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT name, team FROM players WHERE name IN ('Ben Sheppard', 'Kelly Olynyk', 'Kyle Lowry', 'Day''Ron Sharpe', 'Cam Thomas', 'Rasheer Fleming', 'D''Angelo Russell', 'Mohamed Bamba', 'Lauri Markkanen', 'Scottie Barnes', 'Kelly Oubre Jr.', 'Kawhi Leonard', 'Derrick Jones Jr.', 'Kris Dunn') ORDER BY team, name",
+  "rows": [
+    {
+      "name": "Kawhi Leonard",
+      "team": "Jazz"
+    },
+    {
+      "name": "Kris Dunn",
+      "team": "Jazz"
+    },
+    {
+      "name": "Day'Ron Sharpe",
+      "team": "Kings"
+    },
+    {
+      "name": "Kyle Lowry",
+      "team": "Kings"
+    },
+    {
+      "name": "Lauri Markkanen",
+      "team": "Knicks"
+    },
+    {
+      "name": "Scottie Barnes",
+      "team": "Knicks"
+    },
+    {
+      "name": "Cam Thomas",
+      "team": "Pacers"
+    },
+    {
+      "name": "Rasheer Fleming",
+      "team": "Pacers"
+    },
+    {
+      "name": "Ben Sheppard",
+      "team": "Raptors"
+    },
+    {
+      "name": "Kelly Olynyk",
+      "team": "Raptors"
+    },
+    {
+      "name": "D'Angelo Russell",
+      "team": "Rockets"
+    },
+    {
+      "name": "Mohamed Bamba",
+      "team": "Rockets"
+    }
+  ],
+  "messages": [],
+  "stdout": "name\tteam\nKawhi Leonard\tJazz\nKris Dunn\tJazz\nDay'Ron Sharpe\tKings\nKyle Lowry\tKings\nLauri Markkanen\tKnicks\nScottie Barnes\tKnicks\nCam Thomas\tPacers\nRasheer Fleming\tPacers\nBen Sheppard\tRaptors\nKelly Olynyk\tRaptors\nD'Angelo Russell\tRockets\nMohamed Bamba\tRockets\n",
+  "stderr": "",
+  "execution_time_ms": 1692
+}

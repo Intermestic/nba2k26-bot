@@ -1,0 +1,28 @@
+{
+  "query": "SHOW CREATE TABLE validation_rules",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SHOW CREATE TABLE validation_rules",
+  "rows": [
+    {
+      "Table": "validation_rules",
+      "Create Table": "CREATE TABLE `validation_rules` ("
+    }
+  ],
+  "messages": [
+    "  `id` int(11) NOT NULL AUTO_INCREMENT,",
+    "  `ruleKey` varchar(100) NOT NULL,",
+    "  `ruleName` varchar(255) NOT NULL,",
+    "  `description` text DEFAULT NULL,",
+    "  `ruleType` enum('boolean','numeric','text') NOT NULL,",
+    "  `enabled` int(11) NOT NULL DEFAULT '1',",
+    "  `numericValue` int(11) DEFAULT NULL,",
+    "  `textValue` text DEFAULT NULL,",
+    "  `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,",
+    "  `updatedAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,",
+    "  PRIMARY KEY (`id`) /*T![clustered_index] CLUSTERED */,",
+    "  UNIQUE KEY `validation_rules_ruleKey_unique` (`ruleKey`)",
+    ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin AUTO_INCREMENT=30001"
+  ],
+  "stdout": "Table\tCreate Table\nvalidation_rules\tCREATE TABLE `validation_rules` (\n  `id` int(11) NOT NULL AUTO_INCREMENT,\n  `ruleKey` varchar(100) NOT NULL,\n  `ruleName` varchar(255) NOT NULL,\n  `description` text DEFAULT NULL,\n  `ruleType` enum('boolean','numeric','text') NOT NULL,\n  `enabled` int(11) NOT NULL DEFAULT '1',\n  `numericValue` int(11) DEFAULT NULL,\n  `textValue` text DEFAULT NULL,\n  `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  `updatedAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,\n  PRIMARY KEY (`id`) /*T![clustered_index] CLUSTERED */,\n  UNIQUE KEY `validation_rules_ruleKey_unique` (`ruleKey`)\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin AUTO_INCREMENT=30001\n",
+  "stderr": "",
+  "execution_time_ms": 1513
+}

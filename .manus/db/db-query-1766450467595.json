@@ -1,0 +1,60 @@
+{
+  "query": "SELECT team, SUM(overall) as total_overall, COUNT(*) as player_count \nFROM players \nWHERE team IS NOT NULL AND team != 'Free Agents'\nGROUP BY team \nORDER BY total_overall DESC \nLIMIT 10;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT team, SUM(overall) as total_overall, COUNT(*) as player_count \nFROM players \nWHERE team IS NOT NULL AND team != 'Free Agents'\nGROUP BY team \nORDER BY total_overall DESC \nLIMIT 10;",
+  "rows": [
+    {
+      "team": "Celtics",
+      "total_overall": "1168",
+      "player_count": "15"
+    },
+    {
+      "team": "Knicks",
+      "total_overall": "1098",
+      "player_count": "14"
+    },
+    {
+      "team": "Wizards",
+      "total_overall": "1098",
+      "player_count": "14"
+    },
+    {
+      "team": "Heat",
+      "total_overall": "1098",
+      "player_count": "14"
+    },
+    {
+      "team": "Lakers",
+      "total_overall": "1097",
+      "player_count": "14"
+    },
+    {
+      "team": "Timberwolves",
+      "total_overall": "1097",
+      "player_count": "14"
+    },
+    {
+      "team": "Spurs",
+      "total_overall": "1097",
+      "player_count": "14"
+    },
+    {
+      "team": "Bulls",
+      "total_overall": "1097",
+      "player_count": "14"
+    },
+    {
+      "team": "Pacers",
+      "total_overall": "1096",
+      "player_count": "14"
+    },
+    {
+      "team": "Hawks",
+      "total_overall": "1096",
+      "player_count": "14"
+    }
+  ],
+  "messages": [],
+  "stdout": "team\ttotal_overall\tplayer_count\nCeltics\t1168\t15\nKnicks\t1098\t14\nWizards\t1098\t14\nHeat\t1098\t14\nLakers\t1097\t14\nTimberwolves\t1097\t14\nSpurs\t1097\t14\nBulls\t1097\t14\nPacers\t1096\t14\nHawks\t1096\t14\n",
+  "stderr": "",
+  "execution_time_ms": 1516
+}

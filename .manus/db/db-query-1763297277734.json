@@ -1,0 +1,28 @@
+{
+  "query": "SELECT name, overall, isRookie, draftYear FROM players WHERE name LIKE '%Kasparas%' OR name LIKE '%Walter%Clayton%';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT name, overall, isRookie, draftYear FROM players WHERE name LIKE '%Kasparas%' OR name LIKE '%Walter%Clayton%';",
+  "rows": [
+    {
+      "name": "Kasparas Jakučionis",
+      "overall": "71",
+      "isRookie": "1",
+      "draftYear": "2025"
+    },
+    {
+      "name": "Walter Clayton Jr",
+      "overall": "73",
+      "isRookie": "1",
+      "draftYear": "2025"
+    },
+    {
+      "name": "Walter Clayton Jr.",
+      "overall": "73",
+      "isRookie": "1",
+      "draftYear": "2025"
+    }
+  ],
+  "messages": [],
+  "stdout": "name\toverall\tisRookie\tdraftYear\nKasparas Jakučionis\t71\t1\t2025\nWalter Clayton Jr\t73\t1\t2025\nWalter Clayton Jr.\t73\t1\t2025\n",
+  "stderr": "",
+  "execution_time_ms": 1570
+}

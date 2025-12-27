@@ -1,0 +1,22 @@
+{
+  "query": "SHOW TABLES LIKE '%player%'",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SHOW TABLES LIKE '%player%'",
+  "rows": [
+    {
+      "Tables_in_DS68jwRuNTWiz9tNrw6KXW (%player%)": "player_aliases"
+    },
+    {
+      "Tables_in_DS68jwRuNTWiz9tNrw6KXW (%player%)": "player_swaps"
+    },
+    {
+      "Tables_in_DS68jwRuNTWiz9tNrw6KXW (%player%)": "player_upgrades"
+    },
+    {
+      "Tables_in_DS68jwRuNTWiz9tNrw6KXW (%player%)": "players"
+    }
+  ],
+  "messages": [],
+  "stdout": "Tables_in_DS68jwRuNTWiz9tNrw6KXW (%player%)\nplayer_aliases\nplayer_swaps\nplayer_upgrades\nplayers\n",
+  "stderr": "",
+  "execution_time_ms": 52
+}

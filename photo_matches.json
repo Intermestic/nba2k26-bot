@@ -1,0 +1,128 @@
+[
+  {
+    "db_name": "AJ Lawson",
+    "nba_name": "A.J.Lawson",
+    "player_id": "1630639",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1630639.png"
+  },
+  {
+    "db_name": "Andre Jackson Jr",
+    "nba_name": "AndreJackson Jr.",
+    "player_id": "1641748",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1641748.png"
+  },
+  {
+    "db_name": "Bronny James Jr",
+    "nba_name": "BronnyJames",
+    "player_id": "1642355",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1642355.png"
+  },
+  {
+    "db_name": "C.J. McCollum",
+    "nba_name": "CJMcCollum",
+    "player_id": "203468",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/203468.png"
+  },
+  {
+    "db_name": "Derrick Jones Jr",
+    "nba_name": "DerrickJones Jr.",
+    "player_id": "1627884",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1627884.png"
+  },
+  {
+    "db_name": "De'Aaron Fox",
+    "nba_name": "De'AaronFox",
+    "player_id": "1628368",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1628368.png"
+  },
+  {
+    "db_name": "Gary Trent Jr",
+    "nba_name": "GaryTrent Jr.",
+    "player_id": "1629018",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1629018.png"
+  },
+  {
+    "db_name": "Jabari Smith Jr",
+    "nba_name": "JabariSmith Jr.",
+    "player_id": "1631095",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1631095.png"
+  },
+  {
+    "db_name": "Jaime Jaquez Jr",
+    "nba_name": "JaimeJaquez Jr.",
+    "player_id": "1631170",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1631170.png"
+  },
+  {
+    "db_name": "Jaren Jackson Jr",
+    "nba_name": "JarenJackson Jr.",
+    "player_id": "1628991",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1628991.png"
+  },
+  {
+    "db_name": "Jimmy Butler",
+    "nba_name": "JimmyButler III",
+    "player_id": "202710",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/202710.png"
+  },
+  {
+    "db_name": "Kelly Oubre Jr",
+    "nba_name": "KellyOubre Jr.",
+    "player_id": "1626162",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1626162.png"
+  },
+  {
+    "db_name": "Kevin Porter Jr",
+    "nba_name": "KevinPorter Jr.",
+    "player_id": "1629645",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1629645.png"
+  },
+  {
+    "db_name": "Larry Nance Jr",
+    "nba_name": "LarryNance Jr.",
+    "player_id": "1626204",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1626204.png"
+  },
+  {
+    "db_name": "Michael Porter Jr",
+    "nba_name": "MichaelPorter Jr.",
+    "player_id": "1629008",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1629008.png"
+  },
+  {
+    "db_name": "Terrence Shannon Jr",
+    "nba_name": "TerrenceShannon Jr.",
+    "player_id": "1630545",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1630545.png"
+  },
+  {
+    "db_name": "Terry Rozier III",
+    "nba_name": "TerryRozier",
+    "player_id": "1626179",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1626179.png"
+  },
+  {
+    "db_name": "Walter Clayton Jr",
+    "nba_name": "WalterClayton Jr.",
+    "player_id": "1642383",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1642383.png"
+  },
+  {
+    "db_name": "Wendell Carter Jr",
+    "nba_name": "WendellCarter Jr.",
+    "player_id": "1628976",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1628976.png"
+  },
+  {
+    "db_name": "Wendell Moore Jr",
+    "nba_name": "WendellMoore Jr.",
+    "player_id": "1631111",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1631111.png"
+  },
+  {
+    "db_name": "Xavier Tillman Sr.",
+    "nba_name": "XavierTillman",
+    "player_id": "1630214",
+    "photo_url": "https://cdn.nba.com/headshots/nba/latest/1040x760/1630214.png"
+  }
+]

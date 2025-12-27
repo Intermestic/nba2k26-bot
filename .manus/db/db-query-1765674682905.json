@@ -1,0 +1,30 @@
+{
+  "query": "SELECT name, team FROM players WHERE LOWER(name) LIKE '%russell%' OR LOWER(name) LIKE '%bamba%' OR LOWER(name) LIKE '%jones jr%' OR LOWER(name) LIKE '%oubre%' ORDER BY name",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT name, team FROM players WHERE LOWER(name) LIKE '%russell%' OR LOWER(name) LIKE '%bamba%' OR LOWER(name) LIKE '%jones jr%' OR LOWER(name) LIKE '%oubre%' ORDER BY name",
+  "rows": [
+    {
+      "name": "D'Angelo Russell",
+      "team": "Pacers"
+    },
+    {
+      "name": "Derrick Jones Jr",
+      "team": "Knicks"
+    },
+    {
+      "name": "Kelly Oubre Jr",
+      "team": "Jazz"
+    },
+    {
+      "name": "Mohamed Bamba",
+      "team": "Pacers"
+    },
+    {
+      "name": "Russell Westbrook",
+      "team": "Sixers"
+    }
+  ],
+  "messages": [],
+  "stdout": "name\tteam\nD'Angelo Russell\tPacers\nDerrick Jones Jr\tKnicks\nKelly Oubre Jr\tJazz\nMohamed Bamba\tPacers\nRussell Westbrook\tSixers\n",
+  "stderr": "",
+  "execution_time_ms": 1920
+}

@@ -1,0 +1,8 @@
+{
+  "query": "SELECT * FROM fa_bids WHERE window_id = '2025-12-12-PM' ORDER BY id DESC",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT * FROM fa_bids WHERE window_id = '2025-12-12-PM' ORDER BY id DESC",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1054 (42S22) at line 1: Unknown column 'window_id' in 'where clause'"
+  ]
+}

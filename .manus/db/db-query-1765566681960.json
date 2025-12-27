@@ -1,0 +1,196 @@
+{
+  "query": "SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() ORDER BY TABLE_NAME;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() ORDER BY TABLE_NAME;",
+  "rows": [
+    {
+      "TABLE_NAME": "__drizzle_migrations"
+    },
+    {
+      "TABLE_NAME": "activity_checkpoint"
+    },
+    {
+      "TABLE_NAME": "activity_conflicts"
+    },
+    {
+      "TABLE_NAME": "activity_head_to_head"
+    },
+    {
+      "TABLE_NAME": "activity_processed_messages"
+    },
+    {
+      "TABLE_NAME": "activity_records"
+    },
+    {
+      "TABLE_NAME": "alert_history"
+    },
+    {
+      "TABLE_NAME": "badge_abbreviations"
+    },
+    {
+      "TABLE_NAME": "badge_additions"
+    },
+    {
+      "TABLE_NAME": "badge_requirements"
+    },
+    {
+      "TABLE_NAME": "bid_windows"
+    },
+    {
+      "TABLE_NAME": "bot_commands"
+    },
+    {
+      "TABLE_NAME": "bot_config"
+    },
+    {
+      "TABLE_NAME": "bot_instance_lock"
+    },
+    {
+      "TABLE_NAME": "bot_logs"
+    },
+    {
+      "TABLE_NAME": "cap_violations"
+    },
+    {
+      "TABLE_NAME": "command_cooldowns"
+    },
+    {
+      "TABLE_NAME": "command_locks"
+    },
+    {
+      "TABLE_NAME": "custom_commands"
+    },
+    {
+      "TABLE_NAME": "discord_config"
+    },
+    {
+      "TABLE_NAME": "fa_bids"
+    },
+    {
+      "TABLE_NAME": "fa_transactions"
+    },
+    {
+      "TABLE_NAME": "failed_searches"
+    },
+    {
+      "TABLE_NAME": "goodbye_config"
+    },
+    {
+      "TABLE_NAME": "health_alerts"
+    },
+    {
+      "TABLE_NAME": "learned_aliases"
+    },
+    {
+      "TABLE_NAME": "match_logs"
+    },
+    {
+      "TABLE_NAME": "message_stats"
+    },
+    {
+      "TABLE_NAME": "message_templates"
+    },
+    {
+      "TABLE_NAME": "player_aliases"
+    },
+    {
+      "TABLE_NAME": "player_swaps"
+    },
+    {
+      "TABLE_NAME": "player_upgrades"
+    },
+    {
+      "TABLE_NAME": "players"
+    },
+    {
+      "TABLE_NAME": "reaction_role_panels"
+    },
+    {
+      "TABLE_NAME": "reaction_roles"
+    },
+    {
+      "TABLE_NAME": "restart_history"
+    },
+    {
+      "TABLE_NAME": "scheduled_message_logs"
+    },
+    {
+      "TABLE_NAME": "scheduled_messages"
+    },
+    {
+      "TABLE_NAME": "scheduled_restarts"
+    },
+    {
+      "TABLE_NAME": "server_logs"
+    },
+    {
+      "TABLE_NAME": "team_aliases"
+    },
+    {
+      "TABLE_NAME": "team_assignment_history"
+    },
+    {
+      "TABLE_NAME": "team_assignments"
+    },
+    {
+      "TABLE_NAME": "team_coins"
+    },
+    {
+      "TABLE_NAME": "team_role_changes"
+    },
+    {
+      "TABLE_NAME": "trade_logs"
+    },
+    {
+      "TABLE_NAME": "trade_votes"
+    },
+    {
+      "TABLE_NAME": "trades"
+    },
+    {
+      "TABLE_NAME": "transaction_history"
+    },
+    {
+      "TABLE_NAME": "upgrade_audit_trail"
+    },
+    {
+      "TABLE_NAME": "upgrade_audits"
+    },
+    {
+      "TABLE_NAME": "upgrade_history"
+    },
+    {
+      "TABLE_NAME": "upgrade_log"
+    },
+    {
+      "TABLE_NAME": "upgrade_requests"
+    },
+    {
+      "TABLE_NAME": "upgrade_rules"
+    },
+    {
+      "TABLE_NAME": "upgrade_templates"
+    },
+    {
+      "TABLE_NAME": "upgrade_violations"
+    },
+    {
+      "TABLE_NAME": "user_activity"
+    },
+    {
+      "TABLE_NAME": "users"
+    },
+    {
+      "TABLE_NAME": "validation_rules"
+    },
+    {
+      "TABLE_NAME": "voice_stats"
+    },
+    {
+      "TABLE_NAME": "welcome_config"
+    }
+  ],
+  "messages": [],
+  "stdout": "TABLE_NAME\n__drizzle_migrations\nactivity_checkpoint\nactivity_conflicts\nactivity_head_to_head\nactivity_processed_messages\nactivity_records\nalert_history\nbadge_abbreviations\nbadge_additions\nbadge_requirements\nbid_windows\nbot_commands\nbot_config\nbot_instance_lock\nbot_logs\ncap_violations\ncommand_cooldowns\ncommand_locks\ncustom_commands\ndiscord_config\nfa_bids\nfa_transactions\nfailed_searches\ngoodbye_config\nhealth_alerts\nlearned_aliases\nmatch_logs\nmessage_stats\nmessage_templates\nplayer_aliases\nplayer_swaps\nplayer_upgrades\nplayers\nreaction_role_panels\nreaction_roles\nrestart_history\nscheduled_message_logs\nscheduled_messages\nscheduled_restarts\nserver_logs\nteam_aliases\nteam_assignment_history\nteam_assignments\nteam_coins\nteam_role_changes\ntrade_logs\ntrade_votes\ntrades\ntransaction_history\nupgrade_audit_trail\nupgrade_audits\nupgrade_history\nupgrade_log\nupgrade_requests\nupgrade_rules\nupgrade_templates\nupgrade_violations\nuser_activity\nusers\nvalidation_rules\nvoice_stats\nwelcome_config\n",
+  "stderr": "",
+  "execution_time_ms": 1516
+}

@@ -1,0 +1,15 @@
+{
+  "query": "SELECT name, team, photoUrl FROM players WHERE name LIKE '%Jimmy%Butler%';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT name, team, photoUrl FROM players WHERE name LIKE '%Jimmy%Butler%';",
+  "rows": [
+    {
+      "name": "Jimmy Butler",
+      "team": "Nets",
+      "photoUrl": "https://cdn.nba.com/headshots/nba/latest/1040x760/202710.png"
+    }
+  ],
+  "messages": [],
+  "stdout": "name\tteam\tphotoUrl\nJimmy Butler\tNets\thttps://cdn.nba.com/headshots/nba/latest/1040x760/202710.png\n",
+  "stderr": "",
+  "execution_time_ms": 92
+}

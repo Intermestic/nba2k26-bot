@@ -1,0 +1,260 @@
+{
+  "query": "SELECT name, team, photoUrl FROM players WHERE photoUrl IS NULL OR photoUrl = '' OR photoUrl NOT LIKE '%cdn.nba.com%' ORDER BY name LIMIT 50;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT name, team, photoUrl FROM players WHERE photoUrl IS NULL OR photoUrl = '' OR photoUrl NOT LIKE '%cdn.nba.com%' ORDER BY name LIMIT 50;",
+  "rows": [
+    {
+      "name": "AJ Lawson",
+      "team": "Free Agents",
+      "photoUrl": ""
+    },
+    {
+      "name": "Adam Flagler",
+      "team": "Free Agents",
+      "photoUrl": ""
+    },
+    {
+      "name": "Adama Sanogo",
+      "team": "Free Agents",
+      "photoUrl": "https://www.2kratings.com/adama-sanogo"
+    },
+    {
+      "name": "Alec Burks",
+      "team": "Free Agents",
+      "photoUrl": "https://www.2kratings.com/alec-burks"
+    },
+    {
+      "name": "Alex Ducas",
+      "team": "Free Agents",
+      "photoUrl": "https://www.2kratings.com/alex-ducas"
+    },
+    {
+      "name": "Alex Reese",
+      "team": "Heat",
+      "photoUrl": "https://www.2kratings.com/alex-reese"
+    },
+    {
+      "name": "Alondes Williams",
+      "team": "Free Agents",
+      "photoUrl": "https://www.2kratings.com/alondes-williams"
+    },
+    {
+      "name": "Andre Jackson Jr",
+      "team": "Kings",
+      "photoUrl": ""
+    },
+    {
+      "name": "Anton Watson",
+      "team": "Free Agents",
+      "photoUrl": ""
+    },
+    {
+      "name": "Armel Traoré",
+      "team": "Free Agents",
+      "photoUrl": ""
+    },
+    {
+      "name": "B. Bule",
+      "team": "Free Agents",
+      "photoUrl": ""
+    },
+    {
+      "name": "Ben Simmons",
+      "team": "Wizards",
+      "photoUrl": "https://www.2kratings.com/ben-simmons"
+    },
+    {
+      "name": "Brandon Boston Jr.",
+      "team": "Free Agents",
+      "photoUrl": "https://www.2kratings.com/brandon-boston-jr"
+    },
+    {
+      "name": "Braxton Key",
+      "team": "Free Agents",
+      "photoUrl": "https://www.2kratings.com/braxton-key"
+    },
+    {
+      "name": "Bronny James Jr",
+      "team": "Bucks",
+      "photoUrl": ""
+    },
+    {
+      "name": "Bruno Fernando",
+      "team": "Wizards",
+      "photoUrl": "https://www.2kratings.com/bruno-fernando"
+    },
+    {
+      "name": "C.J. McCollum",
+      "team": "Nets",
+      "photoUrl": ""
+    },
+    {
+      "name": "Cam Reddish",
+      "team": "Pistons",
+      "photoUrl": "https://www.2kratings.com/cam-reddish"
+    },
+    {
+      "name": "Cameron Payne",
+      "team": "Free Agents",
+      "photoUrl": "https://www.2kratings.com/cameron-payne"
+    },
+    {
+      "name": "Chris Duarte",
+      "team": "Free Agents",
+      "photoUrl": "https://www.2kratings.com/chris-duarte"
+    },
+    {
+      "name": "Christian Wood",
+      "team": "Nuggets",
+      "photoUrl": "https://www.2kratings.com/christian-wood"
+    },
+    {
+      "name": "Chuma Okeke",
+      "team": "Magic",
+      "photoUrl": "https://www.2kratings.com/chuma-okeke"
+    },
+    {
+      "name": "Cody Zeller",
+      "team": "Free Agents",
+      "photoUrl": "https://www.2kratings.com/cody-zeller"
+    },
+    {
+      "name": "Cory Joseph",
+      "team": "Free Agents",
+      "photoUrl": "https://www.2kratings.com/cory-joseph"
+    },
+    {
+      "name": "Cui Yongxi",
+      "team": "Free Agents",
+      "photoUrl": "https://www.2kratings.com/cui-yongxi"
+    },
+    {
+      "name": "DJ Carton",
+      "team": "Free Agents",
+      "photoUrl": ""
+    },
+    {
+      "name": "DJ Steward",
+      "team": "Free Agents",
+      "photoUrl": "https://www.2kratings.com/dj-steward"
+    },
+    {
+      "name": "DaQuan Jeffries",
+      "team": "Free Agents",
+      "photoUrl": "https://www.2kratings.com/daquan-jeffries"
+    },
+    {
+      "name": "Daishen Nix",
+      "team": "Free Agents",
+      "photoUrl": "https://www.2kratings.com/daishen-nix"
+    },
+    {
+      "name": "Dalano Banton",
+      "team": "Free Agents",
+      "photoUrl": "https://www.2kratings.com/dalano-banton"
+    },
+    {
+      "name": "Damion Baugh",
+      "team": "Free Agents",
+      "photoUrl": ""
+    },
+    {
+      "name": "Daniel Theis",
+      "team": "Free Agents",
+      "photoUrl": "https://www.2kratings.com/daniel-theis"
+    },
+    {
+      "name": "Dariq Whitehead",
+      "team": "Free Agents",
+      "photoUrl": "https://www.2kratings.com/dariq-whitehead"
+    },
+    {
+      "name": "David Duke Jr",
+      "team": "Heat",
+      "photoUrl": ""
+    },
+    {
+      "name": "David Roddy",
+      "team": "Free Agents",
+      "photoUrl": "https://www.2kratings.com/david-roddy"
+    },
+    {
+      "name": "Delon Wright",
+      "team": "Kings",
+      "photoUrl": "https://www.2kratings.com/delon-wright"
+    },
+    {
+      "name": "Derrick Jones Jr",
+      "team": "Nuggets",
+      "photoUrl": ""
+    },
+    {
+      "name": "De’Aaron Fox",
+      "team": "Kings",
+      "photoUrl": ""
+    },
+    {
+      "name": "Dillon Jones",
+      "team": "Free Agents",
+      "photoUrl": "https://www.2kratings.com/dillon-jones"
+    },
+    {
+      "name": "Drew Timme",
+      "team": "Free Agents",
+      "photoUrl": "https://www.nba2klab.com/assets/images/players/drew-timme.png"
+    },
+    {
+      "name": "EJ Harkless",
+      "team": "Free Agents",
+      "photoUrl": "https://www.gannett-cdn.com/content-pipeline-sports-images/sports2/nba/logos/26.png?format=png8&auto=webp&quality=85,75&width=30"
+    },
+    {
+      "name": "Elfrid Payton",
+      "team": "Free Agents",
+      "photoUrl": "https://www.2kratings.com/elfrid-payton"
+    },
+    {
+      "name": "Eli Ndiaye",
+      "team": "Free Agents",
+      "photoUrl": ""
+    },
+    {
+      "name": "Emoni Bates",
+      "team": "Kings",
+      "photoUrl": ""
+    },
+    {
+      "name": "Erik Stevenson",
+      "team": "Free Agents",
+      "photoUrl": ""
+    },
+    {
+      "name": "Eugene Omoruyi",
+      "team": "Wizards",
+      "photoUrl": "https://www.2kratings.com/eugene-omoruyi"
+    },
+    {
+      "name": "Garrison Mathews",
+      "team": "Free Agents",
+      "photoUrl": "https://www.2kratings.com/garrison-mathews"
+    },
+    {
+      "name": "Gary Trent Jr",
+      "team": "Sixers",
+      "photoUrl": ""
+    },
+    {
+      "name": "Isaiah Mobley",
+      "team": "Free Agents",
+      "photoUrl": "https://www.2kratings.com/isaiah-mobley"
+    },
+    {
+      "name": "Isaiah Wong",
+      "team": "Free Agents",
+      "photoUrl": ""
+    }
+  ],
+  "messages": [],
+  "stdout": "name\tteam\tphotoUrl\nAJ Lawson\tFree Agents\t\nAdam Flagler\tFree Agents\t\nAdama Sanogo\tFree Agents\thttps://www.2kratings.com/adama-sanogo\nAlec Burks\tFree Agents\thttps://www.2kratings.com/alec-burks\nAlex Ducas\tFree Agents\thttps://www.2kratings.com/alex-ducas\nAlex Reese\tHeat\thttps://www.2kratings.com/alex-reese\nAlondes Williams\tFree Agents\thttps://www.2kratings.com/alondes-williams\nAndre Jackson Jr\tKings\t\nAnton Watson\tFree Agents\t\nArmel Traoré\tFree Agents\t\nB. Bule\tFree Agents\t\nBen Simmons\tWizards\thttps://www.2kratings.com/ben-simmons\nBrandon Boston Jr.\tFree Agents\thttps://www.2kratings.com/brandon-boston-jr\nBraxton Key\tFree Agents\thttps://www.2kratings.com/braxton-key\nBronny James Jr\tBucks\t\nBruno Fernando\tWizards\thttps://www.2kratings.com/bruno-fernando\nC.J. McCollum\tNets\t\nCam Reddish\tPistons\thttps://www.2kratings.com/cam-reddish\nCameron Payne\tFree Agents\thttps://www.2kratings.com/cameron-payne\nChris Duarte\tFree Agents\thttps://www.2kratings.com/chris-duarte\nChristian Wood\tNuggets\thttps://www.2kratings.com/christian-wood\nChuma Okeke\tMagic\thttps://www.2kratings.com/chuma-okeke\nCody Zeller\tFree Agents\thttps://www.2kratings.com/cody-zeller\nCory Joseph\tFree Agents\thttps://www.2kratings.com/cory-joseph\nCui Yongxi\tFree Agents\thttps://www.2kratings.com/cui-yongxi\nDJ Carton\tFree Agents\t\nDJ Steward\tFree Agents\thttps://www.2kratings.com/dj-steward\nDaQuan Jeffries\tFree Agents\thttps://www.2kratings.com/daquan-jeffries\nDaishen Nix\tFree Agents\thttps://www.2kratings.com/daishen-nix\nDalano Banton\tFree Agents\thttps://www.2kratings.com/dalano-banton\nDamion Baugh\tFree Agents\t\nDaniel Theis\tFree Agents\thttps://www.2kratings.com/daniel-theis\nDariq Whitehead\tFree Agents\thttps://www.2kratings.com/dariq-whitehead\nDavid Duke Jr\tHeat\t\nDavid Roddy\tFree Agents\thttps://www.2kratings.com/david-roddy\nDelon Wright\tKings\thttps://www.2kratings.com/delon-wright\nDerrick Jones Jr\tNuggets\t\nDe’Aaron Fox\tKings\t\nDillon Jones\tFree Agents\thttps://www.2kratings.com/dillon-jones\nDrew Timme\tFree Agents\thttps://www.nba2klab.com/assets/images/players/drew-timme.png\nEJ Harkless\tFree Agents\thttps://www.gannett-cdn.com/content-pipeline-sports-images/sports2/nba/logos/26.png?format=png8&auto=webp&quality=85,75&width=30\nElfrid Payton\tFree Agents\thttps://www.2kratings.com/elfrid-payton\nEli Ndiaye\tFree Agents\t\nEmoni Bates\tKings\t\nErik Stevenson\tFree Agents\t\nEugene Omoruyi\tWizards\thttps://www.2kratings.com/eugene-omoruyi\nGarrison Mathews\tFree Agents\thttps://www.2kratings.com/garrison-mathews\nGary Trent Jr\tSixers\t\nIsaiah Mobley\tFree Agents\thttps://www.2kratings.com/isaiah-mobley\nIsaiah Wong\tFree Agents\t\n",
+  "stderr": "",
+  "execution_time_ms": 132
+}

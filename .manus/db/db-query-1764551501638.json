@@ -1,0 +1,720 @@
+{
+  "query": "SELECT id, name, team FROM players WHERE team IN ('Kings', 'Rockets', 'Magic', 'Warriors', 'Hawks', 'Grizzlies', 'Heat', 'Timberwolves', 'Jazz', 'Knicks', 'Mavericks') ORDER BY team, name",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT id, name, team FROM players WHERE team IN ('Kings', 'Rockets', 'Magic', 'Warriors', 'Hawks', 'Grizzlies', 'Heat', 'Timberwolves', 'Jazz', 'Knicks', 'Mavericks') ORDER BY team, name",
+  "rows": [
+    {
+      "id": "P0236",
+      "name": "Buddy Hield",
+      "team": "Grizzlies"
+    },
+    {
+      "id": "P0053",
+      "name": "Chris Boucher",
+      "team": "Grizzlies"
+    },
+    {
+      "id": "P0026",
+      "name": "Desmond Bane",
+      "team": "Grizzlies"
+    },
+    {
+      "id": "P0316",
+      "name": "Gary Trent Jr",
+      "team": "Grizzlies"
+    },
+    {
+      "id": "P0208",
+      "name": "Jalen Green",
+      "team": "Grizzlies"
+    },
+    {
+      "id": "P0609",
+      "name": "Jaylen Wells",
+      "team": "Grizzlies"
+    },
+    {
+      "id": "P0577",
+      "name": "Karl-Anthony Towns",
+      "team": "Grizzlies"
+    },
+    {
+      "id": "P0603",
+      "name": "Kel'el Ware",
+      "team": "Grizzlies"
+    },
+    {
+      "id": "P0395",
+      "name": "Liam McNeely",
+      "team": "Grizzlies"
+    },
+    {
+      "id": "P0620",
+      "name": "Mark Williams",
+      "team": "Grizzlies"
+    },
+    {
+      "id": "P0466",
+      "name": "Quinten Post",
+      "team": "Grizzlies"
+    },
+    {
+      "id": "P0472",
+      "name": "Taurean Prince",
+      "team": "Grizzlies"
+    },
+    {
+      "id": "P0258",
+      "name": "Trey Murphy III",
+      "team": "Grizzlies"
+    },
+    {
+      "id": "P0344",
+      "name": "Vit Krejci",
+      "team": "Grizzlies"
+    },
+    {
+      "id": "P0566",
+      "name": "Ausar Thompson",
+      "team": "Hawks"
+    },
+    {
+      "id": "P0050",
+      "name": "Bol Bol",
+      "team": "Hawks"
+    },
+    {
+      "id": "P0354",
+      "name": "Caris LeVert",
+      "team": "Hawks"
+    },
+    {
+      "id": "P0127",
+      "name": "Dyson Daniels",
+      "team": "Hawks"
+    },
+    {
+      "id": "P0109",
+      "name": "Isaiah Collier",
+      "team": "Hawks"
+    },
+    {
+      "id": "P0552",
+      "name": "Isaiah Stewart",
+      "team": "Hawks"
+    },
+    {
+      "id": "P0282",
+      "name": "Jalen Johnson",
+      "team": "Hawks"
+    },
+    {
+      "id": "P0010",
+      "name": "Jose Alvarado",
+      "team": "Hawks"
+    },
+    {
+      "id": "P0460",
+      "name": "Mason Plumlee",
+      "team": "Hawks"
+    },
+    {
+      "id": "P0079",
+      "name": "Matas Buzelis",
+      "team": "Hawks"
+    },
+    {
+      "id": "P0177",
+      "name": "Rasheer Fleming",
+      "team": "Hawks"
+    },
+    {
+      "id": "P0641",
+      "name": "Rocco Zikarsky",
+      "team": "Hawks"
+    },
+    {
+      "id": "P0496",
+      "name": "Zaccharie Risacher",
+      "team": "Hawks"
+    },
+    {
+      "id": "P0628",
+      "name": "Zion Williamson",
+      "team": "Hawks"
+    },
+    {
+      "id": "P0488",
+      "name": "Alex Reese",
+      "team": "Heat"
+    },
+    {
+      "id": "P0430",
+      "name": "Andrew Nembhard",
+      "team": "Heat"
+    },
+    {
+      "id": "P0175",
+      "name": "Cooper Flagg",
+      "team": "Heat"
+    },
+    {
+      "id": "P0304",
+      "name": "David Duke Jr",
+      "team": "Heat"
+    },
+    {
+      "id": "P0361",
+      "name": "E.J. Liddell",
+      "team": "Heat"
+    },
+    {
+      "id": "P0155",
+      "name": "Jalen Duren",
+      "team": "Heat"
+    },
+    {
+      "id": "P0225",
+      "name": "Josh Hart",
+      "team": "Heat"
+    },
+    {
+      "id": "P0581",
+      "name": "Oscar Tshiebwe",
+      "team": "Heat"
+    },
+    {
+      "id": "P0582",
+      "name": "P.J. Tucker",
+      "team": "Heat"
+    },
+    {
+      "id": "P0607",
+      "name": "Peyton Watson",
+      "team": "Heat"
+    },
+    {
+      "id": "P0528",
+      "name": "Reed Sheppard",
+      "team": "Heat"
+    },
+    {
+      "id": "P0232",
+      "name": "Scoot Henderson",
+      "team": "Heat"
+    },
+    {
+      "id": "P0215",
+      "name": "Tyrese Haliburton",
+      "team": "Heat"
+    },
+    {
+      "id": "P0610",
+      "name": "Victor Wembanyama",
+      "team": "Heat"
+    },
+    {
+      "id": "player-1763165114182",
+      "name": "Amari Williams",
+      "team": "Jazz"
+    },
+    {
+      "id": "P0341",
+      "name": "Christian Koloko",
+      "team": "Jazz"
+    },
+    {
+      "id": "P0413",
+      "name": "Donovan Mitchell",
+      "team": "Jazz"
+    },
+    {
+      "id": "P0222",
+      "name": "Gary Harris",
+      "team": "Jazz"
+    },
+    {
+      "id": "P0385",
+      "name": "Jared McCain",
+      "team": "Jazz"
+    },
+    {
+      "id": "P0206",
+      "name": "Jerami Grant",
+      "team": "Jazz"
+    },
+    {
+      "id": "P0184",
+      "name": "Johnny Furphy",
+      "team": "Jazz"
+    },
+    {
+      "id": "P0345",
+      "name": "Jonathan Kuminga",
+      "team": "Jazz"
+    },
+    {
+      "id": "P0306",
+      "name": "Kelly Oubre Jr",
+      "team": "Jazz"
+    },
+    {
+      "id": "P0376",
+      "name": "Lauri Markkanen",
+      "team": "Jazz"
+    },
+    {
+      "id": "P0104",
+      "name": "Nicolas Claxton",
+      "team": "Jazz"
+    },
+    {
+      "id": "P0029",
+      "name": "Scottie Barnes",
+      "team": "Jazz"
+    },
+    {
+      "id": "P0427",
+      "name": "Svi Mykhailiuk",
+      "team": "Jazz"
+    },
+    {
+      "id": "P0567",
+      "name": "Tristan Thompson",
+      "team": "Jazz"
+    },
+    {
+      "id": "P0307",
+      "name": "Andre Jackson Jr",
+      "team": "Kings"
+    },
+    {
+      "id": "P0529",
+      "name": "Ben Sheppard",
+      "team": "Kings"
+    },
+    {
+      "id": "P0622",
+      "name": "Brandon Williams",
+      "team": "Kings"
+    },
+    {
+      "id": "P0523",
+      "name": "Collin Sexton",
+      "team": "Kings"
+    },
+    {
+      "id": "1628368",
+      "name": "De'Aaron Fox",
+      "team": "Kings"
+    },
+    {
+      "id": "P0634",
+      "name": "Delon Wright",
+      "team": "Kings"
+    },
+    {
+      "id": "P0181",
+      "name": "De’Aaron Fox",
+      "team": "Kings"
+    },
+    {
+      "id": "P0468",
+      "name": "Drake Powell",
+      "team": "Kings"
+    },
+    {
+      "id": "P0034",
+      "name": "Emoni Bates",
+      "team": "Kings"
+    },
+    {
+      "id": "P0067",
+      "name": "Jaylen Brown",
+      "team": "Kings"
+    },
+    {
+      "id": "P0601",
+      "name": "Jordan Walsh",
+      "team": "Kings"
+    },
+    {
+      "id": "P0449",
+      "name": "Kelly Olynyk",
+      "team": "Kings"
+    },
+    {
+      "id": "P0575",
+      "name": "Obi Toppin",
+      "team": "Kings"
+    },
+    {
+      "id": "P0445",
+      "name": "Onyeka Okongwu",
+      "team": "Kings"
+    },
+    {
+      "id": "P0233",
+      "name": "Taylor Hendricks",
+      "team": "Kings"
+    },
+    {
+      "id": "P0432",
+      "name": "Aaron Nesmith",
+      "team": "Knicks"
+    },
+    {
+      "id": "P0426",
+      "name": "Collin Murray-Boyles",
+      "team": "Knicks"
+    },
+    {
+      "id": "P0312",
+      "name": "Derrick Jones Jr",
+      "team": "Knicks"
+    },
+    {
+      "id": "P0052",
+      "name": "Devin Booker",
+      "team": "Knicks"
+    },
+    {
+      "id": "P0635",
+      "name": "Guerschon Yabusele",
+      "team": "Knicks"
+    },
+    {
+      "id": "P0629",
+      "name": "Jalen Wilson",
+      "team": "Knicks"
+    },
+    {
+      "id": "P0036",
+      "name": "Jamison Battle",
+      "team": "Knicks"
+    },
+    {
+      "id": "P0358",
+      "name": "Kawhi Leonard",
+      "team": "Knicks"
+    },
+    {
+      "id": "P0153",
+      "name": "Kris Dunn",
+      "team": "Knicks"
+    },
+    {
+      "id": "P0554",
+      "name": "Max Strus",
+      "team": "Knicks"
+    },
+    {
+      "id": "P0136",
+      "name": "Moussa Diabaté",
+      "team": "Knicks"
+    },
+    {
+      "id": "P0493",
+      "name": "Nick Richards",
+      "team": "Knicks"
+    },
+    {
+      "id": "P0001",
+      "name": "Precious Achiuwa",
+      "team": "Knicks"
+    },
+    {
+      "id": "P0073",
+      "name": "Thomas Bryant",
+      "team": "Knicks"
+    },
+    {
+      "id": "P0565",
+      "name": "Amen Thompson",
+      "team": "Magic"
+    },
+    {
+      "id": "P0149",
+      "name": "Andre Drummond",
+      "team": "Magic"
+    },
+    {
+      "id": "P0102",
+      "name": "Brandon Clarke",
+      "team": "Magic"
+    },
+    {
+      "id": "P0443",
+      "name": "Chuma Okeke",
+      "team": "Magic"
+    },
+    {
+      "id": "P0338",
+      "name": "Dalton Knecht",
+      "team": "Magic"
+    },
+    {
+      "id": "P0249",
+      "name": "De'Andre Hunter",
+      "team": "Magic"
+    },
+    {
+      "id": "P0397",
+      "name": "De'Anthony Melton",
+      "team": "Magic"
+    },
+    {
+      "id": "P0999",
+      "name": "Egor Demin",
+      "team": "Magic"
+    },
+    {
+      "id": "1642856",
+      "name": "Egor Dëmin",
+      "team": "Magic"
+    },
+    {
+      "id": "P0310",
+      "name": "Jabari Smith Jr",
+      "team": "Magic"
+    },
+    {
+      "id": "P0539",
+      "name": "Jalen Smith",
+      "team": "Magic"
+    },
+    {
+      "id": "P0482",
+      "name": "Julius Randle",
+      "team": "Magic"
+    },
+    {
+      "id": "P0367",
+      "name": "Kevin Love",
+      "team": "Magic"
+    },
+    {
+      "id": "P0311",
+      "name": "Wendell Carter Jr",
+      "team": "Magic"
+    },
+    {
+      "id": "P0621",
+      "name": "Ziaire Williams",
+      "team": "Magic"
+    },
+    {
+      "id": "P0051",
+      "name": "Adem Bona",
+      "team": "Rockets"
+    },
+    {
+      "id": "P0617",
+      "name": "Cam Whitmore",
+      "team": "Rockets"
+    },
+    {
+      "id": "P0170",
+      "name": "Danté Exum",
+      "team": "Rockets"
+    },
+    {
+      "id": "P0597",
+      "name": "Jarace Walker",
+      "team": "Rockets"
+    },
+    {
+      "id": "P0008",
+      "name": "Jarrett Allen",
+      "team": "Rockets"
+    },
+    {
+      "id": "P0536",
+      "name": "Jericho Sims",
+      "team": "Rockets"
+    },
+    {
+      "id": "204001",
+      "name": "Kristaps Porziņģis",
+      "team": "Rockets"
+    },
+    {
+      "id": "P0145",
+      "name": "Luguentz Dort",
+      "team": "Rockets"
+    },
+    {
+      "id": "P0483",
+      "name": "Maxime Raynaud",
+      "team": "Rockets"
+    },
+    {
+      "id": "P0212",
+      "name": "Quentin Grimes",
+      "team": "Rockets"
+    },
+    {
+      "id": "P0398",
+      "name": "Sam Merrill",
+      "team": "Rockets"
+    },
+    {
+      "id": "P0525",
+      "name": "Shaedon Sharpe",
+      "team": "Rockets"
+    },
+    {
+      "id": "P0196",
+      "name": "Shai Gilgeous-Alexander",
+      "team": "Rockets"
+    },
+    {
+      "id": "P0592",
+      "name": "Tristan Vukčević",
+      "team": "Rockets"
+    },
+    {
+      "id": "P0168",
+      "name": "Drew Eubanks",
+      "team": "Timberwolves"
+    },
+    {
+      "id": "P0571",
+      "name": "Drew Timme",
+      "team": "Timberwolves"
+    },
+    {
+      "id": "P0435",
+      "name": "Georges Niang",
+      "team": "Timberwolves"
+    },
+    {
+      "id": "P0071",
+      "name": "Jalen Brunson",
+      "team": "Timberwolves"
+    },
+    {
+      "id": "P0584",
+      "name": "Jaylon Tyson",
+      "team": "Timberwolves"
+    },
+    {
+      "id": "P0247",
+      "name": "Kevin Huerter",
+      "team": "Timberwolves"
+    },
+    {
+      "id": "P0255",
+      "name": "Kevin Knox II",
+      "team": "Timberwolves"
+    },
+    {
+      "id": "P0022",
+      "name": "LaMelo Ball",
+      "team": "Timberwolves"
+    },
+    {
+      "id": "P0583",
+      "name": "Myles Turner",
+      "team": "Timberwolves"
+    },
+    {
+      "id": "P0469",
+      "name": "Norman Powell",
+      "team": "Timberwolves"
+    },
+    {
+      "id": "P0214",
+      "name": "Rui Hachimura",
+      "team": "Timberwolves"
+    },
+    {
+      "id": "P0503",
+      "name": "Ryan Rollins",
+      "team": "Timberwolves"
+    },
+    {
+      "id": "P0532",
+      "name": "Tristan Da Silva",
+      "team": "Timberwolves"
+    },
+    {
+      "id": "P0326",
+      "name": "TyTy Washington Jr.",
+      "team": "Timberwolves"
+    },
+    {
+      "id": "P0123",
+      "name": "Cade Cunningham",
+      "team": "Warriors"
+    },
+    {
+      "id": "P0097",
+      "name": "Cam Christie",
+      "team": "Warriors"
+    },
+    {
+      "id": "P0242",
+      "name": "Chet Holmgren",
+      "team": "Warriors"
+    },
+    {
+      "id": "P0335",
+      "name": "Corey Kispert",
+      "team": "Warriors"
+    },
+    {
+      "id": "P0631",
+      "name": "Danny Wolf",
+      "team": "Warriors"
+    },
+    {
+      "id": "P0281",
+      "name": "Isaiah Joe",
+      "team": "Warriors"
+    },
+    {
+      "id": "P0625",
+      "name": "Jalen Williams",
+      "team": "Warriors"
+    },
+    {
+      "id": "P0382",
+      "name": "Karlo Matković",
+      "team": "Warriors"
+    },
+    {
+      "id": "P0096",
+      "name": "Max Christie",
+      "team": "Warriors"
+    },
+    {
+      "id": "P0479",
+      "name": "Neemias Queta",
+      "team": "Warriors"
+    },
+    {
+      "id": "P0272",
+      "name": "Reggie Jackson",
+      "team": "Warriors"
+    },
+    {
+      "id": "P0142",
+      "name": "Spencer Dinwiddie",
+      "team": "Warriors"
+    },
+    {
+      "id": "P0194",
+      "name": "Taj Gibson",
+      "team": "Warriors"
+    },
+    {
+      "id": "P0157",
+      "name": "Tari Eason",
+      "team": "Warriors"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\tteam\nP0236\tBuddy Hield\tGrizzlies\nP0053\tChris Boucher\tGrizzlies\nP0026\tDesmond Bane\tGrizzlies\nP0316\tGary Trent Jr\tGrizzlies\nP0208\tJalen Green\tGrizzlies\nP0609\tJaylen Wells\tGrizzlies\nP0577\tKarl-Anthony Towns\tGrizzlies\nP0603\tKel'el Ware\tGrizzlies\nP0395\tLiam McNeely\tGrizzlies\nP0620\tMark Williams\tGrizzlies\nP0466\tQuinten Post\tGrizzlies\nP0472\tTaurean Prince\tGrizzlies\nP0258\tTrey Murphy III\tGrizzlies\nP0344\tVit Krejci\tGrizzlies\nP0566\tAusar Thompson\tHawks\nP0050\tBol Bol\tHawks\nP0354\tCaris LeVert\tHawks\nP0127\tDyson Daniels\tHawks\nP0109\tIsaiah Collier\tHawks\nP0552\tIsaiah Stewart\tHawks\nP0282\tJalen Johnson\tHawks\nP0010\tJose Alvarado\tHawks\nP0460\tMason Plumlee\tHawks\nP0079\tMatas Buzelis\tHawks\nP0177\tRasheer Fleming\tHawks\nP0641\tRocco Zikarsky\tHawks\nP0496\tZaccharie Risacher\tHawks\nP0628\tZion Williamson\tHawks\nP0488\tAlex Reese\tHeat\nP0430\tAndrew Nembhard\tHeat\nP0175\tCooper Flagg\tHeat\nP0304\tDavid Duke Jr\tHeat\nP0361\tE.J. Liddell\tHeat\nP0155\tJalen Duren\tHeat\nP0225\tJosh Hart\tHeat\nP0581\tOscar Tshiebwe\tHeat\nP0582\tP.J. Tucker\tHeat\nP0607\tPeyton Watson\tHeat\nP0528\tReed Sheppard\tHeat\nP0232\tScoot Henderson\tHeat\nP0215\tTyrese Haliburton\tHeat\nP0610\tVictor Wembanyama\tHeat\nplayer-1763165114182\tAmari Williams\tJazz\nP0341\tChristian Koloko\tJazz\nP0413\tDonovan Mitchell\tJazz\nP0222\tGary Harris\tJazz\nP0385\tJared McCain\tJazz\nP0206\tJerami Grant\tJazz\nP0184\tJohnny Furphy\tJazz\nP0345\tJonathan Kuminga\tJazz\nP0306\tKelly Oubre Jr\tJazz\nP0376\tLauri Markkanen\tJazz\nP0104\tNicolas Claxton\tJazz\nP0029\tScottie Barnes\tJazz\nP0427\tSvi Mykhailiuk\tJazz\nP0567\tTristan Thompson\tJazz\nP0307\tAndre Jackson Jr\tKings\nP0529\tBen Sheppard\tKings\nP0622\tBrandon Williams\tKings\nP0523\tCollin Sexton\tKings\n1628368\tDe'Aaron Fox\tKings\nP0634\tDelon Wright\tKings\nP0181\tDe’Aaron Fox\tKings\nP0468\tDrake Powell\tKings\nP0034\tEmoni Bates\tKings\nP0067\tJaylen Brown\tKings\nP0601\tJordan Walsh\tKings\nP0449\tKelly Olynyk\tKings\nP0575\tObi Toppin\tKings\nP0445\tOnyeka Okongwu\tKings\nP0233\tTaylor Hendricks\tKings\nP0432\tAaron Nesmith\tKnicks\nP0426\tCollin Murray-Boyles\tKnicks\nP0312\tDerrick Jones Jr\tKnicks\nP0052\tDevin Booker\tKnicks\nP0635\tGuerschon Yabusele\tKnicks\nP0629\tJalen Wilson\tKnicks\nP0036\tJamison Battle\tKnicks\nP0358\tKawhi Leonard\tKnicks\nP0153\tKris Dunn\tKnicks\nP0554\tMax Strus\tKnicks\nP0136\tMoussa Diabaté\tKnicks\nP0493\tNick Richards\tKnicks\nP0001\tPrecious Achiuwa\tKnicks\nP0073\tThomas Bryant\tKnicks\nP0565\tAmen Thompson\tMagic\nP0149\tAndre Drummond\tMagic\nP0102\tBrandon Clarke\tMagic\nP0443\tChuma Okeke\tMagic\nP0338\tDalton Knecht\tMagic\nP0249\tDe'Andre Hunter\tMagic\nP0397\tDe'Anthony Melton\tMagic\nP0999\tEgor Demin\tMagic\n1642856\tEgor Dëmin\tMagic\nP0310\tJabari Smith Jr\tMagic\nP0539\tJalen Smith\tMagic\nP0482\tJulius Randle\tMagic\nP0367\tKevin Love\tMagic\nP0311\tWendell Carter Jr\tMagic\nP0621\tZiaire Williams\tMagic\nP0051\tAdem Bona\tRockets\nP0617\tCam Whitmore\tRockets\nP0170\tDanté Exum\tRockets\nP0597\tJarace Walker\tRockets\nP0008\tJarrett Allen\tRockets\nP0536\tJericho Sims\tRockets\n204001\tKristaps Porziņģis\tRockets\nP0145\tLuguentz Dort\tRockets\nP0483\tMaxime Raynaud\tRockets\nP0212\tQuentin Grimes\tRockets\nP0398\tSam Merrill\tRockets\nP0525\tShaedon Sharpe\tRockets\nP0196\tShai Gilgeous-Alexander\tRockets\nP0592\tTristan Vukčević\tRockets\nP0168\tDrew Eubanks\tTimberwolves\nP0571\tDrew Timme\tTimberwolves\nP0435\tGeorges Niang\tTimberwolves\nP0071\tJalen Brunson\tTimberwolves\nP0584\tJaylon Tyson\tTimberwolves\nP0247\tKevin Huerter\tTimberwolves\nP0255\tKevin Knox II\tTimberwolves\nP0022\tLaMelo Ball\tTimberwolves\nP0583\tMyles Turner\tTimberwolves\nP0469\tNorman Powell\tTimberwolves\nP0214\tRui Hachimura\tTimberwolves\nP0503\tRyan Rollins\tTimberwolves\nP0532\tTristan Da Silva\tTimberwolves\nP0326\tTyTy Washington Jr.\tTimberwolves\nP0123\tCade Cunningham\tWarriors\nP0097\tCam Christie\tWarriors\nP0242\tChet Holmgren\tWarriors\nP0335\tCorey Kispert\tWarriors\nP0631\tDanny Wolf\tWarriors\nP0281\tIsaiah Joe\tWarriors\nP0625\tJalen Williams\tWarriors\nP0382\tKarlo Matković\tWarriors\nP0096\tMax Christie\tWarriors\nP0479\tNeemias Queta\tWarriors\nP0272\tReggie Jackson\tWarriors\nP0142\tSpencer Dinwiddie\tWarriors\nP0194\tTaj Gibson\tWarriors\nP0157\tTari Eason\tWarriors\n",
+  "stderr": "",
+  "execution_time_ms": 54
+}

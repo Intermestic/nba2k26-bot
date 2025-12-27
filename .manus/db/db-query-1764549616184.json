@@ -1,0 +1,9 @@
+{
+  "query": "ALTER TABLE upgrade_violations \nADD COLUMN flaggedAt TIMESTAMP NULL,\nADD COLUMN flaggedBy VARCHAR(255) NULL,\nADD COLUMN flagNotes TEXT NULL;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute ALTER TABLE upgrade_violations \nADD COLUMN flaggedAt TIMESTAMP NULL,\nADD COLUMN flaggedBy VARCHAR(255) NULL,\nADD COLUMN flagNotes TEXT NULL;",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 1070
+}

@@ -1,0 +1,30 @@
+{
+  "query": "SELECT name, team, overall FROM players WHERE name IN ('LeBron James', 'Cason Wallace', 'Paolo Banchero', 'Mikal Bridges');",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT name, team, overall FROM players WHERE name IN ('LeBron James', 'Cason Wallace', 'Paolo Banchero', 'Mikal Bridges');",
+  "rows": [
+    {
+      "name": "Paolo Banchero",
+      "team": "Pacers",
+      "overall": "90"
+    },
+    {
+      "name": "Mikal Bridges",
+      "team": "Pacers",
+      "overall": "85"
+    },
+    {
+      "name": "LeBron James",
+      "team": "Spurs",
+      "overall": "94"
+    },
+    {
+      "name": "Cason Wallace",
+      "team": "Spurs",
+      "overall": "79"
+    }
+  ],
+  "messages": [],
+  "stdout": "name\tteam\toverall\nPaolo Banchero\tPacers\t90\nMikal Bridges\tPacers\t85\nLeBron James\tSpurs\t94\nCason Wallace\tSpurs\t79\n",
+  "stderr": "",
+  "execution_time_ms": 1512
+}

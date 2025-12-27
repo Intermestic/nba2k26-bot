@@ -1,0 +1,18 @@
+{
+  "query": "SELECT team, COUNT(*) as count FROM players WHERE team IN ('Blazers', 'Trailblazers', 'Trail Blazers') GROUP BY team",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT team, COUNT(*) as count FROM players WHERE team IN ('Blazers', 'Trailblazers', 'Trail Blazers') GROUP BY team",
+  "rows": [
+    {
+      "team": "Blazers",
+      "count": "2"
+    },
+    {
+      "team": "Trail Blazers",
+      "count": "13"
+    }
+  ],
+  "messages": [],
+  "stdout": "team\tcount\nBlazers\t2\nTrail Blazers\t13\n",
+  "stderr": "",
+  "execution_time_ms": 1932
+}

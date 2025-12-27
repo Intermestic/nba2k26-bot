@@ -1,0 +1,31 @@
+{
+  "query": "SELECT team, name, COUNT(*) as count, GROUP_CONCAT(id ORDER BY id) as duplicate_ids, GROUP_CONCAT(overall ORDER BY id) as overalls FROM players GROUP BY team, name HAVING COUNT(*) > 1 ORDER BY team, name",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT team, name, COUNT(*) as count, GROUP_CONCAT(id ORDER BY id) as duplicate_ids, GROUP_CONCAT(overall ORDER BY id) as overalls FROM players GROUP BY team, name HAVING COUNT(*) > 1 ORDER BY team, name",
+  "rows": [
+    {
+      "team": "Magic",
+      "name": "Egor Dëmin",
+      "count": "2",
+      "duplicate_ids": "1642856,P0156",
+      "overalls": "72,72"
+    },
+    {
+      "team": "Rockets",
+      "name": "Kristaps Porziņģis",
+      "count": "2",
+      "duplicate_ids": "204001,P0465",
+      "overalls": "85,85"
+    },
+    {
+      "team": "Wizards",
+      "name": "Joan Beringer",
+      "count": "2",
+      "duplicate_ids": "1642866,P0043",
+      "overalls": "70,70"
+    }
+  ],
+  "messages": [],
+  "stdout": "team\tname\tcount\tduplicate_ids\toveralls\nMagic\tEgor Dëmin\t2\t1642856,P0156\t72,72\nRockets\tKristaps Porziņģis\t2\t204001,P0465\t85,85\nWizards\tJoan Beringer\t2\t1642866,P0043\t70,70\n",
+  "stderr": "",
+  "execution_time_ms": 77
+}

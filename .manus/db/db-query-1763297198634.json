@@ -1,0 +1,90 @@
+{
+  "query": "SELECT id, name, overall, isRookie, draftYear, createdAt FROM players ORDER BY createdAt DESC LIMIT 10;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT id, name, overall, isRookie, draftYear, createdAt FROM players ORDER BY createdAt DESC LIMIT 10;",
+  "rows": [
+    {
+      "id": "liam-mcneeley",
+      "name": "Liam McNeeley",
+      "overall": "70",
+      "isRookie": "1",
+      "draftYear": "2025",
+      "createdAt": "2025-11-16 12:03:06"
+    },
+    {
+      "id": "hugo-gonzalez",
+      "name": "Hugo Gonzalez",
+      "overall": "70",
+      "isRookie": "1",
+      "draftYear": "2025",
+      "createdAt": "2025-11-16 12:03:03"
+    },
+    {
+      "id": "kasparas-jakucionis",
+      "name": "Kasparas Jakucionis",
+      "overall": "71",
+      "isRookie": "1",
+      "draftYear": "2025",
+      "createdAt": "2025-11-16 12:03:01"
+    },
+    {
+      "id": "egor-demin",
+      "name": "Egor Demin",
+      "overall": "72",
+      "isRookie": "1",
+      "draftYear": "2025",
+      "createdAt": "2025-11-16 12:03:00"
+    },
+    {
+      "id": "walter-clayton-jr-",
+      "name": "Walter Clayton Jr.",
+      "overall": "73",
+      "isRookie": "1",
+      "draftYear": "2025",
+      "createdAt": "2025-11-16 12:02:57"
+    },
+    {
+      "id": "player-1763165114182",
+      "name": "Amari Williams",
+      "overall": "69",
+      "isRookie": "1",
+      "draftYear": "2025",
+      "createdAt": "2025-11-15 00:05:14"
+    },
+    {
+      "id": "player-1763146102151-ahitem8ua",
+      "name": "Jaime Jaquez Jr",
+      "overall": "80",
+      "isRookie": "0",
+      "draftYear": "NULL",
+      "createdAt": "2025-11-14 18:48:22"
+    },
+    {
+      "id": "player-1763059761659-ninrul5ko",
+      "name": "Patrick Baldwin Jr",
+      "overall": "70",
+      "isRookie": "0",
+      "draftYear": "NULL",
+      "createdAt": "2025-11-13 18:49:21"
+    },
+    {
+      "id": "player-1763056405578-jbt4172ft",
+      "name": "Jase Richardson",
+      "overall": "70",
+      "isRookie": "1",
+      "draftYear": "2025",
+      "createdAt": "2025-11-13 17:53:25"
+    },
+    {
+      "id": "player_1763006483076_t0ofa80ap",
+      "name": "Boo Buie III",
+      "overall": "70",
+      "isRookie": "0",
+      "draftYear": "NULL",
+      "createdAt": "2025-11-13 04:01:23"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\toverall\tisRookie\tdraftYear\tcreatedAt\nliam-mcneeley\tLiam McNeeley\t70\t1\t2025\t2025-11-16 12:03:06\nhugo-gonzalez\tHugo Gonzalez\t70\t1\t2025\t2025-11-16 12:03:03\nkasparas-jakucionis\tKasparas Jakucionis\t71\t1\t2025\t2025-11-16 12:03:01\negor-demin\tEgor Demin\t72\t1\t2025\t2025-11-16 12:03:00\nwalter-clayton-jr-\tWalter Clayton Jr.\t73\t1\t2025\t2025-11-16 12:02:57\nplayer-1763165114182\tAmari Williams\t69\t1\t2025\t2025-11-15 00:05:14\nplayer-1763146102151-ahitem8ua\tJaime Jaquez Jr\t80\t0\tNULL\t2025-11-14 18:48:22\nplayer-1763059761659-ninrul5ko\tPatrick Baldwin Jr\t70\t0\tNULL\t2025-11-13 18:49:21\nplayer-1763056405578-jbt4172ft\tJase Richardson\t70\t1\t2025\t2025-11-13 17:53:25\nplayer_1763006483076_t0ofa80ap\tBoo Buie III\t70\t0\tNULL\t2025-11-13 04:01:23\n",
+  "stderr": "",
+  "execution_time_ms": 1536
+}

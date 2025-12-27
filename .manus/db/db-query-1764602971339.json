@@ -1,0 +1,9 @@
+{
+  "query": "SELECT id, playerName, sourceType, sourceDetail, upgradeType, badgeOrAttribute, fromValue, toValue, date\nFROM upgrade_log \nWHERE (sourceType LIKE '%7%' OR sourceType LIKE '%seven%' OR sourceDetail LIKE '%7GM%' OR sourceDetail LIKE '%7 GM%')\nAND upgradeType = 'Attribute'\nLIMIT 30",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT id, playerName, sourceType, sourceDetail, upgradeType, badgeOrAttribute, fromValue, toValue, date\nFROM upgrade_log \nWHERE (sourceType LIKE '%7%' OR sourceType LIKE '%seven%' OR sourceDetail LIKE '%7GM%' OR sourceDetail LIKE '%7 GM%')\nAND upgradeType = 'Attribute'\nLIMIT 30",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 50
+}

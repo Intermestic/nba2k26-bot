@@ -1,0 +1,42 @@
+{
+  "query": "SELECT name, overall FROM players WHERE name IN ('Nikola Jokic', 'Shai Gilgeous-Alexander', 'Victor Wembanyama', 'Keyonte George', 'Austin Reaves', 'Bam Adebayo', 'Jalen Williams', 'Cooper Flagg', 'VJ Edgecombe') ORDER BY overall DESC;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT name, overall FROM players WHERE name IN ('Nikola Jokic', 'Shai Gilgeous-Alexander', 'Victor Wembanyama', 'Keyonte George', 'Austin Reaves', 'Bam Adebayo', 'Jalen Williams', 'Cooper Flagg', 'VJ Edgecombe') ORDER BY overall DESC;",
+  "rows": [
+    {
+      "name": "Shai Gilgeous-Alexander",
+      "overall": "98"
+    },
+    {
+      "name": "Victor Wembanyama",
+      "overall": "95"
+    },
+    {
+      "name": "Bam Adebayo",
+      "overall": "90"
+    },
+    {
+      "name": "Jalen Williams",
+      "overall": "90"
+    },
+    {
+      "name": "Austin Reaves",
+      "overall": "88"
+    },
+    {
+      "name": "Cooper Flagg",
+      "overall": "82"
+    },
+    {
+      "name": "Keyonte George",
+      "overall": "82"
+    },
+    {
+      "name": "VJ Edgecombe",
+      "overall": "81"
+    }
+  ],
+  "messages": [],
+  "stdout": "name\toverall\nShai Gilgeous-Alexander\t98\nVictor Wembanyama\t95\nBam Adebayo\t90\nJalen Williams\t90\nAustin Reaves\t88\nCooper Flagg\t82\nKeyonte George\t82\nVJ Edgecombe\t81\n",
+  "stderr": "",
+  "execution_time_ms": 52
+}

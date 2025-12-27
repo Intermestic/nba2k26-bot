@@ -1,0 +1,42 @@
+{
+  "query": "SELECT name, team FROM players WHERE name IN ('Donovan Mitchell', 'Jerami Grant', 'Saddiq Bey', 'LaMelo Ball', 'Miles Bridges', 'Benedict Mathurin', 'Jaime Jaquez Jr.', 'Robert Williams III', 'Brandon Miller', 'Adem Bona') ORDER BY team, name;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT name, team FROM players WHERE name IN ('Donovan Mitchell', 'Jerami Grant', 'Saddiq Bey', 'LaMelo Ball', 'Miles Bridges', 'Benedict Mathurin', 'Jaime Jaquez Jr.', 'Robert Williams III', 'Brandon Miller', 'Adem Bona') ORDER BY team, name;",
+  "rows": [
+    {
+      "name": "Adem Bona",
+      "team": "Hornets"
+    },
+    {
+      "name": "Brandon Miller",
+      "team": "Hornets"
+    },
+    {
+      "name": "Donovan Mitchell",
+      "team": "Jazz"
+    },
+    {
+      "name": "Jerami Grant",
+      "team": "Jazz"
+    },
+    {
+      "name": "Saddiq Bey",
+      "team": "Jazz"
+    },
+    {
+      "name": "LaMelo Ball",
+      "team": "Trail Blazers"
+    },
+    {
+      "name": "Miles Bridges",
+      "team": "Trail Blazers"
+    },
+    {
+      "name": "Robert Williams III",
+      "team": "Trail Blazers"
+    }
+  ],
+  "messages": [],
+  "stdout": "name\tteam\nAdem Bona\tHornets\nBrandon Miller\tHornets\nDonovan Mitchell\tJazz\nJerami Grant\tJazz\nSaddiq Bey\tJazz\nLaMelo Ball\tTrail Blazers\nMiles Bridges\tTrail Blazers\nRobert Williams III\tTrail Blazers\n",
+  "stderr": "",
+  "execution_time_ms": 1580
+}

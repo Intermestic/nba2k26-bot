@@ -1,0 +1,9 @@
+{
+  "query": "INSERT INTO health_alerts (enabled, alertChannelId, offlineAlertEnabled, errorAlertEnabled, errorThreshold, checkIntervalSeconds)\nVALUES (1, '1444709506499088467', 1, 1, 5, 60)\nON DUPLICATE KEY UPDATE\n  enabled = 1,\n  alertChannelId = '1444709506499088467',\n  offlineAlertEnabled = 1,\n  errorAlertEnabled = 1,\n  errorThreshold = 5,\n  checkIntervalSeconds = 60,\n  updatedAt = NOW()",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute INSERT INTO health_alerts (enabled, alertChannelId, offlineAlertEnabled, errorAlertEnabled, errorThreshold, checkIntervalSeconds)\nVALUES (1, '1444709506499088467', 1, 1, 5, 60)\nON DUPLICATE KEY UPDATE\n  enabled = 1,\n  alertChannelId = '1444709506499088467',\n  offlineAlertEnabled = 1,\n  errorAlertEnabled = 1,\n  errorThreshold = 5,\n  checkIntervalSeconds = 60,\n  updatedAt = NOW()",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 98
+}

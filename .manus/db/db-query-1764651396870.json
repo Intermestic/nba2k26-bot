@@ -1,0 +1,9 @@
+{
+  "query": "UPDATE trades SET team1 = 'Cavaliers', team2 = 'Trail Blazers' WHERE messageId = '1444832686861455392'",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute UPDATE trades SET team1 = 'Cavaliers', team2 = 'Trail Blazers' WHERE messageId = '1444832686861455392'",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 55
+}

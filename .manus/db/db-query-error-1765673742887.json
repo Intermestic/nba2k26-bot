@@ -1,0 +1,8 @@
+{
+  "query": "SELECT messageId, upvotes, downvotes, approved, processedAt FROM tradeVotes WHERE messageId IN ('1449555431881048136', '1449555517377613844', '1449555550357557272') ORDER BY processedAt DESC;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT messageId, upvotes, downvotes, approved, processedAt FROM tradeVotes WHERE messageId IN ('1449555431881048136', '1449555517377613844', '1449555550357557272') ORDER BY processedAt DESC;",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1146 (42S02) at line 1: Table 'ds68jwruntwiz9tnrw6kxw.tradeVotes' doesn't exist"
+  ]
+}

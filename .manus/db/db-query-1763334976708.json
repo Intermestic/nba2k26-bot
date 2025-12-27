@@ -1,0 +1,35 @@
+{
+  "query": "SELECT ba.abbreviation, ba.fullName, COUNT(br.id) as req_count \nFROM badge_abbreviations ba \nLEFT JOIN badge_requirements br ON ba.fullName = br.badgeName \nWHERE ba.abbreviation IN ('SS', 'PTZ', 'CHL', 'SSS', 'LR')\nGROUP BY ba.abbreviation, ba.fullName\nORDER BY ba.abbreviation",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT ba.abbreviation, ba.fullName, COUNT(br.id) as req_count \nFROM badge_abbreviations ba \nLEFT JOIN badge_requirements br ON ba.fullName = br.badgeName \nWHERE ba.abbreviation IN ('SS', 'PTZ', 'CHL', 'SSS', 'LR')\nGROUP BY ba.abbreviation, ba.fullName\nORDER BY ba.abbreviation",
+  "rows": [
+    {
+      "abbreviation": "CHL",
+      "fullName": "CHALLENGER",
+      "req_count": "0"
+    },
+    {
+      "abbreviation": "LR",
+      "fullName": "LIMITLESS RANGE",
+      "req_count": "0"
+    },
+    {
+      "abbreviation": "PTZ",
+      "fullName": "POSTERIZER",
+      "req_count": "0"
+    },
+    {
+      "abbreviation": "SS",
+      "fullName": "SHIFTY SHOOTER",
+      "req_count": "0"
+    },
+    {
+      "abbreviation": "SSS",
+      "fullName": "SET SHOT SPECIALIST",
+      "req_count": "0"
+    }
+  ],
+  "messages": [],
+  "stdout": "abbreviation\tfullName\treq_count\nCHL\tCHALLENGER\t0\nLR\tLIMITLESS RANGE\t0\nPTZ\tPOSTERIZER\t0\nSS\tSHIFTY SHOOTER\t0\nSSS\tSET SHOT SPECIALIST\t0\n",
+  "stderr": "",
+  "execution_time_ms": 1625
+}

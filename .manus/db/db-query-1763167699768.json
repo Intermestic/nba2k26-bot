@@ -1,0 +1,88 @@
+{
+  "query": "SELECT playerName, team, bidAmount, bidderName FROM fa_bids ORDER BY bidAmount DESC;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT playerName, team, bidAmount, bidderName FROM fa_bids ORDER BY bidAmount DESC;",
+  "rows": [
+    {
+      "playerName": "Rocco Zikarsky",
+      "team": "Hawks",
+      "bidAmount": "104",
+      "bidderName": "xpoloxhawk"
+    },
+    {
+      "playerName": "Keldon Johnson",
+      "team": "Nuggets",
+      "bidAmount": "101",
+      "bidderName": "kuroko4"
+    },
+    {
+      "playerName": "Daniel Gafford",
+      "team": "76ers",
+      "bidAmount": "100",
+      "bidderName": "ishotcheesee"
+    },
+    {
+      "playerName": "Daniel Gafford",
+      "team": "Sixers",
+      "bidAmount": "100",
+      "bidderName": "ishotcheesee"
+    },
+    {
+      "playerName": "Jake Laravia",
+      "team": "Blazers",
+      "bidAmount": "90",
+      "bidderName": "sirjordan10"
+    },
+    {
+      "playerName": "Charles Bassey",
+      "team": "Bucks",
+      "bidAmount": "72",
+      "bidderName": "mikeybvf"
+    },
+    {
+      "playerName": "Luke Kornet",
+      "team": "Raptors",
+      "bidAmount": "61",
+      "bidderName": "lameloballcashed"
+    },
+    {
+      "playerName": "Jaden Ivey",
+      "team": "Nuggets",
+      "bidAmount": "60",
+      "bidderName": "kuroko4"
+    },
+    {
+      "playerName": "Adou Thiero",
+      "team": "Lakers",
+      "bidAmount": "45",
+      "bidderName": "jayguwop."
+    },
+    {
+      "playerName": "Grayson Allen",
+      "team": "Jazz",
+      "bidAmount": "20",
+      "bidderName": ".wooman"
+    },
+    {
+      "playerName": "PJ Dozier",
+      "team": "Blazers",
+      "bidAmount": "1",
+      "bidderName": "sirjordan10"
+    },
+    {
+      "playerName": "Chris Paul",
+      "team": "Nuggets",
+      "bidAmount": "1",
+      "bidderName": "kuroko4"
+    },
+    {
+      "playerName": "Moses Moody",
+      "team": "Nuggets",
+      "bidAmount": "1",
+      "bidderName": "kuroko4"
+    }
+  ],
+  "messages": [],
+  "stdout": "playerName\tteam\tbidAmount\tbidderName\nRocco Zikarsky\tHawks\t104\txpoloxhawk\nKeldon Johnson\tNuggets\t101\tkuroko4\nDaniel Gafford\t76ers\t100\tishotcheesee\nDaniel Gafford\tSixers\t100\tishotcheesee\nJake Laravia\tBlazers\t90\tsirjordan10\nCharles Bassey\tBucks\t72\tmikeybvf\nLuke Kornet\tRaptors\t61\tlameloballcashed\nJaden Ivey\tNuggets\t60\tkuroko4\nAdou Thiero\tLakers\t45\tjayguwop.\nGrayson Allen\tJazz\t20\t.wooman\nPJ Dozier\tBlazers\t1\tsirjordan10\nChris Paul\tNuggets\t1\tkuroko4\nMoses Moody\tNuggets\t1\tkuroko4\n",
+  "stderr": "",
+  "execution_time_ms": 1652
+}

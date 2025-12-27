@@ -1,0 +1,9 @@
+{
+  "query": "SELECT * FROM trade_votes WHERE messageId = '1452783686054580348';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT * FROM trade_votes WHERE messageId = '1452783686054580348';",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 1475
+}

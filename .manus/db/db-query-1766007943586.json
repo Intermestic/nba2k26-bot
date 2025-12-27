@@ -1,0 +1,24 @@
+{
+  "query": "\nSELECT \n  tv.messageId, \n  tv.upvotes, \n  tv.downvotes, \n  tv.approved, \n  tv.processedAt as vote_processed_at,\n  t.team1,\n  t.team2,\n  t.status,\n  t.processedAt as trade_processed_at,\n  t.approvedBy,\n  t.team1Players,\n  t.team2Players\nFROM trade_votes tv\nLEFT JOIN trades t ON tv.messageId = t.messageId\nWHERE tv.messageId = '1450771119580647539'\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute \nSELECT \n  tv.messageId, \n  tv.upvotes, \n  tv.downvotes, \n  tv.approved, \n  tv.processedAt as vote_processed_at,\n  t.team1,\n  t.team2,\n  t.status,\n  t.processedAt as trade_processed_at,\n  t.approvedBy,\n  t.team1Players,\n  t.team2Players\nFROM trade_votes tv\nLEFT JOIN trades t ON tv.messageId = t.messageId\nWHERE tv.messageId = '1450771119580647539'\n",
+  "rows": [
+    {
+      "messageId": "1450771119580647539",
+      "upvotes": "7",
+      "downvotes": "3",
+      "approved": "1",
+      "vote_processed_at": "2025-12-17 21:42:21",
+      "team1": "Spurs",
+      "team2": "Pacers",
+      "status": "approved",
+      "trade_processed_at": "2025-12-17 21:42:22",
+      "approvedBy": "Discord Vote",
+      "team1Players": "[]",
+      "team2Players": "[]"
+    }
+  ],
+  "messages": [],
+  "stdout": "messageId\tupvotes\tdownvotes\tapproved\tvote_processed_at\tteam1\tteam2\tstatus\ttrade_processed_at\tapprovedBy\tteam1Players\tteam2Players\n1450771119580647539\t7\t3\t1\t2025-12-17 21:42:21\tSpurs\tPacers\tapproved\t2025-12-17 21:42:22\tDiscord Vote\t[]\t[]\n",
+  "stderr": "",
+  "execution_time_ms": 1530
+}

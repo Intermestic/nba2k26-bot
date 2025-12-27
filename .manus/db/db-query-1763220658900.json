@@ -1,0 +1,49 @@
+{
+  "query": "SELECT * FROM fa_bids WHERE team = 'Jazz' ORDER BY createdAt DESC LIMIT 5",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT * FROM fa_bids WHERE team = 'Jazz' ORDER BY createdAt DESC LIMIT 5",
+  "rows": [
+    {
+      "id": "60003",
+      "playerId": "P0418",
+      "playerName": "Moses Moody",
+      "bidderDiscordId": "836929618404704316",
+      "bidderName": ".wooman",
+      "team": "Jazz",
+      "bidAmount": "2",
+      "windowId": "2025-11-15-AM",
+      "messageId": "1439259051266408543",
+      "createdAt": "2025-11-15 14:21:40",
+      "updatedAt": "2025-11-15 14:21:40"
+    },
+    {
+      "id": "27",
+      "playerId": "NULL",
+      "playerName": "Daniel Gafford",
+      "bidderDiscordId": "seeded",
+      "bidderName": ".wooman",
+      "team": "Jazz",
+      "bidAmount": "30",
+      "windowId": "2025-11-14-PM",
+      "messageId": "1438598608533454889",
+      "createdAt": "2025-11-15 01:11:31",
+      "updatedAt": "2025-11-15 01:11:31"
+    },
+    {
+      "id": "26",
+      "playerId": "NULL",
+      "playerName": "Grayson Allen",
+      "bidderDiscordId": "seeded",
+      "bidderName": ".wooman",
+      "team": "Jazz",
+      "bidAmount": "20",
+      "windowId": "2025-11-14-PM",
+      "messageId": "1438598608533454889",
+      "createdAt": "2025-11-15 01:11:30",
+      "updatedAt": "2025-11-15 01:11:30"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tplayerId\tplayerName\tbidderDiscordId\tbidderName\tteam\tbidAmount\twindowId\tmessageId\tcreatedAt\tupdatedAt\n60003\tP0418\tMoses Moody\t836929618404704316\t.wooman\tJazz\t2\t2025-11-15-AM\t1439259051266408543\t2025-11-15 14:21:40\t2025-11-15 14:21:40\n27\tNULL\tDaniel Gafford\tseeded\t.wooman\tJazz\t30\t2025-11-14-PM\t1438598608533454889\t2025-11-15 01:11:31\t2025-11-15 01:11:31\n26\tNULL\tGrayson Allen\tseeded\t.wooman\tJazz\t20\t2025-11-14-PM\t1438598608533454889\t2025-11-15 01:11:30\t2025-11-15 01:11:30\n",
+  "stderr": "",
+  "execution_time_ms": 1653
+}

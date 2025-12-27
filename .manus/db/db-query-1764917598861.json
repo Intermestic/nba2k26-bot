@@ -1,0 +1,50 @@
+{
+  "query": "SELECT name, team, overall FROM players WHERE name IN (\n  'Keyonte George', 'Paolo Banchero', 'Klay Thompson', 'Jeremy Sochan',\n  'Darius Garland', 'Jaden McDaniels', 'Dereck Lively II', 'D\\'Angelo Russell'\n) ORDER BY name;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT name, team, overall FROM players WHERE name IN (\n  'Keyonte George', 'Paolo Banchero', 'Klay Thompson', 'Jeremy Sochan',\n  'Darius Garland', 'Jaden McDaniels', 'Dereck Lively II', 'D\\'Angelo Russell'\n) ORDER BY name;",
+  "rows": [
+    {
+      "name": "D'Angelo Russell",
+      "team": "Sixers",
+      "overall": "78"
+    },
+    {
+      "name": "Darius Garland",
+      "team": "Pacers",
+      "overall": "87"
+    },
+    {
+      "name": "Dereck Lively II",
+      "team": "Sixers",
+      "overall": "79"
+    },
+    {
+      "name": "Jaden McDaniels",
+      "team": "Pacers",
+      "overall": "83"
+    },
+    {
+      "name": "Jeremy Sochan",
+      "team": "Pacers",
+      "overall": "77"
+    },
+    {
+      "name": "Keyonte George",
+      "team": "Sixers",
+      "overall": "82"
+    },
+    {
+      "name": "Klay Thompson",
+      "team": "Sixers",
+      "overall": "76"
+    },
+    {
+      "name": "Paolo Banchero",
+      "team": "Sixers",
+      "overall": "90"
+    }
+  ],
+  "messages": [],
+  "stdout": "name\tteam\toverall\nD'Angelo Russell\tSixers\t78\nDarius Garland\tPacers\t87\nDereck Lively II\tSixers\t79\nJaden McDaniels\tPacers\t83\nJeremy Sochan\tPacers\t77\nKeyonte George\tSixers\t82\nKlay Thompson\tSixers\t76\nPaolo Banchero\tSixers\t90\n",
+  "stderr": "",
+  "execution_time_ms": 54
+}
