@@ -43,6 +43,7 @@ function Router() {
 
       <Route path={"/admin/cap-compliance"} component={CapCompliance} />
       <Route path={"/admin/fa-management"} component={FAManagement} />
+      <Route path={"/admin/coins"} component={FAManagement} />
       <Route path={"/admin/player-aliases"} component={PlayerAliases} />
       <Route path={"/admin/teams"} component={TeamAssignments} />
       <Route path={"/admin/team-assignments"} component={TeamAssignments} />

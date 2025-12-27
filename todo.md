@@ -627,3 +627,8 @@
 - [x] Add automatic reconnection on disconnect
 - [x] Remove unnecessary feature initializations
 - [x] Test bot stays online consistently
+
+
+## FA Coins Page Routing (Dec 27, 2024)
+
+- [x] Fix FA Coins page 404 error - add proper routing for /admin/coins (routes to FAManagement component)
