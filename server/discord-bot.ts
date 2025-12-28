@@ -481,45 +481,65 @@ async function handleBidMessage(message: Message) {
     return;
   }
   
-  // Determine team from Discord user ID (reliable, doesn't depend on nicknames)
-  const db = await getDb();
-  assertDb(db);
-  if (!db) {
-    console.log(`[FA Bids] Database not available`);
-    await message.reply(`❌ **Database Error**: Unable to process bid at this time.`);
-    return;
+  // Determine team from Discord roles (primary) or database (fallback)
+  let team: string | null = null;
+  
+  // Try to get team from Discord roles first
+  if (message.member?.roles) {
+    const { validateTeamName } = await import('./team-validator');
+    const roleNames = message.member.roles.cache.map(role => role.name);
+    
+    for (const roleName of roleNames) {
+      const validatedTeam = validateTeamName(roleName);
+      if (validatedTeam) {
+        team = validatedTeam;
+        console.log(`[FA Bids] User ${message.author.username} has team role: ${team}`);
+        break;
+      }
+    }
   }
   
-  const { teamAssignments } = await import('../drizzle/schema');
-  const teamAssignment = await db.select().from(teamAssignments).where(eq(teamAssignments.discordUserId, message.author.id));
-  
-  if (teamAssignment.length === 0) {
-  assertDb(db);
-    console.log(`[FA Bids] User ${message.author.username} (${message.author.id}) has no team assignment`);
-    await message.reply(
-      `❌ **No Team Assignment**: Your Discord account is not assigned to a team.\n\n` +
-      `💡 **Contact an admin** to get assigned to a team.`
-    );
-    return;
+  // Fallback to database if no role found
+  if (!team) {
+    const db = await getDb();
+    assertDb(db);
+    if (!db) {
+      console.log(`[FA Bids] Database not available`);
+      await message.reply(`❌ **Database Error**: Unable to process bid at this time.`);
+      return;
+    }
+    
+    const { teamAssignments } = await import('../drizzle/schema');
+    const teamAssignment = await db.select().from(teamAssignments).where(eq(teamAssignments.discordUserId, message.author.id));
+    
+    if (teamAssignment.length === 0) {
+      assertDb(db);
+      console.log(`[FA Bids] User ${message.author.username} (${message.author.id}) has no team assignment or role`);
+      await message.reply(
+        `❌ **No Team Assignment**: Your Discord account is not assigned to a team.\n\n` +
+        `💡 **Contact an admin** to get assigned to a team role.`
+      );
+      return;
+    }
+    
+    team = teamAssignment[0].team;
+    console.log(`[FA Bids] User ${message.author.username} is assigned to team (from database): ${team}`);
+    
+    // Validate team name using team-validator
+    const { validateTeamName } = await import('./team-validator');
+    const validatedTeam = validateTeamName(team);
+    
+    if (!validatedTeam) {
+      console.log(`[FA Bids] Invalid team in assignment: ${team}`);
+      await message.reply(
+        `❌ **Invalid Team Assignment**: Your team "${team}" is not valid.\n\n` +
+        `💡 **Contact an admin** to fix your team assignment.`
+      );
+      return;
+    }
+    
+    team = validatedTeam;
   }
-  
-  let team = teamAssignment[0].team;
-  console.log(`[FA Bids] User ${message.author.username} is assigned to team: ${team}`);
-  
-  // Validate team name using team-validator
-  const { validateTeamName } = await import('./team-validator');
-  const validatedTeam = validateTeamName(team);
-  
-  if (!validatedTeam) {
-    console.log(`[FA Bids] Invalid team in assignment: ${team}`);
-    await message.reply(
-      `❌ **Invalid Team Assignment**: Your team "${team}" is not valid.\n\n` +
-      `💡 **Contact an admin** to fix your team assignment.`
-    );
-    return;
-  }
-  
-  team = validatedTeam;
   
   // Validate drop player if specified (verify they're on the user's team)
   let dropPlayerValidated: { id: string; name: string; team: string; overall: number; salaryCap?: number | null } | null = null;

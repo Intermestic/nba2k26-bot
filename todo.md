@@ -571,3 +571,7 @@
 - [x] Post summary of all winning bids to Discord channel
 - [x] Process winning bids automatically after summary
 - [ ] Test FA window close flow end-to-end (scheduled for 11:50 PM EST tonight)
+
+## Discord Bot Team Detection Bug (Dec 27, 2024)
+
+- [x] Fix bot team detection - bot incorrectly identifies user as Lakers when they have Jazz role
