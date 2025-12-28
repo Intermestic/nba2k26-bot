@@ -20,6 +20,7 @@
 - [x] Fix duplicate message processing - bot processes same messages multiple times causing inflated records
 - [x] Fix game counting accuracy - ensure correct cumulative records (Raptors should be 12-0 based on valid posts)
 - [x] Fix Discord API message fetching direction (was fetching old messages instead of new ones)
+- [x] Fix Discord bot team ID mappings (Jazz: 836929618404704316, Lakers: 764123341816201217)
 
 ### !ab-reset Admin Command
 - [ ] Add !ab-reset command handler in discord-bot.ts
@@ -575,3 +576,24 @@
 ## Discord Bot Team Detection Bug (Dec 27, 2024)
 
 - [x] Fix bot team detection - bot incorrectly identifies user as Lakers when they have Jazz role
+
+## Discord Bot Refactoring (Dec 28, 2024)
+
+### Strip Bot to 7 Core Features
+- [x] Remove activity booster system (activity-booster-command.ts, activity-booster-parser.ts)
+- [x] Remove analytics tracking (analytics-tracker.ts)
+- [x] Remove badge lookup (badge-lookup-handler.ts)
+- [x] Remove FA status updates/summaries (fa-status-updates.ts, fa-window-close.ts)
+- [x] Remove reaction roles (reaction-role-handler.ts)
+- [x] Remove scheduled messages (scheduled-message-handler.ts)
+- [x] Remove team channels management (team-channel-manager.ts)
+- [x] Remove team welcome messages (team-welcome-message.ts)
+- [x] Remove welcome/goodbye handler (welcome-goodbye-handler.ts)
+- [x] Remove trade reversal system (trade-reversal-handler.ts)
+- [x] Remove upgrade system (upgrade-handler.ts, upgrade-parser.ts, upgrade-rules-validator.ts, upgrade-validator.ts)
+- [x] Remove all related commands from discord-bot.ts (!ab-records, !badge, !sync-team-channels, !regenerate-summary, !rollback, !reverse-trade)
+- [x] Remove all related event listeners (guildMemberAdd, guildMemberRemove, voiceStateUpdate)
+- [x] Remove all related initialization calls (startHourlyUpdates, scheduleWindowCloseSummaries, initializeScheduledMessages, team channel manager)
+- [x] Clean up imports and dependencies in discord-bot.ts
+- [x] Verify website/database functionality remains intact
+- [x] Test all 7 core features still work correctly (converted non-core features to stubs)

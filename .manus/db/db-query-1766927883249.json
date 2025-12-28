@@ -1,0 +1,9 @@
+{
+  "query": "UPDATE team_assignments SET team = CASE \n  WHEN discordUserId = '836929618404704316' THEN 'Jazz'\n  WHEN discordUserId = '764123341816201217' THEN 'Lakers'\nEND\nWHERE discordUserId IN ('836929618404704316', '764123341816201217')",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute UPDATE team_assignments SET team = CASE \n  WHEN discordUserId = '836929618404704316' THEN 'Jazz'\n  WHEN discordUserId = '764123341816201217' THEN 'Lakers'\nEND\nWHERE discordUserId IN ('836929618404704316', '764123341816201217')",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 1579
+}

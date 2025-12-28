@@ -1,0 +1,18 @@
+{
+  "query": "SELECT discordUserId, team FROM team_assignments WHERE discordUserId IN ('836929618404704316', '764123341816201217') ORDER BY team",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT discordUserId, team FROM team_assignments WHERE discordUserId IN ('836929618404704316', '764123341816201217') ORDER BY team",
+  "rows": [
+    {
+      "discordUserId": "836929618404704316",
+      "team": "Jazz"
+    },
+    {
+      "discordUserId": "764123341816201217",
+      "team": "Lakers"
+    }
+  ],
+  "messages": [],
+  "stdout": "discordUserId\tteam\n836929618404704316\tJazz\n764123341816201217\tLakers\n",
+  "stderr": "",
+  "execution_time_ms": 1558
+}

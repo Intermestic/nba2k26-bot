@@ -1,0 +1,80 @@
+{
+  "query": "SELECT * FROM fa_bids ORDER BY createdAt DESC LIMIT 5",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT * FROM fa_bids ORDER BY createdAt DESC LIMIT 5",
+  "rows": [
+    {
+      "id": "2970001",
+      "playerId": "P0009",
+      "playerName": "Grayson Allen",
+      "bidderDiscordId": "1032395638433919017",
+      "bidderName": "216goat",
+      "team": "Warriors",
+      "bidAmount": "1",
+      "windowId": "2025-12-28-AM",
+      "messageId": "1454737105660940454",
+      "createdAt": "2025-12-28 13:15:34",
+      "updatedAt": "2025-12-28 13:15:34",
+      "dropPlayer": "Isaiah Joe"
+    },
+    {
+      "id": "2940006",
+      "playerId": "P0374",
+      "playerName": "Terance Mann",
+      "bidderDiscordId": "790393032427700254",
+      "bidderName": "wavyy12",
+      "team": "Grizzlies",
+      "bidAmount": "1",
+      "windowId": "2025-12-28-AM",
+      "messageId": "1454700722783256597",
+      "createdAt": "2025-12-28 05:01:24",
+      "updatedAt": "2025-12-28 05:01:24",
+      "dropPlayer": "gradey dick"
+    },
+    {
+      "id": "2940005",
+      "playerId": "P0044",
+      "playerName": "Saddiq Bey",
+      "bidderDiscordId": "265682789326782465",
+      "bidderName": "rickflair_",
+      "team": "Bulls",
+      "bidAmount": "1",
+      "windowId": "2025-12-27-PM",
+      "messageId": "1454697700158214225",
+      "createdAt": "2025-12-28 04:49:23",
+      "updatedAt": "2025-12-28 04:49:23",
+      "dropPlayer": "grayson allen"
+    },
+    {
+      "id": "2940004",
+      "playerId": "player-1763566982266",
+      "playerName": "Tre Mann",
+      "bidderDiscordId": "265682789326782465",
+      "bidderName": "rickflair_",
+      "team": "Bulls",
+      "bidAmount": "1",
+      "windowId": "2025-12-27-PM",
+      "messageId": "1454693568797999188",
+      "createdAt": "2025-12-28 04:32:58",
+      "updatedAt": "2025-12-28 04:32:58",
+      "dropPlayer": "chris paul"
+    },
+    {
+      "id": "2940003",
+      "playerId": "P0048",
+      "playerName": "Bojan Bogdanovic",
+      "bidderDiscordId": "836929618404704316",
+      "bidderName": ".wooman",
+      "team": "Lakers",
+      "bidAmount": "1",
+      "windowId": "2025-12-27-PM",
+      "messageId": "1454676834988855478",
+      "createdAt": "2025-12-28 04:16:03",
+      "updatedAt": "2025-12-28 04:16:03",
+      "dropPlayer": "Svi Mykhailiuk"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tplayerId\tplayerName\tbidderDiscordId\tbidderName\tteam\tbidAmount\twindowId\tmessageId\tcreatedAt\tupdatedAt\tdropPlayer\n2970001\tP0009\tGrayson Allen\t1032395638433919017\t216goat\tWarriors\t1\t2025-12-28-AM\t1454737105660940454\t2025-12-28 13:15:34\t2025-12-28 13:15:34\tIsaiah Joe\n2940006\tP0374\tTerance Mann\t790393032427700254\twavyy12\tGrizzlies\t1\t2025-12-28-AM\t1454700722783256597\t2025-12-28 05:01:24\t2025-12-28 05:01:24\tgradey dick\n2940005\tP0044\tSaddiq Bey\t265682789326782465\trickflair_\tBulls\t1\t2025-12-27-PM\t1454697700158214225\t2025-12-28 04:49:23\t2025-12-28 04:49:23\tgrayson allen\n2940004\tplayer-1763566982266\tTre Mann\t265682789326782465\trickflair_\tBulls\t1\t2025-12-27-PM\t1454693568797999188\t2025-12-28 04:32:58\t2025-12-28 04:32:58\tchris paul\n2940003\tP0048\tBojan Bogdanovic\t836929618404704316\t.wooman\tLakers\t1\t2025-12-27-PM\t1454676834988855478\t2025-12-28 04:16:03\t2025-12-28 04:16:03\tSvi Mykhailiuk\n",
+  "stderr": "",
+  "execution_time_ms": 1497
+}

@@ -1,0 +1,262 @@
+{
+  "query": "SELECT * FROM team_assignments ORDER BY team",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT * FROM team_assignments ORDER BY team",
+  "rows": [
+    {
+      "id": "1",
+      "discordUserId": "294659496247033857",
+      "discordUsername": "NULL",
+      "team": "Bucks",
+      "assignedAt": "2025-11-15 21:28:11",
+      "assignedBy": "NULL",
+      "updatedAt": "2025-11-15 21:28:11"
+    },
+    {
+      "id": "2",
+      "discordUserId": "265682789326782465",
+      "discordUsername": "NULL",
+      "team": "Bulls",
+      "assignedAt": "2025-11-15 21:28:11",
+      "assignedBy": "NULL",
+      "updatedAt": "2025-11-15 21:28:11"
+    },
+    {
+      "id": "4",
+      "discordUserId": "560133436501917726",
+      "discordUsername": "NULL",
+      "team": "Cavaliers",
+      "assignedAt": "2025-11-15 21:28:11",
+      "assignedBy": "NULL",
+      "updatedAt": "2025-11-15 21:28:11"
+    },
+    {
+      "id": "5",
+      "discordUserId": "1090784134416322663",
+      "discordUsername": "NULL",
+      "team": "Celtics",
+      "assignedAt": "2025-11-15 21:28:11",
+      "assignedBy": "NULL",
+      "updatedAt": "2025-11-15 21:28:11"
+    },
+    {
+      "id": "30001",
+      "discordUserId": "790393032427700254",
+      "discordUsername": "Kawhiland",
+      "team": "Grizzlies",
+      "assignedAt": "2025-11-19 15:49:28",
+      "assignedBy": "NULL",
+      "updatedAt": "2025-11-19 15:49:28"
+    },
+    {
+      "id": "6",
+      "discordUserId": "651615180198903822",
+      "discordUsername": "NULL",
+      "team": "Hawks",
+      "assignedAt": "2025-11-15 21:28:11",
+      "assignedBy": "NULL",
+      "updatedAt": "2025-11-15 21:28:11"
+    },
+    {
+      "id": "7",
+      "discordUserId": "140276921685639168",
+      "discordUsername": "NULL",
+      "team": "Heat",
+      "assignedAt": "2025-11-15 21:28:11",
+      "assignedBy": "NULL",
+      "updatedAt": "2025-11-15 21:28:11"
+    },
+    {
+      "id": "90001",
+      "discordUserId": "696799539822198914",
+      "discordUsername": "getslimyy",
+      "team": "Hornets",
+      "assignedAt": "2025-12-24 23:59:46",
+      "assignedBy": "NULL",
+      "updatedAt": "2025-12-25 00:03:55"
+    },
+    {
+      "id": "11",
+      "discordUserId": "675490663348961310",
+      "discordUsername": "NULL",
+      "team": "Kings",
+      "assignedAt": "2025-11-15 21:28:11",
+      "assignedBy": "NULL",
+      "updatedAt": "2025-11-15 21:28:11"
+    },
+    {
+      "id": "12",
+      "discordUserId": "1351006163780501676",
+      "discordUsername": "NULL",
+      "team": "Knicks",
+      "assignedAt": "2025-11-15 21:28:11",
+      "assignedBy": "NULL",
+      "updatedAt": "2025-11-15 21:28:11"
+    },
+    {
+      "id": "9",
+      "discordUserId": "836929618404704316",
+      "discordUsername": "",
+      "team": "Lakers",
+      "assignedAt": "2025-11-15 21:28:11",
+      "assignedBy": "NULL",
+      "updatedAt": "2025-12-25 01:17:59"
+    },
+    {
+      "id": "13",
+      "discordUserId": "764123341816201217",
+      "discordUsername": "NULL",
+      "team": "Lakers",
+      "assignedAt": "2025-11-15 21:28:11",
+      "assignedBy": "NULL",
+      "updatedAt": "2025-11-15 21:28:11"
+    },
+    {
+      "id": "14",
+      "discordUserId": "1061989363879264326",
+      "discordUsername": "NULL",
+      "team": "Magic",
+      "assignedAt": "2025-11-15 21:28:11",
+      "assignedBy": "NULL",
+      "updatedAt": "2025-11-15 21:28:11"
+    },
+    {
+      "id": "15",
+      "discordUserId": "716585837969801317",
+      "discordUsername": "NULL",
+      "team": "Mavs",
+      "assignedAt": "2025-11-15 21:28:11",
+      "assignedBy": "NULL",
+      "updatedAt": "2025-11-15 21:28:11"
+    },
+    {
+      "id": "17",
+      "discordUserId": "992170912554168440",
+      "discordUsername": "NULL",
+      "team": "Nets",
+      "assignedAt": "2025-11-15 21:28:11",
+      "assignedBy": "NULL",
+      "updatedAt": "2025-11-15 21:28:11"
+    },
+    {
+      "id": "16",
+      "discordUserId": "459172069641289739",
+      "discordUsername": "NULL",
+      "team": "Nuggets",
+      "assignedAt": "2025-11-15 21:28:11",
+      "assignedBy": "NULL",
+      "updatedAt": "2025-11-15 21:28:11"
+    },
+    {
+      "id": "60001",
+      "discordUserId": "643544792399085568",
+      "discordUsername": "Yk",
+      "team": "Pacers",
+      "assignedAt": "2025-11-23 05:21:18",
+      "assignedBy": "NULL",
+      "updatedAt": "2025-11-23 05:21:18"
+    },
+    {
+      "id": "10",
+      "discordUserId": "609904178994872330",
+      "discordUsername": "NULL",
+      "team": "Pelicans",
+      "assignedAt": "2025-11-15 21:28:11",
+      "assignedBy": "NULL",
+      "updatedAt": "2025-11-15 21:28:11"
+    },
+    {
+      "id": "26",
+      "discordUserId": "1068828938765348904",
+      "discordUsername": "NULL",
+      "team": "Pistons",
+      "assignedAt": "2025-11-15 21:28:11",
+      "assignedBy": "NULL",
+      "updatedAt": "2025-11-15 21:28:11"
+    },
+    {
+      "id": "19",
+      "discordUserId": "683053192359182376",
+      "discordUsername": "NULL",
+      "team": "Raptors",
+      "assignedAt": "2025-11-15 21:28:11",
+      "assignedBy": "NULL",
+      "updatedAt": "2025-11-15 21:28:11"
+    },
+    {
+      "id": "20",
+      "discordUserId": "786625418396172289",
+      "discordUsername": "NULL",
+      "team": "Rockets",
+      "assignedAt": "2025-11-15 21:28:11",
+      "assignedBy": "NULL",
+      "updatedAt": "2025-11-15 21:28:11"
+    },
+    {
+      "id": "27",
+      "discordUserId": "1311886696907931728",
+      "discordUsername": "NULL",
+      "team": "Sixers",
+      "assignedAt": "2025-11-15 21:28:11",
+      "assignedBy": "NULL",
+      "updatedAt": "2025-11-15 21:28:11"
+    },
+    {
+      "id": "23",
+      "discordUserId": "327661967537864706",
+      "discordUsername": "NULL",
+      "team": "Spurs",
+      "assignedAt": "2025-11-15 21:28:11",
+      "assignedBy": "NULL",
+      "updatedAt": "2025-11-15 21:28:11"
+    },
+    {
+      "id": "3",
+      "discordUserId": "853835596123471883",
+      "discordUsername": "NULL",
+      "team": "Suns",
+      "assignedAt": "2025-11-15 21:28:11",
+      "assignedBy": "NULL",
+      "updatedAt": "2025-11-15 21:28:11"
+    },
+    {
+      "id": "21",
+      "discordUserId": "1210078581892583445",
+      "discordUsername": "NULL",
+      "team": "Timberwolves",
+      "assignedAt": "2025-11-15 21:28:11",
+      "assignedBy": "NULL",
+      "updatedAt": "2025-11-15 21:28:11"
+    },
+    {
+      "id": "22",
+      "discordUserId": "668299741158834237",
+      "discordUsername": "NULL",
+      "team": "Trail Blazers",
+      "assignedAt": "2025-11-15 21:28:11",
+      "assignedBy": "NULL",
+      "updatedAt": "2025-11-15 21:28:11"
+    },
+    {
+      "id": "24",
+      "discordUserId": "1032395638433919017",
+      "discordUsername": "NULL",
+      "team": "Warriors",
+      "assignedAt": "2025-11-15 21:28:11",
+      "assignedBy": "NULL",
+      "updatedAt": "2025-11-15 21:28:11"
+    },
+    {
+      "id": "25",
+      "discordUserId": "679275787664359435",
+      "discordUsername": "NULL",
+      "team": "Wizards",
+      "assignedAt": "2025-11-15 21:28:11",
+      "assignedBy": "NULL",
+      "updatedAt": "2025-11-15 21:28:11"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tdiscordUserId\tdiscordUsername\tteam\tassignedAt\tassignedBy\tupdatedAt\n1\t294659496247033857\tNULL\tBucks\t2025-11-15 21:28:11\tNULL\t2025-11-15 21:28:11\n2\t265682789326782465\tNULL\tBulls\t2025-11-15 21:28:11\tNULL\t2025-11-15 21:28:11\n4\t560133436501917726\tNULL\tCavaliers\t2025-11-15 21:28:11\tNULL\t2025-11-15 21:28:11\n5\t1090784134416322663\tNULL\tCeltics\t2025-11-15 21:28:11\tNULL\t2025-11-15 21:28:11\n30001\t790393032427700254\tKawhiland\tGrizzlies\t2025-11-19 15:49:28\tNULL\t2025-11-19 15:49:28\n6\t651615180198903822\tNULL\tHawks\t2025-11-15 21:28:11\tNULL\t2025-11-15 21:28:11\n7\t140276921685639168\tNULL\tHeat\t2025-11-15 21:28:11\tNULL\t2025-11-15 21:28:11\n90001\t696799539822198914\tgetslimyy\tHornets\t2025-12-24 23:59:46\tNULL\t2025-12-25 00:03:55\n11\t675490663348961310\tNULL\tKings\t2025-11-15 21:28:11\tNULL\t2025-11-15 21:28:11\n12\t1351006163780501676\tNULL\tKnicks\t2025-11-15 21:28:11\tNULL\t2025-11-15 21:28:11\n9\t836929618404704316\t\tLakers\t2025-11-15 21:28:11\tNULL\t2025-12-25 01:17:59\n13\t764123341816201217\tNULL\tLakers\t2025-11-15 21:28:11\tNULL\t2025-11-15 21:28:11\n14\t1061989363879264326\tNULL\tMagic\t2025-11-15 21:28:11\tNULL\t2025-11-15 21:28:11\n15\t716585837969801317\tNULL\tMavs\t2025-11-15 21:28:11\tNULL\t2025-11-15 21:28:11\n17\t992170912554168440\tNULL\tNets\t2025-11-15 21:28:11\tNULL\t2025-11-15 21:28:11\n16\t459172069641289739\tNULL\tNuggets\t2025-11-15 21:28:11\tNULL\t2025-11-15 21:28:11\n60001\t643544792399085568\tYk\tPacers\t2025-11-23 05:21:18\tNULL\t2025-11-23 05:21:18\n10\t609904178994872330\tNULL\tPelicans\t2025-11-15 21:28:11\tNULL\t2025-11-15 21:28:11\n26\t1068828938765348904\tNULL\tPistons\t2025-11-15 21:28:11\tNULL\t2025-11-15 21:28:11\n19\t683053192359182376\tNULL\tRaptors\t2025-11-15 21:28:11\tNULL\t2025-11-15 21:28:11\n20\t786625418396172289\tNULL\tRockets\t2025-11-15 21:28:11\tNULL\t2025-11-15 21:28:11\n27\t1311886696907931728\tNULL\tSixers\t2025-11-15 21:28:11\tNULL\t2025-11-15 21:28:11\n23\t327661967537864706\tNULL\tSpurs\t2025-11-15 21:28:11\tNULL\t2025-11-15 21:28:11\n3\t853835596123471883\tNULL\tSuns\t2025-11-15 21:28:11\tNULL\t2025-11-15 21:28:11\n21\t1210078581892583445\tNULL\tTimberwolves\t2025-11-15 21:28:11\tNULL\t2025-11-15 21:28:11\n22\t668299741158834237\tNULL\tTrail Blazers\t2025-11-15 21:28:11\tNULL\t2025-11-15 21:28:11\n24\t1032395638433919017\tNULL\tWarriors\t2025-11-15 21:28:11\tNULL\t2025-11-15 21:28:11\n25\t679275787664359435\tNULL\tWizards\t2025-11-15 21:28:11\tNULL\t2025-11-15 21:28:11\n",
+  "stderr": "",
+  "execution_time_ms": 1508
+}
