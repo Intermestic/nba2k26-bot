@@ -14,6 +14,9 @@ import CapCompliance from "./pages/CapCompliance";
 import PlayerAliases from "./pages/admin/PlayerAliases";
 import TeamAssignments from "./pages/admin/TeamAssignments";
 import FAManagement from "./pages/admin/FAManagement";
+import FACoins from "./pages/admin/FACoins";
+import FAHistory from "./pages/admin/FAHistory";
+import FASummary from "./pages/admin/FASummary";
 import AdminDashboard from "./pages/AdminDashboard";
 import TradeManagement from "./pages/TradeManagement";
 import TradeMachine from "./pages/TradeMachine";
@@ -43,6 +46,9 @@ function Router() {
 
       <Route path={"/admin/cap-compliance"} component={CapCompliance} />
       <Route path={"/admin/fa-management"} component={FAManagement} />
+      <Route path={"/admin/coins"} component={FACoins} />
+      <Route path={"/admin/fa-history"} component={FAHistory} />
+      <Route path={"/admin/fa-summary"} component={FASummary} />
       <Route path={"/admin/player-aliases"} component={PlayerAliases} />
       <Route path={"/admin/teams"} component={TeamAssignments} />
       <Route path={"/admin/team-assignments"} component={TeamAssignments} />

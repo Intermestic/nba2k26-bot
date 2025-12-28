@@ -597,3 +597,11 @@
 - [x] Clean up imports and dependencies in discord-bot.ts
 - [x] Verify website/database functionality remains intact
 - [x] Test all 7 core features still work correctly (converted non-core features to stubs)
+
+## FA Admin Page Consolidation (Dec 28, 2024)
+
+- [x] Fix 404 errors for FA Coins (/admin/coins), FA History (/admin/fa-history), and FA Window Summary (/admin/fa-summary)
+- [x] Create consolidated FA management pages or redirect to existing FAManagement page
+- [x] Update AdminDashboard.tsx routes to point to correct working pages
+- [x] Remove redundant FA pages if they duplicate existing functionality
+- [x] Test all three FA admin links work correctly from Admin Dashboard
