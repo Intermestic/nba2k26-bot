@@ -1168,7 +1168,9 @@ async function refreshBotInstanceLock(): Promise<void> {
         if (lockRefreshFailures >= MAX_LOCK_REFRESH_FAILURES) {
           console.error('[Discord Bot] Lock ownership lost - triggering restart');
           await releaseBotInstanceLock();
-          process.exit(1);
+          stopLockRefresh();
+          // Throw error to be caught by lock refresh wrapper
+          throw new Error('Lock ownership lost after multiple refresh failures');
         }
       }
       return;
@@ -1217,11 +1219,30 @@ async function refreshBotInstanceLock(): Promise<void> {
 
 // Periodically refresh the lock to prevent expiry while bot is running
 let lockRefreshInterval: NodeJS.Timeout | null = null;
+let lockRefreshFailureCount = 0;
+const MAX_LOCK_REFRESH_FAILURES_BEFORE_EXIT = 3;
 
 function startLockRefresh(): void {
   // Refresh lock every 30 seconds (half of the 60s expiry)
   lockRefreshInterval = setInterval(async () => {
-    await refreshBotInstanceLock();
+    try {
+      await refreshBotInstanceLock();
+      // Reset failure count on successful refresh
+      if (lockRefreshFailureCount > 0) {
+        lockRefreshFailureCount = 0;
+      }
+    } catch (error) {
+      lockRefreshFailureCount++;
+      console.error(`[Discord Bot] Lock refresh error (${lockRefreshFailureCount}/${MAX_LOCK_REFRESH_FAILURES_BEFORE_EXIT}):`, error);
+      
+      // Exit after too many consecutive failures to let PM2 restart
+      if (lockRefreshFailureCount >= MAX_LOCK_REFRESH_FAILURES_BEFORE_EXIT) {
+        console.error('[Discord Bot] Too many lock refresh failures - exiting for PM2 restart');
+        stopLockRefresh();
+        // Emit critical failure event
+        process.emit('botCriticalFailure', new Error('Lock refresh failed'));
+      }
+    }
   }, 30000);
 }
 
@@ -1230,6 +1251,7 @@ function stopLockRefresh(): void {
     clearInterval(lockRefreshInterval);
     lockRefreshInterval = null;
   }
+  lockRefreshFailureCount = 0;
 }
 
 /**

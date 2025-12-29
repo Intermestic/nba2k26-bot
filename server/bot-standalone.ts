@@ -138,63 +138,48 @@ async function main() {
   });
 
   // Keep process alive
+  let isShuttingDown = false;
+  
   process.on('SIGINT', async () => {
+    if (isShuttingDown) return;
+    isShuttingDown = true;
     console.log('[Bot Standalone] Received SIGINT, shutting down...');
     await stopDiscordBot();
     process.exit(0);
   });
 
   process.on('SIGTERM', async () => {
+    if (isShuttingDown) return;
+    isShuttingDown = true;
     console.log('[Bot Standalone] Received SIGTERM, shutting down...');
     await stopDiscordBot();
     process.exit(0);
   });
   
-  // Track restart attempts to prevent infinite restart loops
-  let crashCount = 0;
-  const maxCrashes = 5;
-  const crashResetInterval = 5 * 60 * 1000; // Reset crash count after 5 minutes
-  let lastCrashTime = 0;
-  
-  async function handleCrash(error: any, source: string) {
-    console.error(`[Bot Standalone] ${source}:`, error);
-    
-    const now = Date.now();
-    if (now - lastCrashTime > crashResetInterval) {
-      crashCount = 0; // Reset if it's been a while since last crash
-    }
-    lastCrashTime = now;
-    crashCount++;
-    
-    if (crashCount >= maxCrashes) {
-      console.error(`[Bot Standalone] Too many crashes (${crashCount}), giving up`);
-      await stopDiscordBot();
-      process.exit(1);
-    }
-    
-    console.log(`[Bot Standalone] Crash ${crashCount}/${maxCrashes}, attempting restart in 5 seconds...`);
+  // Handle critical bot failures that require immediate exit
+  process.on('botCriticalFailure', async (error: any) => {
+    if (isShuttingDown) return;
+    isShuttingDown = true;
+    console.error('[Bot Standalone] Critical bot failure detected:', error);
     await stopDiscordBot();
-    
-    // Wait before restarting
-    await new Promise(resolve => setTimeout(resolve, 5000));
-    
-    try {
-      console.log('[Bot Standalone] Restarting bot after crash...');
-      await startDiscordBot(process.env.DISCORD_BOT_TOKEN!);
-      console.log('[Bot Standalone] Bot restarted successfully after crash');
-      crashCount = 0; // Reset on successful restart
-    } catch (restartError) {
-      console.error('[Bot Standalone] Failed to restart after crash:', restartError);
-      process.exit(1);
-    }
-  }
+    // Exit with code 1 so PM2 will restart
+    process.exit(1);
+  });
   
   process.on('uncaughtException', async (error) => {
-    await handleCrash(error, 'Uncaught exception');
+    if (isShuttingDown) return;
+    isShuttingDown = true;
+    console.error('[Bot Standalone] Uncaught exception:', error);
+    await stopDiscordBot();
+    process.exit(1);
   });
   
   process.on('unhandledRejection', async (reason, promise) => {
-    await handleCrash(reason, 'Unhandled rejection');
+    if (isShuttingDown) return;
+    isShuttingDown = true;
+    console.error('[Bot Standalone] Unhandled rejection:', reason);
+    await stopDiscordBot();
+    process.exit(1);
   });
 }
 
