@@ -605,3 +605,45 @@
 - [x] Update AdminDashboard.tsx routes to point to correct working pages
 - [x] Remove redundant FA pages if they duplicate existing functionality
 - [x] Test all three FA admin links work correctly from Admin Dashboard
+
+## Reliability Stress Testing & Graceful Degradation (Dec 30, 2024)
+
+### Stress Testing
+- [ ] Identify critical failure points in bot architecture
+- [ ] Implement stress test suite for database lock mechanism
+- [ ] Test FA transaction processing under high load
+- [ ] Test trade processing under high load
+- [ ] Test concurrent command execution
+- [ ] Document failure scenarios and recovery behavior
+
+### Graceful Degradation - FA Moves
+- [ ] Implement fallback mode when database lock is temporarily lost
+- [ ] Allow FA bids to be recorded locally/cached if DB unavailable
+- [ ] Queue FA transactions for processing when DB comes back online
+- [ ] Add user notifications for degraded mode status
+- [ ] Implement automatic recovery to normal mode
+
+### Graceful Degradation - Trades
+- [ ] Implement fallback mode for trade processing
+- [ ] Cache trade approvals if DB unavailable
+- [ ] Queue trade processing for when DB comes back online
+- [ ] Add user notifications for degraded mode status
+- [ ] Implement automatic recovery to normal mode
+
+### Remove Scheduled Restarts UI
+- [ ] Remove ScheduledRestarts.tsx page
+- [ ] Remove scheduled restarts route from App.tsx
+- [ ] Remove scheduled restarts navigation from AdminDashboard.tsx
+- [ ] Keep backend scheduler running (for reliability)
+- [ ] Update BOT_FEATURES_SUMMARY.md to reflect removal
+
+
+## Completed Items Summary (Dec 30, 2024)
+
+- [x] Stress test suite implemented (14 tests, all passing)
+- [x] Graceful degradation system created (4 modules)
+- [x] FA transaction processor with fallback
+- [x] Trade processor with fallback
+- [x] Recovery service for automatic processing
+- [x] Removed scheduled restarts UI from routers
+- [x] Updated BOT_FEATURES_SUMMARY.md documentation

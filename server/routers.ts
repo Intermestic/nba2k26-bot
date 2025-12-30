@@ -24,7 +24,7 @@ import { tradeLogRouter } from "./routers/tradeLog";
 import { csvExportRouter } from "./routes/csvExport";
 import { botControlRouter } from "./routers/botControl";
 import { botLogsRouter } from "./routers/botLogs";
-import { scheduledRestartsRouter } from "./routers/scheduledRestarts";
+
 import { healthAlertsRouter } from "./routers/healthAlerts";
 import { botActivityRouter } from "./routers/botActivity";
 import { upgradeLogRouter } from "./routers/upgradeLog";
@@ -117,8 +117,6 @@ export const appRouter = router({
   // Bot activity logs
   botLogs: botLogsRouter,
   
-  // Scheduled bot restarts
-  scheduledRestarts: scheduledRestartsRouter,
   
   // Bot health alerts and monitoring
   healthAlerts: healthAlertsRouter,
