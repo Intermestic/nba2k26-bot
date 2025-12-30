@@ -122,8 +122,9 @@ export function parseTrade(message: string): ParsedTrade | null {
   
   // Strategy 1: "Team send: Player OVR (badges) ..." format (multi-line)
   // Updated to handle cases where team name appears without "send" keyword
+  // Also handles variations: "Team Send:", "Team Sends:", "**Team Sends:**", etc.
   const sendPattern = new RegExp(
-    `${team1Raw}\\s+send[s]?[:\\s]+([^]+?)(?:for|${team2Raw})`,
+    `\\*?\\*?${team1Raw}\\s+send[s]?\\*?\\*?[:\\s]+([^]+?)(?:for|${team2Raw})`,
     'is'
   );
   const sendMatch = text.match(sendPattern);
@@ -131,7 +132,7 @@ export function parseTrade(message: string): ParsedTrade | null {
   if (sendMatch) {
     // Also extract team2's players - try with "send" first
     let team2Pattern = new RegExp(
-      `${team2Raw}\\s+send[s]?[:\\s]+([^]+?)(?:$|\\n\\n)`,
+      `\\*?\\*?${team2Raw}\\s+send[s]?\\*?\\*?[:\\s]+([^]+?)(?:$|\\n\\n)`,
       'is'
     );
     let team2Match = text.match(team2Pattern);
@@ -268,6 +269,12 @@ function parsePlayerListWithOVR(text: string): string[] {
     // Skip Discord mentions (format: <@userID> or <@>)
     if (/<@!?\d*>/.test(line.trim())) {
       console.log('[Trade Parser] Skipping Discord mention:', line);
+      continue;
+    }
+    
+    // Skip lines that are just asterisks (markdown formatting)
+    if (/^\*+$/.test(line.trim())) {
+      console.log('[Trade Parser] Skipping asterisk line:', line);
       continue;
     }
     
