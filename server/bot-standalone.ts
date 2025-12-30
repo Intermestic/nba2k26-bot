@@ -9,6 +9,7 @@ import { startDiscordBot, stopDiscordBot, getDiscordClient } from "./discord-bot
 import express from 'express';
 import { getDb } from "./db";
 import { tradeLogs } from "../drizzle/schema";
+import { getBotHealthStatus } from "./bot-health-monitor";
 
 const TRADE_CHANNEL_ID = "1336156955722645535";
 
@@ -41,6 +42,20 @@ async function main() {
       botReady: client?.isReady() || false,
       botUsername: client?.user?.tag || null
     });
+  });
+  
+  // Enhanced health status endpoint
+  app.get('/health/detailed', async (req, res) => {
+    try {
+      const health = await getBotHealthStatus();
+      const statusCode = health.status === 'healthy' ? 200 : 503;
+      res.status(statusCode).json(health);
+    } catch (error) {
+      res.status(500).json({
+        status: 'offline',
+        error: (error as any)?.message || 'Unknown error'
+      });
+    }
   });
   
   // Post trade to Discord endpoint

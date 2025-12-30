@@ -1036,11 +1036,12 @@ async function releaseBotInstanceLock(): Promise<void> {
   }
 }
 
-// Track consecutive lock refresh failures
+// Track consecutive lock refresh failures with exponential backoff
 let lockRefreshFailures = 0;
-const MAX_LOCK_REFRESH_FAILURES = 200; // Maximum tolerance for slow/unstable DB connections (increased)
+const MAX_LOCK_REFRESH_FAILURES = 50; // Reduced from 200 for faster detection
 let consecutiveZeroRows = 0; // Track consecutive 0 affected rows separately
-const MAX_ZERO_ROWS_BEFORE_EXIT = 50; // Increased tolerance - don't exit on transient issues
+const MAX_ZERO_ROWS_BEFORE_EXIT = 10; // Reduced from 50 for faster failure detection
+let lockRefreshBackoffMultiplier = 1; // Exponential backoff multiplier
 
 /**
  * Refresh the bot instance lock to extend expiry
@@ -1058,11 +1059,11 @@ async function refreshBotInstanceLock(): Promise<void> {
       return;
     }
     
-    const expiresAt = new Date(Date.now() + 60000); // 60 second lock
+    const expiresAt = new Date(Date.now() + 120000); // 120 second lock (doubled for stability)
     
-    // Add timeout to database query to prevent hanging (increased to 30s for very slow connections)
+    // Add timeout to database query to prevent hanging
     const timeoutPromise = new Promise((_, reject) => 
-      setTimeout(() => reject(new Error('Lock refresh query timeout')), 30000)
+      setTimeout(() => reject(new Error('Lock refresh query timeout')), 15000)
     );
     
     const queryPromise = db.execute(sql`
@@ -1091,7 +1092,7 @@ async function refreshBotInstanceLock(): Promise<void> {
           if (rows.length === 0) {
             console.warn(`[Discord Bot] Lock record missing! Attempting to recreate for instance ${INSTANCE_ID}`);
             try {
-              const expiryTimestamp = Math.floor((Date.now() + 60000) / 1000);
+              const expiryTimestamp = Math.floor((Date.now() + 120000) / 1000); // Match 120s lock
               await db.execute(sql`
                 INSERT INTO bot_instance_lock (id, instanceId, expiresAt)
                 VALUES (1, ${INSTANCE_ID}, FROM_UNIXTIME(${expiryTimestamp}))
@@ -1133,7 +1134,7 @@ async function refreshBotInstanceLock(): Promise<void> {
             if (lockExpiry < new Date()) {
               console.warn(`[Discord Bot] Detected expired lock from instance ${rows[0].instanceId}, attempting takeover`);
               try {
-                const expiryTimestamp = Math.floor((Date.now() + 60000) / 1000);
+                const expiryTimestamp = Math.floor((Date.now() + 120000) / 1000); // Match 120s lock
                 await db.execute(sql`
                   UPDATE bot_instance_lock
                   SET instanceId = ${INSTANCE_ID}, expiresAt = FROM_UNIXTIME(${expiryTimestamp}), lockedAt = NOW()
@@ -1182,6 +1183,7 @@ async function refreshBotInstanceLock(): Promise<void> {
     }
     lockRefreshFailures = 0;
     consecutiveZeroRows = 0;
+    lockRefreshBackoffMultiplier = 1; // Reset backoff on success
   } catch (error: any) {
     // Ignore ECONNRESET and other transient network errors - they're expected with unstable connections
     const isTransientError = 
@@ -1223,35 +1225,51 @@ let lockRefreshFailureCount = 0;
 const MAX_LOCK_REFRESH_FAILURES_BEFORE_EXIT = 3;
 
 function startLockRefresh(): void {
-  // Refresh lock every 30 seconds (half of the 60s expiry)
-  lockRefreshInterval = setInterval(async () => {
-    try {
-      await refreshBotInstanceLock();
-      // Reset failure count on successful refresh
-      if (lockRefreshFailureCount > 0) {
-        lockRefreshFailureCount = 0;
+  // Refresh lock every 20 seconds (1/6th of the 120s expiry) with exponential backoff on failure
+  let nextRefreshDelay = 20000; // Start with 20 seconds
+  
+  const scheduleNextRefresh = () => {
+    lockRefreshInterval = setTimeout(async () => {
+      try {
+        await refreshBotInstanceLock();
+        // Reset failure count and backoff on successful refresh
+        if (lockRefreshFailureCount > 0) {
+          lockRefreshFailureCount = 0;
+          nextRefreshDelay = 20000; // Reset to base interval
+          console.log('[Discord Bot] Lock refresh backoff reset to normal interval');
+        }
+        scheduleNextRefresh();
+      } catch (error) {
+        lockRefreshFailureCount++;
+        console.error(`[Discord Bot] Lock refresh error (${lockRefreshFailureCount}/${MAX_LOCK_REFRESH_FAILURES_BEFORE_EXIT}):`, error);
+        
+        // Apply exponential backoff: 20s -> 40s -> 80s
+        nextRefreshDelay = Math.min(20000 * Math.pow(2, lockRefreshFailureCount - 1), 80000);
+        console.log(`[Discord Bot] Applying exponential backoff: next refresh in ${nextRefreshDelay}ms`);
+        
+        // Exit after too many consecutive failures to let PM2 restart
+        if (lockRefreshFailureCount >= MAX_LOCK_REFRESH_FAILURES_BEFORE_EXIT) {
+          console.error('[Discord Bot] Too many lock refresh failures - exiting for PM2 restart');
+          stopLockRefresh();
+          // Emit critical failure event
+          process.emit('botCriticalFailure', new Error('Lock refresh failed'));
+        } else {
+          scheduleNextRefresh();
+        }
       }
-    } catch (error) {
-      lockRefreshFailureCount++;
-      console.error(`[Discord Bot] Lock refresh error (${lockRefreshFailureCount}/${MAX_LOCK_REFRESH_FAILURES_BEFORE_EXIT}):`, error);
-      
-      // Exit after too many consecutive failures to let PM2 restart
-      if (lockRefreshFailureCount >= MAX_LOCK_REFRESH_FAILURES_BEFORE_EXIT) {
-        console.error('[Discord Bot] Too many lock refresh failures - exiting for PM2 restart');
-        stopLockRefresh();
-        // Emit critical failure event
-        process.emit('botCriticalFailure', new Error('Lock refresh failed'));
-      }
-    }
-  }, 30000);
+    }, nextRefreshDelay);
+  };
+  
+  scheduleNextRefresh();
 }
 
 function stopLockRefresh(): void {
   if (lockRefreshInterval) {
-    clearInterval(lockRefreshInterval);
+    clearTimeout(lockRefreshInterval as any);
     lockRefreshInterval = null;
   }
   lockRefreshFailureCount = 0;
+  lockRefreshBackoffMultiplier = 1;
 }
 
 /**
