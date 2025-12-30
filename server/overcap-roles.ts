@@ -149,8 +149,29 @@ export async function updateOvercapRoles(client: Client): Promise<void> {
         } else {
           console.log(`[Overcap Roles] No change needed for ${teamName} (${totalOVR} OVR, overcap: ${isOvercap})`);
         }
-      } catch (error) {
-        console.error(`[Overcap Roles] Error updating role for ${teamName}:`, error);
+      } catch (error: any) {
+        const errorCode = error?.code || error?.status;
+        const errorMsg = error?.message || String(error);
+        
+        // 10007 = Unknown Member (user left server) - skip silently
+        if (errorCode === 10007 || errorMsg.includes('Unknown Member')) {
+          continue;
+        }
+        
+        // 50013 = Missing Permissions - log but don't crash
+        if (errorCode === 50013 || errorMsg.includes('Missing Permissions')) {
+          console.warn(`[Overcap Roles] Missing permissions to manage roles for ${teamName}`);
+          continue;
+        }
+        
+        // Network/timeout errors - log but continue
+        if (errorMsg.includes('timeout') || errorMsg.includes('ETIMEDOUT') || errorMsg.includes('ECONNRESET')) {
+          console.warn(`[Overcap Roles] Network error updating role for ${teamName}, will retry next cycle`);
+          continue;
+        }
+        
+        // All other errors - log and continue
+        console.error(`[Overcap Roles] Error updating role for ${teamName}:`, { code: errorCode, message: errorMsg });
       }
     }
     

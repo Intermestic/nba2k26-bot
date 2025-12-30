@@ -1,0 +1,16 @@
+{
+  "query": "SELECT id, instanceId, expiresAt, lockedAt FROM bot_instance_lock WHERE id = 1;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute SELECT id, instanceId, expiresAt, lockedAt FROM bot_instance_lock WHERE id = 1;",
+  "rows": [
+    {
+      "id": "1",
+      "instanceId": "sye14b",
+      "expiresAt": "2025-12-30 15:36:07",
+      "lockedAt": "2025-12-30 20:35:08"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tinstanceId\texpiresAt\tlockedAt\n1\tsye14b\t2025-12-30 15:36:07\t2025-12-30 20:35:08\n",
+  "stderr": "",
+  "execution_time_ms": 1517
+}

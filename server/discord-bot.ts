@@ -983,6 +983,7 @@ async function acquireBotInstanceLock(): Promise<boolean> {
     }
     
     const expiresAt = new Date(Date.now() + 60000); // 60 second lock
+    const expiryTimestamp = Math.floor(expiresAt.getTime() / 1000);
     
     // Step 1: Try to delete any expired locks
     await db.execute(sql`
@@ -994,7 +995,7 @@ async function acquireBotInstanceLock(): Promise<boolean> {
     try {
       await db.execute(sql`
         INSERT INTO bot_instance_lock (id, instanceId, expiresAt)
-        VALUES (1, ${INSTANCE_ID}, ${expiresAt})
+        VALUES (1, ${INSTANCE_ID}, FROM_UNIXTIME(${expiryTimestamp}))
       `);
       console.log(`[Discord Bot] Instance ${INSTANCE_ID} acquired singleton lock`);
       return true;
@@ -1003,7 +1004,7 @@ async function acquireBotInstanceLock(): Promise<boolean> {
       if (insertError.code === 'ER_DUP_ENTRY' || insertError.errno === 1062) {
         // Check who owns it
         const existing = await db.execute(sql`SELECT instanceId, expiresAt FROM bot_instance_lock WHERE id = 1`);
-        const rows = (existing as any).rows || [];
+        const rows = Array.isArray(existing) ? (existing[1] || []) : (existing as any).rows || [];
         
         if (rows.length > 0) {
           const lockExpiry = new Date(rows[0].expiresAt);
@@ -1054,41 +1055,38 @@ async function refreshBotInstanceLock(): Promise<void> {
       console.error(`[Discord Bot] Database not available for lock refresh (failure ${lockRefreshFailures}/${MAX_LOCK_REFRESH_FAILURES})`);
       if (lockRefreshFailures >= MAX_LOCK_REFRESH_FAILURES) {
         console.error('[Discord Bot] Too many lock refresh failures - triggering restart');
-        process.exit(1); // Exit to trigger auto-restart
+        process.exit(1);
       }
       return;
     }
     
-    const expiresAt = new Date(Date.now() + 60000); // 60 second lock
+    const expiresAt = new Date(Date.now() + 60000);
+    const expiryTimestamp = Math.floor(expiresAt.getTime() / 1000);
     
-    // Add timeout to database query to prevent hanging (increased to 30s for very slow connections)
     const timeoutPromise = new Promise((_, reject) => 
       setTimeout(() => reject(new Error('Lock refresh query timeout')), 30000)
     );
     
     const queryPromise = db.execute(sql`
       UPDATE bot_instance_lock
-      SET expiresAt = ${expiresAt}, lockedAt = NOW()
+      SET expiresAt = FROM_UNIXTIME(${expiryTimestamp}), lockedAt = NOW()
       WHERE id = 1 AND instanceId = ${INSTANCE_ID}
     `);
     
     const result = await Promise.race([queryPromise, timeoutPromise]);
+    const resultHeader = Array.isArray(result) ? result[0] : result;
+    const affectedRows = (resultHeader as any)?.affectedRows || 0;
     
-    // Verify we still own the lock
-    const affectedRows = (result as any).rowsAffected || 0;
     if (affectedRows === 0) {
       consecutiveZeroRows++;
-      
-      // Only log occasionally to avoid spam
       if (consecutiveZeroRows % 10 === 1 || consecutiveZeroRows <= 3) {
         console.warn(`[Discord Bot] Lock refresh returned 0 affected rows (${consecutiveZeroRows}/${MAX_ZERO_ROWS_BEFORE_EXIT})`);
       }
       
-      // Try to recreate lock if missing, but don't spam the database
       if (consecutiveZeroRows % 5 === 1) {
         try {
           const checkResult = await db.execute(sql`SELECT instanceId, expiresAt FROM bot_instance_lock WHERE id = 1`);
-          const rows = (checkResult as any).rows || [];
+          const rows = Array.isArray(checkResult) ? (checkResult[1] || []) : (checkResult as any).rows || [];
           if (rows.length === 0) {
             console.warn(`[Discord Bot] Lock record missing! Attempting to recreate for instance ${INSTANCE_ID}`);
             try {
@@ -1109,7 +1107,6 @@ async function refreshBotInstanceLock(): Promise<void> {
                 recreateError?.message?.includes('Duplicate entry');
               
               if (isDuplicateEntry) {
-                // Lock exists now, try to take ownership
                 try {
                   await db.execute(sql`
                     UPDATE bot_instance_lock
@@ -1121,7 +1118,6 @@ async function refreshBotInstanceLock(): Promise<void> {
                   lockRefreshFailures = 0;
                   return;
                 } catch (updateError) {
-                  // Another instance owns it, that's OK - we'll keep trying
                   if (consecutiveZeroRows % 10 === 1) {
                     console.log(`[Discord Bot] Another instance owns the lock, continuing to monitor`);
                   }
@@ -1129,7 +1125,6 @@ async function refreshBotInstanceLock(): Promise<void> {
               }
             }
           } else if (rows[0].instanceId !== INSTANCE_ID) {
-            // Check if the other instance's lock is expired
             const lockExpiry = new Date(rows[0].expiresAt);
             if (lockExpiry < new Date()) {
               console.warn(`[Discord Bot] Detected expired lock from instance ${rows[0].instanceId}, attempting takeover`);
@@ -1156,14 +1151,10 @@ async function refreshBotInstanceLock(): Promise<void> {
         }
       }
       
-      // Only exit if we've had many consecutive 0-row results
-      // This prevents crashes from transient database issues
       if (consecutiveZeroRows >= MAX_ZERO_ROWS_BEFORE_EXIT) {
         console.error('[Discord Bot] Too many consecutive 0-row lock refreshes - lock may be lost');
         lockRefreshFailures++;
         console.log(`[Discord Bot] Lock refresh failure count: ${lockRefreshFailures}/${MAX_LOCK_REFRESH_FAILURES}`);
-        
-        // Reset consecutiveZeroRows after counting as a failure
         consecutiveZeroRows = 0;
         
         if (lockRefreshFailures >= MAX_LOCK_REFRESH_FAILURES) {
@@ -1175,42 +1166,57 @@ async function refreshBotInstanceLock(): Promise<void> {
       return;
     }
     
-    // Reset failure counters on success
     if (lockRefreshFailures > 0 || consecutiveZeroRows > 0) {
       console.log(`[Discord Bot] Lock refresh recovered (failures: ${lockRefreshFailures}, zero-rows: ${consecutiveZeroRows})`);
     }
     lockRefreshFailures = 0;
     consecutiveZeroRows = 0;
   } catch (error: any) {
-    // Ignore ECONNRESET and other transient network errors - they're expected with unstable connections
-    const isTransientError = 
+    const errorMsg = error?.message || String(error);
+    const errorCode = error?.code || error?.errno;
+    
+    const isNetworkError = 
       error?.code === 'ECONNRESET' || 
       error?.cause?.code === 'ECONNRESET' ||
-      error?.message?.includes('ECONNRESET') ||
-      error?.message?.includes('timeout') ||
-      error?.message?.includes('ETIMEDOUT');
+      errorMsg.includes('ECONNRESET') ||
+      errorMsg.includes('ETIMEDOUT') ||
+      errorMsg.includes('EHOSTUNREACH') ||
+      errorMsg.includes('ECONNREFUSED');
     
-    if (isTransientError) {
-      // Don't count transient errors against failure threshold
+    const isQueryError = 
+      errorMsg.includes('Failed query') ||
+      errorMsg.includes('SQL Error') ||
+      errorMsg.includes('ER_');
+    
+    if (isNetworkError && !isQueryError) {
       if (lockRefreshFailures % 20 === 0) {
-        console.warn(`[Discord Bot] Transient lock refresh error (not counted): ${error?.message || error}`);
+        console.warn(`[Discord Bot] Transient network error (not counted): ${errorMsg}`);
       }
       return;
     }
     
     lockRefreshFailures++;
-    console.error(`[Discord Bot] Error refreshing lock (failure ${lockRefreshFailures}/${MAX_LOCK_REFRESH_FAILURES}):`, error?.message || error);  
-    // Reset database connection on connection errors to allow reconnection
-    if (error?.cause?.code === 'ECONNRESET' || error?.message?.includes('ECONNRESET')) {
+    console.error(`[Discord Bot] Error refreshing lock (failure ${lockRefreshFailures}/${MAX_LOCK_REFRESH_FAILURES}):`, {
+      message: errorMsg,
+      code: errorCode,
+      isQueryError
+    });  
+    
+    if (isNetworkError) {
       console.log('[Discord Bot] Database connection lost, resetting connection pool...');
       const { resetDbConnection } = await import('./db.js');
       resetDbConnection();
     }
     
-    // Exit if too many failures
+    const backoffDelay = Math.min(5000, 100 * lockRefreshFailures);
+    if (backoffDelay > 100) {
+      console.log(`[Discord Bot] Waiting ${backoffDelay}ms before next lock refresh attempt...`);
+      await new Promise(resolve => setTimeout(resolve, backoffDelay));
+    }
+    
     if (lockRefreshFailures >= MAX_LOCK_REFRESH_FAILURES) {
       console.error('[Discord Bot] Too many consecutive lock refresh failures - triggering restart');
-      await releaseBotInstanceLock(); // Try to release lock before exit
+      await releaseBotInstanceLock();
       process.exit(1);
     }
   }
