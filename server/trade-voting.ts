@@ -444,6 +444,39 @@ async function processVoteResult(
               const { processTradeFromDatabase } = await import('./trade-approval-handler');
               await processTradeFromDatabase(message, existingTrade[0]);
               console.log('[Trade Voting] Trade processed successfully');
+              
+              // Post detailed trade summary
+              try {
+                const summaryEmbed = new EmbedBuilder()
+                  .setTitle('📊 Trade Summary')
+                  .setDescription(`Trade has been **successfully processed**`)
+                  .setColor(0x00aa00) // Green
+                  .setTimestamp();
+                
+                // Add team1 players
+                const team1PlayersList = team1Players
+                  .map((p: any) => `• **${p.name}** (${p.overall} OVR, ${p.salary} cap)`)
+                  .join('\n');
+                summaryEmbed.addFields({
+                  name: `${existingTrade[0].team1} → ${existingTrade[0].team2}`,
+                  value: team1PlayersList || 'No players',
+                  inline: false
+                });
+                
+                // Add team2 players
+                const team2PlayersList = team2Players
+                  .map((p: any) => `• **${p.name}** (${p.overall} OVR, ${p.salary} cap)`)
+                  .join('\n');
+                summaryEmbed.addFields({
+                  name: `${existingTrade[0].team2} → ${existingTrade[0].team1}`,
+                  value: team2PlayersList || 'No players',
+                  inline: false
+                });
+                
+                await message.reply({ embeds: [summaryEmbed] });
+              } catch (summaryError) {
+                console.error('[Trade Voting] Failed to post trade summary:', summaryError);
+              }
             } else {
               console.error(`[Trade Voting] Trade ${message.id} has empty player data, cannot process`);
               await message.reply('⚠️ **Warning:** Trade was approved but has no player data. Cannot auto-process.');

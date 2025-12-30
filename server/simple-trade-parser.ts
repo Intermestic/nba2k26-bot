@@ -5,8 +5,8 @@ import { extract } from 'fuzzball';
 import { eq } from 'drizzle-orm';
 
 /**
- * Simple, format-agnostic trade parser
- * Uses fuzzy matching to identify teams and players regardless of format
+ * Improved trade parser that uses robust pattern matching
+ * Handles various trade formats reliably
  */
 
 const NBA_TEAMS = [
@@ -38,47 +38,90 @@ function normalizeTeamName(team: string): string {
 }
 
 /**
- * Extract all potential player names from text
- * Looks for capitalized words that could be names
+ * Parse player list from a section of text
+ * Handles formats like:
+ * - "Player Name 81 (10)"
+ * - "Player Name 81 (10 badges)"
+ * - "Player Name: 81 (10)"
  */
-function extractPotentialPlayerNames(text: string): string[] {
-  // Remove common words and numbers
-  const cleaned = text
-    .replace(/\b(send|sends|receive|receives|get|gets|trade|trades|to|from|for|and|total|ovr|badges?)\b/gi, '')
-    .replace(/\d+\s*\([^)]*\)/g, '') // Remove "80 (12)" patterns
-    .replace(/--/g, '\n'); // Convert -- to newlines
+function parsePlayerListWithOVR(text: string): Array<{ name: string; overall: number; salary: number }> {
+  const players: Array<{ name: string; overall: number; salary: number }> = [];
   
-  // Split by newlines and extract names
-  const lines = cleaned.split(/\n/);
-  const names: string[] = [];
+  // Split by newlines and commas
+  const lines = text.split(/[\n,]/).map(l => l.trim()).filter(l => l.length > 0);
   
   for (const line of lines) {
-    const trimmed = line.trim();
-    // Skip empty lines, lines with just numbers, or lines that are team names
-    if (!trimmed || /^\d+$/.test(trimmed) || /^total/i.test(trimmed)) continue;
+    // Skip total lines
+    if (/^Total[:\s]/i.test(line) || /^[\d\-\/]+$/.test(line)) {
+      continue;
+    }
     
-    // Check if this line is a team name
-    const isTeamName = NBA_TEAMS.some(team => 
-      trimmed.toLowerCase().includes(team.toLowerCase())
-    );
-    if (isTeamName) continue;
+    // Skip Discord mentions and markdown
+    if (/<@!?\d*>/.test(line) || /^\*+$/.test(line)) {
+      continue;
+    }
     
-    // Extract the name part (before any numbers)
-    const nameMatch = trimmed.match(/^([A-Za-z\s\-'\.]+)/);
-    if (nameMatch) {
-      const name = nameMatch[1].trim();
-      if (name.length > 2) { // At least 3 characters
-        names.push(name);
+    // Pattern: "Player Name OVR (salary)" or "Player Name: OVR (salary)"
+    // Handles: "Devin Vassell 81 (10)", "Rudy Gobert 83 (12 badges)", "Collin Gillespie 79 (9)"
+    const pattern = /^([A-Za-z\s\-'\.]+?)\s*:?\s*(\d+)\s*\((\d+)(?:\s+badges)?\)$/;
+    const match = line.match(pattern);
+    
+    if (match) {
+      const playerName = match[1].trim();
+      const overall = parseInt(match[2]);
+      const salary = parseInt(match[3]);
+      
+      // Validate player name (not a number or placeholder)
+      if (playerName && playerName !== '--' && !/^\d+$/.test(playerName)) {
+        players.push({
+          name: playerName,
+          overall,
+          salary
+        });
+        console.log(`[Simple Parser] Parsed player: ${playerName} (${overall} OVR, ${salary} salary)`);
       }
     }
   }
   
-  return names;
+  return players;
 }
 
 /**
- * Parse trade from Discord message using pure fuzzy matching
- * Format-agnostic - works with any format as long as it has team names and player names
+ * Find teams in order of appearance in the text
+ * Uses word boundary matching to avoid matching team names within player names
+ */
+function findTeamsInOrder(text: string): string[] {
+  const foundTeams: string[] = [];
+  const matches: Array<{ team: string; index: number }> = [];
+  
+  // Find all team mentions with their positions
+  for (const teamName of NBA_TEAMS) {
+    // Use word boundary to match whole words only
+    // Match at start of line or after whitespace/asterisks
+    const regex = new RegExp(`(?:^|\\s|\\*)(${teamName})(?:\\s|:|\\*|$)`, 'gi');
+    let match;
+    while ((match = regex.exec(text)) !== null) {
+      matches.push({ team: teamName, index: match.index });
+    }
+  }
+  
+  // Sort by appearance order
+  matches.sort((a, b) => a.index - b.index);
+  
+  // Extract unique teams in order
+  for (const match of matches) {
+    const normalized = normalizeTeamName(match.team);
+    if (!foundTeams.includes(normalized)) {
+      foundTeams.push(normalized);
+    }
+  }
+  
+  return foundTeams;
+}
+
+/**
+ * Parse trade from Discord message using pattern matching
+ * Handles "Team Send:" format and other common formats
  */
 export async function parseTradeFromMessage(message: Message): Promise<{
   teams: Array<{
@@ -100,7 +143,6 @@ export async function parseTradeFromMessage(message: Message): Promise<{
         console.log('[Simple Parser] Successfully fetched full message');
       } catch (fetchError) {
         console.error('[Simple Parser] Failed to fetch full message:', fetchError);
-        // Continue with partial message
       }
     }
     
@@ -110,7 +152,7 @@ export async function parseTradeFromMessage(message: Message): Promise<{
       text = message.embeds[0].description;
       console.log('[Simple Parser] Using embed description');
     } else if (message.embeds.length > 0) {
-      // Try to extract text from embed title and fields if description is missing
+      // Try to extract text from embed title and fields
       const embed = message.embeds[0];
       const parts = [];
       if (embed.title) parts.push(embed.title);
@@ -137,126 +179,84 @@ export async function parseTradeFromMessage(message: Message): Promise<{
       return null;
     }
     
-    console.log('[Simple Parser] Parsing text:', text.substring(0, 200));
+    console.log('[Simple Parser] Parsing text:', text.substring(0, 300));
     
-    // Step 1: Find team names using fuzzy matching
-    const foundTeams: string[] = [];
-    for (const teamName of NBA_TEAMS) {
-      if (text.toLowerCase().includes(teamName.toLowerCase())) {
-        const normalized = normalizeTeamName(teamName);
-        if (!foundTeams.includes(normalized)) {
-          foundTeams.push(normalized);
-        }
-      }
-    }
+    // Find teams in order of appearance
+    const foundTeams = findTeamsInOrder(text);
     
     if (foundTeams.length < 2) {
       console.log('[Simple Parser] Could not find at least 2 teams. Found:', foundTeams);
       return null;
     }
     
-    console.log('[Simple Parser] Teams involved:', foundTeams.join(', '));
+    console.log('[Simple Parser] Teams involved (in order):', foundTeams.join(', '));
     
-    // Step 2: Extract all potential player names
-    const potentialNames = extractPotentialPlayerNames(text);
-    console.log('[Simple Parser] Potential player names:', potentialNames);
+    // Take first two teams in order of appearance
+    const team1 = foundTeams[0];
+    const team2 = foundTeams[1];
     
-    if (potentialNames.length === 0) {
-      console.log('[Simple Parser] No player names found');
-      return null;
-    }
+    // Build regex patterns to match "Team Send:" or "Team Sends:" (with optional asterisks)
+    // Pattern explanation:
+    // - \*{0,2} matches 0-2 asterisks (for markdown bold)
+    // - Team name (literal string)
+    // - \s+ matches whitespace
+    // - sends? matches "send" or "sends"
+    // - \*{0,2} matches 0-2 asterisks
+    // - [:] matches colon
+    // - ([^]+?) captures everything until the next team or end
     
-    // Step 3: Get all players from database
-    const db = await getDb();
-    if (!db) {
-      console.log('[Simple Parser] Database not available');
-      return null;
-    }
+    // Escape special regex characters in team names
+    const escapeRegex = (str: string) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const team1Escaped = escapeRegex(team1);
+    const team2Escaped = escapeRegex(team2);
     
-    const allPlayers = await db.select().from(players);
-    console.log('[Simple Parser] Loaded', allPlayers.length, 'players from database');
+    // Pattern for team1: capture everything from "Team1 Send(s):" until "Team2 Send(s):" or end
+    const team1SendPattern = new RegExp(
+      `\\*{0,2}${team1Escaped}\\s+sends?\\*{0,2}\\s*:\\s*([^]*?)(?=\\*{0,2}${team2Escaped}\\s+sends?|$)`,
+      'is'
+    );
     
-    // Step 4: Match each potential name to a real player using fuzzy matching
-    // Create a map to track players by team
-    const teamPlayersMap = new Map<string, Array<{ name: string; overall: number; salary: number }>>();
-    foundTeams.forEach(team => teamPlayersMap.set(team, []));
+    // Pattern for team2: capture everything from "Team2 Send(s):" until end
+    const team2SendPattern = new RegExp(
+      `\\*{0,2}${team2Escaped}\\s+sends?\\*{0,2}\\s*:\\s*([^]*?)$`,
+      'is'
+    );
     
-    for (const potentialName of potentialNames) {
-      // Fuzzy match against all players
-      const playerNames = allPlayers.map(p => p.name);
-      const matches = extract(potentialName, playerNames, { limit: 1, cutoff: 51 });
+    const team1Match = text.match(team1SendPattern);
+    const team2Match = text.match(team2SendPattern);
+    
+    console.log(`[Simple Parser] Team1 pattern match: ${team1Match ? 'YES' : 'NO'}`);
+    console.log(`[Simple Parser] Team2 pattern match: ${team2Match ? 'YES' : 'NO'}`);
+    
+    if (team1Match && team2Match) {
+      console.log('[Simple Parser] Successfully matched "Team Send:" format');
       
-      if (matches.length > 0) {
-        const [bestMatch, score] = matches[0];
-        const matchedPlayer = allPlayers.find(p => p.name === bestMatch);
+      const team1Players = parsePlayerListWithOVR(team1Match[1]);
+      const team2Players = parsePlayerListWithOVR(team2Match[1]);
+      
+      console.log(`[Simple Parser] Parsed ${team1Players.length} players for ${team1}, ${team2Players.length} players for ${team2}`);
+      
+      if (team1Players.length > 0 && team2Players.length > 0) {
+        console.log(`[Simple Parser] Parsed trade: ${team1} (${team1Players.length} players) ↔ ${team2} (${team2Players.length} players)`);
         
-        if (matchedPlayer) {
-          console.log(`[Simple Parser] Matched "${potentialName}" → "${matchedPlayer.name}" (${score}% confident, team: ${matchedPlayer.team})`);
-          
-          const playerData = {
-            name: matchedPlayer.name,
-            overall: matchedPlayer.overall,
-            salary: matchedPlayer.salaryCap || 0
-          };
-          
-          // Assign to correct team based on player's CURRENT team
-          const playerTeam = foundTeams.find(t => t === matchedPlayer.team);
-          if (playerTeam) {
-            teamPlayersMap.get(playerTeam)!.push(playerData);
-          } else {
-            // Player is on a team not involved in the trade
-            console.log(`[Simple Parser] Player ${matchedPlayer.name} is on ${matchedPlayer.team}, which is not in the trade teams: ${foundTeams.join(', ')}`);
-            // Try to assign to first team with no players yet, otherwise first team
-            const emptyTeam = foundTeams.find(t => teamPlayersMap.get(t)!.length === 0);
-            const targetTeam = emptyTeam || foundTeams[0];
-            teamPlayersMap.get(targetTeam)!.push(playerData);
-          }
-        }
-      } else {
-        console.log(`[Simple Parser] No match found for "${potentialName}" (< 51% confidence)`);
+        return {
+          teams: [
+            { name: team1, players: team1Players },
+            { name: team2, players: team2Players }
+          ],
+          team1,
+          team2,
+          team1Players,
+          team2Players
+        };
       }
     }
     
-    // Build result with flexible team structure
-    const teams = foundTeams.map(teamName => ({
-      name: teamName,
-      players: teamPlayersMap.get(teamName) || []
-    }));
-    
-    // Log results
-    teams.forEach(team => {
-      console.log(`[Simple Parser] ${team.name} sends ${team.players.length} players`);
-    });
-    
-    // Validate that all teams have at least one player
-    const teamsWithoutPlayers = teams.filter(t => t.players.length === 0);
-    if (teamsWithoutPlayers.length > 0) {
-      console.log('[Simple Parser] Some teams have no players:', teamsWithoutPlayers.map(t => t.name).join(', '));
-      return null;
-    }
-    
-    // Build result with both new format and legacy format for backward compatibility
-    const result: any = { teams };
-    
-    // Add legacy 2-team format if exactly 2 teams
-    if (teams.length === 2) {
-      result.team1 = teams[0].name;
-      result.team2 = teams[1].name;
-      result.team1Players = teams[0].players;
-      result.team2Players = teams[1].players;
-    }
-    
-    return result;
-    
-  } catch (error) {
-    console.error('[Simple Parser] Error:', error);
-    console.log('[Simple Parser] Attempting fallback: checking database for trade record...');
-    
     // Fallback: Try to find trade record in database by message ID
+    console.log('[Simple Parser] Pattern matching failed, attempting database fallback...');
     try {
       const db = await getDb();
       if (db) {
-        // Use already imported trades and eq
         const existingTrade = await db.select().from(trades).where(eq(trades.messageId, message.id)).limit(1);
         
         if (existingTrade.length > 0) {
@@ -282,6 +282,12 @@ export async function parseTradeFromMessage(message: Message): Promise<{
       console.error('[Simple Parser] Database fallback also failed:', dbError);
     }
     
+    console.log('[Simple Parser] Could not parse trade using any method');
+    return null;
+    
+  } catch (error) {
+    console.error('[Simple Parser] Error:', error);
+    console.error('[Simple Parser] Stack trace:', error instanceof Error ? error.stack : 'No stack trace');
     return null;
   }
 }
