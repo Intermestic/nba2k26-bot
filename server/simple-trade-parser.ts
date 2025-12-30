@@ -1,7 +1,8 @@
 import { Message } from 'discord.js';
 import { getDb } from './db';
-import { players } from '../drizzle/schema';
+import { players, trades } from '../drizzle/schema';
 import { extract } from 'fuzzball';
+import { eq } from 'drizzle-orm';
 
 /**
  * Simple, format-agnostic trade parser
@@ -91,16 +92,48 @@ export async function parseTradeFromMessage(message: Message): Promise<{
   team2Players?: Array<{ name: string; overall: number; salary: number }>;
 } | null> {
   try {
+    // Ensure message is fully fetched (not partial)
+    if (message.partial) {
+      console.log('[Simple Parser] Message is partial, fetching full message...');
+      try {
+        message = await message.fetch();
+        console.log('[Simple Parser] Successfully fetched full message');
+      } catch (fetchError) {
+        console.error('[Simple Parser] Failed to fetch full message:', fetchError);
+        // Continue with partial message
+      }
+    }
+    
     // Get text from embed or message content
     let text = '';
     if (message.embeds.length > 0 && message.embeds[0].description) {
       text = message.embeds[0].description;
-    } else if (message.content) {
+      console.log('[Simple Parser] Using embed description');
+    } else if (message.embeds.length > 0) {
+      // Try to extract text from embed title and fields if description is missing
+      const embed = message.embeds[0];
+      const parts = [];
+      if (embed.title) parts.push(embed.title);
+      if (embed.description) parts.push(embed.description);
+      if (embed.fields && embed.fields.length > 0) {
+        for (const field of embed.fields) {
+          if (field.name) parts.push(field.name);
+          if (field.value) parts.push(field.value);
+        }
+      }
+      text = parts.join('\n');
+      if (text) {
+        console.log('[Simple Parser] Using embed title, fields, and other content');
+      }
+    }
+    
+    if (!text && message.content) {
       text = message.content;
+      console.log('[Simple Parser] Using message content');
     }
     
     if (!text) {
-      console.log('[Simple Parser] No text content found');
+      console.log('[Simple Parser] No text content found in message or embeds');
       return null;
     }
     
@@ -217,6 +250,38 @@ export async function parseTradeFromMessage(message: Message): Promise<{
     
   } catch (error) {
     console.error('[Simple Parser] Error:', error);
+    console.log('[Simple Parser] Attempting fallback: checking database for trade record...');
+    
+    // Fallback: Try to find trade record in database by message ID
+    try {
+      const db = await getDb();
+      if (db) {
+        // Use already imported trades and eq
+        const existingTrade = await db.select().from(trades).where(eq(trades.messageId, message.id)).limit(1);
+        
+        if (existingTrade.length > 0) {
+          const trade = existingTrade[0];
+          console.log('[Simple Parser] Found trade record in database, using cached data');
+          
+          const team1Players = JSON.parse(trade.team1Players);
+          const team2Players = JSON.parse(trade.team2Players);
+          
+          return {
+            teams: [
+              { name: trade.team1, players: team1Players },
+              { name: trade.team2, players: team2Players }
+            ],
+            team1: trade.team1,
+            team2: trade.team2,
+            team1Players,
+            team2Players
+          };
+        }
+      }
+    } catch (dbError) {
+      console.error('[Simple Parser] Database fallback also failed:', dbError);
+    }
+    
     return null;
   }
 }
