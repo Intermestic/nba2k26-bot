@@ -647,3 +647,27 @@
 - [x] Recovery service for automatic processing
 - [x] Removed scheduled restarts UI from routers
 - [x] Updated BOT_FEATURES_SUMMARY.md documentation
+
+## Bot Graceful Degradation & Monitoring (Dec 30, 2024)
+
+### Graceful Degradation Integration
+- [x] Import recovery service and graceful degradation modules in discord-bot.ts
+- [x] Initialize recovery service on bot startup (clientReady event)
+- [x] Integrate FA transaction processor with graceful degradation
+- [x] Integrate trade approval processor with graceful degradation
+- [ ] Test graceful degradation with simulated database outage
+- [ ] Verify queue persistence and recovery on database reconnection
+
+### Bot Monitoring Dashboard
+- [x] Create botMonitoring router with API endpoints for dashboard data
+- [x] Add endpoint: GET /degradation-status (current degradation mode status)
+- [x] Add endpoint: GET /queue-stats (queued transactions count and breakdown)
+- [x] Add endpoint: GET /recovery-metrics (recovery attempts, success rate, timing)
+- [x] Add endpoint: GET /degradation-events (timeline of degradation events)
+- [x] Create BotMonitoring.tsx admin page component
+- [x] Build real-time status display (degradation mode indicator)
+- [x] Build queue statistics visualization (queued FA moves, trades, etc.)
+- [x] Build recovery metrics chart (recovery attempts over time)
+- [x] Build degradation event timeline (when degradation started/ended)
+- [x] Add auto-refresh for real-time updates (5-10 second intervals)
+- [ ] Test monitoring dashboard with live data

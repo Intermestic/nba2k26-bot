@@ -36,6 +36,7 @@ import { upgradeHistoryRouter } from './routers/upgradeHistory';
 import { teamAliasesRouter } from './routers/teamAliases';
 import { botMetricsRouter } from './routers/botMetrics';
 import { monitoringAlertsRouter } from './routers/monitoringAlerts';
+import { botMonitoringRouter } from './routers/botMonitoring';
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -150,6 +151,9 @@ export const appRouter = router({
   
   // Monitoring alerts for bot offline notifications
   monitoringAlerts: monitoringAlertsRouter,
+  
+  // Bot monitoring for degradation and recovery metrics
+  botMonitoring: botMonitoringRouter,
 });
 
 export type AppRouter = typeof appRouter;

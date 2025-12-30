@@ -24,6 +24,7 @@ import CsvExport from "./pages/admin/CsvExport";
 import BotControl from "./pages/admin/BotControl";
 import BotStatus from "./pages/admin/BotStatus";
 import BotDashboard from "./pages/admin/BotDashboard";
+import BotMonitoring from "./pages/admin/BotMonitoring";
 import MonitoringAlerts from "./pages/admin/MonitoringAlerts";
 import TradeLog from "./pages/admin/TradeLog";
 import TeamAliases from "./pages/admin/TeamAliases";
@@ -56,6 +57,7 @@ function Router() {
       <Route path={"/admin/bot-control"} component={BotControl} />
       <Route path={"/admin/bot-status"} component={BotStatus} />
       <Route path={"/admin/bot-dashboard"} component={BotDashboard} />
+      <Route path={"/admin/bot-monitoring"} component={BotMonitoring} />
       <Route path={"/admin/monitoring-alerts"} component={MonitoringAlerts} />
 
       <Route path={"/admin/team-aliases"} component={TeamAliases} />
