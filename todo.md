@@ -251,6 +251,14 @@
 
 - [x] Fix Discord bot connection issue - "Post to Discord" feature shows "Discord bot is not connected"
 
+## Discord Bot Reliability Fix (Dec 31, 2024)
+
+- [x] Fix health check field name mismatch (isOnline vs online)
+- [x] Implement proper reconnection logic in Discord bot
+- [x] Add more aggressive auto-recovery
+- [x] Add heartbeat status updates every 30 seconds
+- [x] Ensure bot stays online like Mee6
+
 ## Discord Bot Crash Loop Fix (Dec 13, 2024)
 
 - [x] Fix bot crash loop caused by lock refresh failures

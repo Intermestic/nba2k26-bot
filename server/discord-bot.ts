@@ -3165,6 +3165,26 @@ export async function startDiscordBot(token: string) {
       console.error('[Custom Commands] Error cleaning up cooldowns:', error);
     }
   }, 5 * 60 * 1000); // 5 minutes
+  
+  // Set up periodic heartbeat status update (every 30 seconds)
+  // This ensures the health monitor can detect if the bot is truly alive
+  setInterval(async () => {
+    try {
+      if (client && client.isReady()) {
+        const statusFile = path.join(process.cwd(), 'bot-status.json');
+        await fs.promises.writeFile(statusFile, JSON.stringify({
+          online: true,
+          username: client.user?.tag || null,
+          userId: client.user?.id || null,
+          lastHeartbeat: new Date().toISOString(),
+          uptime: client.uptime,
+          ping: client.ws.ping,
+        }, null, 2));
+      }
+    } catch (error) {
+      // Silently ignore heartbeat errors to avoid log spam
+    }
+  }, 30000); // 30 seconds
 }
 
 /**
