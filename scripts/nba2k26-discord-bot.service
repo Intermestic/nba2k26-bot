@@ -1,0 +1,49 @@
+[Unit]
+Description=NBA 2K26 Discord Bot
+Documentation=https://github.com/your-repo/nba2k26-database
+After=network.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/home/ubuntu/nba2k26-database
+
+# Environment
+Environment=NODE_ENV=production
+EnvironmentFile=-/home/ubuntu/nba2k26-database/.env
+
+# Start command
+ExecStart=/usr/bin/pnpm start:bot
+
+# Restart configuration - restart on any failure
+Restart=always
+RestartSec=10
+RestartPreventExitStatus=0
+
+# Watchdog - systemd will kill and restart if no ping within 60 seconds
+WatchdogSec=60
+
+# Limit restarts to prevent infinite crash loops
+# Max 5 restarts within 300 seconds (5 minutes), then stop trying
+StartLimitIntervalSec=300
+StartLimitBurst=5
+
+# Give the bot time to gracefully shutdown
+TimeoutStopSec=30
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=nba2k26-bot
+
+# Security hardening (optional but recommended)
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/home/ubuntu/nba2k26-database/logs /home/ubuntu/nba2k26-database/bot-status.json
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

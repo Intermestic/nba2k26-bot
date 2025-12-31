@@ -679,3 +679,13 @@
 - [x] Build degradation event timeline (when degradation started/ended)
 - [x] Add auto-refresh for real-time updates (5-10 second intervals)
 - [ ] Test monitoring dashboard with live data
+
+## Bot Reliability - Systemd Implementation
+
+- [x] Create systemd service file for Discord bot
+- [x] Configure automatic restart on failure with delay
+- [x] Add systemd watchdog for hung process detection
+- [x] Create setup script for easy deployment
+- [x] Update bot control UI to work with systemd
+- [ ] Test bot crash recovery
+- [x] Document systemd service management commands

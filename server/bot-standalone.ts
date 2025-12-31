@@ -3,6 +3,8 @@
  * 
  * This file runs the Discord bot in a completely separate process from the web server.
  * This prevents HMR (Hot Module Reload) from creating duplicate bot instances.
+ * 
+ * Supports systemd watchdog for automatic restart on hang.
  */
 
 import { startDiscordBot, stopDiscordBot, getDiscordClient } from "./discord-bot";
@@ -10,8 +12,75 @@ import express from 'express';
 import { getDb } from "./db";
 import { tradeLogs } from "../drizzle/schema";
 import { getBotHealthStatus } from "./bot-health-monitor";
+import fs from 'fs';
 
 const TRADE_CHANNEL_ID = "1336156955722645535";
+
+// Systemd watchdog support
+const WATCHDOG_USEC = process.env.WATCHDOG_USEC;
+let watchdogInterval: NodeJS.Timeout | null = null;
+
+/**
+ * Notify systemd that the service is ready/alive
+ * Uses sd_notify protocol via NOTIFY_SOCKET
+ */
+function notifySystemd(state: string) {
+  const notifySocket = process.env.NOTIFY_SOCKET;
+  if (!notifySocket) return;
+
+  try {
+    const dgram = require('dgram');
+    const client = dgram.createSocket('unix_dgram');
+    const message = Buffer.from(state);
+    
+    client.send(message, notifySocket, (err: any) => {
+      client.close();
+      if (err) {
+        console.error('[Bot Standalone] Failed to notify systemd:', err.message);
+      }
+    });
+  } catch (error) {
+    // Silently fail if dgram not available or socket issues
+  }
+}
+
+/**
+ * Start systemd watchdog heartbeat
+ * Sends WATCHDOG=1 at half the watchdog interval
+ */
+function startWatchdogHeartbeat() {
+  if (!WATCHDOG_USEC) {
+    console.log('[Bot Standalone] Systemd watchdog not configured, skipping heartbeat');
+    return;
+  }
+
+  const watchdogMs = parseInt(WATCHDOG_USEC) / 1000; // Convert microseconds to milliseconds
+  const heartbeatMs = watchdogMs / 2; // Send heartbeat at half the interval
+
+  console.log(`[Bot Standalone] Starting systemd watchdog heartbeat every ${heartbeatMs}ms`);
+
+  watchdogInterval = setInterval(() => {
+    const client = getDiscordClient();
+    
+    // Only send heartbeat if bot is actually healthy
+    if (client && client.isReady()) {
+      notifySystemd('WATCHDOG=1');
+    } else {
+      console.warn('[Bot Standalone] Bot not ready, skipping watchdog heartbeat');
+      // If bot is not ready for too long, systemd will restart us
+    }
+  }, heartbeatMs);
+}
+
+/**
+ * Stop watchdog heartbeat
+ */
+function stopWatchdogHeartbeat() {
+  if (watchdogInterval) {
+    clearInterval(watchdogInterval);
+    watchdogInterval = null;
+  }
+}
 
 async function main() {
   const botToken = process.env.DISCORD_BOT_TOKEN;
@@ -25,8 +94,15 @@ async function main() {
     console.log('[Bot Standalone] Starting Discord bot in standalone process...');
     await startDiscordBot(botToken);
     console.log('[Bot Standalone] Discord bot started successfully');
+    
+    // Notify systemd that we're ready
+    notifySystemd('READY=1');
+    
+    // Start watchdog heartbeat
+    startWatchdogHeartbeat();
   } catch (error) {
     console.error('[Bot Standalone] Failed to start Discord bot:', error);
+    notifySystemd('STATUS=Failed to start');
     process.exit(1);
   }
 
@@ -40,7 +116,8 @@ async function main() {
     res.json({
       status: 'ok',
       botReady: client?.isReady() || false,
-      botUsername: client?.user?.tag || null
+      botUsername: client?.user?.tag || null,
+      systemdWatchdog: !!WATCHDOG_USEC
     });
   });
   
@@ -49,11 +126,15 @@ async function main() {
     try {
       const health = await getBotHealthStatus();
       const statusCode = health.status === 'healthy' ? 200 : 503;
-      res.status(statusCode).json(health);
+      res.status(statusCode).json({
+        ...health,
+        systemdWatchdog: !!WATCHDOG_USEC
+      });
     } catch (error) {
       res.status(500).json({
         status: 'offline',
-        error: (error as any)?.message || 'Unknown error'
+        error: (error as any)?.message || 'Unknown error',
+        systemdWatchdog: !!WATCHDOG_USEC
       });
     }
   });
@@ -155,29 +236,30 @@ async function main() {
   // Keep process alive
   let isShuttingDown = false;
   
-  process.on('SIGINT', async () => {
+  async function gracefulShutdown(signal: string) {
     if (isShuttingDown) return;
     isShuttingDown = true;
-    console.log('[Bot Standalone] Received SIGINT, shutting down...');
+    
+    console.log(`[Bot Standalone] Received ${signal}, shutting down...`);
+    notifySystemd('STOPPING=1');
+    
+    stopWatchdogHeartbeat();
     await stopDiscordBot();
     process.exit(0);
-  });
-
-  process.on('SIGTERM', async () => {
-    if (isShuttingDown) return;
-    isShuttingDown = true;
-    console.log('[Bot Standalone] Received SIGTERM, shutting down...');
-    await stopDiscordBot();
-    process.exit(0);
-  });
+  }
+  
+  process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+  process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
   
   // Handle critical bot failures that require immediate exit
   process.on('botCriticalFailure', async (error: any) => {
     if (isShuttingDown) return;
     isShuttingDown = true;
     console.error('[Bot Standalone] Critical bot failure detected:', error);
+    notifySystemd('STATUS=Critical failure');
+    stopWatchdogHeartbeat();
     await stopDiscordBot();
-    // Exit with code 1 so PM2 will restart
+    // Exit with code 1 so systemd will restart
     process.exit(1);
   });
   
@@ -185,6 +267,8 @@ async function main() {
     if (isShuttingDown) return;
     isShuttingDown = true;
     console.error('[Bot Standalone] Uncaught exception:', error);
+    notifySystemd('STATUS=Uncaught exception');
+    stopWatchdogHeartbeat();
     await stopDiscordBot();
     process.exit(1);
   });
@@ -193,6 +277,8 @@ async function main() {
     if (isShuttingDown) return;
     isShuttingDown = true;
     console.error('[Bot Standalone] Unhandled rejection:', reason);
+    notifySystemd('STATUS=Unhandled rejection');
+    stopWatchdogHeartbeat();
     await stopDiscordBot();
     process.exit(1);
   });
@@ -200,6 +286,7 @@ async function main() {
 
 main().catch(async (error) => {
   console.error('[Bot Standalone] Fatal error:', error);
+  notifySystemd('STATUS=Fatal error');
   await stopDiscordBot();
   process.exit(1);
 });
