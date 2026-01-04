@@ -444,46 +444,14 @@ async function processVoteResult(
               const { processTradeFromDatabase } = await import('./trade-approval-handler');
               await processTradeFromDatabase(message, existingTrade[0]);
               console.log('[Trade Voting] Trade processed successfully');
-              
-              // Post detailed trade summary
-              try {
-                const summaryEmbed = new EmbedBuilder()
-                  .setTitle('📊 Trade Summary')
-                  .setDescription(`Trade has been **successfully processed**`)
-                  .setColor(0x00aa00) // Green
-                  .setTimestamp();
-                
-                // Add team1 players
-                const team1PlayersList = team1Players
-                  .map((p: any) => `• **${p.name}** (${p.overall} OVR, ${p.salary} cap)`)
-                  .join('\n');
-                summaryEmbed.addFields({
-                  name: `${existingTrade[0].team1} → ${existingTrade[0].team2}`,
-                  value: team1PlayersList || 'No players',
-                  inline: false
-                });
-                
-                // Add team2 players
-                const team2PlayersList = team2Players
-                  .map((p: any) => `• **${p.name}** (${p.overall} OVR, ${p.salary} cap)`)
-                  .join('\n');
-                summaryEmbed.addFields({
-                  name: `${existingTrade[0].team2} → ${existingTrade[0].team1}`,
-                  value: team2PlayersList || 'No players',
-                  inline: false
-                });
-                
-                await message.reply({ embeds: [summaryEmbed] });
-              } catch (summaryError) {
-                console.error('[Trade Voting] Failed to post trade summary:', summaryError);
-              }
             } else {
-              console.error(`[Trade Voting] Trade ${message.id} has empty player data, cannot process`);
-              await message.reply('⚠️ **Warning:** Trade was approved but has no player data. Cannot auto-process.');
+              console.warn(`[Trade Voting] Trade record has empty player lists (Team1: ${team1Players.length}, Team2: ${team2Players.length}), cannot auto-process`);
             }
           } else {
-            console.error(`[Trade Voting] Trade ${message.id} was not saved to database, cannot auto-process`);
+            console.warn(`[Trade Voting] No trade record found for message ${message.id}, cannot auto-process`);
           }
+        } else {
+          console.warn('[Trade Voting] Database not available, cannot auto-process trade');
         }
       } catch (err) {
         console.error('[Trade Voting] Failed to auto-process approved trade:', err);
@@ -494,7 +462,6 @@ async function processVoteResult(
         }
       }
     }
-    
   } catch (error) {
     console.error('[Trade Voting] Error processing vote result:', error);
   } finally {
@@ -508,9 +475,6 @@ async function processVoteResult(
  */
 export async function handleNewTradeEmbed(message: Message) {
   try {
-    // Only process messages in trade channel
-    if (message.channelId !== TRADE_CHANNEL_ID) return;
-    
     // Skip messages from our own bot
     if (message.author.id === message.client.user?.id) return;
     

@@ -689,3 +689,25 @@
 - [x] Update bot control UI to work with systemd
 - [ ] Test bot crash recovery
 - [x] Document systemd service management commands
+
+
+## Auto-Processing Fixes Applied (Jan 3, 2026)
+
+### Trade Auto-Processing
+- [x] Improved simple-trade-parser.ts to handle more Discord message formats
+- [x] Added support for bullet point format (• Player Name OVR (salary))
+- [x] Added fallback parsing when "Team Sends:" format not found
+- [x] Added better error logging for trade parsing failures
+- [x] Fixed trade-voting.ts to properly handle auto-processing when trades are approved
+
+### FA Bid Auto-Processing  
+- [x] Restored fa-window-close.ts from previous commit (was completely disabled)
+- [x] FA window close summaries will now post automatically at 11:50 AM/PM EST
+- [x] Batch processing of FA bids will work when users react with ⚡ emoji
+
+### Testing Required
+- [ ] Test trade auto-processing with message ID 1457118306904576112
+- [ ] Verify trade record is now saved to database when votes reach 7
+- [ ] Test FA bid auto-processing with next bidding window
+- [ ] Verify window close summary posts at scheduled times
+- [ ] Verify batch processing works when reacting with ⚡ emoji

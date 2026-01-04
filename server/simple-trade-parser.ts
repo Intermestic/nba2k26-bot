@@ -43,6 +43,7 @@ function normalizeTeamName(team: string): string {
  * - "Player Name 81 (10)"
  * - "Player Name 81 (10 badges)"
  * - "Player Name: 81 (10)"
+ * - "• Player Name 81 (10)" (bullet points)
  */
 function parsePlayerListWithOVR(text: string): Array<{ name: string; overall: number; salary: number }> {
   const players: Array<{ name: string; overall: number; salary: number }> = [];
@@ -61,10 +62,13 @@ function parsePlayerListWithOVR(text: string): Array<{ name: string; overall: nu
       continue;
     }
     
+    // Remove bullet points and dashes at the start
+    let cleanLine = line.replace(/^[•\-\*]\s*/, '');
+    
     // Pattern: "Player Name OVR (salary)" or "Player Name: OVR (salary)"
     // Handles: "Devin Vassell 81 (10)", "Rudy Gobert 83 (12 badges)", "Collin Gillespie 79 (9)"
-    const pattern = /^([A-Za-z\s\-'\.]+?)\s*:?\s*(\d+)\s*\((\d+)(?:\s+badges)?\)$/;
-    const match = line.match(pattern);
+    const pattern = /^([A-Za-z\s\-'\.\.]+?)\s*:?\s*(\d+)\s*\(?\s*(\d+)\s*(?:badges)?\)?$/;
+    const match = cleanLine.match(pattern);
     
     if (match) {
       const playerName = match[1].trim();
@@ -252,8 +256,33 @@ export async function parseTradeFromMessage(message: Message): Promise<{
       }
     }
     
-    // Fallback: Try to find trade record in database by message ID
-    console.log('[Simple Parser] Pattern matching failed, attempting database fallback...');
+    // Fallback 1: Try alternative format without "Sends:" - just look for teams and their players
+    console.log('[Simple Parser] Pattern matching failed, trying alternative format...');
+    const altTeam1Players = parsePlayerListWithOVR(text);
+    if (altTeam1Players.length > 0) {
+      console.log(`[Simple Parser] Found ${altTeam1Players.length} players in alternative format`);
+      // If we found players, try to split them between the two teams
+      const midpoint = Math.floor(altTeam1Players.length / 2);
+      const team1Players = altTeam1Players.slice(0, midpoint);
+      const team2Players = altTeam1Players.slice(midpoint);
+      
+      if (team1Players.length > 0 && team2Players.length > 0) {
+        console.log(`[Simple Parser] Split players: ${team1} (${team1Players.length}) ↔ ${team2} (${team2Players.length})`);
+        return {
+          teams: [
+            { name: team1, players: team1Players },
+            { name: team2, players: team2Players }
+          ],
+          team1,
+          team2,
+          team1Players,
+          team2Players
+        };
+      }
+    }
+    
+    // Fallback 2: Try to find trade record in database by message ID
+    console.log('[Simple Parser] Alternative format failed, attempting database fallback...');
     try {
       const db = await getDb();
       if (db) {
