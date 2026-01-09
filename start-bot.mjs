@@ -68,16 +68,16 @@ console.log('🚀 Starting bot process...\n');
 
 // Start the bot using tsx to run TypeScript directly
 const botProcess = spawn('node', [
-  '--loader', 'tsx',
+  '--import', 'tsx',
   '--no-warnings',
-  'server/_core/index.ts'
+  'server/bot-standalone.ts'
 ], {
   cwd: __dirname,
   stdio: 'inherit',
   env: {
     ...process.env,
     NODE_ENV: 'production',
-    DISCORD_BOT_TOKEN,
+    DISCORD_BOT_TOKEN: DISCORD_TOKEN,
   }
 });
 

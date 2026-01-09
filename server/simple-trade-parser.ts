@@ -93,6 +93,7 @@ function parsePlayerListWithOVR(text: string): Array<{ name: string; overall: nu
 /**
  * Find teams in order of appearance in the text
  * Uses word boundary matching to avoid matching team names within player names
+ * Also handles mentions like "@Pacers(nickname)" and "@Pacers"
  */
 function findTeamsInOrder(text: string): string[] {
   const foundTeams: string[] = [];
@@ -101,8 +102,9 @@ function findTeamsInOrder(text: string): string[] {
   // Find all team mentions with their positions
   for (const teamName of NBA_TEAMS) {
     // Use word boundary to match whole words only
-    // Match at start of line or after whitespace/asterisks
-    const regex = new RegExp(`(?:^|\\s|\\*)(${teamName})(?:\\s|:|\\*|$)`, 'gi');
+    // Match at start of line, after whitespace/asterisks, or after @ (mentions)
+    // Also match @TeamName(nickname) format
+    const regex = new RegExp(`(?:^|\\s|\\*|@)(${teamName})(?:\\s|:|\\*|\\(|$)`, 'gi');
     let match;
     while ((match = regex.exec(text)) !== null) {
       matches.push({ team: teamName, index: match.index });
@@ -215,14 +217,16 @@ export async function parseTradeFromMessage(message: Message): Promise<{
     const team2Escaped = escapeRegex(team2);
     
     // Pattern for team1: capture everything from "Team1 Send(s):" until "Team2 Send(s):" or end
+    // Also handle @Team(nickname) format
     const team1SendPattern = new RegExp(
-      `\\*{0,2}${team1Escaped}\\s+sends?\\*{0,2}\\s*:\\s*([^]*?)(?=\\*{0,2}${team2Escaped}\\s+sends?|$)`,
+      `(?:@?\\*{0,2}${team1Escaped}(?:\\([^)]*\\))?\\s+sends?\\*{0,2}\\s*:|\\*{0,2}${team1Escaped}\\s+sends?\\*{0,2}\\s*:)\\s*([^]*?)(?=@?\\*{0,2}${team2Escaped}(?:\\([^)]*\\))?\\s+sends?|$)`,
       'is'
     );
     
     // Pattern for team2: capture everything from "Team2 Send(s):" until end
+    // Also handle @Team(nickname) format
     const team2SendPattern = new RegExp(
-      `\\*{0,2}${team2Escaped}\\s+sends?\\*{0,2}\\s*:\\s*([^]*?)$`,
+      `(?:@?\\*{0,2}${team2Escaped}(?:\\([^)]*\\))?\\s+sends?\\*{0,2}\\s*:|\\*{0,2}${team2Escaped}\\s+sends?\\*{0,2}\\s*:)\\s*([^]*?)$`,
       'is'
     );
     
