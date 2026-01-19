@@ -42,6 +42,20 @@ export const commands = [
     .setName('help')
     .setDescription('Show available bot commands and usage'),
 
+  // Scan for missed trades (admin only)
+  new SlashCommandBuilder()
+    .setName('scan-trades')
+    .setDescription('Scan for missed trade votes and process them (admin only)')
+    .addIntegerOption(option =>
+      option
+        .setName('limit')
+        .setDescription('Number of messages to scan (default: 100, max: 500)')
+        .setRequired(false)
+        .setMinValue(10)
+        .setMaxValue(500)
+    )
+    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+
   // Force process a trade (admin only)
   new SlashCommandBuilder()
     .setName('force-process')

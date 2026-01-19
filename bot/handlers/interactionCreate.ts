@@ -16,6 +16,7 @@ import { config } from '../config';
 import { TradeVotingService } from '../services/tradeVoting';
 import { HealthService } from '../services/health';
 import { TradeParser } from '../parsers/tradeParser';
+import { StartupScanner } from '../services/startupScanner';
 
 /**
  * Handle slash command interactions
@@ -44,6 +45,9 @@ export async function handleInteraction(
         break;
       case 'force-process':
         await handleForceProcess(interaction, client);
+        break;
+      case 'scan-trades':
+        await handleScanTrades(interaction, client);
         break;
       default:
         await interaction.reply({
@@ -284,6 +288,10 @@ async function handleHelp(
       { 
         name: '/help', 
         value: 'Show this help message.' 
+      },
+      { 
+        name: '/scan-trades', 
+        value: '*(Admin only)* Manually scan for missed trade votes.' 
       }
     )
     .addFields({
@@ -356,5 +364,128 @@ async function handleForceProcess(
   } catch (error) {
     logger.error('Error force processing trade:', error);
     await interaction.editReply({ content: '❌ Failed to process trade' });
+  }
+}
+
+
+/**
+ * /scan-trades - Manually scan for missed trade votes (admin only)
+ */
+async function handleScanTrades(
+  interaction: ChatInputCommandInteraction,
+  client: Client
+): Promise<void> {
+  // Check if user is admin
+  if (interaction.user.id !== config.admins.ownerId) {
+    await interaction.reply({
+      content: '❌ Only admins can trigger trade scans',
+      ephemeral: true
+    });
+    return;
+  }
+
+  await interaction.deferReply();
+
+  const limit = interaction.options.getInteger('limit') || 100;
+
+  try {
+    logger.info(`Manual trade scan triggered by ${interaction.user.tag} (limit: ${limit})`);
+
+    // Get the trade channel
+    const channel = await client.channels.fetch(config.channels.trades);
+    if (!channel || !channel.isTextBased()) {
+      await interaction.editReply({ content: '❌ Trade channel not found' });
+      return;
+    }
+
+    // Fetch messages
+    const messages = await (channel as any).messages.fetch({ limit });
+    
+    let scannedCount = 0;
+    let processedCount = 0;
+    const processedTrades: string[] = [];
+
+    for (const [messageId, message] of messages) {
+      // Skip messages before the filter
+      if (BigInt(messageId) < BigInt(config.filters.minTradeMessageId)) {
+        continue;
+      }
+
+      scannedCount++;
+
+      // Check if this message has trade-like reactions
+      const upvoteReaction = message.reactions.cache.find((r: any) => r.emoji.name === config.emojis.upvote);
+      const downvoteReaction = message.reactions.cache.find((r: any) => r.emoji.name === config.emojis.downvote);
+
+      if (!upvoteReaction && !downvoteReaction) {
+        continue; // No votes, skip
+      }
+
+      const upvotes = upvoteReaction ? (upvoteReaction.count - (upvoteReaction.me ? 1 : 0)) : 0;
+      const downvotes = downvoteReaction ? (downvoteReaction.count - (downvoteReaction.me ? 1 : 0)) : 0;
+
+      // Check if thresholds are met but trade wasn't processed
+      if (upvotes >= config.voting.approvalThreshold || downvotes >= config.voting.rejectionThreshold) {
+        // Check if already has success/error reaction (already processed)
+        const hasSuccessReaction = message.reactions.cache.some((r: any) => r.emoji.name === config.emojis.success);
+        const hasErrorReaction = message.reactions.cache.some((r: any) => r.emoji.name === config.emojis.error);
+
+        if (!hasSuccessReaction && !hasErrorReaction) {
+          logger.info(`Found unprocessed trade ${messageId} with ${upvotes} 👍 / ${downvotes} 👎`);
+          
+          // Process the trade
+          if (upvotes >= config.voting.approvalThreshold) {
+            const upvoteR = message.reactions.cache.find((r: any) => r.emoji.name === config.emojis.upvote);
+            if (upvoteR) {
+              const users = await upvoteR.users.fetch();
+              const firstUser = users.first();
+              if (firstUser) {
+                await TradeVotingService.handleVote(upvoteR, firstUser, true);
+                processedTrades.push(`✅ ${messageId} (${upvotes} 👍)`);
+                processedCount++;
+              }
+            }
+          } else if (downvotes >= config.voting.rejectionThreshold) {
+            const downvoteR = message.reactions.cache.find((r: any) => r.emoji.name === config.emojis.downvote);
+            if (downvoteR) {
+              const users = await downvoteR.users.fetch();
+              const firstUser = users.first();
+              if (firstUser) {
+                await TradeVotingService.handleVote(downvoteR, firstUser, false);
+                processedTrades.push(`❌ ${messageId} (${downvotes} 👎)`);
+                processedCount++;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // Build response embed
+    const embed = new EmbedBuilder()
+      .setTitle('🔍 Trade Scan Complete')
+      .setColor(processedCount > 0 ? 0x00FF00 : 0x0099FF)
+      .addFields(
+        { name: 'Messages Scanned', value: `${scannedCount}`, inline: true },
+        { name: 'Trades Processed', value: `${processedCount}`, inline: true },
+        { name: 'Scan Limit', value: `${limit}`, inline: true }
+      )
+      .setTimestamp();
+
+    if (processedTrades.length > 0) {
+      embed.addFields({
+        name: 'Processed Trades',
+        value: processedTrades.slice(0, 10).join('\n') + 
+               (processedTrades.length > 10 ? `\n... and ${processedTrades.length - 10} more` : '')
+      });
+    } else {
+      embed.setDescription('No unprocessed trades found that meet the voting thresholds.');
+    }
+
+    await interaction.editReply({ embeds: [embed] });
+
+  } catch (error) {
+    logger.error('Error during manual trade scan:', error);
+    await interaction.editReply({ content: '❌ Failed to complete trade scan' });
   }
 }

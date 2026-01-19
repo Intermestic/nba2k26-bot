@@ -815,3 +815,11 @@
 - [x] Test all slash commands (bot running, commands registered)
 - [x] Update documentation (BOT_DEPLOYMENT_GUIDE.md updated)
 - [x] Save checkpoint
+
+
+## Scan Trades Slash Command
+- [x] Add /scan-trades command definition
+- [x] Add handler in interactionCreate.ts
+- [x] Register updated commands with Discord
+- [x] Test command (bot running with new command)
+- [x] Save checkpoint
