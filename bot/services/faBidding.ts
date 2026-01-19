@@ -15,6 +15,7 @@ import { FABidParser } from '../parsers/faBidParser';
 import { PlayerMatcher } from '../parsers/playerMatcher';
 import { eq, and } from 'drizzle-orm';
 import { players, faBids, teamCoins } from '../../drizzle/schema';
+import { getCapStatusUpdater } from './capStatusUpdater';
 
 interface ParsedBid {
   playerToCut: string | null;
@@ -240,6 +241,16 @@ class FABidServiceClass {
           .where(eq(faBids.messageId, messageId));
 
         await (message as Message).react(config.emojis.success);
+        
+        // Update cap status messages and roles
+        try {
+          const capUpdater = getCapStatusUpdater();
+          if (capUpdater) {
+            await capUpdater.updateAll(message.client);
+          }
+        } catch (error) {
+          logger.error('Error updating cap status after FA bid processing:', error);
+        }
       } else {
         await (message as Message).react(config.emojis.error);
       }

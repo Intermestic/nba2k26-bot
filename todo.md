@@ -867,3 +867,22 @@
 - [ ] Register command with Discord
 - [ ] Test command in Discord
 - [ ] Save checkpoint
+
+## Cap Status Message Updates (Current)
+
+### Implementation
+- [x] Create cap status update service (capStatusUpdater.ts)
+- [x] Calculate team cap status from players table
+- [x] Update embed messages after trades
+- [x] Update embed messages after FA moves
+- [x] Update embed messages on bot restart
+- [x] Add/remove Over Cap role based on team cap status
+- [x] Update Last updated timestamp in embeds
+
+### Testing
+- [ ] Test cap status update after trade approval
+- [ ] Test cap status update after FA bid processing
+- [ ] Test cap status update on bot restart
+- [ ] Verify "Over Cap" role is added to over-cap teams
+- [ ] Verify "Over Cap" role is removed from teams under cap
+- [ ] Verify embed messages update correctly with new totals

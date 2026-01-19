@@ -19,6 +19,7 @@ import { logger } from './services/logger';
 import { DatabaseService } from './services/database';
 import { HealthService } from './services/health';
 import { StartupScanner } from './services/startupScanner';
+import { initCapStatusUpdater } from './services/capStatusUpdater';
 import { setupEventHandlers } from './handlers';
 import { config } from './config';
 
@@ -69,9 +70,27 @@ export async function startBot(): Promise<Client> {
       HealthService.initialize(client);
     }
     
+    // Initialize cap status updater
+    if (client) {
+      initCapStatusUpdater(client);
+      logger.info('✅ Cap status updater initialized');
+    }
+    
     // Run startup scan for missed votes/bids
     if (client) {
       await StartupScanner.initialize(client);
+      
+      // Update cap status after startup scan completes
+      try {
+        const { getCapStatusUpdater } = await import('./services/capStatusUpdater');
+        const capUpdater = getCapStatusUpdater();
+        if (capUpdater) {
+          await capUpdater.updateAll(client);
+          logger.info('✅ Cap status updated after startup scan');
+        }
+      } catch (error) {
+        logger.error('Error updating cap status after startup scan:', error);
+      }
     }
   });
 

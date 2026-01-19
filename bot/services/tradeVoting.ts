@@ -8,13 +8,14 @@
  * - Trade reversal
  */
 
-import { MessageReaction, User, PartialMessageReaction, PartialUser, Message, TextChannel } from 'discord.js';
+import { MessageReaction, User, PartialMessageReaction, PartialUser, Message, TextChannel, Client } from 'discord.js';
 import { logger } from './logger';
 import { DatabaseService } from './database';
 import { config } from '../config';
 import { TradeParser } from '../parsers/tradeParser';
 import { eq } from 'drizzle-orm';
 import { trades, players } from '../../drizzle/schema';
+import { getCapStatusUpdater } from './capStatusUpdater';
 
 interface VoteCount {
   upvotes: number;
@@ -117,6 +118,16 @@ class TradeVotingServiceClass {
       // Post approval message
       const channel = message.channel as TextChannel;
       await channel.send(`✅ **Trade Approved** (${votes.upvotes}-${votes.downvotes})\n${this.formatTradeDescription(tradeData)}`);
+      
+      // Update cap status messages and roles
+      try {
+        const capUpdater = getCapStatusUpdater();
+        if (capUpdater) {
+          await capUpdater.updateAll(message.client);
+        }
+      } catch (error) {
+        logger.error('Error updating cap status after trade approval:', error);
+      }
     } else {
       await message.react(config.emojis.error);
     }
