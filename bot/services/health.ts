@@ -124,6 +124,17 @@ class HealthServiceClass {
         const ready = this.client?.isReady() && DatabaseService.isHealthy();
         res.writeHead(ready ? 200 : 503, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ ready }));
+      } else if (req.url === '/restart' && req.method === 'POST') {
+        // Restart webhook - triggered by scheduled task
+        logger.warn('🔄 Restart requested via webhook');
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ message: 'Restart initiated', timestamp: new Date().toISOString() }));
+        
+        // Gracefully shutdown and let process manager restart
+        setTimeout(() => {
+          logger.info('Shutting down for restart...');
+          process.exit(0);
+        }, 1000);
       } else {
         res.writeHead(404);
         res.end('Not Found');

@@ -848,4 +848,13 @@
 - [x] Enhance restart script to detect degraded health
 - [x] Add error count monitoring
 - [x] Test enhanced script (bot running with new logger)
+- [x] Save checkpoint
+
+
+## HTTP-Based Health Check System
+- [x] Expose bot health endpoint publicly (port 3001/health)
+- [x] Create restart webhook endpoint (POST /restart)
+- [x] Create scheduled task that calls health check (scripts/scheduled-health-check.sh)
+- [x] Test scheduled task execution (script working, health check passing)
+- [x] Scheduled task created (runs every 1 hour)
 - [ ] Save checkpoint
