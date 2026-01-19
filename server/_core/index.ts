@@ -9,7 +9,7 @@ import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
 import { publicApiRouter } from "./publicApi";
 import imageProxyRouter from "./imageProxy";
-import { startDiscordBot } from "../discord-bot";
+
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -72,12 +72,7 @@ async function startServer() {
     console.log(`Server running on http://localhost:${port}/`);
   });
 
-  // Discord bot is now managed by a separate standalone process (server/bot-standalone.ts)
-  // The web server should NOT start the bot to avoid conflicts with the standalone process
-  // Bot control is handled through the bot control API endpoints
-  console.log('[Discord Bot] Bot is managed by standalone process - web server will not start bot');
-  const globalAny = global as any;
-  globalAny.__discordBotStarted = false; // Always false for web server
+
 }
 
 startServer().catch(console.error);

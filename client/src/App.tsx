@@ -21,11 +21,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import TradeManagement from "./pages/TradeManagement";
 import TradeMachine from "./pages/TradeMachine";
 import CsvExport from "./pages/admin/CsvExport";
-import BotControl from "./pages/admin/BotControl";
-import BotStatus from "./pages/admin/BotStatus";
-import BotDashboard from "./pages/admin/BotDashboard";
-import BotMonitoring from "./pages/admin/BotMonitoring";
-import MonitoringAlerts from "./pages/admin/MonitoringAlerts";
+
 import TradeLog from "./pages/admin/TradeLog";
 import TeamAliases from "./pages/admin/TeamAliases";
 import TradeParser from "./pages/TradeParser";
@@ -54,13 +50,7 @@ function Router() {
       <Route path={"/admin/teams"} component={TeamAssignments} />
       <Route path={"/admin/team-assignments"} component={TeamAssignments} />
       <Route path={"/admin/csv-export"} component={CsvExport} />
-      <Route path={"/admin/bot-control"} component={BotControl} />
-      <Route path={"/admin/bot-status"} component={BotStatus} />
-      <Route path={"/admin/bot-dashboard"} component={BotDashboard} />
-      <Route path={"/admin/bot-monitoring"} component={BotMonitoring} />
-      <Route path={"/admin/monitoring-alerts"} component={MonitoringAlerts} />
-
-      <Route path={"/admin/team-aliases"} component={TeamAliases} />
+   <Route path={"/admin/team-aliases"} component={TeamAliases} />
       <Route path={"/trade-parser"} component={TradeParser} />
 
       <Route path={"/404"} component={NotFound} />

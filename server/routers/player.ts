@@ -4,7 +4,7 @@ import { players, transactionHistory } from "../../drizzle/schema";
 import { getDb } from "../db";
 import { protectedProcedure, publicProcedure, router } from "../_core/trpc";
 import { ENV } from "../_core/env";
-import { autoUpdateDiscord } from "../discord";
+
 
 export const playerRouter = router({
   // Debug: Check owner status
@@ -224,11 +224,7 @@ export const playerRouter = router({
         transactionType: player.team ? "trade" : "signing",
       });
 
-      // Trigger Discord auto-update with affected teams (non-blocking)
-      const affectedTeams = [player.team, input.team].filter(Boolean) as string[];
-      autoUpdateDiscord(affectedTeams).catch(err => 
-        console.error('[Discord] Auto-update failed:', err)
-      );
+      // Discord auto-update removed - bot functionality cleaned up
 
       return { success: true };
     }),

@@ -150,34 +150,7 @@ export const upgradeComplianceRouter = router({
         })
         .where(eq(upgradeViolations.id, input.id));
 
-      // Send Discord notification
-      const { getDiscordClient } = await import("../discord-bot");
-      const client = getDiscordClient();
-      
-      if (client) {
-        try {
-          const channelId = "1149106208498790500";
-          const channel = await client.channels.fetch(channelId);
-          
-          if (channel && channel.isTextBased() && 'send' in channel) {
-            const v = violation[0];
-            const message = `<@&Admin> **Upgrade Compliance Violation Flagged**\n\n` +
-              `**Player:** ${v.playerName || "Unknown"}\n` +
-              `**Upgrade Type:** ${v.upgradeType}\n` +
-              `**Violation:** ${v.violationType}\n` +
-              `**Rule Violated:** ${v.ruleViolated}\n` +
-              `**Details:** ${v.details}\n` +
-              `**Severity:** ${v.severity}\n` +
-              `**Flagged By:** ${input.flaggedBy}\n` +
-              `**Notes:** ${input.flagNotes || "None"}\n\n` +
-              `Please review and take appropriate action to remove this improper upgrade.`;
-
-            await channel.send(message);
-          }
-        } catch (error) {
-          console.error('[Upgrade Compliance] Failed to send Discord notification:', error);
-        }
-      }
+      // Discord notification removed - bot functionality cleaned up
 
       return { success: true };
     }),
