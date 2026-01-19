@@ -8,6 +8,8 @@ BOT_DIR="/home/ubuntu/nba2k26-database"
 HEALTH_URL="http://localhost:3001/health"
 LOG_FILE="/home/ubuntu/nba2k26-database/logs/bot-monitor.log"
 MAX_LOG_SIZE=1048576  # 1MB
+NOTIFY_SCRIPT="$BOT_DIR/scripts/discord-notify.sh"
+CHANNEL_ID="1444709506499088467"
 
 # Ensure log directory exists
 mkdir -p "$(dirname "$LOG_FILE")"
@@ -25,6 +27,17 @@ log() {
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1"
 }
 
+notify_discord() {
+    local title="$1"
+    local message="$2"
+    local color="${3:-3447003}"
+    local emoji="${4:-📢}"
+    
+    if [ -x "$NOTIFY_SCRIPT" ]; then
+        "$NOTIFY_SCRIPT" "$title" "$message" "$color" "$emoji"
+    fi
+}
+
 log "=========================================="
 log "=== Bot Health Check Started ==="
 log "=========================================="
@@ -34,6 +47,8 @@ BOT_PID=$(pgrep -f "tsx.*bot/index.ts" | head -1)
 
 if [ -z "$BOT_PID" ]; then
     log "❌ Bot process not found - starting bot..."
+    notify_discord "Bot Offline" "Bot process not found. Starting bot now..." "16711680" "⚠️"
+    
     cd "$BOT_DIR"
     
     # Kill any zombie processes first
@@ -48,8 +63,10 @@ if [ -z "$BOT_PID" ]; then
     NEW_PID=$(pgrep -f "tsx.*bot/index.ts" | head -1)
     if [ -n "$NEW_PID" ]; then
         log "✅ Bot started successfully (PID: $NEW_PID)"
+        notify_discord "Bot Restarted" "Bot has been successfully restarted (PID: $NEW_PID)" "65280" "✅"
     else
         log "❌ Failed to start bot"
+        notify_discord "Bot Start Failed" "Failed to start the bot. Check logs for details." "16711680" "❌"
         exit 1
     fi
 else
@@ -65,6 +82,7 @@ else
         log "   Health data: $HEALTH_DATA"
     else
         log "⚠️ Health check failed (HTTP $HEALTH_RESPONSE) - restarting bot..."
+        notify_discord "Bot Unhealthy" "Health check failed (HTTP $HEALTH_RESPONSE). Restarting bot..." "16776960" "🔄"
         
         # Kill existing process
         pkill -9 -f "tsx.*bot" 2>/dev/null
@@ -78,8 +96,10 @@ else
         NEW_PID=$(pgrep -f "tsx.*bot/index.ts" | head -1)
         if [ -n "$NEW_PID" ]; then
             log "✅ Bot restarted successfully (PID: $NEW_PID)"
+            notify_discord "Bot Recovered" "Bot has been recovered and is running again (PID: $NEW_PID)" "65280" "✅"
         else
             log "❌ Failed to restart bot"
+            notify_discord "Bot Recovery Failed" "Failed to restart the bot after health check failure. Check logs for details." "16711680" "❌"
             exit 1
         fi
     fi

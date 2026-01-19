@@ -831,4 +831,11 @@
 - [x] Make script executable
 - [x] Create Manus scheduled task (1-hour interval)
 - [x] Verify task is working (script tested successfully)
+- [x] Save checkpoint
+
+
+## Discord Notifications for Bot Health
+- [x] Create Discord webhook notification helper
+- [x] Update health check script with Discord notifications
+- [x] Test notifications
 - [ ] Save checkpoint
