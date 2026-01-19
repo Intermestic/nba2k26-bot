@@ -9,6 +9,11 @@ export const config = {
   // Discord
   discordToken: process.env.DISCORD_BOT_TOKEN || '',
   
+  // Discord object (for compatibility with slash commands)
+  discord: {
+    token: process.env.DISCORD_BOT_TOKEN || '',
+  },
+  
   // Channel IDs
   channels: {
     trades: process.env.TRADE_CHANNEL_ID || '1087524540634116116',
@@ -18,6 +23,11 @@ export const config = {
   
   // Admin user ID (for gated operations)
   adminUserId: '679275787664359435',
+  
+  // Admins object (for compatibility with slash commands)
+  admins: {
+    ownerId: '679275787664359435',
+  },
   
   // Voting thresholds
   voting: {

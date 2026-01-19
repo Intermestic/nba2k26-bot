@@ -8,6 +8,8 @@
     "build": "vite build && esbuild server/_core/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",
     "start": "NODE_ENV=production node dist/index.js",
     "bot": "tsx bot/index.ts",
+    "register-commands": "tsx bot/commands/register.ts",
+    "register-commands:guild": "tsx bot/commands/register.ts --guild",
     "bot:dev": "tsx watch bot/index.ts",
     "check": "tsc --noEmit",
     "format": "prettier --write .",
