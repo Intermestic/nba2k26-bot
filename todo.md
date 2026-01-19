@@ -109,6 +109,7 @@
 - [x] Fix bot not auto-restarting after crashes
 - [x] Fix manual bot restart failing due to stale database lock
 - [x] Improve lock acquisition logic to handle expired locks properly
+- [x] Add /restart Discord slash command for admin-only bot restarts
 
 
 ## Archive (Completed Features)
@@ -857,4 +858,12 @@
 - [x] Create scheduled task that calls health check (scripts/scheduled-health-check.sh)
 - [x] Test scheduled task execution (script working, health check passing)
 - [x] Scheduled task created (runs every 1 hour)
+- [x] Save checkpoint
+
+
+## /Restart Discord Slash Command
+- [ ] Add /restart command definition
+- [ ] Add handler in interactionCreate.ts
+- [ ] Register command with Discord
+- [ ] Test command in Discord
 - [ ] Save checkpoint

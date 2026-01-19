@@ -49,6 +49,9 @@ export async function handleInteraction(
       case 'scan-trades':
         await handleScanTrades(interaction, client);
         break;
+      case 'restart':
+        await handleRestart(interaction);
+        break;
       default:
         await interaction.reply({
           content: '❌ Unknown command',
@@ -487,5 +490,61 @@ async function handleScanTrades(
   } catch (error) {
     logger.error('Error during manual trade scan:', error);
     await interaction.editReply({ content: '❌ Failed to complete trade scan' });
+  }
+}
+
+
+/**
+ * /restart - Restart the bot (admin only, admin channel only)
+ */
+async function handleRestart(
+  interaction: ChatInputCommandInteraction
+): Promise<void> {
+  // Check if user is admin
+  if (interaction.user.id !== config.admins.ownerId) {
+    await interaction.reply({
+      content: '❌ Only admins can restart the bot',
+      ephemeral: true
+    });
+    return;
+  }
+
+  // Check if command is used in admin channel
+  if (interaction.channelId !== config.channels.admin) {
+    await interaction.reply({
+      content: `❌ This command can only be used in <#${config.channels.admin}>`,
+      ephemeral: true
+    });
+    return;
+  }
+
+  await interaction.deferReply();
+
+  try {
+    logger.info(`Bot restart requested by ${interaction.user.tag}`);
+
+    // Call the HTTP restart endpoint
+    const response = await fetch('http://localhost:3001/restart', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' }
+    });
+
+    if (response.ok) {
+      await interaction.editReply({
+        content: '✅ Bot restart initiated. The bot will restart in a few seconds.'
+      });
+      logger.info('Bot restart endpoint called successfully');
+    } else {
+      await interaction.editReply({
+        content: '❌ Failed to call restart endpoint. The bot may not be responding.'
+      });
+      logger.error(`Restart endpoint returned status ${response.status}`);
+    }
+
+  } catch (error) {
+    logger.error('Error calling restart endpoint:', error);
+    await interaction.editReply({
+      content: '❌ Failed to restart bot. Please check the logs.'
+    });
   }
 }

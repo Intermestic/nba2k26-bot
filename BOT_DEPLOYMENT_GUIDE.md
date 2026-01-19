@@ -187,6 +187,7 @@ The bot supports modern Discord slash commands. Type `/` in any channel to see a
 | `/bot-status` | View bot health, uptime, and connection info | Everyone |
 | `/help` | Show all available commands and usage tips | Everyone |
 | `/force-process` | Force approve or reject a trade | Admin only |
+| `/restart` | Restart the Discord bot | Admin only (admin channel) |
 
 ### Command Details
 
@@ -262,6 +263,26 @@ Force approve or reject a trade regardless of vote count.
 ```
 /force-process message_id:1234567890123456789 action:Approve
 ```
+
+---
+
+#### `/restart`
+Restart the Discord bot gracefully. This command calls the HTTP restart endpoint and initiates a bot restart.
+
+**Access:** Admin only, must be used in the admin channel (1444709506499088467)
+
+**Example:**
+```
+/restart
+```
+
+**Response:**
+Shows a confirmation message indicating the restart has been initiated. The bot will restart in a few seconds.
+
+**Note:** This command is useful for:
+- Applying code changes without manual intervention
+- Recovering from temporary connection issues
+- Clearing memory and restarting fresh
 
 ---
 

@@ -77,6 +77,12 @@ export const commands = [
         )
     )
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+
+  // Restart bot (admin only)
+  new SlashCommandBuilder()
+    .setName('restart')
+    .setDescription('Restart the Discord bot (admin only)')
+    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 ];
 
 // Export command data as JSON for registration
