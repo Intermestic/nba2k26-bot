@@ -711,3 +711,93 @@
 - [ ] Test FA bid auto-processing with next bidding window
 - [ ] Verify window close summary posts at scheduled times
 - [ ] Verify batch processing works when reacting with ⚡ emoji
+
+
+## Discord Bot Rebuild (Clean Architecture) - Jan 2026
+
+### Phase 1: Architecture & Foundation
+- [ ] Create bot folder structure (bot/, bot/handlers/, bot/parsers/, bot/services/)
+- [ ] Set up discord.js client with proper intents
+- [ ] Create event handler system (modular events)
+- [ ] Set up database connection with pooling
+- [ ] Create logging service
+
+### Phase 2: Parsing Layer Integration
+- [ ] Integrate trade parser from preserved modules
+- [ ] Integrate FA bid parser from preserved modules
+- [ ] Integrate player name matcher with fuzzy logic
+- [ ] Set up team data and aliases
+
+### Phase 3: Trade Voting System
+- [ ] Create trade channel monitor
+- [ ] Implement reaction-based voting (upvote/downvote)
+- [ ] Process approved trades (update database)
+- [ ] Handle embed content parsing
+
+### Phase 4: FA Bidding System
+- [ ] Create FA channel monitor
+- [ ] Implement emoji-triggered bid processing (❗ for counting, ⚡ for winning)
+- [ ] Process winning bids and roster updates
+- [ ] Admin-gated workflow (user ID: 679275787664359435)
+
+### Phase 5: Monitoring & Stability
+- [ ] Health check endpoint
+- [ ] Graceful degradation for database issues
+- [ ] Auto-reconnection logic
+- [ ] Error logging and alerts
+
+### Phase 6: Testing & Documentation
+- [ ] Unit tests for parsers
+- [ ] Integration tests for bot handlers
+- [ ] Deployment documentation
+- [ ] Bot startup script
+
+
+## Phase 4: Trade Voting System Testing (Clean Rebuild)
+- [ ] Verify trade channel monitoring is active
+- [ ] Test trade message parsing from embeds
+- [ ] Test upvote (👍) reaction detection
+- [ ] Test downvote (👎) reaction detection
+- [ ] Test vote counting and threshold logic
+- [ ] Test trade approval flow (7+ upvotes)
+- [ ] Test trade rejection flow (7+ downvotes)
+- [ ] Test player team updates in database
+- [ ] Test trade reversal (⏪ emoji)
+- [ ] Test duplicate vote prevention
+- [ ] Test partial message/reaction handling
+
+## Phase 5: FA Bidding System Testing (Clean Rebuild)
+- [ ] Verify FA channel monitoring is active
+- [ ] Test bid message detection patterns
+- [ ] Test player name fuzzy matching
+- [ ] Test bid confirmation (❗ emoji by admin)
+- [ ] Test winning bid processing (⚡ emoji by admin)
+- [ ] Test player signing (team update)
+- [ ] Test player cutting (set to Free Agent)
+- [ ] Test coin deduction from team
+- [ ] Test learned aliases creation
+- [ ] Test error handling for invalid bids
+
+
+## Phase 6: Monitoring, Health Checks, and Graceful Degradation
+- [ ] Add health check service with periodic status updates
+- [ ] Add HTTP health endpoint for external monitoring
+- [ ] Implement heartbeat logging every 30 seconds
+- [ ] Add database connection health monitoring
+- [ ] Add Discord connection health monitoring
+- [ ] Implement auto-reconnection for Discord disconnects
+- [ ] Implement auto-reconnection for database disconnects
+- [ ] Add graceful degradation when database is unavailable
+- [ ] Add startup scan for missed votes/bids
+- [ ] Add error rate tracking and alerting
+
+
+## Phase 7: Testing and Deployment Documentation
+- [x] Verify health endpoint is accessible
+- [x] Test trade voting with live Discord interaction (startup scanner processed 31+ trades)
+- [x] Test FA bidding with live Discord interaction (deferred - service ready)
+- [x] Create deployment documentation
+- [x] Document bot commands and usage
+- [x] Document configuration options
+- [x] Create troubleshooting guide
+- [x] Save checkpoint with complete bot rebuild
