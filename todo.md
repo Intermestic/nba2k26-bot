@@ -823,3 +823,12 @@
 - [x] Register updated commands with Discord
 - [x] Test command (bot running with new command)
 - [x] Save checkpoint
+
+
+## Bot Auto-Restart Scheduled Task
+- [x] Create scripts directory
+- [x] Create health check and restart script
+- [x] Make script executable
+- [x] Create Manus scheduled task (1-hour interval)
+- [x] Verify task is working (script tested successfully)
+- [ ] Save checkpoint
