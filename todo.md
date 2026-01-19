@@ -838,4 +838,14 @@
 - [x] Create Discord webhook notification helper
 - [x] Update health check script with Discord notifications
 - [x] Test notifications
+- [x] Save checkpoint
+
+
+## Fix Write EIO Errors and Enhance Health Monitoring
+- [x] Investigate root cause of write EIO errors (memory pressure identified)
+- [x] Check disk space and file descriptors (all OK, memory was the issue)
+- [x] Fix underlying issue causing EIO errors (enhanced logger with buffering and GC)
+- [x] Enhance restart script to detect degraded health
+- [x] Add error count monitoring
+- [x] Test enhanced script (bot running with new logger)
 - [ ] Save checkpoint
