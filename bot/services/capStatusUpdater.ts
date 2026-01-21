@@ -11,12 +11,13 @@ import { DatabaseService } from './database';
 import { config } from '../config';
 import { eq } from 'drizzle-orm';
 import * as schema from '../../drizzle/schema';
+import { TEAM_USER_MAPPING } from './teamMapping';
 
 // Cap limit constant
 const CAP_LIMIT = 1098;
 
 // Discord role ID for over-cap teams
-const OVER_CAP_ROLE_ID = '1440840392562970674'; // Will be replaced with actual role ID
+const OVER_CAP_ROLE_ID = '1208391241461665832'; // OVERCAP role
 
 // Message IDs for cap status embeds
 const CAP_STATUS_MESSAGE_IDS = {
@@ -25,38 +26,9 @@ const CAP_STATUS_MESSAGE_IDS = {
 };
 
 // Channel ID where cap status messages are posted
-const CAP_STATUS_CHANNEL_ID = '1087524540634116116'; // Trade channel
+const CAP_STATUS_CHANNEL_ID = '1280019275679137865'; // Cap status channel
 
-// Team to Discord role ID mapping (will need to be configured)
-const TEAM_ROLE_MAPPING: Record<string, string> = {
-  'Bucks': 'ROLE_ID_BUCKS',
-  'Bulls': 'ROLE_ID_BULLS',
-  'Cavaliers': 'ROLE_ID_CAVALIERS',
-  'Celtics': 'ROLE_ID_CELTICS',
-  'Grizzlies': 'ROLE_ID_GRIZZLIES',
-  'Hawks': 'ROLE_ID_HAWKS',
-  'Heat': 'ROLE_ID_HEAT',
-  'Hornets': 'ROLE_ID_HORNETS',
-  'Jazz': 'ROLE_ID_JAZZ',
-  'Kings': 'ROLE_ID_KINGS',
-  'Knicks': 'ROLE_ID_KNICKS',
-  'Lakers': 'ROLE_ID_LAKERS',
-  'Magic': 'ROLE_ID_MAGIC',
-  'Mavericks': 'ROLE_ID_MAVERICKS',
-  'Nets': 'ROLE_ID_NETS',
-  'Nuggets': 'ROLE_ID_NUGGETS',
-  'Pacers': 'ROLE_ID_PACERS',
-  'Pistons': 'ROLE_ID_PISTONS',
-  'Raptors': 'ROLE_ID_RAPTORS',
-  'Rockets': 'ROLE_ID_ROCKETS',
-  'Spurs': 'ROLE_ID_SPURS',
-  'Suns': 'ROLE_ID_SUNS',
-  'Thunder': 'ROLE_ID_THUNDER',
-  'Timberwolves': 'ROLE_ID_TIMBERWOLVES',
-  'Trail Blazers': 'ROLE_ID_TRAILBLAZERS',
-  'Warriors': 'ROLE_ID_WARRIORS',
-  '76ers': 'ROLE_ID_76ERS',
-};
+
 
 interface TeamCapStatus {
   team: string;
@@ -246,40 +218,36 @@ export class CapStatusUpdaterService {
       const capStatuses = await this.calculateAllTeamCapStatus();
       const overCapTeams = new Set(capStatuses.filter(t => t.isOverCap).map(t => t.team));
 
-      // Get all team assignments
-      const db = await this.db.getDB();
-      if (!db) {
-        logger.warn('Database not available for role updates');
+      // Get the over-cap role
+      const overCapRole = await guildObj.roles.fetch(OVER_CAP_ROLE_ID);
+      if (!overCapRole) {
+        logger.warn('Over-cap role not found');
         return;
       }
 
-      const assignments = await db.select().from(schema.teamAssignments);
-
-      for (const assignment of assignments) {
+      // Update roles for each team owner
+      for (const [team, userId] of Object.entries(TEAM_USER_MAPPING)) {
         try {
-          const member = await guildObj.members.fetch(assignment.discordUserId);
-          if (!member) continue;
+          const member = await guildObj.members.fetch(userId);
+          if (!member) {
+            logger.warn(`Member not found for user ID ${userId}`);
+            continue;
+          }
 
-          const isTeamOverCap = overCapTeams.has(assignment.team);
+          const isTeamOverCap = overCapTeams.has(team);
           const hasOverCapRole = member.roles.cache.some(r => r.id === OVER_CAP_ROLE_ID);
 
           if (isTeamOverCap && !hasOverCapRole) {
             // Add role
-            const role = await guildObj.roles.fetch(OVER_CAP_ROLE_ID);
-            if (role) {
-              await member.roles.add(role);
-              logger.info(`Added Over Cap role to ${member.user.tag} (${assignment.team})`);
-            }
+            await member.roles.add(overCapRole);
+            logger.info(`Added Over Cap role to ${member.user.tag} (${team})`);
           } else if (!isTeamOverCap && hasOverCapRole) {
             // Remove role
-            const role = await guildObj.roles.fetch(OVER_CAP_ROLE_ID);
-            if (role) {
-              await member.roles.remove(role);
-              logger.info(`Removed Over Cap role from ${member.user.tag} (${assignment.team})`);
-            }
+            await member.roles.remove(overCapRole);
+            logger.info(`Removed Over Cap role from ${member.user.tag} (${team})`);
           }
         } catch (error) {
-          logger.error(`Error updating roles for user ${assignment.discordUserId}:`, error);
+          logger.error(`Error updating roles for team ${team} (user ${userId}):`, error);
         }
       }
 

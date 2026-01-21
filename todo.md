@@ -880,9 +880,15 @@
 - [x] Update Last updated timestamp in embeds
 
 ### Testing
-- [ ] Test cap status update after trade approval
-- [ ] Test cap status update after FA bid processing
-- [ ] Test cap status update on bot restart
-- [ ] Verify "Over Cap" role is added to over-cap teams
-- [ ] Verify "Over Cap" role is removed from teams under cap
-- [ ] Verify embed messages update correctly with new totals
+- [x] Test cap status update after trade approval
+- [x] Test cap status update after FA bid processing
+- [x] Test cap status update on bot restart
+- [x] Verify "Over Cap" role is added to over-cap teams
+- [x] Verify "Over Cap" role is removed from teams under cap
+- [x] Verify embed messages update correctly with new totals
+
+### Configuration Complete
+- [x] OVERCAP role ID configured (1208391241461665832)
+- [x] Cap status message IDs configured (1440840389882941603, 1440840392562970674)
+- [x] Cap status channel ID configured (1280019275679137865)
+- [x] Team user mappings configured (all 28 teams with Discord user IDs)
