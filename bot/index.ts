@@ -18,6 +18,7 @@ import { Client, GatewayIntentBits, Partials } from 'discord.js';
 import { logger } from './services/logger';
 import { DatabaseService } from './services/database';
 import { HealthService } from './services/health';
+import { HealthReporter } from './services/healthReporter';
 import { StartupScanner } from './services/startupScanner';
 import { initCapStatusUpdater } from './services/capStatusUpdater';
 import { setupEventHandlers } from './handlers';
@@ -68,6 +69,8 @@ export async function startBot(): Promise<Client> {
     // Initialize health monitoring
     if (client) {
       HealthService.initialize(client);
+      // Initialize health reporter (reports to admin channel every hour)
+      HealthReporter.initialize(client, 60);
     }
     
     // Initialize cap status updater

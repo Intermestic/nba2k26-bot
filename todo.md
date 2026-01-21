@@ -892,3 +892,10 @@
 - [x] Cap status message IDs configured (1440840389882941603, 1440840392562970674)
 - [x] Cap status channel ID configured (1280019275679137865)
 - [x] Team user mappings configured (all 28 teams with Discord user IDs)
+
+## Health Check System Fix (User Reported Issue)
+- [x] Delete problematic scheduled-health-check.sh script
+- [x] Create internal Discord health check command (/health)
+- [x] Add health status embed with bot metrics
+- [x] Implement automatic health reporting to admin channel
+- [x] Test health check command and reporting

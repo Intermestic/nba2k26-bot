@@ -32,6 +32,11 @@ export const commands = [
     )
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
+  // Health check
+  new SlashCommandBuilder()
+    .setName("health")
+    .setDescription("Check the bot health status and metrics"),
+
   // Bot status
   new SlashCommandBuilder()
     .setName('bot-status')
@@ -56,6 +61,11 @@ export const commands = [
     )
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
+  // Health check
+  new SlashCommandBuilder()
+    .setName("health")
+    .setDescription("Check the bot health status and metrics"),
+
   // Force process a trade (admin only)
   new SlashCommandBuilder()
     .setName('force-process')
@@ -78,12 +88,24 @@ export const commands = [
     )
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
+  // Health check
+  new SlashCommandBuilder()
+    .setName("health")
+    .setDescription("Check the bot health status and metrics"),
+
   // Restart bot (admin only)
   new SlashCommandBuilder()
     .setName('restart')
     .setDescription('Restart the Discord bot (admin only)')
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+
+  // Health check
+  new SlashCommandBuilder()
+    .setName("health")
+    .setDescription("Check the bot health status and metrics"),
 ];
 
 // Export command data as JSON for registration
 export const commandsJSON = commands.map(cmd => cmd.toJSON());
+
+// Remove the closing bracket above and add health command
