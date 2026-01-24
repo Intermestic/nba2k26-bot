@@ -953,3 +953,4 @@
 - [x] Implement vote tracking (one vote per user per poll)
 - [x] Add 8-hour poll timer with auto-results announcement
 - [ ] Test preview polls in admin channel before going live
+- [x] Create admin-only test channel for award poll previews (via /awards setup-channel command)

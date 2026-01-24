@@ -19,6 +19,9 @@ export const config = {
     trades: process.env.TRADE_CHANNEL_ID || '1087524540634116116',
     freeAgency: process.env.FA_CHANNEL_ID || '1095812920056762510',
     tradeLog: process.env.TRADE_LOG_CHANNEL_ID || '1087524540634116116',
+    admin: '1444709506499088467',
+    voting: '1464505967394816236',
+    capStatus: '1280019275679137865',
   },
   
   // Admin user ID (for gated operations)

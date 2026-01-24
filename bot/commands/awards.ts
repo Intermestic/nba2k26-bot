@@ -5,8 +5,13 @@ export const awardsCommand = new SlashCommandBuilder()
   .setDescription('Manage award voting polls')
   .addSubcommand(subcommand =>
     subcommand
+      .setName('setup-channel')
+      .setDescription('Create a dedicated award-poll-testing channel (admin only)')
+  )
+  .addSubcommand(subcommand =>
+    subcommand
       .setName('preview')
-      .setDescription('Post preview polls to admin channel (admin only)')
+      .setDescription('Post preview polls to test channel (admin only)')
   )
   .addSubcommand(subcommand =>
     subcommand

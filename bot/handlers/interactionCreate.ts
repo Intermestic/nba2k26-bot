@@ -690,11 +690,30 @@ async function handleAwards(
     }
 
     switch (subcommand) {
+      case 'setup-channel':
+        await interaction.deferReply({ ephemeral: true });
+        if (!interaction.guild) {
+          await interaction.editReply({ content: '❌ This command must be used in a server.' });
+          return;
+        }
+        const setupResult = await awardVotingService.createTestChannel(interaction.guild);
+        await interaction.editReply({ content: setupResult.message });
+        break;
+
       case 'preview':
         await interaction.deferReply({ ephemeral: true });
+        const testChannelId = awardVotingService.getTestChannelId();
+        if (!testChannelId) {
+          await interaction.editReply({
+            content: '⚠️ No test channel found. Run `/awards setup-channel` first to create one, or polls will be posted to the admin channel.',
+          });
+          // Still post to admin channel as fallback
+        }
         await awardVotingService.postAllPreviewPolls();
         await interaction.editReply({
-          content: '✅ Preview polls have been posted to the admin channel. Review them before going live.',
+          content: testChannelId 
+            ? `✅ Preview polls have been posted to <#${testChannelId}>. Review them before going live.`
+            : '✅ Preview polls have been posted to the admin channel. Review them before going live.',
         });
         break;
 
@@ -730,7 +749,7 @@ async function handleAwards(
 
       default:
         await interaction.reply({
-          content: '❌ Unknown subcommand. Use `/awards preview`, `/awards live`, or `/awards status`.',
+          content: '❌ Unknown subcommand. Use `/awards setup-channel`, `/awards preview`, `/awards live`, or `/awards status`.',
           ephemeral: true,
         });
     }

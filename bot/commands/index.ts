@@ -95,8 +95,13 @@ export const commands = [
     .setDescription('Manage award voting polls (admin only)')
     .addSubcommand(subcommand =>
       subcommand
+        .setName('setup-channel')
+        .setDescription('Create a dedicated test channel for award poll previews')
+    )
+    .addSubcommand(subcommand =>
+      subcommand
         .setName('preview')
-        .setDescription('Post preview polls to admin channel')
+        .setDescription('Post preview polls to test channel')
     )
     .addSubcommand(subcommand =>
       subcommand

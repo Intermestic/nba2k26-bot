@@ -1,4 +1,4 @@
-import { Client, TextChannel, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, Message, AttachmentBuilder } from 'discord.js';
+import { Client, TextChannel, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, Message, AttachmentBuilder, ChannelType, PermissionFlagsBits, Guild } from 'discord.js';
 import { DatabaseService } from './database';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -9,8 +9,11 @@ const __dirname = path.dirname(__filename);
 
 // Configuration
 const VOTING_CHANNEL_ID = '1464505967394816236'; // Production voting channel
-const ADMIN_TEST_CHANNEL_ID = '1444709506499088467'; // Admin channel for testing
+const ADMIN_ROLE_ID = '1087524540634116116'; // Admin role ID for permissions
 const VOTE_DURATION_MS = 8 * 60 * 60 * 1000; // 8 hours in milliseconds
+
+// Test channel ID - will be set when channel is created
+let TEST_CHANNEL_ID: string | null = null;
 
 // Award types
 type AwardType = 'MVP' | 'DPOY' | 'ROY' | '6MOY';
@@ -114,6 +117,13 @@ const TEAM_ABBREV_MAP: Record<string, string> = {
   'Pelicans': 'NOP',
   'Clippers': 'LAC',
   'Kings': 'SAC',
+  'Raptors': 'TOR',
+  'Pistons': 'DET',
+  'Wizards': 'WAS',
+  'Rockets': 'HOU',
+  'Mavericks': 'DAL',
+  'Magic': 'ORL',
+  'Cavaliers': 'CLE',
 };
 
 // Store active polls
@@ -152,6 +162,99 @@ export class AwardVotingService {
     });
 
     console.log('[AwardVoting] Award voting service initialized');
+  }
+
+  /**
+   * Create a dedicated test channel for award poll previews
+   */
+  async createTestChannel(guild: Guild): Promise<{ success: boolean; channelId?: string; message: string }> {
+    try {
+      // Check if channel already exists
+      const existingChannel = guild.channels.cache.find(
+        ch => ch.name === 'award-poll-testing' && ch.type === ChannelType.GuildText
+      );
+      
+      if (existingChannel) {
+        TEST_CHANNEL_ID = existingChannel.id;
+        return {
+          success: true,
+          channelId: existingChannel.id,
+          message: `Test channel already exists: <#${existingChannel.id}>`,
+        };
+      }
+
+      // Create the channel
+      const channel = await guild.channels.create({
+        name: 'award-poll-testing',
+        type: ChannelType.GuildText,
+        topic: '🏆 Private channel for testing award voting polls before going live',
+        permissionOverwrites: [
+          {
+            id: guild.id, // @everyone role
+            deny: [PermissionFlagsBits.ViewChannel], // Hide from everyone
+          },
+          {
+            id: this.client.user!.id, // Bot
+            allow: [
+              PermissionFlagsBits.ViewChannel,
+              PermissionFlagsBits.SendMessages,
+              PermissionFlagsBits.EmbedLinks,
+              PermissionFlagsBits.AttachFiles,
+              PermissionFlagsBits.AddReactions,
+              PermissionFlagsBits.ManageMessages,
+            ],
+          },
+        ],
+      });
+
+      TEST_CHANNEL_ID = channel.id;
+      
+      // Send welcome message
+      await channel.send({
+        embeds: [
+          new EmbedBuilder()
+            .setTitle('🏆 Award Poll Testing Channel')
+            .setDescription(
+              'This is a private channel for testing award voting polls before going live.\n\n' +
+              '**Commands:**\n' +
+              '• `/awards preview` - Post preview polls here\n' +
+              '• `/awards live` - Post live polls to voting channel\n' +
+              '• `/awards status` - Check active poll status\n\n' +
+              '**Note:** Preview polls do not count votes and will not announce results.'
+            )
+            .setColor(0xFFD700)
+            .setTimestamp(),
+        ],
+      });
+
+      console.log(`[AwardVoting] Created test channel: ${channel.id}`);
+      
+      return {
+        success: true,
+        channelId: channel.id,
+        message: `✅ Created test channel: <#${channel.id}>\n\nYou can now use \`/awards preview\` to test polls here.`,
+      };
+    } catch (error) {
+      console.error('[AwardVoting] Error creating test channel:', error);
+      return {
+        success: false,
+        message: `❌ Failed to create test channel: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      };
+    }
+  }
+
+  /**
+   * Get the test channel ID (creates one if needed)
+   */
+  getTestChannelId(): string | null {
+    return TEST_CHANNEL_ID;
+  }
+
+  /**
+   * Set the test channel ID manually
+   */
+  setTestChannelId(channelId: string): void {
+    TEST_CHANNEL_ID = channelId;
   }
 
   private async handleVote(reaction: any, user: any, action: 'add' | 'remove'): Promise<void> {
@@ -334,10 +437,12 @@ export class AwardVotingService {
   }
 
   async postAllPreviewPolls(): Promise<void> {
-    console.log('[AwardVoting] Posting all preview polls to admin channel...');
+    // Use test channel if available, otherwise fall back to admin channel
+    const channelId = TEST_CHANNEL_ID || '1444709506499088467';
+    console.log(`[AwardVoting] Posting all preview polls to channel ${channelId}...`);
     
     for (const poll of AWARD_POLLS) {
-      await this.postPoll(ADMIN_TEST_CHANNEL_ID, poll, true);
+      await this.postPoll(channelId, poll, true);
       // Wait a bit between posts to avoid rate limiting
       await new Promise(resolve => setTimeout(resolve, 2000));
     }
