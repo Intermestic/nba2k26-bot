@@ -359,6 +359,21 @@
 
 - [x] Fix Discord bot not posting approval message or auto-processing trade for message ID 1450771119580647539 (Spurs/Pacers trade) - Added automatic trade scanning on bot startup
 
+## Player Rating Updates (User Requested)
+- [x] Update Maxime Raynaud to 77
+- [x] Update Dayron Sharpe to 75
+- [x] Update Cason Wallace to 80
+- [x] Update Anthony Edwards to 95
+- [x] Update Jabari Smith Jr. to 81
+- [x] Update Egor Demin to 77
+- [x] Update Kawhi Leonard to 94
+- [x] Update Mark Williams to 82
+- [x] Update Siddy Cissoko to 73
+- [x] Update Kon Knueppel to 85
+- [x] Update Tre Johnson to 78
+- [x] Update Kel'el Ware to 82
+- [x] Update Dylan Cardwell to 71
+
 ## Discord Bot Trade Processing Bugs (Dec 14, 2024)
 
 - [x] Fix trade 1449569426373349408 (Hawks/Rockets) - approved 7-0 but showing "No trade record found" error when processing
@@ -899,3 +914,9 @@
 - [x] Add health status embed with bot metrics
 - [x] Implement automatic health reporting to admin channel
 - [x] Test health check command and reporting
+
+## Player Data Cleanup (User Requested)
+- [x] Remove accents/diacritics from all player names in database
+- [x] Verify all 2K rating links are active (https://www.2kratings.com/player-name format)
+- [x] Update broken 2K rating links to correct URLs
+- [x] Generate report of updated player names and links
