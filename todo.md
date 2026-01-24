@@ -936,3 +936,20 @@
 - [x] Integrate FAPlayerSelection into FA Management page
 - [x] Add search tips and keyboard navigation
 - [x] Test player selection with typos and partial names
+
+## Award Voting Polls (User Requested)
+- [ ] Generate custom 3D award trophy images (MVP, DPOY, ROY, 6MOY) with transparent backgrounds
+- [ ] Create admin-only test channel for poll preview
+- [ ] Build award voting bot command and poll system
+- [ ] Create poll embeds with player headshots and team logos from database
+- [ ] Implement vote tracking (one vote per user per poll, changeable)
+- [ ] Add auto-results announcement after 8 hours
+- [ ] Test polls in admin channel before going live
+
+## Award Voting Polls (User Requested)
+- [x] Generate custom 3D award trophy images (MVP, DPOY, ROY, 6MOY)
+- [x] Build award voting bot command (/awards)
+- [x] Create poll embeds with player headshots and team logos
+- [x] Implement vote tracking (one vote per user per poll)
+- [x] Add 8-hour poll timer with auto-results announcement
+- [ ] Test preview polls in admin channel before going live

@@ -21,6 +21,7 @@ import { HealthService } from './services/health';
 import { HealthReporter } from './services/healthReporter';
 import { StartupScanner } from './services/startupScanner';
 import { initCapStatusUpdater } from './services/capStatusUpdater';
+import { initializeAwardVoting } from './services/awardVoting';
 import { setupEventHandlers } from './handlers';
 import { config } from './config';
 
@@ -77,6 +78,13 @@ export async function startBot(): Promise<Client> {
     if (client) {
       initCapStatusUpdater(client);
       logger.info('✅ Cap status updater initialized');
+    }
+    
+    // Initialize award voting service
+    if (client) {
+      const awardVotingService = initializeAwardVoting(client);
+      await awardVotingService.initialize();
+      logger.info('✅ Award voting service initialized');
     }
     
     // Run startup scan for missed votes/bids

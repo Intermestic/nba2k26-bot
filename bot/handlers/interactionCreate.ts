@@ -55,6 +55,9 @@ export async function handleInteraction(
       case 'health':
         await handleHealth(interaction);
         break;
+      case 'awards':
+        await handleAwards(interaction, client);
+        break;
       default:
         await interaction.reply({
           content: '❌ Unknown command',
@@ -649,4 +652,99 @@ function formatUptime(seconds: number): string {
   if (secs > 0 || parts.length === 0) parts.push(`${secs}s`);
 
   return parts.join(' ');
+}
+
+
+/**
+ * /awards - Manage award voting polls (admin only)
+ */
+async function handleAwards(
+  interaction: ChatInputCommandInteraction,
+  client: Client
+): Promise<void> {
+  // Check if user is admin
+  const OWNER_ID = config.ownerId;
+  const ADMIN_CHANNEL_ID = '1444709506499088467';
+  
+  if (interaction.user.id !== OWNER_ID && interaction.channelId !== ADMIN_CHANNEL_ID) {
+    await interaction.reply({
+      content: '❌ This command is only available to admins in the admin channel.',
+      ephemeral: true,
+    });
+    return;
+  }
+
+  const subcommand = interaction.options.getSubcommand();
+  
+  try {
+    // Dynamically import to avoid circular dependencies
+    const { getAwardVotingService } = await import('../services/awardVoting');
+    const awardVotingService = getAwardVotingService();
+    
+    if (!awardVotingService) {
+      await interaction.reply({
+        content: '❌ Award voting service is not initialized. Please restart the bot.',
+        ephemeral: true,
+      });
+      return;
+    }
+
+    switch (subcommand) {
+      case 'preview':
+        await interaction.deferReply({ ephemeral: true });
+        await awardVotingService.postAllPreviewPolls();
+        await interaction.editReply({
+          content: '✅ Preview polls have been posted to the admin channel. Review them before going live.',
+        });
+        break;
+
+      case 'live':
+        await interaction.deferReply({ ephemeral: true });
+        await awardVotingService.postAllLivePolls();
+        await interaction.editReply({
+          content: '✅ Live polls have been posted to the voting channel. Voting will end in 8 hours.',
+        });
+        break;
+
+      case 'status':
+        const activePolls = awardVotingService.getActivePolls();
+        if (activePolls.length === 0) {
+          await interaction.reply({
+            content: '📊 No active polls at the moment.',
+            ephemeral: true,
+          });
+        } else {
+          const statusLines = activePolls.map(poll => {
+            const voteCount = poll.votes.size;
+            const timeLeft = Math.max(0, poll.endTime.getTime() - Date.now());
+            const hoursLeft = Math.floor(timeLeft / (1000 * 60 * 60));
+            const minutesLeft = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+            return `**${poll.awardType}**: ${voteCount} votes • ${poll.isPreview ? 'PREVIEW' : `${hoursLeft}h ${minutesLeft}m left`}`;
+          });
+          await interaction.reply({
+            content: `📊 **Active Polls:**\n${statusLines.join('\n')}`,
+            ephemeral: true,
+          });
+        }
+        break;
+
+      default:
+        await interaction.reply({
+          content: '❌ Unknown subcommand. Use `/awards preview`, `/awards live`, or `/awards status`.',
+          ephemeral: true,
+        });
+    }
+  } catch (error) {
+    logger.error('Error executing awards command:', error);
+    if (interaction.deferred) {
+      await interaction.editReply({
+        content: '❌ Error executing awards command. Check bot logs for details.',
+      });
+    } else {
+      await interaction.reply({
+        content: '❌ Error executing awards command. Check bot logs for details.',
+        ephemeral: true,
+      });
+    }
+  }
 }

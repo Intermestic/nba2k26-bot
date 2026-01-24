@@ -61,11 +61,6 @@ export const commands = [
     )
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
-  // Health check
-  new SlashCommandBuilder()
-    .setName("health")
-    .setDescription("Check the bot health status and metrics"),
-
   // Force process a trade (admin only)
   new SlashCommandBuilder()
     .setName('force-process')
@@ -88,24 +83,33 @@ export const commands = [
     )
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
-  // Health check
-  new SlashCommandBuilder()
-    .setName("health")
-    .setDescription("Check the bot health status and metrics"),
-
   // Restart bot (admin only)
   new SlashCommandBuilder()
     .setName('restart')
     .setDescription('Restart the Discord bot (admin only)')
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
-  // Health check
+  // Award voting polls (admin only)
   new SlashCommandBuilder()
-    .setName("health")
-    .setDescription("Check the bot health status and metrics"),
+    .setName('awards')
+    .setDescription('Manage award voting polls (admin only)')
+    .addSubcommand(subcommand =>
+      subcommand
+        .setName('preview')
+        .setDescription('Post preview polls to admin channel')
+    )
+    .addSubcommand(subcommand =>
+      subcommand
+        .setName('live')
+        .setDescription('Post live polls to voting channel')
+    )
+    .addSubcommand(subcommand =>
+      subcommand
+        .setName('status')
+        .setDescription('Check status of active polls')
+    )
+    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 ];
 
 // Export command data as JSON for registration
 export const commandsJSON = commands.map(cmd => cmd.toJSON());
-
-// Remove the closing bracket above and add health command
