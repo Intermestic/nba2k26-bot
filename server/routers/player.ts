@@ -4,6 +4,7 @@ import { players, transactionHistory } from "../../drizzle/schema";
 import { getDb } from "../db";
 import { protectedProcedure, publicProcedure, router } from "../_core/trpc";
 import { ENV } from "../_core/env";
+import { fuzzySearchPlayers, searchPlayersCombined } from "../utils/fuzzySearch";
 
 
 export const playerRouter = router({
@@ -287,5 +288,80 @@ export const playerRouter = router({
         .limit(input.limit);
 
       return transactions.reverse(); // Most recent first
+    }),
+
+  // Fuzzy search with typo tolerance
+  fuzzySearch: publicProcedure
+    .input(
+      z.object({
+        query: z.string().min(1),
+        limit: z.number().min(1).max(50).default(10),
+      })
+    )
+    .query(async ({ input }) => {
+      const db = await getDb();
+      if (!db) throw new Error("Database not available");
+
+      try {
+        const allPlayers = await db.select().from(players);
+        
+        const results = fuzzySearchPlayers(
+          input.query,
+          allPlayers.map(p => ({
+            id: parseInt(p.id) || 0,
+            name: p.name,
+            overall: p.overall,
+            team: p.team,
+            photo_url: p.photoUrl,
+            player_page_url: p.playerPageUrl,
+          })),
+          input.limit
+        );
+
+        return results;
+      } catch (error: any) {
+        console.error('[player.fuzzySearch] Query failed:', error);
+        throw error;
+      }
+    }),
+
+  // Advanced search with filters
+  advancedSearch: publicProcedure
+    .input(
+      z.object({
+        query: z.string().optional(),
+        team: z.string().optional(),
+        minRating: z.number().min(0).max(99).optional(),
+        maxRating: z.number().min(0).max(99).optional(),
+        limit: z.number().min(1).max(100).default(20),
+      })
+    )
+    .query(async ({ input }) => {
+      const db = await getDb();
+      if (!db) throw new Error("Database not available");
+
+      try {
+        const allPlayers = await db.select().from(players);
+        
+        const results = searchPlayersCombined(
+          input.query || "",
+          input.team,
+          input.minRating,
+          input.maxRating,
+          allPlayers.map(p => ({
+            id: parseInt(p.id) || 0,
+            name: p.name,
+            overall: p.overall,
+            team: p.team,
+            photo_url: p.photoUrl,
+            player_page_url: p.playerPageUrl,
+          }))
+        );
+
+        return results.slice(0, input.limit);
+      } catch (error: any) {
+        console.error('[player.advancedSearch] Query failed:', error);
+        throw error;
+      }
     }),
 });

@@ -920,3 +920,12 @@
 - [x] Verify all 2K rating links are active (https://www.2kratings.com/player-name format)
 - [x] Update broken 2K rating links to correct URLs
 - [x] Generate report of updated player names and links
+
+## Player Search with Fuzzy Matching (User Requested)
+- [x] Install fuzzy-search library (fuse.js)
+- [x] Create fuzzy search utility function
+- [x] Add fuzzy search tRPC procedure to players router
+- [x] Update player search UI component with autocomplete
+- [x] Integrate PlayerSearch into TradeMachine page
+- [x] Test fuzzy matching with common typos and variations
+- [x] Verify search performance with 654 players

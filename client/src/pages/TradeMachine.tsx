@@ -3,6 +3,7 @@ import { useState, useMemo } from "react";
 import { useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
+import { PlayerSearch } from "@/components/PlayerSearch";
 import {
   Select,
   SelectContent,
