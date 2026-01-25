@@ -970,3 +970,16 @@
   - Nic Claxton (82) - In DB as "Nicolas Claxton" on Jazz (different team)
   - Cameron Thomas (82) - Not in database
   - Tyrese Martin (73) - Not in database
+
+
+## Complete NBA 2K26 Ratings Sync (Jan 25, 2026)
+
+- [x] Batch 1: Sync ratings for Hawks, Celtics, Nets, Hornets, Bulls, Cavaliers, Mavericks, Nuggets, Pistons (9 teams)
+- [x] Batch 2: Sync ratings for Warriors, Rockets, Pacers, Clippers, Lakers, Grizzlies, Heat, Bucks, Timberwolves (9 teams)
+- [x] Batch 3: Sync ratings for Pelicans, Knicks, Thunder, Magic, 76ers, Suns, Trail Blazers, Kings, Spurs, Raptors, Jazz, Wizards (12 teams)
+- [x] Batch 4: Sync ratings for Free Agency players (118 players)
+- [x] Create hybrid matching system (exact match → fuzzy match with 85% threshold)
+- [x] Apply minimum 70 overall rating requirement across all players
+- [x] Total players synced: 506 from 2kratings.com
+- [x] Total ratings updated: 265 player ratings
+- [x] Match rate: 97.4% average across all batches
