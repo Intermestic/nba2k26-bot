@@ -305,6 +305,11 @@ export default function Home() {
                   Trade Machine
                 </Link>
               </Button>
+              <Button asChild variant="outline" className="bg-purple-900 border-purple-700 hover:bg-purple-800">
+                <a href="https://tinyurl.com/hof2ksn" target="_blank" rel="noopener noreferrer">
+                  📺 HoFSN
+                </a>
+              </Button>
 
             </div>
           </div>
