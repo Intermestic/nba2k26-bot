@@ -954,3 +954,19 @@
 - [x] Add 8-hour poll timer with auto-results announcement
 - [ ] Test preview polls in admin channel before going live
 - [x] Create admin-only test channel for award poll previews (via /awards setup-channel command)
+
+## Player Ratings Sync from 2kratings.com
+
+- [ ] Sync player ratings from 2kratings.com for ATL, BOS, BKN, CHA, CHI, CLE, DAL, DEN, DET
+
+
+## Ratings Sync from 2kratings.com (Jan 24, 2025)
+
+- [x] Scrape player ratings from 2kratings.com for 9 teams (Hawks, Celtics, Nets, Hornets, Bulls, Cavaliers, Mavericks, Nuggets, Pistons)
+- [x] Match scraped players to database using hybrid approach (exact match → fuzzy match)
+- [x] Update 85 player ratings in database
+- [x] Enforce minimum 70 overall rating requirement
+- [ ] Manually review 3 unmatched players:
+  - Nic Claxton (82) - In DB as "Nicolas Claxton" on Jazz (different team)
+  - Cameron Thomas (82) - Not in database
+  - Tyrese Martin (73) - Not in database

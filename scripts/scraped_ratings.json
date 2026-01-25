@@ -1,0 +1,22 @@
+{
+  "teams": {
+    "ATL": [
+      {"name": "Jalen Johnson", "overall": 89},
+      {"name": "Kristaps Porzingis", "overall": 84},
+      {"name": "Nickeil Alexander-Walker", "overall": 83},
+      {"name": "Dyson Daniels", "overall": 83},
+      {"name": "C.J. McCollum", "overall": 82},
+      {"name": "Onyeka Okongwu", "overall": 82},
+      {"name": "Zaccharie Risacher", "overall": 78},
+      {"name": "Vit Krejci", "overall": 77},
+      {"name": "Corey Kispert", "overall": 77},
+      {"name": "Luke Kennard", "overall": 76},
+      {"name": "Asa Newell", "overall": 75},
+      {"name": "Mouhamed Gueye", "overall": 74},
+      {"name": "Caleb Houstan", "overall": 73},
+      {"name": "Keaton Wallace", "overall": 72},
+      {"name": "Christian Koloko", "overall": 71},
+      {"name": "RayJ Dennis", "overall": 71}
+    ]
+  }
+}
