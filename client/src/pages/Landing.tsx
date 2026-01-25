@@ -54,6 +54,16 @@ export default function Landing() {
                 <Shield className="h-4 w-4" />
                 Admin
               </Button>
+              <Button
+                asChild
+                variant="outline"
+                className="gap-2 bg-purple-900 border-purple-700 hover:bg-purple-800"
+                size="default"
+              >
+                <a href="https://tinyurl.com/hof2ksn" target="_blank" rel="noopener noreferrer">
+                  📺 HoFSN
+                </a>
+              </Button>
             </div>
           </div>
         </div>
