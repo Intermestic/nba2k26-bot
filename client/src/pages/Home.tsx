@@ -605,7 +605,7 @@ export default function Home() {
       <Dialog open={editingPlayer !== null} onOpenChange={(open) => {
         if (!open) setEditingPlayer(null);
       }}>
-        <DialogContent className="bg-slate-800 border-slate-700 text-white">
+        <DialogContent className="bg-slate-800 border-slate-700 text-white max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Edit Player</DialogTitle>
             <DialogDescription className="text-slate-400">

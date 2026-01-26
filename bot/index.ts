@@ -67,6 +67,15 @@ export async function startBot(): Promise<Client> {
     logger.info(`✅ Bot logged in as ${client?.user?.tag}`);
     logger.info(`📊 Watching ${client?.guilds.cache.size} servers`);
     
+    // Start HOFSN webhook server
+    try {
+      const { startHOFSNServer } = await import('./services/hofsnServer');
+      startHOFSNServer(client);
+      logger.info('✅ HOFSN webhook server started');
+    } catch (error) {
+      logger.error('Failed to start HOFSN server:', error);
+    }
+    
     // Initialize health monitoring
     if (client) {
       HealthService.initialize(client);

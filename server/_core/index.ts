@@ -46,6 +46,10 @@ async function startServer() {
   const faTransactionsRouter = (await import('../routes/fa-transactions')).default;
   app.use("/api/fa-transactions", faTransactionsRouter);
 
+  // HOFSN webhook endpoint
+  const hofsnWebhookRouter = (await import('../routes/hofsn-webhook')).default;
+  app.use("/api/hofsn-webhook", hofsnWebhookRouter);
+
   // tRPC API
   app.use(
     "/api/trpc",

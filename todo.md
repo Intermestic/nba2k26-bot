@@ -983,3 +983,9 @@
 - [x] Total players synced: 506 from 2kratings.com
 - [x] Total ratings updated: 265 player ratings
 - [x] Match rate: 97.4% average across all batches
+
+
+## HOFSN Integration
+- [ ] Set up Discord bot to monitor HOFSN articles
+- [ ] Create embed formatter for highlight cards
+- [ ] Post articles to channel 1438492724381876405 with clickable links
