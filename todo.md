@@ -1006,3 +1006,15 @@
 - [x] Ensure both links open in new tabs
 - [x] Add bbrefUrl field to Player interface in Home.tsx
 - [x] Verify 666 players have Basketball Reference URLs populated in database
+
+## Bot Reliability Improvements (Jan 26, 2026)
+
+### Goal: Achieve minimum 18 hours daily uptime via Keep-Alive System
+
+- [x] Analyze current bot downtime causes (sandbox hibernation)
+- [x] Implement self-ping system to keep sandbox active (HTTP requests every 5 minutes)
+- [x] Add Discord activity heartbeat (periodic status updates or presence changes)
+- [x] Create keep-alive service that runs independently
+- [x] Test keep-alive system - verified pings working every 5 minutes
+- [ ] Monitor actual uptime over 24-48 hours and adjust if needed
+- [x] Document keep-alive system configuration (KEEP_ALIVE_SYSTEM.md)

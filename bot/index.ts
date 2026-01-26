@@ -22,6 +22,7 @@ import { HealthReporter } from './services/healthReporter';
 import { StartupScanner } from './services/startupScanner';
 import { initCapStatusUpdater } from './services/capStatusUpdater';
 import { initializeAwardVoting } from './services/awardVoting';
+import { initializeKeepAlive } from './services/keepAlive';
 import { setupEventHandlers } from './handlers';
 import { config } from './config';
 
@@ -96,6 +97,18 @@ export async function startBot(): Promise<Client> {
       logger.info('✅ Award voting service initialized');
     }
     
+    // Initialize keep-alive service to prevent sandbox hibernation
+    if (client) {
+      const keepAlive = initializeKeepAlive(client);
+      keepAlive.start();
+      logger.info('✅ Keep-alive service initialized');
+      
+      // Update Discord presence every 10 minutes
+      setInterval(() => {
+        keepAlive.updatePresence();
+      }, 10 * 60 * 1000);
+    }
+    
     // Run startup scan for missed votes/bids
     if (client) {
       await StartupScanner.initialize(client);
@@ -151,6 +164,13 @@ export async function startBot(): Promise<Client> {
  */
 export async function stopBot(): Promise<void> {
   logger.info('🛑 Stopping bot...');
+  
+  // Stop keep-alive service
+  const { getKeepAlive } = await import('./services/keepAlive');
+  const keepAlive = getKeepAlive();
+  if (keepAlive) {
+    keepAlive.stop();
+  }
   
   // Stop health monitoring
   HealthService.stop();
