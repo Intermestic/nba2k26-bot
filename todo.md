@@ -1037,3 +1037,16 @@
 - [x] Display current bot status and error counts
 - [x] Add auto-refresh for real-time monitoring
 - [x] Test dashboard with historical data - working perfectly
+
+## Bot Downtime Investigation & Fix (Jan 26, 2026)
+
+- [x] Restart Discord bot - now running successfully
+- [x] Check bot process status - confirmed online
+- [x] Review bot.log for errors and crash reasons - no crashes, sandbox was reset
+- [x] Investigate why keep-alive system failed - root cause: sandbox reset kills all processes
+- [x] Check if sandbox hibernated despite keep-alive pings - sandbox was completely reset between sessions
+- [x] Implement PM2 for automatic restart on crash - bot now managed by PM2
+- [x] Add crash detection and auto-recovery - PM2 auto-restarts on crash (max 10 restarts)
+- [x] Create start-bot.sh script for easy bot startup after sandbox resets
+- [x] Test bot stability - PM2 restart tested successfully, bot came back online
+- [x] Document root cause and solution - BOT_RELIABILITY_GUIDE.md created
