@@ -51,6 +51,25 @@ export type Player = typeof players.$inferSelect;
 export type InsertPlayer = typeof players.$inferInsert;
 
 /**
+ * Bot health metrics table for monitoring dashboard
+ * Stores periodic health check results for trend analysis
+ */
+export const botHealthMetrics = mysqlTable("botHealthMetrics", {
+  id: int("id").autoincrement().primaryKey(),
+  timestamp: timestamp("timestamp").defaultNow().notNull(),
+  status: varchar("status", { length: 20 }).notNull(), // healthy, degraded, unhealthy
+  uptime: int("uptime").notNull(), // Bot uptime in seconds
+  errors: int("errors").notNull(), // Error count
+  healthResponseTime: int("healthResponseTime").notNull(), // Health endpoint response time in ms
+  webResponseTime: int("webResponseTime"), // Web server response time in ms (nullable if down)
+  webServerUp: int("webServerUp").notNull(), // 1 = up, 0 = down
+  message: text("message"), // Status message or error description
+});
+
+export type BotHealthMetric = typeof botHealthMetrics.$inferSelect;
+export type InsertBotHealthMetric = typeof botHealthMetrics.$inferInsert;
+
+/**
  * Transaction history table to track all player movements
  */
 export const transactionHistory = mysqlTable("transaction_history", {

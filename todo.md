@@ -1026,3 +1026,14 @@
 - [x] Verify bot uptime and error counts
 - [x] Test script execution - working perfectly
 - [x] Document script usage and scheduling options (README_HEALTH_CHECK.md)
+
+## Bot Monitoring Dashboard (Jan 26, 2026)
+
+- [x] Modify health check script to output JSON logs with timestamps
+- [x] Create database table to store health check history
+- [x] Build tRPC endpoint to fetch health metrics
+- [x] Create dashboard page with uptime charts
+- [x] Add response time trend visualization
+- [x] Display current bot status and error counts
+- [x] Add auto-refresh for real-time monitoring
+- [x] Test dashboard with historical data - working perfectly

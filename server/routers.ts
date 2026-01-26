@@ -34,6 +34,7 @@ import { upgradeLimitsRouter } from './routers/upgradeLimits';
 import { badgeAdditionsRouter } from './routers/badgeAdditions';
 import { upgradeHistoryRouter } from './routers/upgradeHistory';
 import { teamAliasesRouter } from './routers/teamAliases';
+import { botMonitoringRouter } from './routers/botMonitoring';
 
 
 
@@ -120,6 +121,7 @@ export const appRouter = router({
   
   // Team aliases management for trade parsing
   teamAliases: teamAliasesRouter,
+  botMonitoring: botMonitoringRouter,
   
   
    });

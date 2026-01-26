@@ -1,0 +1,9 @@
+{
+  "query": "CREATE TABLE IF NOT EXISTS `botHealthMetrics` (\n  `id` INT AUTO_INCREMENT PRIMARY KEY,\n  `timestamp` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,\n  `status` VARCHAR(20) NOT NULL,\n  `uptime` INT NOT NULL,\n  `errors` INT NOT NULL,\n  `healthResponseTime` INT NOT NULL,\n  `webResponseTime` INT,\n  `webServerUp` INT NOT NULL,\n  `message` TEXT\n);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user waCuRew5RKYFFjj.root --database DS68jwRuNTWiz9tNrw6KXW --execute CREATE TABLE IF NOT EXISTS `botHealthMetrics` (\n  `id` INT AUTO_INCREMENT PRIMARY KEY,\n  `timestamp` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,\n  `status` VARCHAR(20) NOT NULL,\n  `uptime` INT NOT NULL,\n  `errors` INT NOT NULL,\n  `healthResponseTime` INT NOT NULL,\n  `webResponseTime` INT,\n  `webServerUp` INT NOT NULL,\n  `message` TEXT\n);",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 267
+}

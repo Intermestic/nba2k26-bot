@@ -25,6 +25,7 @@ import CsvExport from "./pages/admin/CsvExport";
 import TradeLog from "./pages/admin/TradeLog";
 import TeamAliases from "./pages/admin/TeamAliases";
 import TradeParser from "./pages/TradeParser";
+import BotMonitoring from "./pages/BotMonitoring";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -50,7 +51,8 @@ function Router() {
       <Route path={"/admin/teams"} component={TeamAssignments} />
       <Route path={"/admin/team-assignments"} component={TeamAssignments} />
       <Route path={"/admin/csv-export"} component={CsvExport} />
-   <Route path={"/admin/team-aliases"} component={TeamAliases} />
+      <Route path={"/admin/team-aliases"} component={TeamAliases} />
+      <Route path={"/admin/bot-monitoring"} component={BotMonitoring} />
       <Route path={"/trade-parser"} component={TradeParser} />
 
       <Route path={"/404"} component={NotFound} />
