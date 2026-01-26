@@ -989,3 +989,20 @@
 - [ ] Set up Discord bot to monitor HOFSN articles
 - [ ] Create embed formatter for highlight cards
 - [ ] Post articles to channel 1438492724381876405 with clickable links
+
+
+## Player Card UI Updates
+- [ ] Import Basketball Reference URLs from CSV to database
+- [ ] Add bbrefUrl column to players table schema
+- [ ] Update player card UI to replace "View Details" with "View 2KRatings"
+- [ ] Add "View BBRef" link to player cards
+- [ ] Keep Edit option visible only for admins
+
+## Player Card UI Update (Jan 25, 2026)
+
+- [x] Update player card UI to show "View 2KRatings" button instead of "View Details"
+- [x] Add "View BBRef" button to player cards for Basketball Reference links
+- [x] Keep "Edit" button visible only for admins
+- [x] Ensure both links open in new tabs
+- [x] Add bbrefUrl field to Player interface in Home.tsx
+- [x] Verify 666 players have Basketball Reference URLs populated in database

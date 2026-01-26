@@ -29,6 +29,7 @@ interface Player {
   team?: string | null;
   photoUrl?: string | null;
   playerPageUrl?: string | null;
+  bbrefUrl?: string | null;
   badgeCount?: number | null;
   salaryCap?: number | null;
   isRookie?: number;
@@ -544,7 +545,7 @@ export default function Home() {
                     {player.team && player.team !== "Free Agents" && (
                       <p className="text-xs text-slate-400 mt-1">{player.team}</p>
                     )}
-                    <div className="flex gap-2 mt-2">
+                    <div className="flex gap-2 mt-2 flex-wrap">
                       {player.playerPageUrl && (
                         <a
                           href={player.playerPageUrl}
@@ -552,7 +553,17 @@ export default function Home() {
                           rel="noopener noreferrer"
                           className="text-xs text-blue-400 hover:text-blue-300 inline-block"
                         >
-                          View Details →
+                          View 2KRatings →
+                        </a>
+                      )}
+                      {player.bbrefUrl && (
+                        <a
+                          href={player.bbrefUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-xs text-orange-400 hover:text-orange-300 inline-block"
+                        >
+                          View BBRef →
                         </a>
                       )}
 

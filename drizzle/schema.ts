@@ -34,6 +34,7 @@ export const players = mysqlTable("players", {
   overall: int("overall").notNull(), // NBA 2K26 overall rating
   photoUrl: text("photoUrl"), // NBA.com or 2kratings photo URL
   playerPageUrl: text("playerPageUrl"), // 2kratings player page URL
+  bbrefUrl: text("bbrefUrl"), // Basketball Reference player page URL
   nbaId: varchar("nbaId", { length: 64 }), // NBA.com player ID
   source: varchar("source", { length: 64 }), // Data source (nba.com, 2kratings, etc.)
   badgeCount: int("badgeCount"), // Total badge count from 2kratings
