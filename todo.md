@@ -1050,3 +1050,19 @@
 - [x] Create start-bot.sh script for easy bot startup after sandbox resets
 - [x] Test bot stability - PM2 restart tested successfully, bot came back online
 - [x] Document root cause and solution - BOT_RELIABILITY_GUIDE.md created
+
+## HOFSN Webhook Connection Issue (Jan 26, 2026)
+
+- [x] Check current webhook URL configuration - bot listening on port 3002
+- [x] Verify if webhook URL changed after sandbox reset - YES, URL changed
+- [x] Check bot logs for webhook connection errors - no errors, server running fine
+- [x] Investigate why highlight cards aren't posting - webhook URL needs to be updated in HOFSN
+- [x] Implement static webhook URL solution - DigitalOcean deployment chosen
+- [x] Review existing deployment documentation - reviewed DIGITALOCEAN_DEPLOYMENT.md
+- [x] Update deployment guides with latest bot configuration
+- [x] Create deployment checklist - DEPLOYMENT_CHECKLIST.md created
+- [x] Prepare environment variables for production - .env.production.template created
+- [x] Test bot code for production readiness - 30 TypeScript files verified
+- [x] Create final deployment guide with webhook URL setup - DEPLOYMENT_GUIDE_FINAL.md created
+- [x] Document HOFSN webhook URL configuration for DigitalOcean - included in all guides
+- [x] Create automated deployment script - deploy-to-digitalocean.sh created
