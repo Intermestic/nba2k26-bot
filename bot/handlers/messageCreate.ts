@@ -183,7 +183,7 @@ function formatUptime(seconds: number): string {
 
 /**
  * Handle OTB (On The Block) command
- * When a user says "otb" (case-insensitive), respond with their team roster link
+ * When a user says "otb" (case-insensitive), respond with their team roster link and top players
  */
 async function handleOTBCommand(message: Message): Promise<void> {
   const content = message.content.toLowerCase().trim();
@@ -226,8 +226,39 @@ async function handleOTBCommand(message: Message): Promise<void> {
   // Generate roster link
   const rosterLink = `https://hof17roster.manus.space/players?team=${encodeURIComponent(userTeam)}`;
   
-  // Reply with the link
-  await message.reply(`📊 **${userTeam} Roster:** ${rosterLink}`);
-  
-  logger.info(`OTB command: ${message.author.username} (${userTeam}) → ${rosterLink}`);
+  try {
+    // Fetch top 5 players from database
+    const { DatabaseService } = await import('../services/database');
+    const topPlayers = await DatabaseService.getTopPlayersByTeam(userTeam, 5);
+    
+    // Create Discord embed
+    const { EmbedBuilder } = await import('discord.js');
+    const embed = new EmbedBuilder()
+      .setTitle(`${userTeam} Roster`)
+      .setURL(rosterLink)
+      .setColor(0x1E40AF) // Blue color
+      .setDescription('Hall of Fame Basketball Association Rosters\n\nThe most up to date SZN 18 rosters');
+    
+    // Add top players as fields
+    if (topPlayers.length > 0) {
+      for (const player of topPlayers) {
+        embed.addFields({
+          name: `${player.name} (${player.overall} OVR)`,
+          value: player.position || 'N/A',
+          inline: true
+        });
+      }
+    }
+    
+    embed.setFooter({ text: 'Click the title to view full roster' });
+    
+    // Reply with embed
+    await message.reply({ embeds: [embed] });
+    
+    logger.info(`OTB command: ${message.author.username} (${userTeam}) → ${rosterLink}`);
+  } catch (error) {
+    logger.error('[OTB] Error fetching players:', error);
+    // Fallback to simple link if database query fails
+    await message.reply(`[${userTeam} Roster](${rosterLink})`);
+  }
 }

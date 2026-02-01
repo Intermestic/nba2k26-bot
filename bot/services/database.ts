@@ -159,6 +159,32 @@ class DatabaseServiceClass {
   }
 
   /**
+   * Get top N players by team, sorted by overall rating
+   */
+  async getTopPlayersByTeam(teamName: string, limit: number = 5): Promise<Array<{ name: string; overall: number; position: string | null }>> {
+    const db = await this.getDb();
+    if (!db) {
+      throw new Error('Database not available');
+    }
+
+    const { eq, desc } = await import('drizzle-orm');
+    const { players } = schema;
+
+    const result = await db
+      .select({
+        name: players.name,
+        overall: players.overall,
+        position: players.position,
+      })
+      .from(players)
+      .where(eq(players.team, teamName))
+      .orderBy(desc(players.overall))
+      .limit(limit);
+
+    return result;
+  }
+
+  /**
    * Close database connection
    */
   async close(): Promise<void> {
