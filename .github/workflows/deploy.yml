@@ -1,0 +1,53 @@
+name: Deploy to DigitalOcean
+
+on:
+  push:
+    branches:
+      - main  # Triggers on push to main branch
+  workflow_dispatch:  # Allows manual trigger from GitHub Actions tab
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Deploy to DigitalOcean
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DO_HOST }}
+          username: ${{ secrets.DO_USERNAME }}
+          key: ${{ secrets.DO_SSH_KEY }}
+          port: 22
+          script: |
+            echo "🚀 Starting deployment..."
+            
+            # Navigate to bot directory
+            cd /opt/nba2k26-bot
+            
+            # Pull latest changes from GitHub
+            echo "📥 Pulling latest code from GitHub..."
+            git pull origin main
+            
+            # Install dependencies (if package.json changed)
+            echo "📦 Installing dependencies..."
+            pnpm install --frozen-lockfile
+            
+            # Restart the bot with PM2
+            echo "🔄 Restarting bot..."
+            pm2 restart nba2k26-bot
+            
+            # Show bot status
+            echo "✅ Deployment complete!"
+            pm2 list
+            
+      - name: Deployment notification
+        if: always()
+        run: |
+          if [ ${{ job.status }} == 'success' ]; then
+            echo "✅ Deployment successful!"
+          else
+            echo "❌ Deployment failed!"
+          fi
