@@ -20,6 +20,11 @@ export async function handleMessageCreate(message: Message): Promise<void> {
 
   const channelId = message.channelId;
 
+  // Handle OTB command in specific channel
+  if (channelId === '1095937321825730630') {
+    await handleOTBCommand(message);
+  }
+
   // Handle FA channel messages
   if (channelId === config.channels.freeAgency) {
     await handleFAChannelMessage(message);
@@ -174,4 +179,55 @@ function formatUptime(seconds: number): string {
   if (minutes > 0) parts.push(`${minutes}m`);
   
   return parts.join(' ') || '< 1m';
+}
+
+/**
+ * Handle OTB (On The Block) command
+ * When a user says "otb" (case-insensitive), respond with their team roster link
+ */
+async function handleOTBCommand(message: Message): Promise<void> {
+  const content = message.content.toLowerCase().trim();
+  
+  // Check if message contains "otb" (case-insensitive)
+  if (!content.includes('otb')) {
+    return;
+  }
+  
+  // Get user's team from their Discord roles
+  const member = message.member;
+  if (!member) {
+    return;
+  }
+  
+  // Team names to look for in roles
+  const teamNames = [
+    'Hawks', 'Celtics', 'Nets', 'Hornets', 'Bulls', 'Cavaliers', 'Mavericks', 'Nuggets',
+    'Pistons', 'Warriors', 'Rockets', 'Pacers', 'Clippers', 'Lakers', 'Grizzlies', 'Heat',
+    'Bucks', 'Timberwolves', 'Pelicans', 'Knicks', 'Thunder', 'Magic', 'Sixers', 'Suns',
+    'Trail Blazers', 'Kings', 'Spurs', 'Raptors', 'Jazz', 'Wizards'
+  ];
+  
+  // Find team role
+  let userTeam: string | null = null;
+  for (const role of member.roles.cache.values()) {
+    const roleName = role.name;
+    if (teamNames.includes(roleName)) {
+      userTeam = roleName;
+      break;
+    }
+  }
+  
+  if (!userTeam) {
+    // User doesn't have a team role
+    await message.reply('❌ Could not find your team. Make sure you have a team role assigned.');
+    return;
+  }
+  
+  // Generate roster link
+  const rosterLink = `https://hof17roster.manus.space/players?team=${encodeURIComponent(userTeam)}`;
+  
+  // Reply with the link
+  await message.reply(`📊 **${userTeam} Roster:** ${rosterLink}`);
+  
+  logger.info(`OTB command: ${message.author.username} (${userTeam}) → ${rosterLink}`);
 }
