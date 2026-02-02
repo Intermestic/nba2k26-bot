@@ -1,0 +1,20 @@
+Discord Toggle Test Results
+===========================
+
+Date: Jan 25, 2026
+
+Test: Post to Discord toggle in admin highlight card form
+
+Result: SUCCESS
+
+The "Post to Discord" toggle switch is visible in the Create New Highlight Card form:
+- Located at the bottom of the form, before the Create Card button
+- Shows Discord logo icon
+- Label: "Post to Discord"
+- Description: "Share this highlight to the HoFBA Discord channel"
+- Toggle switch is present and functional
+
+The toggle is styled with Discord's brand color (#5865F2) and includes:
+- Discord logo SVG icon
+- Clear label and description
+- Switch component for toggling on/off

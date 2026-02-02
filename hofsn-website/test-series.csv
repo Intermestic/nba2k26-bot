@@ -1,0 +1,11 @@
+Type,GameNumber,Player,Team,PTS,REB,AST,STL,BLK,FG%,3P%,FT%,HomeTeam,AwayTeam,HomeScore,AwayScore,BeatReporter,WinningTeam,LosingTeam,SeriesScore,Round,MVPPlayer,MVPTeam,MVP_PPG,MVP_RPG,MVP_APG,KeyMoment,NarrativeSummary
+Game,1,R.J. Barrett,Bucks,45,8,6,2,1,52.5,40.0,88.9,Bucks,Spurs,118,112,,,,,,,,,,
+Game,1,Giannis Antetokounmpo,Bucks,32,12,7,1,2,58.3,0.0,75.0,Bucks,Spurs,118,112,,,,,,,,,,
+Game,1,Victor Wembanyama,Spurs,38,14,4,2,5,48.0,35.0,90.0,Bucks,Spurs,118,112,Game 1 was a thriller as R.J. Barrett exploded for 45 points to lead the Bucks past the Spurs 118-112. Wembanyama's 38 points and 14 rebounds weren't enough to overcome Barrett's hot shooting.,,,,,,,,,,
+Game,2,R.J. Barrett,Bucks,38,7,5,1,0,48.5,38.5,85.0,Spurs,Bucks,105,115,,,,,,,,,,
+Game,2,Giannis Antetokounmpo,Bucks,35,10,8,2,1,55.0,0.0,80.0,Spurs,Bucks,105,115,,,,,,,,,,
+Game,2,Victor Wembanyama,Spurs,32,11,3,1,4,45.0,30.0,88.0,Spurs,Bucks,105,115,The Bucks took a commanding 2-0 series lead with a 115-105 victory. Barrett added 38 points while Giannis dominated with 35 points and 10 rebounds.,,,,,,,,,,
+Game,3,R.J. Barrett,Bucks,51,9,7,3,1,54.0,42.0,90.0,Bucks,Spurs,128,125,,,,,,,,,,
+Game,3,Giannis Antetokounmpo,Bucks,30,11,6,1,2,52.0,0.0,70.0,Bucks,Spurs,128,125,,,,,,,,,,
+Game,3,Victor Wembanyama,Spurs,42,15,5,2,6,50.0,38.0,92.0,Bucks,Spurs,128,125,"In an instant classic, R.J. Barrett erupted for 51 points in overtime to seal the series for Milwaukee 128-125. Despite Wembanyama's heroic 42 points and 15 rebounds, the Spurs couldn't overcome Barrett's clutch performance.",,,,,,,,,,
+Series,,,,,,,,,,,,,,,,Bucks,Spurs,2-1,First Round,R.J. Barrett,Bucks,44.7,8.0,6.0,51 PTS in Game 3 OT,"The Milwaukee Bucks advanced to the second round behind R.J. Barrett's dominant three-game performance. Barrett averaged 44.7 points per game, including a series-clinching 51-point overtime masterpiece in Game 3. The Bucks' dynamic duo of Barrett and Giannis proved too much for Victor Wembanyama and the young Spurs, who showed promise but ultimately fell short."

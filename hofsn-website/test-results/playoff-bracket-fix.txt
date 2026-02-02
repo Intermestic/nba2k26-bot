@@ -1,0 +1,18 @@
+Playoff Bracket Fix Verification - Jan 25, 2026
+
+1. Score Input Form:
+   - Now shows "Higher Seed Score" and "Lower Seed Score" labels
+   - When a matchup is selected, labels will show actual team names
+   - No more confusing home/away terminology
+
+2. Rockets vs Cavaliers Series:
+   - Shows #5 Houston Rockets with "SERIES WINNER" label
+   - Score: Rockets 2, Cavaliers 0
+   - Series is marked as complete
+
+3. Recent Games section shows:
+   - Game 2: Rockets 100, Cavaliers 97 (Rockets win)
+   - Game 1: Rockets 97, Cavaliers 100 (Cavaliers win - this was the incorrect entry)
+
+Note: There's a data inconsistency - Game 1 shows Cavaliers winning but the series shows Rockets 2-0.
+This is because the original Game 1 was entered incorrectly. The series totals are now correct (Rockets 2-0).

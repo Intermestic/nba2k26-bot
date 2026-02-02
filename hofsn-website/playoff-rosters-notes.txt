@@ -1,0 +1,50 @@
+HoFBA Playoff Teams Key Players:
+
+NUGGETS (7-seed):
+- Steph Curry (95 OVR) - Star player
+- Cam Thomas (82)
+- Miles Bridges (82)
+- Russell Westbrook (81)
+- Ajay Mitchell (80)
+- John Collins (79)
+- Lonzo Ball (74)
+
+JAZZ (10-seed):
+- James Harden (90 OVR) - Star player
+- Jimmy Butler (88)
+- Norman Powell (86)
+- Jerami Grant (82)
+- Nicolas Claxton (82)
+
+KINGS (3-seed):
+- Kawhi Leonard (94 OVR) - Star player
+- De'Aaron Fox (88)
+- Onyeka Okongwu (82)
+- Collin Sexton (80)
+
+BULLS (14-seed):
+- Luka Doncic (97 OVR) - Star player
+- Deni Avdija (89)
+- Donovan Clingan (83)
+
+ROCKETS (5-seed):
+- Anthony Edwards (96 OVR) - Star player
+- Kristaps Porzingis (84)
+- Dillon Brooks (83)
+- Zach LaVine (83)
+- Dejounte Murray (81)
+
+CAVS (12-seed):
+- Not in this roster file
+
+RAPTORS (1-seed):
+- Jayson Tatum (94 OVR) - Star player
+- OG Anunoby (85)
+- Payton Pritchard (83)
+
+PACERS (16-seed):
+- Anthony Davis (92 OVR) - Star player
+- Karl-Anthony Towns (91)
+- Scottie Barnes (88)
+- Tyler Herro (86)
+- Domantas Sabonis (85)

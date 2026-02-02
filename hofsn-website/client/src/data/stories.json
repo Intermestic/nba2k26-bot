@@ -1,0 +1,44 @@
+[
+  {
+    "id": 1,
+    "headline": "Season 17 Tips Off: Raptors Spoil Wizards' Opener",
+    "body": "The Season 17 opener streamed live on the network featuring a tale of two halves. The Washington Wizards stormed out of the gate led by Jalen Suggs (25 pts), looking poised to defend their home court. However, the Raptors flipped the switch in the second half. Behind Jayson Tatum's 30 points and a suffocating defensive effort from Cason Wallace (who sparked the transition game), Toronto erased the deficit to win 106-87. The comeback victory sets the tone for a Raptors team that looks dangerous on both ends of the floor.",
+    "category": "Game Recap",
+    "date": "2025-11-12"
+  },
+  {
+    "id": 2,
+    "headline": "League Memo: The Hard Cap & 'Lockdown' Rules",
+    "body": "The front office has issued a stern reminder regarding the financial landscape of Season 17. The Salary Cap is firmly set at 1098, and teams exceeding this number are effectively in lockdown. Over-cap teams are barred from making trades to lower salary; their only path to compliance is cutting players and signing 70 OVR free agents. Additionally, teams over the limit are ineligible for roster upgrades or injury fixes. The clock is ticking: GMs must be under the cap by Game 5 or face the forfeiture of 'Welcome' rewards.",
+    "category": "League News",
+    "date": "2025-11-12"
+  },
+  {
+    "id": 3,
+    "headline": "New Roster Hub Launched for HoFSN Scouts",
+    "body": "The league has officially launched a new digital home for all roster tracking and scouting needs. The new portal, accessible at tinyurl.com/hof2k, will serve as the central database for Season 17. GMs and scouts are encouraged to bookmark the site immediately to keep up with the rapid movement of the transaction wire and track player attributes as the season progresses.",
+    "category": "Announcement",
+    "date": "2025-11-12"
+  },
+  {
+    "id": 4,
+    "headline": "Tatum's Historic Night: 61 Points on 71% Shooting",
+    "body": "Jayson Tatum has logged the first defining performance of Season 17, dropping a league-record 61 points in a blowout win over the Kings. Tatum was surgical, shooting 25-of-35 from the field in a display of offensive perfection. With the Kings unable to send help fast enough, Tatum scored from every level, establishing himself as the undisputed early frontrunner for MVP.",
+    "category": "Player Spotlight",
+    "date": "2025-11-13"
+  },
+  {
+    "id": 5,
+    "headline": "Houston's Defense Strangles the Competition",
+    "body": "The Houston Rockets have emerged as the league's most terrifying defensive unit. Through their first slate of games, they have held the Knicks to 61 points and the Timberwolves to 72 points. Led by Shai Gilgeous-Alexander's two-way play and a physical frontcourt, the Rockets are turning games into grind-it-out affairs that opposing offenses simply cannot survive.",
+    "category": "Team Feature",
+    "date": "2025-11-13"
+  },
+  {
+    "id": 6,
+    "headline": "Rookies vs. Vets: Nuggets Welcome Pelicans to the League",
+    "body": "The New Orleans Pelicans unveiled their highly touted 'Fab Five' rookie lineup, but the Denver Nuggets were not in a welcoming mood. Denver handed the Pels a 47-point loss (131-84), with Joel Embiid bullying the young frontcourt for 28 points on near-perfect shooting. It was a harsh lesson for the rookies: talent matters, but experience wins games in the HoFSN.",
+    "category": "Game Recap",
+    "date": "2025-11-13"
+  }
+]

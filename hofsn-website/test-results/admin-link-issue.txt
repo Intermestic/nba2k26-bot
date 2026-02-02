@@ -1,0 +1,18 @@
+Admin Link Visibility Issue - Jan 25, 2026
+
+The admin link is not showing in the footer on the published site (hofsn-sports-bu28nutg.manus.space).
+
+The footer shows:
+- "© 2024 Hall of Fame Basketball Association. All rights reserved."
+- "HoFSN - Your source for NBA 2K26 league coverage"
+- No Admin Dashboard button visible
+
+This is because the user is not logged in on the published site, so isAdmin is false.
+
+The issue is that the published site may have a different authentication state than the preview.
+The user needs to be logged in as an admin on the published site to see the admin link.
+
+Possible solutions:
+1. Add a visible login button for users to authenticate
+2. Check if the session cookie is being shared between preview and published site
+3. The user may need to log in on the published domain

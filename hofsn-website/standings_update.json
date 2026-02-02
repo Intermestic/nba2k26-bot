@@ -1,0 +1,226 @@
+[
+  {
+    "rank": 1,
+    "team": "Toronto Raptors",
+    "record": "103-23",
+    "gp": 126,
+    "winPct": "0.817",
+    "hofScr": 112.2
+  },
+  {
+    "rank": 2,
+    "team": "Atlanta Hawks",
+    "record": "83-30",
+    "gp": 113,
+    "winPct": "0.735",
+    "hofScr": 95.0
+  },
+  {
+    "rank": 3,
+    "team": "Sacramento Kings",
+    "record": "75-49",
+    "gp": 124,
+    "winPct": "0.605",
+    "hofScr": 94.6
+  },
+  {
+    "rank": 4,
+    "team": "Washington Wizards",
+    "record": "84-24",
+    "gp": 108,
+    "winPct": "0.778",
+    "hofScr": 93.6
+  },
+  {
+    "rank": 5,
+    "team": "Houston Rockets",
+    "record": "59-60",
+    "gp": 119,
+    "winPct": "0.496",
+    "hofScr": 83.0
+  },
+  {
+    "rank": 6,
+    "team": "Detroit Pistons",
+    "record": "70-20",
+    "gp": 90,
+    "winPct": "0.778",
+    "hofScr": 78.0
+  },
+  {
+    "rank": 7,
+    "team": "Denver Nuggets",
+    "record": "67-14",
+    "gp": 81,
+    "winPct": "0.827",
+    "hofScr": 72.6
+  },
+  {
+    "rank": 8,
+    "team": "San Antonio Spurs",
+    "record": "42-44",
+    "gp": 86,
+    "winPct": "0.488",
+    "hofScr": 59.6
+  },
+  {
+    "rank": 9,
+    "team": "Milwaukee Bucks",
+    "record": "42-35",
+    "gp": 77,
+    "winPct": "0.545",
+    "hofScr": 56.0
+  },
+  {
+    "rank": 10,
+    "team": "Utah Jazz",
+    "record": "33-46",
+    "gp": 79,
+    "winPct": "0.418",
+    "hofScr": 51.4
+  },
+  {
+    "rank": 11,
+    "team": "Dallas Mavericks",
+    "record": "26-56",
+    "gp": 84,
+    "winPct": "0.317",
+    "hofScr": 49.2
+  },
+  {
+    "rank": 12,
+    "team": "Cleveland Cavaliers",
+    "record": "32-37",
+    "gp": 69,
+    "winPct": "0.464",
+    "hofScr": 46.8
+  },
+  {
+    "rank": 13,
+    "team": "Portland Trail Blazers",
+    "record": "18-52",
+    "gp": 70,
+    "winPct": "0.257",
+    "hofScr": 38.8
+  },
+  {
+    "rank": 14,
+    "team": "Chicago Bulls",
+    "record": "15-50",
+    "gp": 65,
+    "winPct": "0.231",
+    "hofScr": 35.0
+  },
+  {
+    "rank": 15,
+    "team": "Charlotte Hornets",
+    "record": "24-24",
+    "gp": 48,
+    "winPct": "0.500",
+    "hofScr": 33.6
+  },
+  {
+    "rank": 16,
+    "team": "Indiana Pacers",
+    "record": "12-50",
+    "gp": 62,
+    "winPct": "0.194",
+    "hofScr": 32.0
+  },
+  {
+    "rank": 17,
+    "team": "Los Angeles Lakers",
+    "record": "24-14",
+    "gp": 38,
+    "winPct": "0.632",
+    "hofScr": 29.6
+  },
+  {
+    "rank": 18,
+    "team": "Philadelphia 76ers",
+    "record": "13-30",
+    "gp": 43,
+    "winPct": "0.302",
+    "hofScr": 25.0
+  },
+  {
+    "rank": 19,
+    "team": "Golden State Warriors",
+    "record": "12-30",
+    "gp": 42,
+    "winPct": "0.286",
+    "hofScr": 24.0
+  },
+  {
+    "rank": 20,
+    "team": "Orlando Magic",
+    "record": "14-25",
+    "gp": 39,
+    "winPct": "0.359",
+    "hofScr": 24.0
+  },
+  {
+    "rank": 21,
+    "team": "Boston Celtics",
+    "record": "7-41",
+    "gp": 48,
+    "winPct": "0.146",
+    "hofScr": 23.4
+  },
+  {
+    "rank": 22,
+    "team": "Miami Heat",
+    "record": "17-14",
+    "gp": 31,
+    "winPct": "0.548",
+    "hofScr": 22.6
+  },
+  {
+    "rank": 23,
+    "team": "Minnesota Timberwolves",
+    "record": "10-27",
+    "gp": 37,
+    "winPct": "0.270",
+    "hofScr": 20.8
+  },
+  {
+    "rank": 24,
+    "team": "Brooklyn Nets",
+    "record": "13-14",
+    "gp": 27,
+    "winPct": "0.481",
+    "hofScr": 18.6
+  },
+  {
+    "rank": 25,
+    "team": "New Orleans Pelicans",
+    "record": "6-28",
+    "gp": 34,
+    "winPct": "0.176",
+    "hofScr": 17.2
+  },
+  {
+    "rank": 26,
+    "team": "New York Knicks",
+    "record": "8-18",
+    "gp": 26,
+    "winPct": "0.308",
+    "hofScr": 15.2
+  },
+  {
+    "rank": 27,
+    "team": "Memphis Grizzlies",
+    "record": "7-19",
+    "gp": 26,
+    "winPct": "0.269",
+    "hofScr": 14.6
+  },
+  {
+    "rank": 28,
+    "team": "Phoenix Suns",
+    "record": "5-12",
+    "gp": 17,
+    "winPct": "0.294",
+    "hofScr": 9.8
+  }
+]

@@ -1,0 +1,14 @@
+Login Button Test - Jan 25, 2026
+
+Dev Preview Test:
+- URL: https://3000-ifhp9tb1f1hmyg1b0nb9a-f988e398.us2.manus.computer/
+- Footer shows: "Admin Dashboard" button and "Logout" button
+- This is because the user is already logged in as admin in the dev preview
+
+The login button will show as "Admin Login" when the user is NOT logged in.
+When logged in as admin, it shows "Admin Dashboard" and "Logout" buttons.
+
+Implementation is correct:
+- Not logged in: Shows "Admin Login" button (blue)
+- Logged in as admin: Shows "Admin Dashboard" (gold) + "Logout" (gray)
+- Logged in as non-admin: Shows only "Logout" (gray)

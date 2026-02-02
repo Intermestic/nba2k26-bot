@@ -1,0 +1,15 @@
+Ant Highlight Card Search - Jan 25, 2026
+
+After reviewing all highlight cards in the admin panel, there is no separate "Ant" highlight card. The "Rockets Win Game 1 (OT)" card is the main card for that game. The user wants to:
+1. Remove the Ant highlight card from Game 1 - This appears to mean removing/updating the Rockets Win Game 1 card
+2. Create a new series summary highlight card for Rockets vs Cavaliers
+
+The current "Rockets Win Game 1 (OT)" card shows:
+- Title: Rockets Win Game 1 (OT)
+- Stat: 96-93
+- Category: 5-Seed Holds Off Cavs • Rockets Lead 1-0
+- Link: /playoffs/cavs-rockets-game1
+
+Since Rockets won the series 2-0, we should:
+1. Delete or hide the "Rockets Win Game 1" card
+2. Create a new "Rockets Win Series 2-0" card with Ant Edwards as the star (69 PTS in 2 games)

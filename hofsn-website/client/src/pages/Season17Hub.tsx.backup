@@ -1,0 +1,1376 @@
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Link } from "wouter";
+import { ArrowLeft, Calendar, Trophy, TrendingUp, Newspaper, ChevronDown, ChevronUp } from "lucide-react";
+import { useEffect, useState } from "react";
+import { getPlayerHeadshot, getTeamLogo, getTeamAbbr } from "@/lib/playerImages";
+import { season17Standings } from "@/data/season17Standings";
+import { trpc } from "@/lib/trpc";
+
+export default function Season17Hub() {
+  // Collapsible sections state
+  const [showStandings, setShowStandings] = useState(false);
+  const [showTrades, setShowTrades] = useState(false);
+  
+  // Fetch trades data from API
+  const { data: trades, isLoading: tradesLoading } = trpc.trades.list.useQuery();
+  
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-black to-gray-900">
+      {/* Header */}
+      <header className="border-b border-gold-500/30 bg-black/50 backdrop-blur-sm sticky top-0 z-50">
+        <div className="container py-4">
+          <div className="flex items-center gap-4">
+            <Link href="/">
+              <button className="flex items-center gap-2 text-gray-300 hover:text-gold-400 transition-colors">
+                <ArrowLeft className="w-5 h-5" />
+                <span>Back to Home</span>
+              </button>
+            </Link>
+            <div className="flex-1 text-center">
+              <h1 className="text-3xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-gold-500 to-yellow-600">
+                SZN 17 HUB
+              </h1>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <section className="container py-12">
+        <div className="text-center mb-8">
+          <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
+            Season 17 News & Game Recaps
+          </h2>
+          <p className="text-xl text-gray-300">
+            Your central hub for everything happening in the league
+          </p>
+        </div>
+
+        {/* Season Stats Overview */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+          <Card className="bg-gradient-to-br from-gray-900 to-black border-gold-500/30">
+            <CardContent className="pt-6 text-center">
+              <Trophy className="w-8 h-8 text-gold-400 mx-auto mb-2" />
+              <div className="text-3xl font-bold text-white">82</div>
+              <div className="text-sm text-gray-400">Games</div>
+            </CardContent>
+          </Card>
+          <Card className="bg-gradient-to-br from-gray-900 to-black border-gold-500/30">
+            <CardContent className="pt-6 text-center">
+              <TrendingUp className="w-8 h-8 text-gold-400 mx-auto mb-2" />
+              <div className="text-3xl font-bold text-white">16</div>
+              <div className="text-sm text-gray-400">Playoff Teams</div>
+            </CardContent>
+          </Card>
+          <Card className="bg-gradient-to-br from-gray-900 to-black border-gold-500/30">
+            <CardContent className="pt-6 text-center">
+              <Calendar className="w-8 h-8 text-gold-400 mx-auto mb-2" />
+              <div className="text-3xl font-bold text-white">S17</div>
+              <div className="text-sm text-gray-400">Current Season</div>
+            </CardContent>
+          </Card>
+          <Card className="bg-gradient-to-br from-gray-900 to-black border-gold-500/30">
+            <CardContent className="pt-6 text-center">
+              <Trophy className="w-8 h-8 text-gold-400 mx-auto mb-2" />
+              <div className="text-3xl font-bold text-white">TBD</div>
+              <div className="text-sm text-gray-400">Champion</div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Current Standings Section */}
+        <div className="mb-6">
+          <button
+            onClick={() => setShowStandings(!showStandings)}
+            className="w-full bg-gradient-to-r from-gold-500/20 to-gold-600/20 hover:from-gold-500/30 hover:to-gold-600/30 border-2 border-gold-500/50 rounded-lg p-6 transition-all duration-300 mb-4"
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <TrendingUp className="w-8 h-8 text-gold-400" />
+                <div className="text-left">
+                  <h2 className="text-2xl md:text-3xl font-black text-gold-400">CURRENT STANDINGS</h2>
+                  <p className="text-sm text-gray-300 mt-1">Toronto Raptors lead at 15-1 • View full standings</p>
+                </div>
+              </div>
+              {showStandings ? (
+                <ChevronUp className="w-6 h-6 text-gold-400" />
+              ) : (
+                <ChevronDown className="w-6 h-6 text-gold-400" />
+              )}
+            </div>
+          </button>
+          
+          {showStandings && (
+          <Card className="bg-gradient-to-br from-gray-900 to-black border-gold-500/30 animate-in slide-in-from-top-4 duration-300">
+            <CardContent className="p-0">
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-black/40 border-b border-gold-500/30">
+                    <tr>
+                      <th className="px-4 py-3 text-left text-xs font-bold text-gold-400 uppercase tracking-wider">Rank</th>
+                      <th className="px-4 py-3 text-left text-xs font-bold text-gold-400 uppercase tracking-wider">Team</th>
+                      <th className="px-4 py-3 text-center text-xs font-bold text-gold-400 uppercase tracking-wider">W-L</th>
+                      <th className="px-4 py-3 text-center text-xs font-bold text-gold-400 uppercase tracking-wider">PCT</th>
+                      <th className="px-4 py-3 text-center text-xs font-bold text-gold-400 uppercase tracking-wider">GB</th>
+                      <th className="px-4 py-3 text-center text-xs font-bold text-gold-400 uppercase tracking-wider">Streak</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-700">
+                    {season17Standings.map((team, index) => (
+                      <tr 
+                        key={team.rank}
+                        className={`hover:bg-gray-800/50 transition-colors ${
+                          index < 8 ? 'bg-green-900/10' : index < 16 ? 'bg-blue-900/10' : ''
+                        }`}
+                      >
+                        <td className="px-4 py-3 text-sm font-bold text-white">{team.rank}</td>
+                        <td className="px-4 py-3 text-sm text-white font-medium">
+                          <div className="flex items-center gap-2">
+                            <img 
+                              src={getTeamLogo(getTeamAbbr(team.team))} 
+                              alt={team.team}
+                              className="w-8 h-8 object-contain"
+                            />
+                            <span>{team.team}</span>
+                          </div>
+                        </td>
+                        <td className="px-4 py-3 text-sm text-center text-gray-300">{team.wins}-{team.losses}</td>
+                        <td className="px-4 py-3 text-sm text-center text-gray-300">{team.pct}</td>
+                        <td className="px-4 py-3 text-sm text-center text-gray-300">{team.gb}</td>
+                        <td className="px-4 py-3 text-sm text-center">
+                          <span className={`font-semibold ${
+                            team.streak.startsWith('W') ? 'text-green-400' : 
+                            team.streak.startsWith('L') ? 'text-red-400' : 
+                            'text-gray-400'
+                          }`}>
+                            {team.streak}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              
+              {/* Legend */}
+              <div className="p-4 border-t border-gray-700 bg-black/20 flex flex-wrap gap-4 text-xs text-gray-400">
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 bg-green-900/30 border border-green-500/30 rounded" />
+                  <span>Top 8 - Playoff Position</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 bg-blue-900/30 border border-blue-500/30 rounded" />
+                  <span>9-16 - Play-In Tournament</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          )}
+        </div>
+      </section>
+
+        {/* Blockbuster Trades Section */}
+        <section className="container py-2">
+        <button
+          onClick={() => setShowTrades(!showTrades)}
+          className="w-full max-w-5xl mx-auto bg-gradient-to-r from-gold-500/20 to-gold-600/20 hover:from-gold-500/30 hover:to-gold-600/30 border-2 border-gold-500/50 rounded-lg p-6 transition-all duration-300 mb-6"
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Newspaper className="w-8 h-8 text-gold-400" />
+              <div className="text-left">
+                <h2 className="text-2xl md:text-3xl font-black text-gold-400">BLOCKBUSTER TRADES</h2>
+                  <p className="text-sm text-gray-300 mt-1">🔥 Nets acquire MVP Jokic • Cavs land Anthony Edwards • View all 7 major trades</p>
+              </div>
+            </div>
+            {showTrades ? (
+              <ChevronUp className="w-6 h-6 text-gold-400" />
+            ) : (
+              <ChevronDown className="w-6 h-6 text-gold-400" />
+            )}
+          </div>
+        </button>
+        
+        {showTrades && (
+        <div className="max-w-5xl mx-auto space-y-6 animate-in slide-in-from-top-4 duration-300">
+          {tradesLoading ? (
+            <div className="text-center py-12">
+              <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-gold-400"></div>
+              <p className="text-gray-400 mt-4">Loading trades...</p>
+            </div>
+          ) : trades && trades.length > 0 ? (
+            trades.map((trade) => (
+          <Card key={trade.id} className="bg-gradient-to-br from-gray-900 to-black border-2 border-gold-500/30">
+            <CardHeader>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs text-gold-400 font-bold uppercase">Blockbuster Trade</span>
+                <span className="text-xs text-gray-400">TRD-S17-001</span>
+              </div>
+              <CardTitle className="text-2xl font-bold text-white">
+                Nets Acquire Nikola Jokic; Bucks Retool with Elite Defense
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid md:grid-cols-2 gap-6 mb-4">
+                {/* Brooklyn Nets */}
+                <div className="p-4 bg-black/40 rounded-lg border border-gray-700">
+                  <h4 className="text-lg font-bold text-gold-400 mb-3">Brooklyn Nets Receive:</h4>
+                  <ul className="space-y-2 text-gray-300">
+                    <li className="flex items-center gap-2">
+                      <span className="text-gold-400">•</span>
+                      <span><strong>Nikola Jokic</strong> (98 OVR)</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-gold-400">•</span>
+                      <span><strong>Aaron Gordon</strong> (83 OVR)</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-gold-400">•</span>
+                      <span><strong>Mark Sears</strong> (70 OVR)</span>
+                    </li>
+                  </ul>
+                </div>
+
+                {/* Milwaukee Bucks */}
+                <div className="p-4 bg-black/40 rounded-lg border border-gray-700">
+                  <h4 className="text-lg font-bold text-gold-400 mb-3">Milwaukee Bucks Receive:</h4>
+                  <ul className="space-y-2 text-gray-300">
+                    <li className="flex items-center gap-2">
+                      <span className="text-gold-400">•</span>
+                      <span><strong>Bam Adebayo</strong> (89 OVR)</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-gold-400">•</span>
+                      <span><strong>Jimmy Butler</strong> (88 OVR)</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-gold-400">•</span>
+                      <span><strong>Naz Reid</strong> (82 OVR)</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div className="p-4 bg-blue-900/20 border border-blue-500/30 rounded-lg">
+                <p className="text-sm text-gray-300">
+                  <strong className="text-gold-400">Analysis:</strong> The Nets go all-in on championship contention by acquiring 98 OVR Nikola Jokic. Milwaukee pivots to an elite defensive identity, adding +31 badges and three versatile two-way players who can guard multiple positions.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Trade 2: Cavs-Blazers Morant Deal */}
+          <Card className="bg-gradient-to-br from-gray-900 to-black border-2 border-gold-500/30">
+            <CardHeader>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs text-gold-400 font-bold uppercase">Blockbuster Trade</span>
+                <span className="text-xs text-gray-400">TRD-S17-002</span>
+              </div>
+              <CardTitle className="text-2xl font-bold text-white">
+                Cavs Add Veteran Depth; Blazers Bet on Morant's Upside
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid md:grid-cols-2 gap-6 mb-4">
+                {/* Cleveland Cavaliers */}
+                <div className="p-4 bg-black/40 rounded-lg border border-gray-700">
+                  <h4 className="text-lg font-bold text-gold-400 mb-3">Cleveland Cavaliers Receive:</h4>
+                  <ul className="space-y-2 text-gray-300">
+                    <li className="flex items-center gap-2">
+                      <span className="text-gold-400">•</span>
+                      <span><strong>Julius Randle</strong> (88 OVR)</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-gold-400">•</span>
+                      <span><strong>Dejounte Murray</strong> (81 OVR)</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-gold-400">•</span>
+                      <span><strong>Khris Middleton</strong> (78 OVR)</span>
+                    </li>
+                  </ul>
+                </div>
+
+                {/* Portland Trail Blazers */}
+                <div className="p-4 bg-black/40 rounded-lg border border-gray-700">
+                  <h4 className="text-lg font-bold text-gold-400 mb-3">Portland Trail Blazers Receive:</h4>
+                  <ul className="space-y-2 text-gray-300">
+                    <li className="flex items-center gap-2">
+                      <span className="text-gold-400">•</span>
+                      <span><strong>Ja Morant</strong> (89 OVR) - Dynamic PG</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-gold-400">•</span>
+                      <span><strong>Brandon Miller</strong> (82 OVR)</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-gold-400">•</span>
+                      <span><strong>Isaac Okoro</strong> (74 OVR)</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div className="p-4 bg-blue-900/20 border border-blue-500/30 rounded-lg">
+                <p className="text-sm text-gray-300">
+                  <strong className="text-gold-400">Analysis:</strong> Cleveland adds three proven veterans to bolster their playoff push, gaining depth and experience. Portland takes a calculated risk on Ja Morant's explosive upside, pairing him with young talent Brandon Miller to build for the future.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Trade 3: Cavs Land Anthony Edwards */}
+          <Card className="bg-gradient-to-br from-gray-900 to-black border-2 border-gold-500/30">
+            <CardHeader>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs text-gold-400 font-bold uppercase">Blockbuster Trade</span>
+                <span className="text-xs text-gray-400">TRD-S17-003</span>
+              </div>
+              <CardTitle className="text-2xl font-bold text-white">
+                Cavs Flip Randle to Land Superstar Anthony Edwards
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid md:grid-cols-2 gap-6 mb-4">
+                {/* Cleveland Cavaliers */}
+                <div className="p-4 bg-black/40 rounded-lg border border-gray-700">
+                  <h4 className="text-lg font-bold text-gold-400 mb-3">Cleveland Cavaliers Receive:</h4>
+                  <ul className="space-y-2 text-gray-300">
+                    <li className="flex items-center gap-2">
+                      <span className="text-gold-400">•</span>
+                      <span><strong>Anthony Edwards</strong> (95 OVR) - Superstar SG</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-gold-400">•</span>
+                      <span><strong>Cam Johnson</strong> (79 OVR)</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-gold-400">•</span>
+                      <span><strong>Donte DiVincenzo</strong> (78 OVR)</span>
+                    </li>
+                  </ul>
+                </div>
+
+                {/* Orlando Magic */}
+                <div className="p-4 bg-black/40 rounded-lg border border-gray-700">
+                  <h4 className="text-lg font-bold text-gold-400 mb-3">Orlando Magic Receive:</h4>
+                  <ul className="space-y-2 text-gray-300">
+                    <li className="flex items-center gap-2">
+                      <span className="text-gold-400">•</span>
+                      <span><strong>Amen Thompson</strong> (87 OVR)</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-gold-400">•</span>
+                      <span><strong>Julius Randle</strong> (88 OVR)</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-gold-400">•</span>
+                      <span><strong>Andre Drummond</strong> (76 OVR)</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div className="p-4 bg-blue-900/20 border border-blue-500/30 rounded-lg">
+                <p className="text-sm text-gray-300">
+                  <strong className="text-gold-400">Analysis:</strong> Cleveland immediately flips Julius Randle to Orlando in exchange for 95 OVR superstar Anthony Edwards. The Cavs now boast one of the league's most explosive scoring duos, while Orlando adds veteran frontcourt depth with Randle and Drummond.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Trade 4: Trae Young to Knicks */}
+          <Card className="bg-gradient-to-br from-gray-900 to-black border-2 border-gold-500/30">
+            <CardHeader>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs text-gold-400 font-bold uppercase">Blockbuster Trade</span>
+                <span className="text-xs text-gray-400">TRD-S17-004</span>
+              </div>
+              <CardTitle className="text-2xl font-bold text-white">
+                Trae Young Heads to Broadway in Star Swap for Sabonis
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid md:grid-cols-2 gap-6 mb-4">
+                {/* New York Knicks */}
+                <div className="p-4 bg-black/40 rounded-lg border border-gray-700">
+                  <h4 className="text-lg font-bold text-gold-400 mb-3">New York Knicks Receive:</h4>
+                  <ul className="space-y-2 text-gray-300">
+                    <li className="flex items-center gap-2">
+                      <span className="text-gold-400">•</span>
+                      <span><strong>Trae Young</strong> (88 OVR) - Elite Playmaker</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-gold-400">•</span>
+                      <span><strong>Collin Murray-Boyles</strong> (77 OVR)</span>
+                    </li>
+                  </ul>
+                </div>
+
+                {/* Atlanta Hawks */}
+                <div className="p-4 bg-black/40 rounded-lg border border-gray-700">
+                  <h4 className="text-lg font-bold text-gold-400 mb-3">Atlanta Hawks Receive:</h4>
+                  <ul className="space-y-2 text-gray-300">
+                    <li className="flex items-center gap-2">
+                      <span className="text-gold-400">•</span>
+                      <span><strong>Domantas Sabonis</strong> (85 OVR)</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-gold-400">•</span>
+                      <span><strong>Jordan Poole</strong> (80 OVR)</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div className="p-4 bg-blue-900/20 border border-blue-500/30 rounded-lg">
+                <p className="text-sm text-gray-300">
+                  <strong className="text-gold-400">Analysis:</strong> The Knicks land elite playmaker Trae Young to run their offense at Madison Square Garden. Atlanta pivots to a frontcourt-focused rebuild around Sabonis's passing and rebounding, adding Poole's scoring punch in the backcourt.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Trade 5: Blazers-Hornets */}
+          <Card className="bg-gradient-to-br from-gray-900 to-black border-2 border-gold-500/30">
+            <CardHeader>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs text-gold-400 font-bold uppercase">Blockbuster Trade</span>
+                <span className="text-xs text-gray-400">TRD-S17-005</span>
+              </div>
+              <CardTitle className="text-2xl font-bold text-white">
+                Blazers Bolster Defense; Hornets Bet on Brandon Miller
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid md:grid-cols-2 gap-6 mb-4">
+                {/* Portland Trail Blazers */}
+                <div className="p-4 bg-black/40 rounded-lg border border-gray-700">
+                  <h4 className="text-lg font-bold text-gold-400 mb-3">Portland Trail Blazers Receive:</h4>
+                  <ul className="space-y-2 text-gray-300">
+                    <li className="flex items-center gap-2">
+                      <span className="text-gold-400">•</span>
+                      <span><strong>Jaime Jaquez Jr.</strong> (80 OVR)</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-gold-400">•</span>
+                      <span><strong>Robert Williams III</strong> (78 OVR) - Rim Protector</span>
+                    </li>
+                  </ul>
+                </div>
+
+                {/* Charlotte Hornets */}
+                <div className="p-4 bg-black/40 rounded-lg border border-gray-700">
+                  <h4 className="text-lg font-bold text-gold-400 mb-3">Charlotte Hornets Receive:</h4>
+                  <ul className="space-y-2 text-gray-300">
+                    <li className="flex items-center gap-2">
+                      <span className="text-gold-400">•</span>
+                      <span><strong>Brandon Miller</strong> (82 OVR) - Rising Star</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-gold-400">•</span>
+                      <span><strong>Adem Bona</strong> (74 OVR)</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div className="p-4 bg-blue-900/20 border border-blue-500/30 rounded-lg">
+                <p className="text-sm text-gray-300">
+                  <strong className="text-gold-400">Analysis:</strong> Portland adds defensive versatility with Jaquez Jr. and elite rim protection from Robert Williams III to complement Ja Morant. Charlotte doubles down on youth, acquiring Brandon Miller to build around their young core for the future.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Trade 6: Blazers-Jazz LaMelo Ball Blockbuster */}
+          <Card className="bg-gradient-to-br from-gray-900 to-black border-2 border-gold-500/30">
+            <CardHeader>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs text-gold-400 font-bold uppercase">Blockbuster Trade</span>
+                <span className="text-xs text-gray-400">TRD-S17-006</span>
+              </div>
+              <CardTitle className="text-2xl font-bold text-white">
+                Blockbuster: Spida to Jazz, LaMelo to Blazers
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid md:grid-cols-2 gap-6 mb-4">
+                {/* Portland Trail Blazers */}
+                <div className="p-4 bg-black/40 rounded-lg border border-gray-700">
+                  <h4 className="text-lg font-bold text-gold-400 mb-3">Portland Trail Blazers Receive:</h4>
+                  <ul className="space-y-2 text-gray-300">
+                    <li className="flex items-center gap-2">
+                      <span className="text-gold-400">•</span>
+                      <span><strong>LaMelo Ball</strong> (88 OVR) - Elite Playmaker</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-gold-400">•</span>
+                      <span><strong>Miles Bridges</strong> (82 OVR)</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-gold-400">•</span>
+                      <span><strong>Bennedict Mathurin</strong> (81 OVR)</span>
+                    </li>
+                  </ul>
+                </div>
+
+                {/* Utah Jazz */}
+                <div className="p-4 bg-black/40 rounded-lg border border-gray-700">
+                  <h4 className="text-lg font-bold text-gold-400 mb-3">Utah Jazz Receive:</h4>
+                  <ul className="space-y-2 text-gray-300">
+                    <li className="flex items-center gap-2">
+                      <span className="text-gold-400">•</span>
+                      <span><strong>Donovan Mitchell</strong> (93 OVR) - Superstar SG</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-gold-400">•</span>
+                      <span><strong>Jerami Grant</strong> (81 OVR)</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-gold-400">•</span>
+                      <span><strong>Saddiq Bey</strong> (76 OVR)</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div className="p-4 bg-blue-900/20 border border-blue-500/30 rounded-lg">
+                <p className="text-sm text-gray-300">
+                  <strong className="text-gold-400">Analysis:</strong> Portland acquires LaMelo Ball to lead their offense alongside Ja Morant, creating one of the league's most dynamic backcourts. Utah brings Donovan "Spida" Mitchell back home, reuniting him with the franchise where he became a star. The Jazz add veteran depth with Grant and Bey to support Mitchell's return.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Trade 7: Pistons-Pelicans Ingram Swap */}
+          <Card className="bg-gradient-to-br from-gray-900 to-black border-2 border-gold-500/30">
+            <CardHeader>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs text-gold-400 font-bold uppercase">Star Wing Trade</span>
+                <span className="text-xs text-gray-400">TRD-S17-007</span>
+              </div>
+              <CardTitle className="text-2xl font-bold text-white">
+                Pistons Swap LaVine for Ingram in Star Wing Trade
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid md:grid-cols-2 gap-6 mb-4">
+                {/* Detroit Pistons */}
+                <div className="p-4 bg-black/40 rounded-lg border border-gray-700">
+                  <h4 className="text-lg font-bold text-gold-400 mb-3">Detroit Pistons Receive:</h4>
+                  <ul className="space-y-2 text-gray-300">
+                    <li className="flex items-center gap-2">
+                      <span className="text-gold-400">•</span>
+                      <span><strong>Brandon Ingram</strong> (87 OVR) - Versatile Wing</span>
+                    </li>
+                  </ul>
+                </div>
+
+                {/* New Orleans Pelicans */}
+                <div className="p-4 bg-black/40 rounded-lg border border-gray-700">
+                  <h4 className="text-lg font-bold text-gold-400 mb-3">New Orleans Pelicans Receive:</h4>
+                  <ul className="space-y-2 text-gray-300">
+                    <li className="flex items-center gap-2">
+                      <span className="text-gold-400">•</span>
+                      <span><strong>Zach LaVine</strong> (88 OVR) - Elite Scorer</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div className="p-4 bg-blue-900/20 border border-blue-500/30 rounded-lg">
+                <p className="text-sm text-gray-300">
+                  <strong className="text-gold-400">Analysis:</strong> Detroit acquires Brandon Ingram's versatile two-way game to complement their young core, trading away Zach LaVine's elite scoring. New Orleans adds LaVine's offensive firepower to support their 'Fab Five' rookie lineup, hoping his veteran presence can accelerate their development.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+        )}
+      </section>
+
+      {/* Recent Game Recaps Section */}
+      <section className="container py-12">
+        <h2 className="text-3xl font-black text-gold-400 mb-8 text-center">🏀 RECENT GAME RECAPS</h2>
+        
+        <div className="max-w-5xl mx-auto space-y-6">
+          {/* Game 29: Hawks Win First Post-Trae Game */}
+          <Card id="game-029" className="bg-gradient-to-br from-gray-900 to-black border-2 border-gold-500/30 scroll-mt-20">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div className="text-sm text-gray-400">Week 3 • G-029</div>
+                <div className="text-sm text-gold-400">New Era Begins</div>
+              </div>
+              <CardTitle className="text-2xl font-bold text-white mt-2">
+                Hawks Win First Game of Post-Trae Era
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="p-4 bg-black/40 rounded-lg border border-red-500/30">
+                  <div className="flex items-center gap-2 mb-3">
+                    <img src={getTeamLogo("ATL")} alt="ATL" className="w-8 h-8 object-contain" />
+                    <div>
+                      <div className="text-3xl font-bold text-white">95</div>
+                      <div className="text-sm text-gray-400">Hawks</div>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <img 
+                      src={getPlayerHeadshot("Jordan Poole")} 
+                      alt="Jordan Poole"
+                      className="w-16 h-16 rounded-full object-cover border-2 border-gold-500/50"
+                      onError={(e) => { e.currentTarget.src = "https://via.placeholder.com/64x64/1f2937/fbbf24?text=JP"; }}
+                    />
+                    <div className="flex-1">
+                      <div className="text-sm text-gray-400">
+                        <strong className="text-gold-400">J. Poole:</strong> 25 pts, 6 ast
+                      </div>
+                      <div className="text-xs text-gray-500 mt-1">Sabonis: 14 pts, 12 reb</div>
+                    </div>
+                  </div>
+                </div>
+                <div className="p-4 bg-black/40 rounded-lg border border-red-500/30">
+                  <div className="flex items-center gap-2 mb-3">
+                    <img src={getTeamLogo("POR")} alt="POR" className="w-8 h-8 object-contain" />
+                    <div>
+                      <div className="text-3xl font-bold text-white">91</div>
+                      <div className="text-sm text-gray-400">Blazers</div>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <img 
+                      src={getPlayerHeadshot("LaMelo Ball")} 
+                      alt="LaMelo Ball"
+                      className="w-16 h-16 rounded-full object-cover border-2 border-gold-500/50"
+                      onError={(e) => { e.currentTarget.src = "https://via.placeholder.com/64x64/1f2937/fbbf24?text=LB"; }}
+                    />
+                    <div className="flex-1">
+                      <div className="text-sm text-gray-400">
+                        <strong className="text-gold-400">L. Ball:</strong> 22 pts, 8 ast
+                      </div>
+                      <div className="text-xs text-gray-500 mt-1">Promising debut</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <p className="text-gray-300">
+                Questions surrounded the Atlanta Hawks after trading Trae Young, but they answered them on the court. Jordan Poole stepped up with 25 points and 6 assists, while Domantas Sabonis added a double-double (14 pts, 12 reb) as the Hawks defeated the Blazers 95-91. LaMelo Ball impressed with 22 points and 8 assists in his Portland debut, but it wasn't enough to overcome Atlanta's balanced attack in the post-Trae era.
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Game 27: Ant's First Game as a Cavalier */}
+          <Card id="game-027" className="bg-gradient-to-br from-gray-900 to-black border-2 border-gold-500/30 scroll-mt-20">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div className="text-sm text-gray-400">Week 3 • G-027</div>
+                <div className="text-sm text-gold-400">Trade Debut</div>
+              </div>
+              <CardTitle className="text-2xl font-bold text-white mt-2">
+                Blazers Edge Cavs in Ant-Man's Cleveland Debut
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="p-4 bg-black/40 rounded-lg border border-red-500/30">
+                  <div className="flex items-center gap-2 mb-3">
+                    <img src={getTeamLogo("POR")} alt="POR" className="w-8 h-8 object-contain" />
+                    <div>
+                      <div className="text-3xl font-bold text-white">76</div>
+                      <div className="text-sm text-gray-400">Blazers</div>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <img 
+                      src={getPlayerHeadshot("Donovan Mitchell")} 
+                      alt="Donovan Mitchell"
+                      className="w-16 h-16 rounded-full object-cover border-2 border-gold-500/50"
+                      onError={(e) => { e.currentTarget.src = "https://via.placeholder.com/64x64/1f2937/fbbf24?text=DM"; }}
+                    />
+                    <div className="flex-1">
+                      <div className="text-sm text-gray-400">
+                        <strong className="text-gold-400">D. Mitchell:</strong> 22 pts, 5 ast
+                      </div>
+                      <div className="text-xs text-gray-500 mt-1">Ball: 18 pts, 7 reb</div>
+                    </div>
+                  </div>
+                </div>
+                <div className="p-4 bg-black/40 rounded-lg border border-wine-500/30">
+                  <div className="flex items-center gap-2 mb-3">
+                    <img src={getTeamLogo("CLE")} alt="CLE" className="w-8 h-8 object-contain" />
+                    <div>
+                      <div className="text-3xl font-bold text-white">69</div>
+                      <div className="text-sm text-gray-400">Cavaliers</div>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <img 
+                      src={getPlayerHeadshot("Anthony Edwards")} 
+                      alt="Anthony Edwards"
+                      className="w-16 h-16 rounded-full object-cover border-2 border-gold-500/50"
+                      onError={(e) => { e.currentTarget.src = "https://via.placeholder.com/64x64/1f2937/fbbf24?text=AE"; }}
+                    />
+                    <div className="flex-1">
+                      <div className="text-sm text-gray-400">
+                        <strong className="text-gold-400">A. Edwards:</strong> 24 pts (debut)
+                      </div>
+                      <div className="text-xs text-gray-500 mt-1">Tough first game</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <p className="text-gray-300">
+                Anthony Edwards made his Cleveland debut after the blockbuster trade, dropping 24 points in his first game as a Cavalier. However, the Blazers' defense clamped down in a low-scoring affair. Donovan Mitchell led Portland with 22 points and 5 assists, while LaMelo Ball added 18 points and 7 rebounds. Despite Ant's solid debut, Cleveland couldn't generate enough offense in the 76-69 loss.
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Game 11: Tatum's Historic 61-Point Performance */}
+          <Card id="game-011" className="bg-gradient-to-br from-gray-900 to-black border-2 border-gold-500/30 scroll-mt-20">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div className="text-sm text-gray-400">Week 1 • G-011</div>
+                <div className="text-sm text-gold-400">Historic Performance</div>
+              </div>
+              <CardTitle className="text-2xl font-bold text-white mt-2">
+                Tatum's Historic 61-Point Explosion
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="p-4 bg-black/40 rounded-lg border border-purple-500/30">
+                  <div className="flex items-center gap-2 mb-3">
+                    <img src={getTeamLogo("TOR")} alt="TOR" className="w-8 h-8 object-contain" />
+                    <div className="text-2xl font-bold text-white">TOR</div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <img 
+                      src={getPlayerHeadshot("Jayson Tatum")} 
+                      alt="Jayson Tatum"
+                      className="w-16 h-16 rounded-full object-cover border-2 border-gold-500/50"
+                      onError={(e) => { e.currentTarget.src = "https://via.placeholder.com/64x64/1f2937/fbbf24?text=JT"; }}
+                    />
+                    <div className="flex-1">
+                      <div className="text-sm text-gray-400">
+                        <strong className="text-gold-400">J. Tatum:</strong> 61 pts, 3 reb, 6 ast, 5 stl
+                      </div>
+                      <div className="text-xs text-gray-500 mt-1">25-35 FG, 5-9 3PT, 6-6 FT</div>
+                    </div>
+                  </div>
+                </div>
+                <div className="p-4 bg-black/40 rounded-lg border border-purple-500/30">
+                  <div className="flex items-center gap-2 mb-3">
+                    <img src={getTeamLogo("SAC")} alt="SAC" className="w-8 h-8 object-contain" />
+                    <div className="text-2xl font-bold text-white">SAC</div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <img 
+                      src={getPlayerHeadshot("Collin Sexton")} 
+                      alt="Collin Sexton"
+                      className="w-16 h-16 rounded-full object-cover border-2 border-gold-500/50"
+                      onError={(e) => { e.currentTarget.src = "https://via.placeholder.com/64x64/1f2937/fbbf24?text=CS"; }}
+                    />
+                    <div className="flex-1">
+                      <div className="text-sm text-gray-400">
+                        <strong className="text-gold-400">C. Sexton:</strong> 24 pts, 4 ast
+                      </div>
+                      <div className="text-xs text-gray-500 mt-1">D. Fox: 23 pts, 8 ast</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <p className="text-gray-300">
+                Jayson Tatum put on an absolute clinic, dropping 61 points on an efficient 25-35 shooting performance. His historic night included 5 steals and a perfect 6-6 from the free-throw line, showcasing complete offensive mastery. Despite strong efforts from Collin Sexton (24 pts) and De'Aaron Fox (23 pts, 8 ast), the Kings couldn't contain Tatum's explosive scoring.
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Game 22: Jokic's Brooklyn Debut */}
+          <Card id="game-022" className="bg-gradient-to-br from-gray-900 to-black border-2 border-gold-500/30 scroll-mt-20">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div className="text-sm text-gray-400">Week 2 • G-022</div>
+                <div className="text-sm text-gold-400">MVP Debut</div>
+              </div>
+              <CardTitle className="text-2xl font-bold text-white mt-2">
+                Jokic Announces Arrival with Triple-Double
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="p-4 bg-black/40 rounded-lg border border-gray-500/30">
+                  <div className="flex items-center gap-2 mb-3">
+                    <img src={getTeamLogo("BKN")} alt="BKN" className="w-8 h-8 object-contain" />
+                    <div>
+                      <div className="text-3xl font-bold text-white">107</div>
+                      <div className="text-sm text-gray-400">Nets</div>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <img 
+                      src={getPlayerHeadshot("Nikola Jokic")} 
+                      alt="Nikola Jokic"
+                      className="w-16 h-16 rounded-full object-cover border-2 border-gold-500/50"
+                      onError={(e) => { e.currentTarget.src = "https://via.placeholder.com/64x64/1f2937/fbbf24?text=NJ"; }}
+                    />
+                    <div className="flex-1">
+                      <div className="text-sm text-gray-400">
+                        <strong className="text-gold-400">N. Jokic:</strong> 27 pts, 12 reb, 10 ast
+                      </div>
+                      <div className="text-xs text-gray-500 mt-1">11-18 FG, 2-4 3PT, 3-4 FT</div>
+                    </div>
+                  </div>
+                </div>
+                <div className="p-4 bg-black/40 rounded-lg border border-orange-500/30">
+                  <div className="flex items-center gap-2 mb-3">
+                    <img src={getTeamLogo("PHX")} alt="PHX" className="w-8 h-8 object-contain" />
+                    <div>
+                      <div className="text-3xl font-bold text-white">98</div>
+                      <div className="text-sm text-gray-400">Suns</div>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <img 
+                      src={getPlayerHeadshot("Devin Booker")} 
+                      alt="Devin Booker"
+                      className="w-16 h-16 rounded-full object-cover border-2 border-gold-500/50"
+                      onError={(e) => { e.currentTarget.src = "https://via.placeholder.com/64x64/1f2937/fbbf24?text=DB"; }}
+                    />
+                    <div className="flex-1">
+                      <div className="text-sm text-gray-400">
+                        <strong className="text-gold-400">D. Booker:</strong> 31 pts, 5 ast
+                      </div>
+                      <div className="text-xs text-gray-500 mt-1">KD: 22 pts, 7 reb</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <p className="text-gray-300">
+                The reigning MVP made an immediate impact in his Brooklyn debut, recording a masterful triple-double with 27 points, 12 rebounds, and 10 assists on efficient 11-18 shooting. Jokic orchestrated the Nets' offense with surgical precision, showcasing the playmaking brilliance that earned him back-to-back MVP awards. Despite Devin Booker's 31 points and Kevin Durant's 22, Phoenix couldn't contain the Joker's all-around dominance.
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Game 19: KAT's Dominant Performance */}
+          <Card id="game-019" className="bg-gradient-to-br from-gray-900 to-black border-2 border-gold-500/30 scroll-mt-20">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div className="text-sm text-gray-400">Week 2 • G-019</div>
+                <div className="text-sm text-gold-400">Double-Double Dominance</div>
+              </div>
+              <CardTitle className="text-2xl font-bold text-white mt-2">
+                Towns Powers Through with 40-17 Performance
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="p-4 bg-black/40 rounded-lg border border-blue-500/30">
+                  <div className="flex items-center gap-2 mb-3">
+                    <img src={getTeamLogo("WAS")} alt="WAS" className="w-8 h-8 object-contain" />
+                    <div>
+                      <div className="text-3xl font-bold text-white">112</div>
+                      <div className="text-sm text-gray-400">Wizards</div>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <img 
+                      src={getPlayerHeadshot("Karl-Anthony Towns")} 
+                      alt="Karl-Anthony Towns"
+                      className="w-16 h-16 rounded-full object-cover border-2 border-gold-500/50"
+                      onError={(e) => { e.currentTarget.src = "https://via.placeholder.com/64x64/1f2937/fbbf24?text=KAT"; }}
+                    />
+                    <div className="flex-1">
+                      <div className="text-sm text-gray-400">
+                        <strong className="text-gold-400">K. Towns:</strong> 40 pts, 17 reb, 3 blk
+                      </div>
+                      <div className="text-xs text-gray-500 mt-1">16-24 FG, 3-6 3PT, 5-6 FT</div>
+                    </div>
+                  </div>
+                </div>
+                <div className="p-4 bg-black/40 rounded-lg border border-red-500/30">
+                  <div className="flex items-center gap-2 mb-3">
+                    <img src={getTeamLogo("CHI")} alt="CHI" className="w-8 h-8 object-contain" />
+                    <div>
+                      <div className="text-3xl font-bold text-white">95</div>
+                      <div className="text-sm text-gray-400">Bulls</div>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <img 
+                      src={getPlayerHeadshot("Zach LaVine")} 
+                      alt="Zach LaVine"
+                      className="w-16 h-16 rounded-full object-cover border-2 border-gold-500/50"
+                      onError={(e) => { e.currentTarget.src = "https://via.placeholder.com/64x64/1f2937/fbbf24?text=ZL"; }}
+                    />
+                    <div className="flex-1">
+                      <div className="text-sm text-gray-400">
+                        <strong className="text-gold-400">Z. LaVine:</strong> 28 pts, 6 ast
+                      </div>
+                      <div className="text-xs text-gray-500 mt-1">Vucevic: 18 pts, 11 reb</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <p className="text-gray-300">
+                Karl-Anthony Towns put on an absolute clinic, dominating both ends with 40 points and 17 rebounds on an efficient 16-24 shooting night. The big man added 3 blocks and showcased his versatile scoring arsenal, hitting from beyond the arc (3-6) and controlling the paint. Despite Zach LaVine's 28 points and Nikola Vucevic's double-double (18 pts, 11 reb), Chicago had no answer for KAT's two-way dominance.
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Game 1: Season Opener - Raptors vs Wizards */}
+          <Card className="bg-gradient-to-br from-gray-900 to-black border-2 border-gold-500/30">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div className="text-sm text-gray-400">Season Opener • G-001</div>
+                <div className="text-sm text-gold-400">Final: 106-87</div>
+              </div>
+              <CardTitle className="text-2xl font-bold text-white mt-2">
+                Raptors Spoil Wizards' Season Opener
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="p-4 bg-black/40 rounded-lg border border-purple-500/30">
+                  <div className="flex items-center gap-2 mb-3">
+                    <img src={getTeamLogo("TOR")} alt="TOR" className="w-8 h-8 object-contain" />
+                    <div>
+                      <div className="text-3xl font-bold text-white">106</div>
+                      <div className="text-sm text-gray-400">Raptors</div>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-2 mb-2">
+                    <img src={getPlayerHeadshot("Jayson Tatum")} alt="Jayson Tatum" className="w-12 h-12 rounded-full object-cover border-2 border-gold-500/50" onError={(e) => { e.currentTarget.src = "https://via.placeholder.com/48?text=JT"; }} />
+                    <div className="text-xs text-gold-400">Tatum: 30 pts, 7 ast</div>
+                  </div>
+                  <div className="text-xs text-gray-500">Anunoby: 28 pts, 7-11 3PT</div>
+                  <div className="text-xs text-gray-500">Wallace: 17 pts, 10 stl</div>
+                </div>
+                <div className="p-4 bg-black/40 rounded-lg border border-blue-500/30">
+                  <div className="flex items-center gap-2 mb-3">
+                    <img src={getTeamLogo("WAS")} alt="WAS" className="w-8 h-8 object-contain" />
+                    <div>
+                      <div className="text-3xl font-bold text-white">87</div>
+                      <div className="text-sm text-gray-400">Wizards</div>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-2 mb-2">
+                    <img src={getPlayerHeadshot("Jalen Suggs")} alt="Jalen Suggs" className="w-12 h-12 rounded-full object-cover border-2 border-gold-500/50" onError={(e) => { e.currentTarget.src = "https://via.placeholder.com/48?text=JS"; }} />
+                    <div className="text-xs text-gold-400">Suggs: 25 pts</div>
+                  </div>
+                  <div className="text-xs text-gray-500">Sarr: 14 pts, 3 reb</div>
+                  <div className="text-xs text-gray-500">Giddey: 10 pts, 12 ast</div>
+                </div>
+              </div>
+              <p className="text-gray-300">
+                Toronto's second-half surge powered by Jayson Tatum (30 pts, 7 ast) and OG Anunoby's red-hot shooting (28 pts, 7-11 from three) proved too much for Washington. Cason Wallace's defensive intensity (10 steals!) sparked the transition game as the Raptors erased an early deficit. Despite Jalen Suggs' 25-point effort, the Wizards couldn't maintain their first-half momentum.
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Game 3: Wizards vs Bucks */}
+          <Card className="bg-gradient-to-br from-gray-900 to-black border-2 border-gold-500/30">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div className="text-sm text-gray-400">Week 1 • G-003</div>
+                <div className="text-sm text-gold-400">Final: 89-88</div>
+              </div>
+              <CardTitle className="text-2xl font-bold text-white mt-2">
+                Suggs Erupts for 36 as Wizards Edge Bucks
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="p-4 bg-black/40 rounded-lg border border-blue-500/30">
+                  <div className="flex items-center gap-2 mb-3">
+                    <img src={getTeamLogo("WAS")} alt="WAS" className="w-8 h-8 object-contain" />
+                    <div>
+                      <div className="text-3xl font-bold text-white">89</div>
+                      <div className="text-sm text-gray-400">Wizards</div>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-2 mb-2">
+                    <img src={getPlayerHeadshot("Jalen Suggs")} alt="Jalen Suggs" className="w-12 h-12 rounded-full object-cover border-2 border-gold-500/50" onError={(e) => { e.currentTarget.src = "https://via.placeholder.com/48?text=JS"; }} />
+                    <div className="text-xs text-gold-400">Suggs: 36 pts, 6 ast, 3 stl</div>
+                  </div>
+                  <div className="text-xs text-gray-500">Giddey: 21 pts, 9 ast</div>
+                  <div className="text-xs text-gray-500">Towns: 13 pts, 18 reb</div>
+                </div>
+                <div className="p-4 bg-black/40 rounded-lg border border-green-500/30">
+                  <div className="flex items-center gap-2 mb-3">
+                    <img src={getTeamLogo("MIL")} alt="MIL" className="w-8 h-8 object-contain" />
+                    <div>
+                      <div className="text-3xl font-bold text-white">88</div>
+                      <div className="text-sm text-gray-400">Bucks</div>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-2 mb-2">
+                    <img src={getPlayerHeadshot("Aaron Gordon")} alt="Aaron Gordon" className="w-12 h-12 rounded-full object-cover border-2 border-gold-500/50" onError={(e) => { e.currentTarget.src = "https://via.placeholder.com/48?text=AG"; }} />
+                    <div className="text-xs text-gold-400">Gordon: 16 pts, 6 reb</div>
+                  </div>
+                  <div className="text-xs text-gray-500">Sharpe: 15 pts, 7 stl</div>
+                  <div className="text-xs text-gray-500">Mitchell: 11 pts, 10 ast</div>
+                </div>
+              </div>
+              <p className="text-gray-300">
+                Jalen Suggs put on a show with 36 points (15-25 FG) to lead Washington past Milwaukee in a nail-biter. Josh Giddey added 21 points and 9 assists, while Karl-Anthony Towns dominated the glass with 18 rebounds. The Bucks' balanced attack led by Aaron Gordon (16 pts) and Shaedon Sharpe (15 pts, 7 stl) came up just short despite Nikola Jokic's presence (4 pts, 9 reb).
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Game 8: LeBron's 42-Point Masterclass */}
+          <Card className="bg-gradient-to-br from-gray-900 to-black border-2 border-gold-500/30">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div className="text-sm text-gray-400">Week 1 • G-008</div>
+                <div className="text-sm text-gold-400">Elite Performance</div>
+              </div>
+              <CardTitle className="text-2xl font-bold text-white mt-2">
+                LeBron's 42-Point Masterclass vs Dallas
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="p-4 bg-black/40 rounded-lg border border-gray-700">
+                  <div className="flex items-center gap-2 mb-3">
+                    <img src={getTeamLogo("SAS")} alt="SAS" className="w-8 h-8 object-contain" />
+                    <div className="text-2xl font-bold text-white">SAS</div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <img src={getPlayerHeadshot("LeBron James")} alt="LeBron James" className="w-16 h-16 rounded-full object-cover border-2 border-gold-500/50" onError={(e) => { e.currentTarget.src = "https://via.placeholder.com/64?text=LBJ"; }} />
+                    <div className="flex-1">
+                      <div className="text-sm text-gray-400"><strong className="text-gold-400">L. James:</strong> 42 pts, 5 reb</div>
+                      <div className="text-xs text-gray-500 mt-1">19-31 FG, 4-7 3PT</div>
+                      <div className="text-xs text-gray-500">Barnes: 18 pts, 3 stl</div>
+                    </div>
+                  </div>
+                </div>
+                <div className="p-4 bg-black/40 rounded-lg border border-gray-700">
+                  <div className="flex items-center gap-2 mb-3">
+                    <img src={getTeamLogo("DAL")} alt="DAL" className="w-8 h-8 object-contain" />
+                    <div className="text-2xl font-bold text-white">DAL</div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <img src={getPlayerHeadshot("Stephen Curry")} alt="Stephen Curry" className="w-16 h-16 rounded-full object-cover border-2 border-gold-500/50" onError={(e) => { e.currentTarget.src = "https://via.placeholder.com/64?text=SC"; }} />
+                    <div className="flex-1">
+                      <div className="text-sm text-gray-400"><strong className="text-gold-400">S. Curry:</strong> 36 pts, 13 ast</div>
+                      <div className="text-xs text-gray-500 mt-1">15-35 FG, 6-20 3PT</div>
+                      <div className="text-xs text-gray-500">Caruso: 15 pts</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <p className="text-gray-300">
+                LeBron James turned back the clock with a dominant 42-point performance (19-31 FG) to lead the Spurs past Dallas. Harrison Barnes added 18 points and 3 steals in support. Despite Steph Curry's 36 points and 13 assists, the Mavericks couldn't overcome LeBron's efficiency and San Antonio's balanced attack.
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Game 21: Wallace Buzzer Beater */}
+          <Card id="game-021" className="bg-gradient-to-br from-gray-900 to-black border-2 border-gold-500/30 scroll-mt-20">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div className="text-sm text-gray-400">Week 2 • G-021</div>
+                <div className="text-sm text-gold-400">Buzzer Beater!</div>
+              </div>
+              <CardTitle className="text-2xl font-bold text-white mt-2">
+                Wallace at the Buzzer! Raptors Survive
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="p-4 bg-black/40 rounded-lg border border-purple-500/30">
+                  <div className="flex items-center gap-2 mb-3">
+                    <img src={getTeamLogo("TOR")} alt="TOR" className="w-8 h-8 object-contain" />
+                    <div>
+                      <div className="text-3xl font-bold text-white">90</div>
+                      <div className="text-sm text-gray-400">Raptors</div>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <img 
+                      src={getPlayerHeadshot("Cason Wallace")} 
+                      alt="Cason Wallace"
+                      className="w-16 h-16 rounded-full object-cover border-2 border-gold-500/50"
+                      onError={(e) => { e.currentTarget.src = "https://via.placeholder.com/64x64/1f2937/fbbf24?text=CW"; }}
+                    />
+                    <div className="flex-1">
+                      <div className="text-sm text-gray-400">
+                        <strong className="text-gold-400">C. Wallace:</strong> Game-winner
+                      </div>
+                      <div className="text-xs text-gray-500 mt-1">Tatum: 37 pts</div>
+                    </div>
+                  </div>
+                </div>
+                <div className="p-4 bg-black/40 rounded-lg border border-red-500/30">
+                  <div className="flex items-center gap-2 mb-3">
+                    <img src={getTeamLogo("DET")} alt="DET" className="w-8 h-8 object-contain" />
+                    <div>
+                      <div className="text-3xl font-bold text-white">88</div>
+                      <div className="text-sm text-gray-400">Pistons</div>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <img 
+                      src={getPlayerHeadshot("Zach LaVine")} 
+                      alt="Zach LaVine"
+                      className="w-16 h-16 rounded-full object-cover border-2 border-gold-500/50"
+                      onError={(e) => { e.currentTarget.src = "https://via.placeholder.com/64x64/1f2937/fbbf24?text=ZL"; }}
+                    />
+                    <div className="flex-1">
+                      <div className="text-sm text-gray-400">
+                        <strong className="text-gold-400">Z. LaVine:</strong> 23 pts
+                      </div>
+                      <div className="text-xs text-gray-500 mt-1">Heartbreaking loss</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <p className="text-gray-300">
+                Jayson Tatum had 37 points, but it was Cason Wallace who played hero. With the game tied and seconds ticking down against a gritty Pistons squad, Wallace drained the buzzer-beater to lift Toronto to a 90-88 win. Zach LaVine's 23 points weren't enough as the Pistons fell in heartbreaking fashion. The victory keeps the Raptors' momentum alive in dramatic style.
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Game 28: Ingram Pistons Debut */}
+          <Card id="game-028" className="bg-gradient-to-br from-gray-900 to-black border-2 border-gold-500/30 scroll-mt-20">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div className="text-sm text-gray-400">Week 3 • G-028</div>
+                <div className="text-sm text-gold-400">Trade Debut</div>
+              </div>
+              <CardTitle className="text-2xl font-bold text-white mt-2">
+                Ingram Debuts, But Nets Too Strong
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="p-4 bg-black/40 rounded-lg border border-gray-500/30">
+                  <div className="flex items-center gap-2 mb-3">
+                    <img src={getTeamLogo("BKN")} alt="BKN" className="w-8 h-8 object-contain" />
+                    <div>
+                      <div className="text-3xl font-bold text-white">112</div>
+                      <div className="text-sm text-gray-400">Nets</div>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <img 
+                      src={getPlayerHeadshot("Damian Lillard")} 
+                      alt="Damian Lillard"
+                      className="w-16 h-16 rounded-full object-cover border-2 border-gold-500/50"
+                      onError={(e) => { e.currentTarget.src = "https://via.placeholder.com/64x64/1f2937/fbbf24?text=DL"; }}
+                    />
+                    <div className="flex-1">
+                      <div className="text-sm text-gray-400">
+                        <strong className="text-gold-400">D. Lillard:</strong> 30 pts
+                      </div>
+                      <div className="text-xs text-gray-500 mt-1">Jokic: 22 pts</div>
+                    </div>
+                  </div>
+                </div>
+                <div className="p-4 bg-black/40 rounded-lg border border-red-500/30">
+                  <div className="flex items-center gap-2 mb-3">
+                    <img src={getTeamLogo("DET")} alt="DET" className="w-8 h-8 object-contain" />
+                    <div>
+                      <div className="text-3xl font-bold text-white">101</div>
+                      <div className="text-sm text-gray-400">Pistons</div>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <img 
+                      src={getPlayerHeadshot("Brandon Ingram")} 
+                      alt="Brandon Ingram"
+                      className="w-16 h-16 rounded-full object-cover border-2 border-gold-500/50"
+                      onError={(e) => { e.currentTarget.src = "https://via.placeholder.com/64x64/1f2937/fbbf24?text=BI"; }}
+                    />
+                    <div className="flex-1">
+                      <div className="text-sm text-gray-400">
+                        <strong className="text-gold-400">B. Ingram:</strong> 24 pts (debut)
+                      </div>
+                      <div className="text-xs text-gray-500 mt-1">Promising start</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <p className="text-gray-300">
+                Brandon Ingram made his Pistons debut after the blockbuster LaVine trade, dropping 24 points in an impressive showing. But it wasn't enough to stop the Nets' juggernaut offense. Damian Lillard (30 pts) and Nikola Jokic (22 pts) led Brooklyn to a 112-101 win, spoiling the new era in Detroit. The Nets' firepower proved too much despite Ingram's promising debut.
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Game 24: Suggs Clamps Ant-Man */}
+          <Card id="game-024" className="bg-gradient-to-br from-gray-900 to-black border-2 border-gold-500/30 scroll-mt-20">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div className="text-sm text-gray-400">Week 2 • G-024</div>
+                <div className="text-sm text-gold-400">Defensive Masterclass</div>
+              </div>
+              <CardTitle className="text-2xl font-bold text-white mt-2">
+                Suggs Puts the Clamps on Ant-Man
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="p-4 bg-black/40 rounded-lg border border-blue-500/30">
+                  <div className="flex items-center gap-2 mb-3">
+                    <img src={getTeamLogo("WAS")} alt="WAS" className="w-8 h-8 object-contain" />
+                    <div>
+                      <div className="text-3xl font-bold text-white">91</div>
+                      <div className="text-sm text-gray-400">Wizards</div>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <img 
+                      src={getPlayerHeadshot("Jalen Suggs")} 
+                      alt="Jalen Suggs"
+                      className="w-16 h-16 rounded-full object-cover border-2 border-gold-500/50"
+                      onError={(e) => { e.currentTarget.src = "https://via.placeholder.com/64x64/1f2937/fbbf24?text=JS"; }}
+                    />
+                    <div className="flex-1">
+                      <div className="text-sm text-gray-400">
+                        <strong className="text-gold-400">J. Suggs:</strong> Lockdown D
+                      </div>
+                      <div className="text-xs text-gray-500 mt-1">KAT: 30 pts</div>
+                    </div>
+                  </div>
+                </div>
+                <div className="p-4 bg-black/40 rounded-lg border border-orange-500/30">
+                  <div className="flex items-center gap-2 mb-3">
+                    <img src={getTeamLogo("ORL")} alt="ORL" className="w-8 h-8 object-contain" />
+                    <div>
+                      <div className="text-3xl font-bold text-white">85</div>
+                      <div className="text-sm text-gray-400">Magic</div>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <img 
+                      src={getPlayerHeadshot("Anthony Edwards")} 
+                      alt="Anthony Edwards"
+                      className="w-16 h-16 rounded-full object-cover border-2 border-gold-500/50"
+                      onError={(e) => { e.currentTarget.src = "https://via.placeholder.com/64x64/1f2937/fbbf24?text=AE"; }}
+                    />
+                    <div className="flex-1">
+                      <div className="text-sm text-gray-400">
+                        <strong className="text-gold-400">A. Edwards:</strong> 20 pts, 7 TO
+                      </div>
+                      <div className="text-xs text-gray-500 mt-1">6-21 FG</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <p className="text-gray-300">
+                Jalen Suggs took the matchup personally. The Wizards guard smothered Anthony Edwards all night, holding the Magic star to 6-of-21 shooting and forcing 7 turnovers. Karl-Anthony Towns added 30 points for Washington. The frustration boiled over for Orlando in a 91-85 loss, and reports suggest Edwards was sent straight to the airport post-game as trade talks heated up.
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Game 20: Booker 45pts OT Thriller */}
+          <Card id="game-020" className="bg-gradient-to-br from-gray-900 to-black border-2 border-gold-500/30 scroll-mt-20">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div className="text-sm text-gray-400">Week 2 • G-020</div>
+                <div className="text-sm text-gold-400">OT Thriller</div>
+              </div>
+              <CardTitle className="text-2xl font-bold text-white mt-2">
+                Booker Drops 45, Knicks Finally Win
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="p-4 bg-black/40 rounded-lg border border-blue-500/30">
+                  <div className="flex items-center gap-2 mb-3">
+                    <img src={getTeamLogo("NYK")} alt="NYK" className="w-8 h-8 object-contain" />
+                    <div>
+                      <div className="text-3xl font-bold text-white">102</div>
+                      <div className="text-sm text-gray-400">Knicks</div>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <img 
+                      src={getPlayerHeadshot("Devin Booker")} 
+                      alt="Devin Booker"
+                      className="w-16 h-16 rounded-full object-cover border-2 border-gold-500/50"
+                      onError={(e) => { e.currentTarget.src = "https://via.placeholder.com/64x64/1f2937/fbbf24?text=DB"; }}
+                    />
+                    <div className="flex-1">
+                      <div className="text-sm text-gray-400">
+                        <strong className="text-gold-400">D. Booker:</strong> 45 pts (OT)
+                      </div>
+                      <div className="text-xs text-gray-500 mt-1">21-40 FG</div>
+                    </div>
+                  </div>
+                </div>
+                <div className="p-4 bg-black/40 rounded-lg border border-yellow-500/30">
+                  <div className="flex items-center gap-2 mb-3">
+                    <img src={getTeamLogo("GSW")} alt="GSW" className="w-8 h-8 object-contain" />
+                    <div>
+                      <div className="text-3xl font-bold text-white">90</div>
+                      <div className="text-sm text-gray-400">Warriors</div>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <img 
+                      src={getPlayerHeadshot("Jalen Williams")} 
+                      alt="Jalen Williams"
+                      className="w-16 h-16 rounded-full object-cover border-2 border-gold-500/50"
+                      onError={(e) => { e.currentTarget.src = "https://via.placeholder.com/64x64/1f2937/fbbf24?text=JW"; }}
+                    />
+                    <div className="flex-1">
+                      <div className="text-sm text-gray-400">
+                        <strong className="text-gold-400">J. Williams:</strong> 32 pts
+                      </div>
+                      <div className="text-xs text-gray-500 mt-1">Valiant effort</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <p className="text-gray-300">
+                It took overtime, but the New York Knicks are finally in the win column. Devin Booker was spectacular, pouring in 45 points on 21-of-40 shooting. In a thrilling OT battle against the Warriors, Booker took over when it mattered most, outdueling Jalen Williams (32 pts) to secure a 102-90 victory. The Knicks' first win of the season came in dramatic fashion.
+              </p>
+            </CardContent>
+          </Card>
+
+
+        </div>
+      </section>
+
+      {/* Quick Links */}
+      <section className="container py-12">
+        <Card className="bg-gradient-to-r from-blue-900/40 via-purple-900/40 to-blue-900/40 border-2 border-gold-500/30">
+          <CardContent className="py-8 text-center">
+            <h3 className="text-2xl md:text-3xl font-black text-white mb-4">
+              EXPLORE MORE
+            </h3>
+            <div className="flex flex-wrap justify-center gap-4">
+              <Link href="/league-info">
+                <button className="px-6 py-3 bg-gradient-to-r from-purple-500 to-purple-600 text-white font-bold rounded-lg hover:from-purple-600 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl">
+                  📋 League Rules
+                </button>
+              </Link>
+              <Link href="/highlights">
+                <button className="px-6 py-3 bg-gradient-to-r from-yellow-500 to-yellow-600 text-black font-bold rounded-lg hover:from-yellow-600 hover:to-yellow-700 transition-all shadow-lg hover:shadow-xl">
+                  🔥 Highlights
+                </button>
+              </Link>
+              <a 
+                href="https://hof17roster.manus.space" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-bold rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all shadow-lg hover:shadow-xl"
+              >
+                📊 Full Rosters
+              </a>
+            </div>
+          </CardContent>
+        </Card>
+      </section>
+
+      {/* Footer */}
+      <footer className="border-t border-gold-500/30 py-8 mt-12">
+        <div className="container text-center text-gray-400 text-sm">
+          <p>© 2024 Hall of Fame Basketball Association. All rights reserved.</p>
+          <p className="mt-2">HoFSN - Your source for NBA 2K26 league coverage</p>
+        </div>
+      </footer>
+    </div>
+  );
+}

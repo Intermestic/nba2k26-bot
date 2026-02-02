@@ -1,0 +1,17 @@
+Cavs-Rockets Series Page Test - Jan 25, 2026
+
+Page URL: /playoffs/cavs-rockets-series
+
+VERIFIED WORKING:
+- Page loads correctly with red Rockets theme
+- Header shows "FIRST ROUND SERIES RECAP" with #5 Houston Rockets vs #12 Cleveland Cavaliers
+- Series result banner: "ROCKETS WIN 2-0" with scores (96-93 OT, 100-97)
+- Anthony Edwards storyline card with 69 combined points narrative
+- Game 1 card with OT indicator, 96-93 score, "Show Box Score" button
+- Game 2 card with 100-97 score, "Show Box Score" button
+- Series Statistics showing 196-190 total points, +6 differential
+- Series MVP section highlighting Anthony Edwards' stats
+- Navigation buttons: Back to Playoff Bracket, Home
+- Footer present
+
+All elements match the styling of other series pages (Kings-Bulls, Jazz-Nuggets).

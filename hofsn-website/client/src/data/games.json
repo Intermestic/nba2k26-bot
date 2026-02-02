@@ -1,0 +1,2463 @@
+[
+  {
+    "id": "G-001",
+    "matchup": "TOR vs WAS",
+    "teams": {
+      "Washington Wizards": {
+        "name": "Washington Wizards",
+        "players": [
+          {
+            "name": "J. Suggs",
+            "min": "22",
+            "pts": 25,
+            "reb": 3,
+            "ast": 3,
+            "stl": 2,
+            "blk": 0,
+            "to": 3,
+            "fg": "10-15",
+            "3pt": "3-6",
+            "ft": "2-2"
+          },
+          {
+            "name": "A. Sarr",
+            "min": "18",
+            "pts": 14,
+            "reb": 3,
+            "ast": 2,
+            "stl": 2,
+            "blk": 1,
+            "to": 3,
+            "fg": "7-9",
+            "3pt": "0-1",
+            "ft": "0-0"
+          },
+          {
+            "name": "K. Towns",
+            "min": "19",
+            "pts": 12,
+            "reb": 7,
+            "ast": 1,
+            "stl": 1,
+            "blk": 0,
+            "to": 2,
+            "fg": "5-10",
+            "3pt": "1-3",
+            "ft": "1-1"
+          },
+          {
+            "name": "J. Giddey",
+            "min": "21",
+            "pts": 10,
+            "reb": 7,
+            "ast": 12,
+            "stl": 1,
+            "blk": 0,
+            "to": 3,
+            "fg": "4-10",
+            "3pt": "2-4",
+            "ft": "0-0"
+          },
+          {
+            "name": "C. Carrington",
+            "min": "7",
+            "pts": 9,
+            "reb": 0,
+            "ast": 0,
+            "stl": 1,
+            "blk": 0,
+            "to": 0,
+            "fg": "4-6",
+            "3pt": "1-1",
+            "ft": "0-0"
+          },
+          {
+            "name": "D. Brooks",
+            "min": "14",
+            "pts": 7,
+            "reb": 1,
+            "ast": 2,
+            "stl": 0,
+            "blk": 0,
+            "to": 2,
+            "fg": "3-4",
+            "3pt": "1-1",
+            "ft": "0-0"
+          },
+          {
+            "name": "M. Bridges",
+            "min": "21",
+            "pts": 4,
+            "reb": 3,
+            "ast": 1,
+            "stl": 1,
+            "blk": 0,
+            "to": 1,
+            "fg": "2-8",
+            "3pt": "0-0",
+            "ft": "0-0"
+          },
+          {
+            "name": "D. Green",
+            "min": "17",
+            "pts": 2,
+            "reb": 3,
+            "ast": 3,
+            "stl": 1,
+            "blk": 0,
+            "to": 0,
+            "fg": "1-4",
+            "3pt": "0-1",
+            "ft": "0-0"
+          },
+          {
+            "name": "B. Simmons",
+            "min": "11",
+            "pts": 2,
+            "reb": 4,
+            "ast": 5,
+            "stl": 1,
+            "blk": 0,
+            "to": 0,
+            "fg": "1-3",
+            "3pt": "0-0",
+            "ft": "0-0"
+          }
+        ],
+        "total_points": 85
+      },
+      "Toronto Raptors": {
+        "name": "Toronto Raptors",
+        "players": [
+          {
+            "name": "J. Tatum",
+            "min": "16",
+            "pts": 30,
+            "reb": 6,
+            "ast": 7,
+            "stl": 2,
+            "blk": 0,
+            "to": 1,
+            "fg": "11-21",
+            "3pt": "4-7",
+            "ft": "4-5"
+          },
+          {
+            "name": "O. Anunoby",
+            "min": "21",
+            "pts": 28,
+            "reb": 3,
+            "ast": 3,
+            "stl": 1,
+            "blk": 0,
+            "to": 2,
+            "fg": "10-16",
+            "3pt": "7-11",
+            "ft": "1-1"
+          },
+          {
+            "name": "C. Wallace",
+            "min": "22",
+            "pts": 17,
+            "reb": 3,
+            "ast": 8,
+            "stl": 10,
+            "blk": 0,
+            "to": 1,
+            "fg": "6-6",
+            "3pt": "5-5",
+            "ft": "0-0"
+          },
+          {
+            "name": "B. Podziemski",
+            "min": "15",
+            "pts": 10,
+            "reb": 3,
+            "ast": 2,
+            "stl": 0,
+            "blk": 0,
+            "to": 4,
+            "fg": "4-9",
+            "3pt": "1-4",
+            "ft": "1-3"
+          },
+          {
+            "name": "I. Zubac",
+            "min": "16",
+            "pts": 10,
+            "reb": 5,
+            "ast": 0,
+            "stl": 0,
+            "blk": 0,
+            "to": 2,
+            "fg": "5-5",
+            "3pt": "0-0",
+            "ft": "0-2"
+          },
+          {
+            "name": "T. Shannon Jr.",
+            "min": "20",
+            "pts": 6,
+            "reb": 5,
+            "ast": 2,
+            "stl": 1,
+            "blk": 0,
+            "to": 1,
+            "fg": "3-7",
+            "3pt": "0-1",
+            "ft": "0-0"
+          },
+          {
+            "name": "G. Dick",
+            "min": "5",
+            "pts": 3,
+            "reb": 0,
+            "ast": 0,
+            "stl": 0,
+            "blk": 0,
+            "to": 0,
+            "fg": "1-2",
+            "3pt": "1-1",
+            "ft": "0-0"
+          }
+        ],
+        "total_points": 104
+      }
+    },
+    "notes": "Season Opener"
+  },
+  {
+    "id": "G-002",
+    "matchup": "SAS vs HOU",
+    "teams": {
+      "San Antonio Spurs": {
+        "name": "San Antonio Spurs",
+        "players": [
+          {
+            "name": "L. James",
+            "min": "16",
+            "pts": 21,
+            "reb": 2,
+            "ast": 2,
+            "stl": 2,
+            "blk": 0,
+            "to": 0,
+            "fg": "9-16",
+            "3pt": "3-8",
+            "ft": "0-0"
+          },
+          {
+            "name": "A. Simons",
+            "min": "17",
+            "pts": 16,
+            "reb": 3,
+            "ast": 3,
+            "stl": 0,
+            "blk": 0,
+            "to": 4,
+            "fg": "8-15",
+            "3pt": "0-4",
+            "ft": "0-0"
+          },
+          {
+            "name": "J. Valanciunas",
+            "min": "16",
+            "pts": 11,
+            "reb": 6,
+            "ast": 1,
+            "stl": 2,
+            "blk": 0,
+            "to": 1,
+            "fg": "4-7",
+            "3pt": "0-0",
+            "ft": "3-3"
+          },
+          {
+            "name": "A. Nesmith",
+            "min": "15",
+            "pts": 8,
+            "reb": 2,
+            "ast": 4,
+            "stl": 1,
+            "blk": 0,
+            "to": 0,
+            "fg": "3-7",
+            "3pt": "2-5",
+            "ft": "0-0"
+          },
+          {
+            "name": "H. Barnes",
+            "min": "18",
+            "pts": 6,
+            "reb": 3,
+            "ast": 0,
+            "stl": 1,
+            "blk": 0,
+            "to": 0,
+            "fg": "3-6",
+            "3pt": "0-0",
+            "ft": "0-0"
+          },
+          {
+            "name": "S. Adams",
+            "min": "10",
+            "pts": 6,
+            "reb": 6,
+            "ast": 3,
+            "stl": 0,
+            "blk": 0,
+            "to": 2,
+            "fg": "3-3",
+            "3pt": "0-0",
+            "ft": "0-0"
+          },
+          {
+            "name": "L. Ball",
+            "min": "15",
+            "pts": 5,
+            "reb": 1,
+            "ast": 1,
+            "stl": 1,
+            "blk": 0,
+            "to": 0,
+            "fg": "2-5",
+            "3pt": "1-2",
+            "ft": "0-0"
+          }
+        ],
+        "total_points": 73
+      },
+      "Houston Rockets": {
+        "name": "Houston Rockets",
+        "players": [
+          {
+            "name": "S. Gilgeous-Alexander",
+            "min": "21",
+            "pts": 25,
+            "reb": 4,
+            "ast": 1,
+            "stl": 0,
+            "blk": 0,
+            "to": 1,
+            "fg": "11-17",
+            "3pt": "1-3",
+            "ft": "2-2"
+          },
+          {
+            "name": "K. Porzingis",
+            "min": "17",
+            "pts": 19,
+            "reb": 8,
+            "ast": 1,
+            "stl": 0,
+            "blk": 2,
+            "to": 1,
+            "fg": "9-16",
+            "3pt": "1-5",
+            "ft": "0-0"
+          },
+          {
+            "name": "C. Whitmore",
+            "min": "15",
+            "pts": 15,
+            "reb": 2,
+            "ast": 0,
+            "stl": 0,
+            "blk": 1,
+            "to": 1,
+            "fg": "7-15",
+            "3pt": "0-1",
+            "ft": "1-1"
+          },
+          {
+            "name": "R.J. Barrett",
+            "min": "14",
+            "pts": 4,
+            "reb": 1,
+            "ast": 1,
+            "stl": 0,
+            "blk": 0,
+            "to": 1,
+            "fg": "2-5",
+            "3pt": "0-1",
+            "ft": "0-0"
+          }
+        ],
+        "total_points": 63
+      }
+    },
+    "notes": ""
+  },
+  {
+    "id": "G-003",
+    "matchup": "WAS vs MIL",
+    "teams": {
+      "Milwaukee Bucks": {
+        "name": "Milwaukee Bucks",
+        "players": [
+          {
+            "name": "A. Gordon",
+            "min": "22",
+            "pts": 16,
+            "reb": 6,
+            "ast": 3,
+            "stl": 2,
+            "blk": 0,
+            "to": 2,
+            "fg": "8-13",
+            "3pt": "0-1",
+            "ft": "0-0"
+          },
+          {
+            "name": "S. Sharpe",
+            "min": "20",
+            "pts": 15,
+            "reb": 3,
+            "ast": 0,
+            "stl": 7,
+            "blk": 0,
+            "to": 3,
+            "fg": "7-13",
+            "3pt": "1-4",
+            "ft": "0-0"
+          },
+          {
+            "name": "D. Mitchell",
+            "min": "19",
+            "pts": 11,
+            "reb": 0,
+            "ast": 10,
+            "stl": 0,
+            "blk": 0,
+            "to": 1,
+            "fg": "4-8",
+            "3pt": "3-7",
+            "ft": "0-0"
+          },
+          {
+            "name": "R. Hachimura",
+            "min": "10",
+            "pts": 11,
+            "reb": 3,
+            "ast": 1,
+            "stl": 2,
+            "blk": 0,
+            "to": 2,
+            "fg": "5-6",
+            "3pt": "0-0",
+            "ft": "1-2"
+          },
+          {
+            "name": "Q. Grimes",
+            "min": "10",
+            "pts": 10,
+            "reb": 0,
+            "ast": 2,
+            "stl": 2,
+            "blk": 0,
+            "to": 2,
+            "fg": "4-5",
+            "3pt": "2-2",
+            "ft": "0-0"
+          },
+          {
+            "name": "G.G. Jackson",
+            "min": "20",
+            "pts": 9,
+            "reb": 3,
+            "ast": 4,
+            "stl": 0,
+            "blk": 0,
+            "to": 1,
+            "fg": "4-8",
+            "3pt": "0-2",
+            "ft": "1-2"
+          },
+          {
+            "name": "T. Herro",
+            "min": "19",
+            "pts": 7,
+            "reb": 3,
+            "ast": 3,
+            "stl": 0,
+            "blk": 0,
+            "to": 2,
+            "fg": "3-8",
+            "3pt": "1-6",
+            "ft": "0-0"
+          },
+          {
+            "name": "B. Beal",
+            "min": "8",
+            "pts": 5,
+            "reb": 4,
+            "ast": 1,
+            "stl": 0,
+            "blk": 0,
+            "to": 0,
+            "fg": "2-4",
+            "3pt": "1-3",
+            "ft": "0-0"
+          },
+          {
+            "name": "N. Jokic",
+            "min": "22",
+            "pts": 4,
+            "reb": 9,
+            "ast": 1,
+            "stl": 1,
+            "blk": 0,
+            "to": 2,
+            "fg": "2-5",
+            "3pt": "0-0",
+            "ft": "0-0"
+          }
+        ],
+        "total_points": 88
+      },
+      "Washington Wizards": {
+        "name": "Washington Wizards",
+        "players": [
+          {
+            "name": "J. Suggs",
+            "min": "20",
+            "pts": 36,
+            "reb": 1,
+            "ast": 6,
+            "stl": 3,
+            "blk": 0,
+            "to": 3,
+            "fg": "15-25",
+            "3pt": "3-6",
+            "ft": "3-3"
+          },
+          {
+            "name": "J. Giddey",
+            "min": "20",
+            "pts": 21,
+            "reb": 5,
+            "ast": 9,
+            "stl": 2,
+            "blk": 0,
+            "to": 2,
+            "fg": "10-19",
+            "3pt": "1-5",
+            "ft": "0-1"
+          },
+          {
+            "name": "K. Towns",
+            "min": "23",
+            "pts": 13,
+            "reb": 18,
+            "ast": 2,
+            "stl": 1,
+            "blk": 0,
+            "to": 3,
+            "fg": "5-11",
+            "3pt": "1-4",
+            "ft": "2-2"
+          },
+          {
+            "name": "A. Sarr",
+            "min": "17",
+            "pts": 7,
+            "reb": 3,
+            "ast": 2,
+            "stl": 1,
+            "blk": 1,
+            "to": 4,
+            "fg": "3-4",
+            "3pt": "1-2",
+            "ft": "0-0"
+          },
+          {
+            "name": "M. Bridges",
+            "min": "20",
+            "pts": 6,
+            "reb": 2,
+            "ast": 1,
+            "stl": 3,
+            "blk": 0,
+            "to": 0,
+            "fg": "3-8",
+            "3pt": "0-0",
+            "ft": "0-0"
+          },
+          {
+            "name": "D. Brooks",
+            "min": "17",
+            "pts": 6,
+            "reb": 2,
+            "ast": 0,
+            "stl": 2,
+            "blk": 0,
+            "to": 3,
+            "fg": "3-7",
+            "3pt": "0-0",
+            "ft": "0-0"
+          }
+        ],
+        "total_points": 89
+      }
+    },
+    "notes": ""
+  },
+  {
+    "id": "G-004",
+    "matchup": "DEN vs TOR",
+    "teams": {
+      "Toronto Raptors": {
+        "name": "Toronto Raptors",
+        "players": [
+          {
+            "name": "J. Tatum",
+            "min": "19",
+            "pts": 25,
+            "reb": 0,
+            "ast": 5,
+            "stl": 1,
+            "blk": 0,
+            "to": 0,
+            "fg": "9-18",
+            "3pt": "7-9",
+            "ft": "0-0"
+          },
+          {
+            "name": "B. Podziemski",
+            "min": "13",
+            "pts": 17,
+            "reb": 1,
+            "ast": 3,
+            "stl": 2,
+            "blk": 0,
+            "to": 0,
+            "fg": "8-14",
+            "3pt": "1-3",
+            "ft": "0-0"
+          },
+          {
+            "name": "C. Wallace",
+            "min": "19",
+            "pts": 10,
+            "reb": 0,
+            "ast": 3,
+            "stl": 2,
+            "blk": 0,
+            "to": 2,
+            "fg": "4-5",
+            "3pt": "2-3",
+            "ft": "0-0"
+          },
+          {
+            "name": "T. Shannon Jr.",
+            "min": "19",
+            "pts": 10,
+            "reb": 3,
+            "ast": 3,
+            "stl": 2,
+            "blk": 0,
+            "to": 2,
+            "fg": "5-6",
+            "3pt": "0-0",
+            "ft": "0-0"
+          },
+          {
+            "name": "O. Anunoby",
+            "min": "19",
+            "pts": 10,
+            "reb": 1,
+            "ast": 1,
+            "stl": 1,
+            "blk": 0,
+            "to": 1,
+            "fg": "4-5",
+            "3pt": "2-2",
+            "ft": "0-0"
+          }
+        ],
+        "total_points": 72
+      },
+      "Denver Nuggets": {
+        "name": "Denver Nuggets",
+        "players": [
+          {
+            "name": "K. Caldwell-Pope",
+            "min": "18",
+            "pts": 23,
+            "reb": 0,
+            "ast": 2,
+            "stl": 1,
+            "blk": 0,
+            "to": 3,
+            "fg": "9-11",
+            "3pt": "5-6",
+            "ft": "0-0"
+          },
+          {
+            "name": "J. Embiid",
+            "min": "13",
+            "pts": 16,
+            "reb": 6,
+            "ast": 5,
+            "stl": 0,
+            "blk": 0,
+            "to": 2,
+            "fg": "7-9",
+            "3pt": "0-0",
+            "ft": "2-2"
+          },
+          {
+            "name": "J. Collins",
+            "min": "17",
+            "pts": 13,
+            "reb": 1,
+            "ast": 1,
+            "stl": 0,
+            "blk": 0,
+            "to": 0,
+            "fg": "5-8",
+            "3pt": "0-0",
+            "ft": "3-3"
+          },
+          {
+            "name": "T. Jerome",
+            "min": "12",
+            "pts": 11,
+            "reb": 0,
+            "ast": 0,
+            "stl": 0,
+            "blk": 0,
+            "to": 0,
+            "fg": "3-7",
+            "3pt": "2-3",
+            "ft": "3-4"
+          },
+          {
+            "name": "P. Siakam",
+            "min": "19",
+            "pts": 10,
+            "reb": 5,
+            "ast": 3,
+            "stl": 3,
+            "blk": 0,
+            "to": 0,
+            "fg": "4-6",
+            "3pt": "0-0",
+            "ft": "2-2"
+          }
+        ],
+        "total_points": 73
+      }
+    },
+    "notes": ""
+  },
+  {
+    "id": "G-005",
+    "matchup": "TOR vs SAS",
+    "teams": {
+      "Toronto Raptors": {
+        "name": "Toronto Raptors",
+        "players": [
+          {
+            "name": "J. Tatum",
+            "min": "19",
+            "pts": 33,
+            "reb": 8,
+            "ast": 5,
+            "stl": 2,
+            "blk": 0,
+            "to": 5,
+            "fg": "14-22",
+            "3pt": "2-6",
+            "ft": "3-3"
+          },
+          {
+            "name": "B. Podziemski",
+            "min": "10",
+            "pts": 16,
+            "reb": 0,
+            "ast": 3,
+            "stl": 3,
+            "blk": 0,
+            "to": 1,
+            "fg": "6-13",
+            "3pt": "0-4",
+            "ft": "4-4"
+          },
+          {
+            "name": "C. Wallace",
+            "min": "22",
+            "pts": 15,
+            "reb": 2,
+            "ast": 2,
+            "stl": 3,
+            "blk": 0,
+            "to": 0,
+            "fg": "6-8",
+            "3pt": "3-5",
+            "ft": "0-0"
+          },
+          {
+            "name": "J. Green",
+            "min": "12",
+            "pts": 10,
+            "reb": 3,
+            "ast": 2,
+            "stl": 2,
+            "blk": 0,
+            "to": 1,
+            "fg": "4-4",
+            "3pt": "2-2",
+            "ft": "0-0"
+          }
+        ],
+        "total_points": 74
+      },
+      "San Antonio Spurs": {
+        "name": "San Antonio Spurs",
+        "players": [
+          {
+            "name": "L. James",
+            "min": "22",
+            "pts": 26,
+            "reb": 7,
+            "ast": 5,
+            "stl": 2,
+            "blk": 0,
+            "to": 2,
+            "fg": "8-19",
+            "3pt": "3-5",
+            "ft": "7-7"
+          },
+          {
+            "name": "A. Simons",
+            "min": "21",
+            "pts": 20,
+            "reb": 1,
+            "ast": 4,
+            "stl": 0,
+            "blk": 0,
+            "to": 2,
+            "fg": "8-19",
+            "3pt": "4-9",
+            "ft": "0-0"
+          },
+          {
+            "name": "B. Coulibaly",
+            "min": "25",
+            "pts": 11,
+            "reb": 3,
+            "ast": 1,
+            "stl": 2,
+            "blk": 0,
+            "to": 2,
+            "fg": "5-8",
+            "3pt": "1-3",
+            "ft": "0-0"
+          },
+          {
+            "name": "K. Ellis",
+            "min": "18",
+            "pts": 11,
+            "reb": 0,
+            "ast": 6,
+            "stl": 1,
+            "blk": 0,
+            "to": 4,
+            "fg": "4-5",
+            "3pt": "3-4",
+            "ft": "0-0"
+          }
+        ],
+        "total_points": 68
+      }
+    },
+    "notes": ""
+  },
+  {
+    "id": "G-006",
+    "matchup": "SAS vs DAL",
+    "teams": {
+      "San Antonio Spurs": {
+        "name": "San Antonio Spurs",
+        "players": [
+          {
+            "name": "L. James",
+            "min": "20",
+            "pts": 30,
+            "reb": 6,
+            "ast": 2,
+            "stl": 1,
+            "blk": 0,
+            "to": 1,
+            "fg": "15-25",
+            "3pt": "0-3",
+            "ft": "0-0"
+          },
+          {
+            "name": "L. Ball",
+            "min": "19",
+            "pts": 17,
+            "reb": 2,
+            "ast": 5,
+            "stl": 4,
+            "blk": 0,
+            "to": 1,
+            "fg": "8-13",
+            "3pt": "1-2",
+            "ft": "0-0"
+          },
+          {
+            "name": "A. Nesmith",
+            "min": "20",
+            "pts": 17,
+            "reb": 2,
+            "ast": 2,
+            "stl": 0,
+            "blk": 0,
+            "to": 0,
+            "fg": "6-8",
+            "3pt": "5-6",
+            "ft": "0-0"
+          },
+          {
+            "name": "A. Simons",
+            "min": "12",
+            "pts": 12,
+            "reb": 2,
+            "ast": 3,
+            "stl": 1,
+            "blk": 0,
+            "to": 1,
+            "fg": "6-14",
+            "3pt": "0-3",
+            "ft": "0-0"
+          }
+        ],
+        "total_points": 76
+      },
+      "Dallas Mavericks": {
+        "name": "Dallas Mavericks",
+        "players": [
+          {
+            "name": "S. Curry",
+            "min": "23",
+            "pts": 32,
+            "reb": 2,
+            "ast": 8,
+            "stl": 1,
+            "blk": 0,
+            "to": 5,
+            "fg": "14-36",
+            "3pt": "4-22",
+            "ft": "0-0"
+          },
+          {
+            "name": "B. Williams",
+            "min": "10",
+            "pts": 15,
+            "reb": 2,
+            "ast": 5,
+            "stl": 0,
+            "blk": 0,
+            "to": 0,
+            "fg": "7-13",
+            "3pt": "0-6",
+            "ft": "1-1"
+          },
+          {
+            "name": "M. Bagley III",
+            "min": "21",
+            "pts": 12,
+            "reb": 7,
+            "ast": 2,
+            "stl": 0,
+            "blk": 0,
+            "to": 1,
+            "fg": "6-6",
+            "3pt": "0-0",
+            "ft": "0-0"
+          },
+          {
+            "name": "A. Caruso",
+            "min": "19",
+            "pts": 8,
+            "reb": 5,
+            "ast": 0,
+            "stl": 1,
+            "blk": 0,
+            "to": 1,
+            "fg": "3-7",
+            "3pt": "1-5",
+            "ft": "1-1"
+          }
+        ],
+        "total_points": 67
+      }
+    },
+    "notes": ""
+  },
+  {
+    "id": "G-007",
+    "matchup": "DAL vs SAC",
+    "teams": {
+      "Sacramento Kings": {
+        "name": "Sacramento Kings",
+        "players": [
+          {
+            "name": "D. Fox",
+            "min": "23",
+            "pts": 32,
+            "reb": 1,
+            "ast": 1,
+            "stl": 4,
+            "blk": 0,
+            "to": 2,
+            "fg": "16-20",
+            "3pt": "0-1",
+            "ft": "0-0"
+          },
+          {
+            "name": "C. Sexton",
+            "min": "25",
+            "pts": 14,
+            "reb": 0,
+            "ast": 2,
+            "stl": 4,
+            "blk": 0,
+            "to": 4,
+            "fg": "7-17",
+            "3pt": "0-4",
+            "ft": "0-0"
+          },
+          {
+            "name": "J. Holiday",
+            "min": "9",
+            "pts": 12,
+            "reb": 1,
+            "ast": 1,
+            "stl": 0,
+            "blk": 0,
+            "to": 1,
+            "fg": "6-8",
+            "3pt": "0-0",
+            "ft": "0-0"
+          },
+          {
+            "name": "O. Okongwu",
+            "min": "23",
+            "pts": 10,
+            "reb": 4,
+            "ast": 1,
+            "stl": 1,
+            "blk": 1,
+            "to": 0,
+            "fg": "5-8",
+            "3pt": "0-0",
+            "ft": "0-0"
+          }
+        ],
+        "total_points": 68
+      },
+      "Dallas Mavericks": {
+        "name": "Dallas Mavericks",
+        "players": [
+          {
+            "name": "S. Curry",
+            "min": "23",
+            "pts": 46,
+            "reb": 0,
+            "ast": 5,
+            "stl": 2,
+            "blk": 0,
+            "to": 5,
+            "fg": "21-31",
+            "3pt": "4-7",
+            "ft": "0-0"
+          },
+          {
+            "name": "A. Caruso",
+            "min": "23",
+            "pts": 15,
+            "reb": 2,
+            "ast": 1,
+            "stl": 2,
+            "blk": 0,
+            "to": 1,
+            "fg": "7-12",
+            "3pt": "1-4",
+            "ft": "0-0"
+          },
+          {
+            "name": "B. Williams",
+            "min": "9",
+            "pts": 8,
+            "reb": 0,
+            "ast": 3,
+            "stl": 0,
+            "blk": 0,
+            "to": 0,
+            "fg": "4-10",
+            "3pt": "0-0",
+            "ft": "0-0"
+          }
+        ],
+        "total_points": 69
+      }
+    },
+    "notes": ""
+  },
+  {
+    "id": "G-008",
+    "matchup": "SAS vs DAL",
+    "teams": {
+      "Dallas Mavericks": {
+        "name": "Dallas Mavericks",
+        "players": [
+          {
+            "name": "S. Curry",
+            "min": "24",
+            "pts": 36,
+            "reb": 3,
+            "ast": 13,
+            "stl": 3,
+            "blk": 0,
+            "to": 7,
+            "fg": "15-35",
+            "3pt": "6-20",
+            "ft": "0-0"
+          },
+          {
+            "name": "A. Caruso",
+            "min": "21",
+            "pts": 15,
+            "reb": 2,
+            "ast": 0,
+            "stl": 1,
+            "blk": 0,
+            "to": 2,
+            "fg": "7-10",
+            "3pt": "1-3",
+            "ft": "0-0"
+          },
+          {
+            "name": "K. Looney",
+            "min": "15",
+            "pts": 12,
+            "reb": 6,
+            "ast": 0,
+            "stl": 0,
+            "blk": 0,
+            "to": 2,
+            "fg": "6-7",
+            "3pt": "0-0",
+            "ft": "0-0"
+          },
+          {
+            "name": "M. Bagley III",
+            "min": "22",
+            "pts": 10,
+            "reb": 7,
+            "ast": 0,
+            "stl": 0,
+            "blk": 0,
+            "to": 0,
+            "fg": "5-6",
+            "3pt": "0-0",
+            "ft": "0-1"
+          }
+        ],
+        "total_points": 73
+      },
+      "San Antonio Spurs": {
+        "name": "San Antonio Spurs",
+        "players": [
+          {
+            "name": "L. James",
+            "min": "17",
+            "pts": 42,
+            "reb": 5,
+            "ast": 1,
+            "stl": 0,
+            "blk": 0,
+            "to": 0,
+            "fg": "19-31",
+            "3pt": "4-7",
+            "ft": "0-0"
+          },
+          {
+            "name": "H. Barnes",
+            "min": "19",
+            "pts": 18,
+            "reb": 4,
+            "ast": 3,
+            "stl": 3,
+            "blk": 0,
+            "to": 1,
+            "fg": "8-9",
+            "3pt": "2-2",
+            "ft": "0-0"
+          },
+          {
+            "name": "A. Simons",
+            "min": "15",
+            "pts": 13,
+            "reb": 1,
+            "ast": 6,
+            "stl": 0,
+            "blk": 0,
+            "to": 2,
+            "fg": "6-15",
+            "3pt": "1-5",
+            "ft": "0-0"
+          },
+          {
+            "name": "K. Ellis",
+            "min": "15",
+            "pts": 11,
+            "reb": 1,
+            "ast": 1,
+            "stl": 2,
+            "blk": 0,
+            "to": 1,
+            "fg": "4-7",
+            "3pt": "3-5",
+            "ft": "0-0"
+          }
+        ],
+        "total_points": 84
+      }
+    },
+    "notes": ""
+  },
+  {
+    "id": "G-009",
+    "matchup": "SAC vs BOS",
+    "teams": {
+      "Sacramento Kings": {
+        "name": "Sacramento Kings",
+        "players": [
+          {
+            "name": "D. Fox",
+            "min": "18",
+            "pts": 33,
+            "reb": 0,
+            "ast": 3,
+            "stl": 1,
+            "blk": 0,
+            "to": 3,
+            "fg": "15-17",
+            "3pt": "0-0",
+            "ft": "3-4"
+          },
+          {
+            "name": "C. Sexton",
+            "min": "22",
+            "pts": 29,
+            "reb": 0,
+            "ast": 2,
+            "stl": 0,
+            "blk": 0,
+            "to": 2,
+            "fg": "12-20",
+            "3pt": "3-8",
+            "ft": "2-3"
+          },
+          {
+            "name": "O. Okongwu",
+            "min": "19",
+            "pts": 13,
+            "reb": 9,
+            "ast": 1,
+            "stl": 1,
+            "blk": 0,
+            "to": 1,
+            "fg": "6-7",
+            "3pt": "0-0",
+            "ft": "1-1"
+          },
+          {
+            "name": "W. Kessler",
+            "min": "13",
+            "pts": 6,
+            "reb": 4,
+            "ast": 1,
+            "stl": 1,
+            "blk": 0,
+            "to": 3,
+            "fg": "3-5",
+            "3pt": "0-0",
+            "ft": "0-0"
+          }
+        ],
+        "total_points": 81
+      },
+      "Boston Celtics": {
+        "name": "Boston Celtics",
+        "players": [
+          {
+            "name": "K. Durant",
+            "min": "23",
+            "pts": 37,
+            "reb": 2,
+            "ast": 2,
+            "stl": 0,
+            "blk": 0,
+            "to": 1,
+            "fg": "16-31",
+            "3pt": "4-16",
+            "ft": "1-3"
+          },
+          {
+            "name": "S. Castle",
+            "min": "9",
+            "pts": 27,
+            "reb": 0,
+            "ast": 1,
+            "stl": 0,
+            "blk": 0,
+            "to": 0,
+            "fg": "12-17",
+            "3pt": "1-3",
+            "ft": "2-3"
+          },
+          {
+            "name": "D. DeRozan",
+            "min": "23",
+            "pts": 6,
+            "reb": 1,
+            "ast": 0,
+            "stl": 3,
+            "blk": 0,
+            "to": 2,
+            "fg": "3-5",
+            "3pt": "0-2",
+            "ft": "0-0"
+          },
+          {
+            "name": "J. Murray",
+            "min": "23",
+            "pts": 5,
+            "reb": 1,
+            "ast": 3,
+            "stl": 3,
+            "blk": 0,
+            "to": 1,
+            "fg": "2-3",
+            "3pt": "0-1",
+            "ft": "1-3"
+          }
+        ],
+        "total_points": 75
+      }
+    },
+    "notes": ""
+  },
+  {
+    "id": "G-010",
+    "matchup": "TOR vs CLE",
+    "teams": {
+      "Toronto Raptors": {
+        "name": "Toronto Raptors",
+        "players": [
+          {
+            "name": "J. Tatum",
+            "min": "22",
+            "pts": 40,
+            "reb": 5,
+            "ast": 10,
+            "stl": 1,
+            "blk": 0,
+            "to": 3,
+            "fg": "18-26",
+            "3pt": "3-6",
+            "ft": "1-2"
+          },
+          {
+            "name": "O. Anunoby",
+            "min": "22",
+            "pts": 14,
+            "reb": 7,
+            "ast": 2,
+            "stl": 1,
+            "blk": 0,
+            "to": 2,
+            "fg": "6-9",
+            "3pt": "2-3",
+            "ft": "0-0"
+          },
+          {
+            "name": "I. Zubac",
+            "min": "16",
+            "pts": 12,
+            "reb": 6,
+            "ast": 0,
+            "stl": 0,
+            "blk": 0,
+            "to": 0,
+            "fg": "6-7",
+            "3pt": "0-0",
+            "ft": "0-0"
+          },
+          {
+            "name": "C. Wallace",
+            "min": "20",
+            "pts": 9,
+            "reb": 1,
+            "ast": 4,
+            "stl": 2,
+            "blk": 0,
+            "to": 0,
+            "fg": "3-6",
+            "3pt": "3-6",
+            "ft": "0-0"
+          }
+        ],
+        "total_points": 75
+      },
+      "Cleveland Cavaliers": {
+        "name": "Cleveland Cavaliers",
+        "players": [
+          {
+            "name": "B. Miller",
+            "min": "19",
+            "pts": 20,
+            "reb": 2,
+            "ast": 0,
+            "stl": 1,
+            "blk": 0,
+            "to": 3,
+            "fg": "9-15",
+            "3pt": "2-5",
+            "ft": "0-0"
+          },
+          {
+            "name": "E. Mobley",
+            "min": "18",
+            "pts": 18,
+            "reb": 4,
+            "ast": 0,
+            "stl": 0,
+            "blk": 2,
+            "to": 0,
+            "fg": "8-10",
+            "3pt": "2-4",
+            "ft": "0-0"
+          },
+          {
+            "name": "A. Thompson",
+            "min": "19",
+            "pts": 12,
+            "reb": 4,
+            "ast": 3,
+            "stl": 3,
+            "blk": 0,
+            "to": 0,
+            "fg": "6-12",
+            "3pt": "0-1",
+            "ft": "0-0"
+          },
+          {
+            "name": "J. Morant",
+            "min": "20",
+            "pts": 9,
+            "reb": 0,
+            "ast": 8,
+            "stl": 0,
+            "blk": 0,
+            "to": 1,
+            "fg": "4-14",
+            "3pt": "1-4",
+            "ft": "0-0"
+          }
+        ],
+        "total_points": 59
+      }
+    },
+    "notes": ""
+  },
+  {
+    "id": "G-011",
+    "matchup": "TOR vs SAC",
+    "teams": {
+      "Toronto Raptors": {
+        "name": "Toronto Raptors",
+        "players": [
+          {
+            "name": "J. Tatum",
+            "min": "22",
+            "pts": 61,
+            "reb": 3,
+            "ast": 6,
+            "stl": 5,
+            "blk": 0,
+            "to": 3,
+            "fg": "25-35",
+            "3pt": "5-9",
+            "ft": "6-6"
+          },
+          {
+            "name": "B. Podziemski",
+            "min": "11",
+            "pts": 13,
+            "reb": 0,
+            "ast": 3,
+            "stl": 0,
+            "blk": 0,
+            "to": 3,
+            "fg": "6-8",
+            "3pt": "1-2",
+            "ft": "0-0"
+          },
+          {
+            "name": "O. Anunoby",
+            "min": "21",
+            "pts": 12,
+            "reb": 3,
+            "ast": 3,
+            "stl": 0,
+            "blk": 0,
+            "to": 1,
+            "fg": "4-7",
+            "3pt": "4-5",
+            "ft": "0-0"
+          },
+          {
+            "name": "T. Shannon Jr.",
+            "min": "18",
+            "pts": 9,
+            "reb": 1,
+            "ast": 4,
+            "stl": 2,
+            "blk": 0,
+            "to": 0,
+            "fg": "4-5",
+            "3pt": "1-2",
+            "ft": "0-0"
+          }
+        ],
+        "total_points": 95
+      },
+      "Sacramento Kings": {
+        "name": "Sacramento Kings",
+        "players": [
+          {
+            "name": "C. Sexton",
+            "min": "22",
+            "pts": 24,
+            "reb": 1,
+            "ast": 4,
+            "stl": 0,
+            "blk": 0,
+            "to": 2,
+            "fg": "11-20",
+            "3pt": "2-8",
+            "ft": "0-0"
+          },
+          {
+            "name": "D. Fox",
+            "min": "20",
+            "pts": 23,
+            "reb": 0,
+            "ast": 8,
+            "stl": 2,
+            "blk": 0,
+            "to": 2,
+            "fg": "10-15",
+            "3pt": "1-4",
+            "ft": "2-2"
+          },
+          {
+            "name": "O. Okongwu",
+            "min": "19",
+            "pts": 12,
+            "reb": 6,
+            "ast": 1,
+            "stl": 1,
+            "blk": 0,
+            "to": 2,
+            "fg": "5-6",
+            "3pt": "1-1",
+            "ft": "1-2"
+          },
+          {
+            "name": "J. Holiday",
+            "min": "12",
+            "pts": 12,
+            "reb": 0,
+            "ast": 3,
+            "stl": 0,
+            "blk": 0,
+            "to": 0,
+            "fg": "5-8",
+            "3pt": "1-1",
+            "ft": "1-1"
+          }
+        ],
+        "total_points": 71
+      }
+    },
+    "notes": ""
+  },
+  {
+    "id": "G-012",
+    "matchup": "WAS vs PHI",
+    "teams": {
+      "Washington Wizards": {
+        "name": "Washington Wizards",
+        "players": [
+          {
+            "name": "J. Suggs",
+            "min": "23",
+            "pts": 30,
+            "reb": 1,
+            "ast": 5,
+            "stl": 1,
+            "blk": 1,
+            "to": 1,
+            "fg": "12-19",
+            "3pt": "1-5",
+            "ft": "5-5"
+          },
+          {
+            "name": "K. Towns",
+            "min": "29",
+            "pts": 29,
+            "reb": 15,
+            "ast": 7,
+            "stl": 0,
+            "blk": 0,
+            "to": 0,
+            "fg": "13-21",
+            "3pt": "3-6",
+            "ft": "0-1"
+          },
+          {
+            "name": "J. Giddey",
+            "min": "24",
+            "pts": 13,
+            "reb": 3,
+            "ast": 5,
+            "stl": 1,
+            "blk": 0,
+            "to": 4,
+            "fg": "5-13",
+            "3pt": "1-7",
+            "ft": "2-3"
+          },
+          {
+            "name": "D. Brooks",
+            "min": "13",
+            "pts": 10,
+            "reb": 2,
+            "ast": 1,
+            "stl": 0,
+            "blk": 0,
+            "to": 0,
+            "fg": "4-7",
+            "3pt": "2-5",
+            "ft": "0-0"
+          }
+        ],
+        "total_points": 82
+      },
+      "Philadelphia 76ers": {
+        "name": "Philadelphia 76ers",
+        "players": [
+          {
+            "name": "C. White",
+            "min": "14",
+            "pts": 23,
+            "reb": 0,
+            "ast": 5,
+            "stl": 0,
+            "blk": 0,
+            "to": 3,
+            "fg": "9-13",
+            "3pt": "5-8",
+            "ft": "0-0"
+          },
+          {
+            "name": "J. McDaniels",
+            "min": "22",
+            "pts": 16,
+            "reb": 2,
+            "ast": 3,
+            "stl": 1,
+            "blk": 0,
+            "to": 2,
+            "fg": "6-18",
+            "3pt": "4-11",
+            "ft": "0-1"
+          },
+          {
+            "name": "J. Green",
+            "min": "22",
+            "pts": 14,
+            "reb": 2,
+            "ast": 2,
+            "stl": 0,
+            "blk": 0,
+            "to": 0,
+            "fg": "5-14",
+            "3pt": "2-5",
+            "ft": "2-6"
+          },
+          {
+            "name": "D. Lively II",
+            "min": "21",
+            "pts": 13,
+            "reb": 10,
+            "ast": 0,
+            "stl": 1,
+            "blk": 2,
+            "to": 2,
+            "fg": "6-6",
+            "3pt": "0-0",
+            "ft": "1-2"
+          }
+        ],
+        "total_points": 66
+      }
+    },
+    "notes": ""
+  },
+  {
+    "id": "G-013",
+    "matchup": "DEN vs SAS",
+    "teams": {
+      "San Antonio Spurs": {
+        "name": "San Antonio Spurs",
+        "players": [
+          {
+            "name": "L. James",
+            "min": "21",
+            "pts": 29,
+            "reb": 6,
+            "ast": 3,
+            "stl": 0,
+            "blk": 0,
+            "to": 0,
+            "fg": "13-22",
+            "3pt": "1-2",
+            "ft": "2-4"
+          },
+          {
+            "name": "A. Simons",
+            "min": "15",
+            "pts": 18,
+            "reb": 3,
+            "ast": 1,
+            "stl": 1,
+            "blk": 0,
+            "to": 2,
+            "fg": "8-13",
+            "3pt": "2-4",
+            "ft": "0-0"
+          },
+          {
+            "name": "A. Nesmith",
+            "min": "21",
+            "pts": 9,
+            "reb": 4,
+            "ast": 2,
+            "stl": 0,
+            "blk": 0,
+            "to": 0,
+            "fg": "4-5",
+            "3pt": "0-0",
+            "ft": "1-1"
+          },
+          {
+            "name": "K. Ellis",
+            "min": "15",
+            "pts": 5,
+            "reb": 0,
+            "ast": 1,
+            "stl": 1,
+            "blk": 0,
+            "to": 0,
+            "fg": "2-3",
+            "3pt": "1-1",
+            "ft": "0-0"
+          }
+        ],
+        "total_points": 61
+      },
+      "Denver Nuggets": {
+        "name": "Denver Nuggets",
+        "players": [
+          {
+            "name": "K. Caldwell-Pope",
+            "min": "21",
+            "pts": 19,
+            "reb": 2,
+            "ast": 3,
+            "stl": 0,
+            "blk": 0,
+            "to": 0,
+            "fg": "8-17",
+            "3pt": "3-6",
+            "ft": "0-0"
+          },
+          {
+            "name": "J. Embiid",
+            "min": "7",
+            "pts": 16,
+            "reb": 5,
+            "ast": 1,
+            "stl": 0,
+            "blk": 0,
+            "to": 1,
+            "fg": "8-10",
+            "3pt": "0-0",
+            "ft": "0-0"
+          },
+          {
+            "name": "J. Collins",
+            "min": "14",
+            "pts": 10,
+            "reb": 3,
+            "ast": 1,
+            "stl": 0,
+            "blk": 0,
+            "to": 1,
+            "fg": "5-8",
+            "3pt": "0-0",
+            "ft": "0-0"
+          },
+          {
+            "name": "M. Smart",
+            "min": "20",
+            "pts": 9,
+            "reb": 4,
+            "ast": 4,
+            "stl": 1,
+            "blk": 0,
+            "to": 0,
+            "fg": "4-5",
+            "3pt": "1-1",
+            "ft": "0-0"
+          }
+        ],
+        "total_points": 54
+      }
+    },
+    "notes": ""
+  },
+  {
+    "id": "G-014",
+    "matchup": "HOU vs NYK",
+    "teams": {
+      "New York Knicks": {
+        "name": "New York Knicks",
+        "players": [
+          {
+            "name": "D. Booker",
+            "min": "21",
+            "pts": 29,
+            "reb": 1,
+            "ast": 1,
+            "stl": 0,
+            "blk": 0,
+            "to": 3,
+            "fg": "13-26",
+            "3pt": "3-4",
+            "ft": "0-1"
+          },
+          {
+            "name": "J. Poole",
+            "min": "11",
+            "pts": 16,
+            "reb": 0,
+            "ast": 0,
+            "stl": 1,
+            "blk": 0,
+            "to": 0,
+            "fg": "6-11",
+            "3pt": "0-0",
+            "ft": "4-6"
+          },
+          {
+            "name": "T. Camara",
+            "min": "27",
+            "pts": 5,
+            "reb": 3,
+            "ast": 2,
+            "stl": 2,
+            "blk": 0,
+            "to": 1,
+            "fg": "2-7",
+            "3pt": "1-5",
+            "ft": "0-0"
+          },
+          {
+            "name": "D. Sabonis",
+            "min": "17",
+            "pts": 4,
+            "reb": 7,
+            "ast": 1,
+            "stl": 1,
+            "blk": 0,
+            "to": 0,
+            "fg": "2-3",
+            "3pt": "0-1",
+            "ft": "0-0"
+          }
+        ],
+        "total_points": 54
+      },
+      "Houston Rockets": {
+        "name": "Houston Rockets",
+        "players": [
+          {
+            "name": "S. Gilgeous-Alexander",
+            "min": "21",
+            "pts": 26,
+            "reb": 4,
+            "ast": 0,
+            "stl": 1,
+            "blk": 0,
+            "to": 3,
+            "fg": "11-21",
+            "3pt": "2-5",
+            "ft": "2-3"
+          },
+          {
+            "name": "C. Whitmore",
+            "min": "19",
+            "pts": 11,
+            "reb": 3,
+            "ast": 2,
+            "stl": 1,
+            "blk": 0,
+            "to": 4,
+            "fg": "5-7",
+            "3pt": "1-2",
+            "ft": "0-0"
+          },
+          {
+            "name": "J. Walker",
+            "min": "10",
+            "pts": 9,
+            "reb": 0,
+            "ast": 0,
+            "stl": 1,
+            "blk": 0,
+            "to": 0,
+            "fg": "4-4",
+            "3pt": "1-1",
+            "ft": "0-0"
+          },
+          {
+            "name": "K. Porzingis",
+            "min": "20",
+            "pts": 8,
+            "reb": 4,
+            "ast": 5,
+            "stl": 3,
+            "blk": 2,
+            "to": 3,
+            "fg": "3-6",
+            "3pt": "2-2",
+            "ft": "0-0"
+          }
+        ],
+        "total_points": 54
+      }
+    },
+    "notes": ""
+  },
+  {
+    "id": "G-015",
+    "matchup": "DEN vs NOP",
+    "teams": {
+      "Denver Nuggets": {
+        "name": "Denver Nuggets",
+        "players": [
+          {
+            "name": "T. Jerome",
+            "min": "22",
+            "pts": 31,
+            "reb": 3,
+            "ast": 8,
+            "stl": 1,
+            "blk": 0,
+            "to": 5,
+            "fg": "13-23",
+            "3pt": "5-9",
+            "ft": "0-0"
+          },
+          {
+            "name": "J. Embiid",
+            "min": "15",
+            "pts": 28,
+            "reb": 12,
+            "ast": 5,
+            "stl": 0,
+            "blk": 0,
+            "to": 2,
+            "fg": "13-14",
+            "3pt": "0-0",
+            "ft": "2-2"
+          },
+          {
+            "name": "C. Wood",
+            "min": "14",
+            "pts": 15,
+            "reb": 6,
+            "ast": 3,
+            "stl": 0,
+            "blk": 0,
+            "to": 1,
+            "fg": "3-8",
+            "3pt": "3-5",
+            "ft": "6-7"
+          },
+          {
+            "name": "P. Siakam",
+            "min": "13",
+            "pts": 12,
+            "reb": 4,
+            "ast": 3,
+            "stl": 1,
+            "blk": 0,
+            "to": 1,
+            "fg": "5-5",
+            "3pt": "2-2",
+            "ft": "0-0"
+          }
+        ],
+        "total_points": 86
+      },
+      "New Orleans Pelicans": {
+        "name": "New Orleans Pelicans",
+        "players": [
+          {
+            "name": "D. Harper",
+            "min": "22",
+            "pts": 15,
+            "reb": 1,
+            "ast": 4,
+            "stl": 3,
+            "blk": 0,
+            "to": 3,
+            "fg": "6-13",
+            "3pt": "1-4",
+            "ft": "2-2"
+          },
+          {
+            "name": "N. Vucevic",
+            "min": "25",
+            "pts": 15,
+            "reb": 11,
+            "ast": 1,
+            "stl": 0,
+            "blk": 0,
+            "to": 1,
+            "fg": "5-14",
+            "3pt": "2-8",
+            "ft": "3-3"
+          },
+          {
+            "name": "A. Bailey",
+            "min": "20",
+            "pts": 13,
+            "reb": 3,
+            "ast": 2,
+            "stl": 1,
+            "blk": 1,
+            "to": 1,
+            "fg": "5-18",
+            "3pt": "3-8",
+            "ft": "0-0"
+          },
+          {
+            "name": "V.J. Edgecombe",
+            "min": "22",
+            "pts": 10,
+            "reb": 2,
+            "ast": 1,
+            "stl": 2,
+            "blk": 0,
+            "to": 7,
+            "fg": "4-9",
+            "3pt": "2-4",
+            "ft": "0-2"
+          }
+        ],
+        "total_points": 53
+      }
+    },
+    "notes": ""
+  },
+  {
+    "id": "G-016",
+    "matchup": "TOR vs ATL",
+    "teams": {
+      "Atlanta Hawks": {
+        "name": "Atlanta Hawks",
+        "players": [
+          {
+            "name": "Z. Risacher",
+            "min": "11",
+            "pts": 23,
+            "reb": 0,
+            "ast": 0,
+            "stl": 1,
+            "blk": 0,
+            "to": 2,
+            "fg": "7-14",
+            "3pt": "4-7",
+            "ft": "5-7"
+          },
+          {
+            "name": "T. Young",
+            "min": "19",
+            "pts": 20,
+            "reb": 1,
+            "ast": 7,
+            "stl": 1,
+            "blk": 0,
+            "to": 7,
+            "fg": "9-18",
+            "3pt": "2-6",
+            "ft": "0-0"
+          },
+          {
+            "name": "B. Bol",
+            "min": "13",
+            "pts": 19,
+            "reb": 1,
+            "ast": 0,
+            "stl": 0,
+            "blk": 0,
+            "to": 1,
+            "fg": "9-9",
+            "3pt": "1-1",
+            "ft": "0-0"
+          },
+          {
+            "name": "J. Johnson",
+            "min": "21",
+            "pts": 13,
+            "reb": 4,
+            "ast": 1,
+            "stl": 0,
+            "blk": 0,
+            "to": 2,
+            "fg": "6-10",
+            "3pt": "1-1",
+            "ft": "0-0"
+          }
+        ],
+        "total_points": 75
+      },
+      "Toronto Raptors": {
+        "name": "Toronto Raptors",
+        "players": [
+          {
+            "name": "J. Tatum",
+            "min": "21",
+            "pts": 29,
+            "reb": 5,
+            "ast": 4,
+            "stl": 3,
+            "blk": 0,
+            "to": 2,
+            "fg": "13-19",
+            "3pt": "1-2",
+            "ft": "2-2"
+          },
+          {
+            "name": "C. Wallace",
+            "min": "20",
+            "pts": 15,
+            "reb": 1,
+            "ast": 5,
+            "stl": 6,
+            "blk": 0,
+            "to": 2,
+            "fg": "6-7",
+            "3pt": "3-4",
+            "ft": "0-0"
+          },
+          {
+            "name": "O. Anunoby",
+            "min": "21",
+            "pts": 12,
+            "reb": 5,
+            "ast": 2,
+            "stl": 2,
+            "blk": 0,
+            "to": 1,
+            "fg": "5-8",
+            "3pt": "2-3",
+            "ft": "0-0"
+          },
+          {
+            "name": "J. Green",
+            "min": "17",
+            "pts": 11,
+            "reb": 2,
+            "ast": 1,
+            "stl": 0,
+            "blk": 0,
+            "to": 0,
+            "fg": "3-4",
+            "3pt": "3-4",
+            "ft": "2-2"
+          }
+        ],
+        "total_points": 67
+      }
+    },
+    "notes": ""
+  },
+  {
+    "id": "G-017",
+    "matchup": "MIL vs DEN",
+    "teams": {
+      "Milwaukee Bucks": {
+        "name": "Milwaukee Bucks",
+        "players": [
+          {
+            "name": "A. Gordon",
+            "min": "21",
+            "pts": 27,
+            "reb": 4,
+            "ast": 5,
+            "stl": 0,
+            "blk": 0,
+            "to": 1,
+            "fg": "12-14",
+            "3pt": "2-2",
+            "ft": "1-1"
+          },
+          {
+            "name": "G.G. Jackson",
+            "min": "21",
+            "pts": 12,
+            "reb": 3,
+            "ast": 6,
+            "stl": 1,
+            "blk": 0,
+            "to": 3,
+            "fg": "5-8",
+            "3pt": "2-4",
+            "ft": "0-0"
+          },
+          {
+            "name": "S. Sharpe",
+            "min": "21",
+            "pts": 10,
+            "reb": 3,
+            "ast": 3,
+            "stl": 2,
+            "blk": 0,
+            "to": 0,
+            "fg": "4-9",
+            "3pt": "2-5",
+            "ft": "0-0"
+          },
+          {
+            "name": "N. Jokic",
+            "min": "21",
+            "pts": 10,
+            "reb": 5,
+            "ast": 1,
+            "stl": 4,
+            "blk": 0,
+            "to": 1,
+            "fg": "5-8",
+            "3pt": "0-0",
+            "ft": "0-0"
+          }
+        ],
+        "total_points": 59
+      },
+      "Denver Nuggets": {
+        "name": "Denver Nuggets",
+        "players": [
+          {
+            "name": "K. Caldwell-Pope",
+            "min": "20",
+            "pts": 20,
+            "reb": 2,
+            "ast": 1,
+            "stl": 1,
+            "blk": 0,
+            "to": 0,
+            "fg": "8-16",
+            "3pt": "3-7",
+            "ft": "1-1"
+          },
+          {
+            "name": "J. Embiid",
+            "min": "15",
+            "pts": 20,
+            "reb": 7,
+            "ast": 9,
+            "stl": 0,
+            "blk": 0,
+            "to": 4,
+            "fg": "9-13",
+            "3pt": "0-0",
+            "ft": "2-2"
+          },
+          {
+            "name": "T. Jerome",
+            "min": "12",
+            "pts": 17,
+            "reb": 1,
+            "ast": 3,
+            "stl": 1,
+            "blk": 0,
+            "to": 0,
+            "fg": "7-14",
+            "3pt": "3-5",
+            "ft": "0-0"
+          },
+          {
+            "name": "P. Siakam",
+            "min": "20",
+            "pts": 10,
+            "reb": 4,
+            "ast": 0,
+            "stl": 2,
+            "blk": 0,
+            "to": 2,
+            "fg": "5-6",
+            "3pt": "0-0",
+            "ft": "0-0"
+          }
+        ],
+        "total_points": 67
+      }
+    },
+    "notes": ""
+  },
+  {
+    "id": "G-018",
+    "matchup": "MIN vs HOU",
+    "teams": {
+      "Minnesota Timberwolves": {
+        "name": "Minnesota Timberwolves",
+        "players": [
+          {
+            "name": "J. Brunson",
+            "min": "23",
+            "pts": 24,
+            "reb": 3,
+            "ast": 6,
+            "stl": 4,
+            "blk": 0,
+            "to": 4,
+            "fg": "11-21",
+            "3pt": "1-4",
+            "ft": "1-2"
+          },
+          {
+            "name": "K. Huerter",
+            "min": "20",
+            "pts": 11,
+            "reb": 1,
+            "ast": 4,
+            "stl": 0,
+            "blk": 0,
+            "to": 1,
+            "fg": "4-8",
+            "3pt": "3-5",
+            "ft": "0-0"
+          },
+          {
+            "name": "K. Kuzma",
+            "min": "19",
+            "pts": 11,
+            "reb": 2,
+            "ast": 0,
+            "stl": 0,
+            "blk": 0,
+            "to": 2,
+            "fg": "5-9",
+            "3pt": "1-2",
+            "ft": "0-2"
+          },
+          {
+            "name": "P. Banchero",
+            "min": "19",
+            "pts": 9,
+            "reb": 4,
+            "ast": 2,
+            "stl": 1,
+            "blk": 0,
+            "to": 2,
+            "fg": "4-9",
+            "3pt": "1-5",
+            "ft": "0-0"
+          }
+        ],
+        "total_points": 55
+      },
+      "Houston Rockets": {
+        "name": "Houston Rockets",
+        "players": [
+          {
+            "name": "S. Gilgeous-Alexander",
+            "min": "21",
+            "pts": 30,
+            "reb": 0,
+            "ast": 4,
+            "stl": 3,
+            "blk": 0,
+            "to": 3,
+            "fg": "12-23",
+            "3pt": "3-6",
+            "ft": "3-4"
+          },
+          {
+            "name": "K. Porzingis",
+            "min": "21",
+            "pts": 18,
+            "reb": 8,
+            "ast": 2,
+            "stl": 2,
+            "blk": 2,
+            "to": 2,
+            "fg": "7-9",
+            "3pt": "2-3",
+            "ft": "2-2"
+          },
+          {
+            "name": "C. Whitmore",
+            "min": "10",
+            "pts": 12,
+            "reb": 1,
+            "ast": 3,
+            "stl": 0,
+            "blk": 0,
+            "to": 0,
+            "fg": "5-8",
+            "3pt": "0-1",
+            "ft": "2-3"
+          },
+          {
+            "name": "Y. Missi",
+            "min": "11",
+            "pts": 10,
+            "reb": 5,
+            "ast": 2,
+            "stl": 0,
+            "blk": 1,
+            "to": 1,
+            "fg": "5-6",
+            "3pt": "0-0",
+            "ft": "0-0"
+          }
+        ],
+        "total_points": 70
+      }
+    },
+    "notes": ""
+  }
+]

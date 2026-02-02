@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "mysql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1763325051874,
+      "tag": "0000_square_eternals",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1769236978544,
+      "tag": "0001_dry_dust",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1769378948475,
+      "tag": "0002_material_madrox",
+      "breakpoints": true
+    }
+  ]
+}

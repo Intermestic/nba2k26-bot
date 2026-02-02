@@ -1,0 +1,75 @@
+{
+  "game": {
+    "date": "2026-01-24",
+    "series": "First Round Game 1",
+    "matchup": "Raptors vs Pacers",
+    "final_score": {
+      "raptors": 87,
+      "pacers": 77
+    },
+    "series_record": "Raptors lead 1-0"
+  },
+  "team_stats": {
+    "raptors": {
+      "points": 87,
+      "fg": "38-69 (55%)",
+      "three_pt": "9-22 (41%)",
+      "ft": "2-2 (100%)",
+      "fast_break_pts": 20,
+      "points_in_paint": 50,
+      "second_chance_pts": 3,
+      "bench_pts": 36,
+      "assists": 24,
+      "off_rebounds": 2,
+      "def_rebounds": 28,
+      "steals": 8,
+      "blocks": 0,
+      "turnovers": "5 (11 pts off)",
+      "team_fouls": 14,
+      "dunks": 11,
+      "biggest_lead": 16,
+      "time_of_possession": "15:44"
+    },
+    "pacers": {
+      "points": 77,
+      "fg": "34-66 (52%)",
+      "three_pt": "6-25 (24%)",
+      "ft": "3-5 (60%)",
+      "fast_break_pts": 6,
+      "points_in_paint": 50,
+      "second_chance_pts": 4,
+      "bench_pts": 29,
+      "assists": 19,
+      "off_rebounds": 6,
+      "def_rebounds": 29,
+      "steals": 4,
+      "blocks": 0,
+      "turnovers": "9 (2 pts off)",
+      "team_fouls": 8,
+      "dunks": 18,
+      "biggest_lead": 2,
+      "time_of_possession": "16:14"
+    }
+  },
+  "player_stats": {
+    "raptors": [
+      {"name": "J. Tatum", "min": 22, "pts": 26, "reb": 2, "ast": 6, "stl": 2, "blk": 0, "to": 2, "fg": "11-17", "three_pt": "4-7"},
+      {"name": "R. Holland", "min": 15, "pts": 15, "reb": 2, "ast": 2, "stl": 1, "blk": 0, "to": 0, "fg": "7-11", "three_pt": "0-0"},
+      {"name": "O. Anunoby", "min": 23, "pts": 11, "reb": 4, "ast": 2, "stl": 2, "blk": 0, "to": 1, "fg": "4-9", "three_pt": "2-5"},
+      {"name": "P. Pritchard", "min": 13, "pts": 10, "reb": 0, "ast": 4, "stl": 0, "blk": 0, "to": 2, "fg": "4-11", "three_pt": "2-6"}
+    ],
+    "pacers": [
+      {"name": "K. Towns", "min": 20, "pts": 19, "reb": 3, "ast": 4, "stl": 0, "blk": 0, "to": 2, "fg": "8-18", "three_pt": "3-10"},
+      {"name": "S. Sharpe", "min": 18, "pts": 17, "reb": 1, "ast": 3, "stl": 1, "blk": 0, "to": 1, "fg": "7-10", "three_pt": "1-2"},
+      {"name": "A. Davis", "min": 20, "pts": 11, "reb": 7, "ast": 2, "stl": 1, "blk": 0, "to": 0, "fg": "5-8", "three_pt": "0-0"},
+      {"name": "K. Oubre Jr.", "min": 23, "pts": 10, "reb": 3, "ast": 1, "stl": 0, "blk": 0, "to": 1, "fg": "4-5", "three_pt": "2-3"}
+    ]
+  },
+  "key_metrics": {
+    "three_point_differential": "+3 makes, +17% shooting (Raptors 9-22 vs Pacers 6-25)",
+    "fast_break_advantage": "+14 points (Raptors 20 vs Pacers 6)",
+    "turnover_battle": "Raptors protected ball better (5 TO vs 9 TO)",
+    "bench_production": "Raptors bench +7 (36 pts vs 29 pts)"
+  },
+  "game_flow": "The Raptors seized control early with a 20-6 fast break advantage, building a 16-point lead. Jayson Tatum led the charge with efficient scoring (11-17 FG, 64.7%), while the Raptors' three-point shooting (41%) outpaced the Pacers' struggles from deep (24%). Despite the Pacers matching the Raptors in paint points (50-50) and dominating time of possession (16:14 vs 15:44), they couldn't overcome their perimeter shooting woes and turnover issues. The Raptors' balanced attack, featuring four double-digit scorers, proved too much for Indiana."
+}

@@ -1,0 +1,301 @@
+[
+  {
+    "round": "First Round",
+    "conference": "East",
+    "matchup": "#16 Miami Heat vs #1 Toronto Raptors",
+    "winner": "Miami Heat",
+    "series_score": "2-1",
+    "upset": true,
+    "headline": "FLAMEOUT IN THE NORTH",
+    "summary": "The biggest upset in HoFSN history! The 16-seed Miami Heat shocked the basketball world by defeating the 1-seed Toronto Raptors despite Jayson Tatum averaging 45 PPG in the series (40, 53, 42 points). The Heat won Games 1 and 3 to advance.",
+    "games": [
+      {
+        "game_num": 1,
+        "winner": "MIA",
+        "score": "99-98",
+        "top_performer": "J. Tatum (TOR) - 40 PTS"
+      },
+      {
+        "game_num": 2,
+        "winner": "TOR",
+        "score": "119-94",
+        "top_performer": "J. Tatum (TOR) - 53 PTS"
+      },
+      {
+        "game_num": 3,
+        "winner": "MIA",
+        "score": "103-93",
+        "top_performer": "J. Tatum (TOR) - 42 PTS"
+      }
+    ]
+  },
+  {
+    "round": "First Round",
+    "conference": "East",
+    "matchup": "#8 Dallas Mavericks vs #9 New Orleans Pelicans",
+    "winner": "Dallas Mavericks",
+    "series_score": "2-0",
+    "upset": false,
+    "headline": "SKY F***ER RETURNS",
+    "summary": "Steph Curry put on an absolute clinic, averaging 49.0 PPG in the sweep. He dropped 57 points in Game 1 (accounting for 70% of team offense) and followed with 41 points on 9-11 from three in Game 2. The Pelicans had no answer.",
+    "games": [
+      {
+        "game_num": 1,
+        "winner": "DAL",
+        "score": "118-111",
+        "top_performer": "S. Curry (DAL) - 57 PTS, 11 AST"
+      },
+      {
+        "game_num": 2,
+        "winner": "DAL",
+        "score": "136-108",
+        "top_performer": "S. Curry (DAL) - 41 PTS, 9-11 3PT"
+      }
+    ]
+  },
+  {
+    "round": "First Round",
+    "conference": "East",
+    "matchup": "#5 Sacramento Kings vs #12 Oklahoma City Thunder",
+    "winner": "Sacramento Kings",
+    "series_score": "2-0",
+    "upset": false,
+    "headline": "Sexton Dominates Closeout",
+    "summary": "Collin Sexton averaged 33.0 PPG as the Kings swept the Thunder. The Kings shot 66% as a team in Game 1, then Sexton exploded for 41 points on 17-27 shooting in the closeout game.",
+    "games": [
+      {
+        "game_num": 1,
+        "winner": "SAC",
+        "score": "93-83",
+        "top_performer": "C. Sexton (SAC) - 25 PTS, 11-15 FG"
+      },
+      {
+        "game_num": 2,
+        "winner": "SAC",
+        "score": "82-70",
+        "top_performer": "C. Sexton (SAC) - 41 PTS, 17-27 FG"
+      }
+    ]
+  },
+  {
+    "round": "First Round",
+    "conference": "East",
+    "matchup": "#4 Houston Rockets vs #13 Brooklyn Nets",
+    "winner": "Brooklyn Nets",
+    "series_score": "2-1",
+    "upset": true,
+    "headline": "13-Seed Upsets Rockets",
+    "summary": "The 13-seed Brooklyn Nets pulled off a massive upset, winning Games 2 and 3 after dropping Game 1. Damian Lillard led the defensive effort, holding Houston to just 63 points in Game 2 and 64 in Game 3.",
+    "games": [
+      {
+        "game_num": 1,
+        "winner": "HOU",
+        "score": "92-84",
+        "top_performer": "S. Gilgeous-Alexander (HOU) - 20 PTS, 3 STL"
+      },
+      {
+        "game_num": 2,
+        "winner": "BKN",
+        "score": "87-63",
+        "top_performer": "D. Lillard (BKN) - 21 PTS, 5 STL"
+      },
+      {
+        "game_num": 3,
+        "winner": "BKN",
+        "score": "86-64",
+        "top_performer": "D. Lillard (BKN) - 28 PTS"
+      }
+    ]
+  },
+  {
+    "round": "First Round",
+    "conference": "West",
+    "matchup": "#6 Detroit Pistons vs #11 New York Knicks",
+    "winner": "Detroit Pistons",
+    "series_score": "2-0",
+    "upset": false,
+    "headline": "Pistons Sweep in Blowouts",
+    "summary": "The Pistons dominated the Knicks in two blowout victories to advance to the second round.",
+    "games": []
+  },
+  {
+    "round": "First Round",
+    "conference": "West",
+    "matchup": "#3 Atlanta Hawks vs #14 Portland Trail Blazers",
+    "winner": "Atlanta Hawks",
+    "series_score": "2-0",
+    "upset": false,
+    "headline": "Hawks Offense Clicks",
+    "summary": "Trae Young and the Hawks swept the Trail Blazers. Young had 33 points in the closeout game as Atlanta's offense found its rhythm.",
+    "games": [
+      {
+        "game_num": 1,
+        "winner": "ATL",
+        "score": "87-79",
+        "top_performer": "D. Mitchell (POR) - 31 PTS (in loss)"
+      },
+      {
+        "game_num": 2,
+        "winner": "ATL",
+        "score": "109-99",
+        "top_performer": "T. Young (ATL) - 33 PTS"
+      }
+    ]
+  },
+  {
+    "round": "First Round",
+    "conference": "West",
+    "matchup": "#2 Washington Wizards vs #15 Boston Celtics",
+    "winner": "Washington Wizards",
+    "series_score": "2-0",
+    "upset": false,
+    "headline": "Wizards Demolish Celtics",
+    "summary": "The Wizards put on a historic defensive clinic, winning by an average margin of +43 points. They won 119-86 in Game 1 and 130-77 in Game 2, with Jalen Suggs scoring 39 points on 16-20 shooting in the closeout.",
+    "games": [
+      {
+        "game_num": 1,
+        "winner": "WAS",
+        "score": "119-86",
+        "top_performer": "K. Durant (BOS) - 32 PTS (in loss)"
+      },
+      {
+        "game_num": 2,
+        "winner": "WAS",
+        "score": "130-77",
+        "top_performer": "J. Suggs (WAS) - 39 PTS, 16-20 FG"
+      }
+    ]
+  },
+  {
+    "round": "First Round",
+    "conference": "West",
+    "matchup": "#7 San Antonio Spurs vs #10 Orlando Magic",
+    "winner": "San Antonio Spurs",
+    "series_score": "2-0",
+    "upset": false,
+    "headline": "Spurs Sweep in Tight Games",
+    "summary": "The Spurs swept the Magic in two close games. Giannis Antetokounmpo led the way with 24 points and 5 rebounds in the closeout despite Anthony Edwards' 40-point effort in Game 1.",
+    "games": [
+      {
+        "game_num": 1,
+        "winner": "SA",
+        "score": "96-92",
+        "top_performer": "A. Edwards (ORL) - 40 PTS, 6 STL (in loss)"
+      },
+      {
+        "game_num": 2,
+        "winner": "SA",
+        "score": "91-82",
+        "top_performer": "G. Antetokounmpo (SA) - 24 PTS, 5 REB"
+      }
+    ]
+  },
+  {
+    "round": "Conference Semifinals",
+    "conference": "West",
+    "matchup": "#2 Washington Wizards vs #7 San Antonio Spurs",
+    "winner": "TBD",
+    "series_score": "WAS leads 1-0",
+    "upset": false,
+    "headline": "WIZARDS STIFLE SPURS IN DOMINANT GAME 1 ROUT",
+    "summary": "The Washington Wizards continued their postseason dominance with a 90-61 victory over the San Antonio Spurs to take a 1-0 series lead. Washington's suffocating defense forced 20 turnovers and held the Spurs to just 61 points. On offense, the Wizards were efficient (59% FG), led by Josh Giddey (22 pts, 9-10 FG) and Jalen Suggs (20 pts, 8 ast). The Spurs struggled to find a rhythm, with Austin Reaves shooting just 4-of-17 from the field.",
+    "games": [
+      {
+        "game_num": 1,
+        "winner": "WAS",
+        "score": "90-61",
+        "top_performer": "J. Giddey (WAS) - 22 PTS, 9-10 FG"
+      }
+    ]
+  },
+  {
+    "round": "Conference Semifinals",
+    "conference": "East",
+    "matchup": "#16 Miami Heat vs #8 Dallas Mavericks",
+    "winner": "TBD",
+    "series_score": "DAL leads 2-0",
+    "upset": false,
+    "headline": "CURRY DOMINATES AS MAVS TAKE 2-0 SERIES LEAD",
+    "summary": "The Dallas Mavericks are one win away from the Conference Finals after taking a commanding 2-0 series lead over the Miami Heat. Steph Curry has been unstoppable, averaging 43.5 PPG through two games. In Game 2, despite shooting just 2-of-9 from three, Curry poured in 38 points on 18-of-34 shooting to lead all scorers. The Mavs' offense was relentless, shooting 60% from the field. Miami got solid contributions from Wemby (23 pts) and Haliburton (22 pts), but they couldn't keep pace with Dallas down the stretch. The 16-seed Cinderella Heat face elimination in Game 3.",
+    "games": [
+      {
+        "game_num": 1,
+        "winner": "DAL",
+        "score": "104-78",
+        "top_performer": "S. Curry (DAL) - 49 PTS, 20-37 FG"
+      },
+      {
+        "game_num": 2,
+        "winner": "DAL",
+        "score": "95-86",
+        "top_performer": "S. Curry (DAL) - 38 PTS, 8 AST"
+      }
+    ]
+  },
+  {
+    "round": "Conference Semifinals",
+    "conference": "West",
+    "matchup": "#6 Detroit Pistons vs #3 Atlanta Hawks",
+    "winner": "Detroit Pistons",
+    "series_score": "3-2",
+    "upset": true,
+    "headline": "THE MIRACLE IN MOTOR CITY!",
+    "summary": "One of the greatest comebacks in playoff history! The Pistons reversed swept the Hawks from 0-2 down, winning three straight games. Zach LaVine was heroic throughout. Game 5 had technical drama (game crashed in 3rd Q with Pistons +8, replayed final 2 quarters).",
+    "games": [
+      {
+        "game_num": 1,
+        "winner": "ATL",
+        "score": "80-75",
+        "top_performer": "Z. LaVine (DET) - 21 PTS (in loss)"
+      },
+      {
+        "game_num": 2,
+        "winner": "ATL",
+        "score": "96-85",
+        "top_performer": "Z. LaVine (DET) - 30 PTS (in loss)"
+      },
+      {
+        "game_num": 3,
+        "winner": "DET",
+        "score": "84-73",
+        "top_performer": "Z. LaVine (DET) - 22 PTS"
+      },
+      {
+        "game_num": 4,
+        "winner": "DET",
+        "score": "82-78",
+        "top_performer": "Z. LaVine (DET) - 31 PTS"
+      },
+      {
+        "game_num": 5,
+        "winner": "DET",
+        "score": "N/A (Tech Error)",
+        "top_performer": "Z. LaVine (DET)"
+      }
+    ]
+  },
+  {
+    "round": "Conference Semifinals",
+    "conference": "East",
+    "matchup": "#5 Sacramento Kings vs #13 Brooklyn Nets",
+    "winner": "TBD",
+    "series_score": "Tied 1-1",
+    "upset": false,
+    "headline": "Defensive Battle",
+    "summary": "A defensive slugfest between two upset-minded teams. The series is tied 1-1 with the Kings winning Game 2 behind De'Aaron Fox's 26 points and 6 steals.",
+    "games": [
+      {
+        "game_num": 1,
+        "winner": "BKN",
+        "score": "TBD",
+        "top_performer": "TBD"
+      },
+      {
+        "game_num": 2,
+        "winner": "SAC",
+        "score": "90-70",
+        "top_performer": "D. Fox (SAC) - 26 PTS, 6 STL"
+      }
+    ]
+  }
+]
