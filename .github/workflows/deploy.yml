@@ -27,9 +27,14 @@ jobs:
             # Navigate to bot directory
             cd /opt/nba2k26-bot
             
+            # Stash any local changes to avoid merge conflicts
+            echo "💾 Stashing local changes..."
+            git stash
+            
             # Pull latest changes from GitHub
             echo "📥 Pulling latest code from GitHub..."
             git pull origin main
+
             
             # Install dependencies (if package.json changed)
             echo "📦 Installing dependencies..."
