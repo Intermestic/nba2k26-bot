@@ -226,8 +226,8 @@ async function handleOTBCommand(message: Message): Promise<void> {
   // Generate roster link
   const rosterLink = `https://hof17roster.manus.space/players?team=${encodeURIComponent(userTeam)}`;
   
-  // Reply with clickable link
-  await message.reply(`[${userTeam} Roster](${rosterLink})`);
+  // Reply with clickable link (angle brackets suppress Discord embed preview)
+  await message.reply(`[${userTeam} Roster](<${rosterLink}>)`);
   
   logger.info(`OTB command: ${message.author.username} (${userTeam}) → ${rosterLink}`);
 }
