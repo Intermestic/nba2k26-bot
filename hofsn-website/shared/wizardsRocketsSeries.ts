@@ -59,19 +59,21 @@ export interface GameRecap {
 }
 
 export const seriesSummary = {
-  title: "Series Recap (AP style) — Wizards lead 3-1",
-  body: `WASHINGTON (AP) — Jalen Suggs turned the Eastern Conference semifinals into a personal showcase, dragging the Wizards to a 3-1 lead over the Houston Rockets with another run of explosive scoring nights.
+  title: "Series Recap (AP style) — Wizards win 3-1",
+  body: `WASHINGTON (AP) — Jalen Suggs turned the Eastern Conference semifinals into a personal showcase, leading the Wizards to a 3-1 series victory over the Houston Rockets in a dominant best-of-five performance.
 
-Washington jumped out 2-0 behind Suggs' 56 in the opener and a 102-73 blowout in Game 2, then absorbed Houston's response in Game 3 when the Rockets held the Wizards to 4-of-25 from 3. Suggs answered again in Game 4 with 53 as Washington jumped on a compromised Anthony Edwards and turned defense into offense.
+Washington jumped out 2-0 behind Suggs' 56 in the opener and a 102-73 blowout in Game 2, then absorbed Houston's response in Game 3 when the Rockets held the Wizards to 4-of-25 from 3. Suggs answered again in Game 4 with 53 as Washington jumped on a compromised Anthony Edwards and turned defense into offense to clinch the series.
 
-Through four games, Suggs has been the difference — combining shot volume, pace and late-game shot-making in a way Houston hasn't consistently contained. Washington now advances to face the 9-seed Bucks and R.J. Barrett, fresh off an upset sweep of the top-seeded Raptors.`
+Through four games, Suggs was the difference — combining shot volume, pace and late-game shot-making in a way Houston couldn't contain. Washington now advances to face the 9-seed Bucks and R.J. Barrett, fresh off an upset sweep of the top-seeded Raptors.`
 };
 
 export const lookingAhead = {
-  title: "Looking Ahead — Wizards vs Bucks",
+  title: "Looking Ahead — Eastern Conference Finals",
   body: `Milwaukee enters off a shock sweep of the No. 1 seed Raptors, with R.J. Barrett going thermonuclear off the bench and Fred VanVleet playing the role of late-season pickup turned playoff stabilizer. Barrett's shot-making has been the swing factor all postseason — the same kind of heroics he showed in the Spurs series — and the Bucks have consistently won the possession battle with offensive rebounds and bench scoring.
 
-For Washington, it's a clash of engines: Suggs' relentless scoring and transition pace against Milwaukee's depth and physicality. The Bucks will try to keep Suggs out of the open floor and force Washington into half-court possessions; the Wizards will need Jaylen Brown to provide a steady second punch and must match Milwaukee on the glass to avoid giving Barrett and VanVleet extra possessions.`
+For Washington, it's a clash of engines: Suggs' relentless scoring and transition pace against Milwaukee's depth and physicality. The Bucks will try to keep Suggs out of the open floor and force Washington into half-court possessions; the Wizards will need Jaylen Brown to provide a steady second punch and must match Milwaukee on the glass to avoid giving Barrett and VanVleet extra possessions.
+
+The Conference Finals promise to be an explosive matchup between two of the hottest scorers in the playoffs.`
 };
 
 export const gameSummaries: GameSummary[] = [
@@ -179,7 +181,7 @@ export const gameSummaries: GameSummary[] = [
     rocketsTO: 17,
     wizardsFastBreak: 22,
     rocketsFastBreak: 6,
-    notes: "Wizards take 3-1 series lead"
+    notes: "Wizards win series 3-1"
   }
 ];
 
