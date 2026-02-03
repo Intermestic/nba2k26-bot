@@ -27,7 +27,8 @@ export default function WizardsRocketsSeries() {
   };
 
   const getBoxScoreForGame = (game: string, team: string): PlayerStats[] => {
-    return boxScores.filter(p => p.game === game && p.team === team && !p.dnp);
+    const teamName = team === "Wizards" ? "Washington Wizards" : "Houston Rockets";
+    return boxScores.filter(p => p.game === game && p.team === teamName && !p.dnp);
   };
 
   return (
@@ -60,7 +61,7 @@ export default function WizardsRocketsSeries() {
           <h2 className="text-3xl font-bold">Series Recap</h2>
         </div>
         <p className="text-lg leading-relaxed text-muted-foreground">
-          {seriesSummary}
+          {seriesSummary.body}
         </p>
       </section>
 
@@ -196,13 +197,13 @@ export default function WizardsRocketsSeries() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
                     <span className="font-bold text-lg">{game.game}</span>
-                    <span className={`text-xl font-bold ${game.winner === 'Wizards' ? 'text-red-500' : 'text-red-600'}`}>
-                      {game.score}
+                    <span className={`text-xl font-bold ${game.wizardsScore > game.rocketsScore ? 'text-red-500' : 'text-red-600'}`}>
+                      {game.wizardsScore} - {game.rocketsScore}
                     </span>
-                    {game.overtime && <span className="text-yellow-500 text-sm font-semibold">OT</span>}
+                    {game.notes && game.notes.includes('OT') && <span className="text-yellow-500 text-sm font-semibold">OT</span>}
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm text-muted-foreground">{game.headline}</span>
+                    <span className="text-sm text-muted-foreground">{game.wizardsScore > game.rocketsScore ? 'Wizards win' : 'Rockets win'}</span>
                     {expandedGame === game.game ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
                   </div>
                 </div>
@@ -211,7 +212,7 @@ export default function WizardsRocketsSeries() {
               {expandedGame === game.game && (
                 <CardContent className="border-t">
                   <p className="text-muted-foreground mb-4">
-                    {gameRecaps.find(r => r.game === game.game)?.recap || "No recap available."}
+                    {gameRecaps.find(r => r.game === game.game)?.body || "No recap available."}
                   </p>
                   
                   <Button 
@@ -302,7 +303,7 @@ export default function WizardsRocketsSeries() {
           </CardHeader>
           <CardContent>
             <p className="text-lg leading-relaxed text-muted-foreground">
-              {lookingAhead}
+              {lookingAhead.body}
             </p>
           </CardContent>
         </Card>
