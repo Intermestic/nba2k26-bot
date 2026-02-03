@@ -77,23 +77,19 @@ export default function WizardsRocketsSeries() {
           <CardContent>
             <div className="flex flex-col md:flex-row items-center gap-6">
               <div className="text-center md:text-left">
-                <h3 className="text-2xl font-bold text-yellow-500">{seriesMVP.name}</h3>
+                <h3 className="text-2xl font-bold text-yellow-500">{seriesMVP.player}</h3>
                 <p className="text-muted-foreground">{seriesMVP.team}</p>
-                <div className="mt-4 grid grid-cols-3 gap-4">
+                <div className="mt-4 grid grid-cols-2 gap-4">
                   <div>
                     <p className="text-2xl font-bold">{seriesMVP.ppg}</p>
                     <p className="text-sm text-muted-foreground">PPG</p>
                   </div>
                   <div>
-                    <p className="text-2xl font-bold">{seriesMVP.rpg}</p>
-                    <p className="text-sm text-muted-foreground">RPG</p>
-                  </div>
-                  <div>
-                    <p className="text-2xl font-bold">{seriesMVP.apg}</p>
-                    <p className="text-sm text-muted-foreground">APG</p>
+                    <p className="text-2xl font-bold">{seriesMVP.totalPoints}</p>
+                    <p className="text-sm text-muted-foreground">Total PTS</p>
                   </div>
                 </div>
-                <p className="mt-4 text-sm italic text-muted-foreground">{seriesMVP.summary}</p>
+                <p className="mt-4 text-sm italic text-muted-foreground">{seriesMVP.highlights}</p>
               </div>
             </div>
           </CardContent>
