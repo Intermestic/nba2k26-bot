@@ -201,7 +201,7 @@ async function handleOTBCommand(message: Message): Promise<void> {
   
   // Team names to look for in roles
   const teamNames = [
-    'Hawks', 'Celtics', 'Nets', 'Hornets', 'Bulls', 'Cavaliers', 'Mavericks', 'Nuggets',
+    'Hawks', 'Celtics', 'Nets', 'Hornets', 'Bulls', 'Cavaliers', 'Mavericks', 'Mavs', 'Nuggets',
     'Pistons', 'Warriors', 'Rockets', 'Pacers', 'Clippers', 'Lakers', 'Grizzlies', 'Heat',
     'Bucks', 'Timberwolves', 'Pelicans', 'Knicks', 'Thunder', 'Magic', 'Sixers', 'Suns',
     'Trail Blazers', 'Kings', 'Spurs', 'Raptors', 'Jazz', 'Wizards'
