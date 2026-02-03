@@ -113,8 +113,8 @@ export default function WizardsRocketsSeries() {
                 <h4 className="font-semibold text-sm text-muted-foreground mb-2">SCORING</h4>
                 {seriesLeaders.wizards.scoring.map((player, i) => (
                   <div key={i} className="flex justify-between items-center py-1">
-                    <span>{player.name}</span>
-                    <span className="font-bold">{player.value}</span>
+                    <span>{player.player}</span>
+                    <span className="font-bold">{player.avg} PPG ({player.total} total)</span>
                   </div>
                 ))}
               </div>
@@ -122,8 +122,8 @@ export default function WizardsRocketsSeries() {
                 <h4 className="font-semibold text-sm text-muted-foreground mb-2">REBOUNDS</h4>
                 {seriesLeaders.wizards.rebounds.map((player, i) => (
                   <div key={i} className="flex justify-between items-center py-1">
-                    <span>{player.name}</span>
-                    <span className="font-bold">{player.value}</span>
+                    <span>{player.player}</span>
+                    <span className="font-bold">{player.avg} RPG ({player.total} total)</span>
                   </div>
                 ))}
               </div>
@@ -131,8 +131,8 @@ export default function WizardsRocketsSeries() {
                 <h4 className="font-semibold text-sm text-muted-foreground mb-2">ASSISTS</h4>
                 {seriesLeaders.wizards.assists.map((player, i) => (
                   <div key={i} className="flex justify-between items-center py-1">
-                    <span>{player.name}</span>
-                    <span className="font-bold">{player.value}</span>
+                    <span>{player.player}</span>
+                    <span className="font-bold">{player.avg} APG ({player.total} total)</span>
                   </div>
                 ))}
               </div>
@@ -149,8 +149,8 @@ export default function WizardsRocketsSeries() {
                 <h4 className="font-semibold text-sm text-muted-foreground mb-2">SCORING</h4>
                 {seriesLeaders.rockets.scoring.map((player, i) => (
                   <div key={i} className="flex justify-between items-center py-1">
-                    <span>{player.name}</span>
-                    <span className="font-bold">{player.value}</span>
+                    <span>{player.player}</span>
+                    <span className="font-bold">{player.avg} PPG ({player.total} total)</span>
                   </div>
                 ))}
               </div>
@@ -158,8 +158,8 @@ export default function WizardsRocketsSeries() {
                 <h4 className="font-semibold text-sm text-muted-foreground mb-2">REBOUNDS</h4>
                 {seriesLeaders.rockets.rebounds.map((player, i) => (
                   <div key={i} className="flex justify-between items-center py-1">
-                    <span>{player.name}</span>
-                    <span className="font-bold">{player.value}</span>
+                    <span>{player.player}</span>
+                    <span className="font-bold">{player.avg} RPG ({player.total} total)</span>
                   </div>
                 ))}
               </div>
@@ -167,8 +167,8 @@ export default function WizardsRocketsSeries() {
                 <h4 className="font-semibold text-sm text-muted-foreground mb-2">ASSISTS</h4>
                 {seriesLeaders.rockets.assists.map((player, i) => (
                   <div key={i} className="flex justify-between items-center py-1">
-                    <span>{player.name}</span>
-                    <span className="font-bold">{player.value}</span>
+                    <span>{player.player}</span>
+                    <span className="font-bold">{player.avg} APG ({player.total} total)</span>
                   </div>
                 ))}
               </div>
