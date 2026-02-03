@@ -37,7 +37,7 @@ export default function WizardsRocketsSeries() {
         <div className="w-full">
           <img
             src="/wizards-rockets-series-highlight.png"
-            alt="Wizards lead Rockets 3-1"
+            alt="Wizards win series 3-1"
             className="w-full h-auto object-cover"
           />
         </div>
@@ -53,99 +53,89 @@ export default function WizardsRocketsSeries() {
         </div>
       </section>
 
-      {/* Series Summary */}
-      <section className="container py-8">
-        <Card className="bg-gradient-to-br from-blue-900/30 to-red-900/30 border-gold-500/30">
-          <CardHeader>
-            <CardTitle className="text-2xl md:text-3xl text-gold-400 flex items-center gap-3">
-              <Trophy className="w-8 h-8" />
-              Series Recap
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-gray-300 leading-relaxed whitespace-pre-line">
-              {seriesSummary.body}
-            </p>
-          </CardContent>
-        </Card>
+      {/* Series Recap */}
+      <section className="py-8 px-4 max-w-6xl mx-auto">
+        <div className="flex items-center gap-3 mb-6">
+          <Trophy className="w-8 h-8 text-yellow-500" />
+          <h2 className="text-3xl font-bold">Series Recap</h2>
+        </div>
+        <p className="text-lg leading-relaxed text-muted-foreground">
+          {seriesSummary}
+        </p>
       </section>
 
       {/* Series MVP */}
-      <section className="container py-4">
-        <Card className="bg-gradient-to-r from-gold-900/30 to-gold-700/20 border-gold-500/50">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-xl text-gold-400 flex items-center gap-2">
-              <Trophy className="w-6 h-6" />
+      <section className="py-8 px-4 max-w-6xl mx-auto">
+        <Card className="bg-gradient-to-r from-yellow-900/20 to-yellow-600/20 border-yellow-500/30">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-3">
+              <Trophy className="w-6 h-6 text-yellow-500" />
               Series MVP
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-              <div>
-                <h3 className="text-2xl font-bold text-white">{seriesMVP.player}</h3>
-                <p className="text-gray-400">{seriesMVP.team}</p>
-              </div>
-              <div className="flex flex-wrap gap-4">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-gold-400">{seriesMVP.totalPoints}</div>
-                  <div className="text-xs text-gray-400">Total PTS</div>
+            <div className="flex flex-col md:flex-row items-center gap-6">
+              <div className="text-center md:text-left">
+                <h3 className="text-2xl font-bold text-yellow-500">{seriesMVP.name}</h3>
+                <p className="text-muted-foreground">{seriesMVP.team}</p>
+                <div className="mt-4 grid grid-cols-3 gap-4">
+                  <div>
+                    <p className="text-2xl font-bold">{seriesMVP.ppg}</p>
+                    <p className="text-sm text-muted-foreground">PPG</p>
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold">{seriesMVP.rpg}</p>
+                    <p className="text-sm text-muted-foreground">RPG</p>
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold">{seriesMVP.apg}</p>
+                    <p className="text-sm text-muted-foreground">APG</p>
+                  </div>
                 </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-gold-400">{seriesMVP.ppg}</div>
-                  <div className="text-xs text-gray-400">PPG</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-lg font-bold text-gold-400">{seriesMVP.gameScores.join("-")}</div>
-                  <div className="text-xs text-gray-400">Scoring Line</div>
-                </div>
+                <p className="mt-4 text-sm italic text-muted-foreground">{seriesMVP.summary}</p>
               </div>
             </div>
-            <p className="text-sm text-gray-300 mt-3">{seriesMVP.highlights}</p>
           </CardContent>
         </Card>
       </section>
 
       {/* Series Leaders */}
-      <section className="container py-8">
-        <h2 className="text-2xl font-bold text-gold-400 mb-6 flex items-center gap-3">
+      <section className="py-8 px-4 max-w-6xl mx-auto">
+        <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
           <Target className="w-6 h-6" />
           Series Leaders
         </h2>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid md:grid-cols-2 gap-6">
           {/* Wizards Leaders */}
-          <Card className="bg-blue-900/20 border-blue-500/30">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-xl text-blue-400 flex items-center gap-2">
-                <img src="/logos/wizards.png" alt="Wizards" className="w-8 h-8" />
-                Washington Wizards
-              </CardTitle>
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-red-500">Washington Wizards</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <h4 className="text-sm text-gray-400 mb-2">SCORING</h4>
+                <h4 className="font-semibold text-sm text-muted-foreground mb-2">SCORING</h4>
                 {seriesLeaders.wizards.scoring.map((player, i) => (
-                  <div key={i} className="flex justify-between items-center py-1 border-b border-blue-500/20">
-                    <span className="text-white font-medium">{player.player}</span>
-                    <span className="text-blue-400">{player.total} PTS ({player.avg} PPG)</span>
+                  <div key={i} className="flex justify-between items-center py-1">
+                    <span>{player.name}</span>
+                    <span className="font-bold">{player.value}</span>
                   </div>
                 ))}
               </div>
               <div>
-                <h4 className="text-sm text-gray-400 mb-2">REBOUNDS</h4>
+                <h4 className="font-semibold text-sm text-muted-foreground mb-2">REBOUNDS</h4>
                 {seriesLeaders.wizards.rebounds.map((player, i) => (
-                  <div key={i} className="flex justify-between items-center py-1 border-b border-blue-500/20">
-                    <span className="text-white font-medium">{player.player}</span>
-                    <span className="text-blue-400">{player.total} REB ({player.avg} RPG)</span>
+                  <div key={i} className="flex justify-between items-center py-1">
+                    <span>{player.name}</span>
+                    <span className="font-bold">{player.value}</span>
                   </div>
                 ))}
               </div>
               <div>
-                <h4 className="text-sm text-gray-400 mb-2">ASSISTS</h4>
+                <h4 className="font-semibold text-sm text-muted-foreground mb-2">ASSISTS</h4>
                 {seriesLeaders.wizards.assists.map((player, i) => (
-                  <div key={i} className="flex justify-between items-center py-1 border-b border-blue-500/20">
-                    <span className="text-white font-medium">{player.player}</span>
-                    <span className="text-blue-400">{player.total} AST ({player.avg} APG)</span>
+                  <div key={i} className="flex justify-between items-center py-1">
+                    <span>{player.name}</span>
+                    <span className="font-bold">{player.value}</span>
                   </div>
                 ))}
               </div>
@@ -153,38 +143,35 @@ export default function WizardsRocketsSeries() {
           </Card>
 
           {/* Rockets Leaders */}
-          <Card className="bg-red-900/20 border-red-500/30">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-xl text-red-400 flex items-center gap-2">
-                <img src="/logos/rockets.png" alt="Rockets" className="w-8 h-8" />
-                Houston Rockets
-              </CardTitle>
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-red-600">Houston Rockets</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <h4 className="text-sm text-gray-400 mb-2">SCORING</h4>
+                <h4 className="font-semibold text-sm text-muted-foreground mb-2">SCORING</h4>
                 {seriesLeaders.rockets.scoring.map((player, i) => (
-                  <div key={i} className="flex justify-between items-center py-1 border-b border-red-500/20">
-                    <span className="text-white font-medium">{player.player}</span>
-                    <span className="text-red-400">{player.total} PTS ({player.avg} PPG)</span>
+                  <div key={i} className="flex justify-between items-center py-1">
+                    <span>{player.name}</span>
+                    <span className="font-bold">{player.value}</span>
                   </div>
                 ))}
               </div>
               <div>
-                <h4 className="text-sm text-gray-400 mb-2">REBOUNDS</h4>
+                <h4 className="font-semibold text-sm text-muted-foreground mb-2">REBOUNDS</h4>
                 {seriesLeaders.rockets.rebounds.map((player, i) => (
-                  <div key={i} className="flex justify-between items-center py-1 border-b border-red-500/20">
-                    <span className="text-white font-medium">{player.player}</span>
-                    <span className="text-red-400">{player.total} REB ({player.avg} RPG)</span>
+                  <div key={i} className="flex justify-between items-center py-1">
+                    <span>{player.name}</span>
+                    <span className="font-bold">{player.value}</span>
                   </div>
                 ))}
               </div>
               <div>
-                <h4 className="text-sm text-gray-400 mb-2">ASSISTS</h4>
+                <h4 className="font-semibold text-sm text-muted-foreground mb-2">ASSISTS</h4>
                 {seriesLeaders.rockets.assists.map((player, i) => (
-                  <div key={i} className="flex justify-between items-center py-1 border-b border-red-500/20">
-                    <span className="text-white font-medium">{player.player}</span>
-                    <span className="text-red-400">{player.total} AST ({player.avg} APG)</span>
+                  <div key={i} className="flex justify-between items-center py-1">
+                    <span>{player.name}</span>
+                    <span className="font-bold">{player.value}</span>
                   </div>
                 ))}
               </div>
@@ -194,226 +181,128 @@ export default function WizardsRocketsSeries() {
       </section>
 
       {/* Game-by-Game Breakdown */}
-      <section className="container py-8">
-        <h2 className="text-2xl font-bold text-gold-400 mb-6 flex items-center gap-3">
+      <section className="py-8 px-4 max-w-6xl mx-auto">
+        <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
           <Users className="w-6 h-6" />
           Game-by-Game Breakdown
         </h2>
-
         <div className="space-y-4">
-          {gameSummaries.map((game, index) => {
-            const recap = gameRecaps[index];
-            const isExpanded = expandedGame === game.game;
-            const showingBoxScore = showBoxScore === game.game;
-            
-            return (
-              <Card key={game.game} className="bg-card border-border overflow-hidden">
-                {/* Game Header - Always Visible */}
-                <div 
-                  className="p-4 cursor-pointer hover:bg-muted/50 transition-colors"
-                  onClick={() => toggleGame(game.game)}
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <div className="text-lg font-bold text-gold-400">{game.game}</div>
-                      <div className="flex items-center gap-2">
-                        <img src="/logos/wizards.png" alt="Wizards" className="w-6 h-6" />
-                        <span className="text-xl font-bold text-blue-400">{game.wizardsScore}</span>
-                        <span className="text-gray-500">-</span>
-                        <span className="text-xl font-bold text-red-400">{game.rocketsScore}</span>
-                        <img src="/logos/rockets.png" alt="Rockets" className="w-6 h-6" />
-                      </div>
-                      {game.notes && (
-                        <span className="text-xs bg-gold-500/20 text-gold-400 px-2 py-1 rounded">
-                          {game.notes}
-                        </span>
-                      )}
-                    </div>
-                    {isExpanded ? (
-                      <ChevronUp className="w-5 h-5 text-gray-400" />
-                    ) : (
-                      <ChevronDown className="w-5 h-5 text-gray-400" />
-                    )}
+          {gameSummaries.map((game, index) => (
+            <Card key={index} className="overflow-hidden">
+              <div 
+                className="p-4 cursor-pointer hover:bg-muted/50 transition-colors"
+                onClick={() => toggleGame(game.game)}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <span className="font-bold text-lg">{game.game}</span>
+                    <span className={`text-xl font-bold ${game.winner === 'Wizards' ? 'text-red-500' : 'text-red-600'}`}>
+                      {game.score}
+                    </span>
+                    {game.overtime && <span className="text-yellow-500 text-sm font-semibold">OT</span>}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-muted-foreground">{game.headline}</span>
+                    {expandedGame === game.game ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
                   </div>
                 </div>
-
-                {/* Expanded Content */}
-                {isExpanded && (
-                  <div className="border-t border-border">
-                    {/* Game Recap */}
-                    <div className="p-4 bg-muted/30">
-                      <h4 className="text-sm font-semibold text-gold-400 mb-2">{recap.title}</h4>
-                      <p className="text-gray-300 text-sm leading-relaxed whitespace-pre-line">
-                        {recap.body}
-                      </p>
-                    </div>
-
-                    {/* Team Stats Comparison */}
-                    <div className="p-4 grid grid-cols-3 gap-4 text-center text-sm">
-                      <div className="text-blue-400 font-semibold">Wizards</div>
-                      <div className="text-gray-400">Stat</div>
-                      <div className="text-red-400 font-semibold">Rockets</div>
-                      
-                      <div className="text-white">{game.wizardsFG}</div>
-                      <div className="text-gray-500">FG</div>
-                      <div className="text-white">{game.rocketsFG}</div>
-                      
-                      <div className="text-white">{game.wizards3PT}</div>
-                      <div className="text-gray-500">3PT</div>
-                      <div className="text-white">{game.rockets3PT}</div>
-                      
-                      <div className="text-white">{game.wizardsFT}</div>
-                      <div className="text-gray-500">FT</div>
-                      <div className="text-white">{game.rocketsFT}</div>
-                      
-                      <div className="text-white">{game.wizardsPaint}</div>
-                      <div className="text-gray-500">Paint</div>
-                      <div className="text-white">{game.rocketsPaint}</div>
-                      
-                      <div className="text-white">{game.wizards2ndChance}</div>
-                      <div className="text-gray-500">2nd Chance</div>
-                      <div className="text-white">{game.rockets2ndChance}</div>
-                      
-                      <div className="text-white">{game.wizardsBench}</div>
-                      <div className="text-gray-500">Bench</div>
-                      <div className="text-white">{game.rocketsBench}</div>
-                      
-                      <div className="text-white">{game.wizardsFastBreak}</div>
-                      <div className="text-gray-500">Fast Break</div>
-                      <div className="text-white">{game.rocketsFastBreak}</div>
-                      
-                      <div className="text-white">{game.wizardsOR}</div>
-                      <div className="text-gray-500">Off Reb</div>
-                      <div className="text-white">{game.rocketsOR}</div>
-                      
-                      <div className="text-white">{game.wizardsTO}</div>
-                      <div className="text-gray-500">Turnovers</div>
-                      <div className="text-white">{game.rocketsTO}</div>
-                    </div>
-
-                    {/* Box Score Toggle */}
-                    <div className="p-4 border-t border-border">
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          toggleBoxScore(game.game);
-                        }}
-                        className="w-full"
-                      >
-                        {showingBoxScore ? "Hide Box Score" : "Show Full Box Score"}
-                      </Button>
-                    </div>
-
-                    {/* Box Score Tables */}
-                    {showingBoxScore && (
-                      <div className="p-4 space-y-6 bg-muted/20">
-                        {/* Wizards Box Score */}
-                        <div>
-                          <h4 className="text-blue-400 font-semibold mb-2 flex items-center gap-2">
-                            <img src="/logos/wizards.png" alt="Wizards" className="w-5 h-5" />
-                            Washington Wizards
-                          </h4>
-                          <div className="overflow-x-auto">
-                            <table className="w-full text-xs">
-                              <thead>
-                                <tr className="text-gray-400 border-b border-border">
-                                  <th className="text-left py-2 px-1">Player</th>
-                                  <th className="text-center py-2 px-1">MIN</th>
-                                  <th className="text-center py-2 px-1">PTS</th>
-                                  <th className="text-center py-2 px-1">REB</th>
-                                  <th className="text-center py-2 px-1">AST</th>
-                                  <th className="text-center py-2 px-1">STL</th>
-                                  <th className="text-center py-2 px-1">BLK</th>
-                                  <th className="text-center py-2 px-1">FG</th>
-                                  <th className="text-center py-2 px-1">3PT</th>
-                                  <th className="text-center py-2 px-1">FT</th>
+              </div>
+              
+              {expandedGame === game.game && (
+                <CardContent className="border-t">
+                  <p className="text-muted-foreground mb-4">
+                    {gameRecaps.find(r => r.game === game.game)?.recap || "No recap available."}
+                  </p>
+                  
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleBoxScore(game.game);
+                    }}
+                    className="mb-4"
+                  >
+                    <Eye className="w-4 h-4 mr-2" />
+                    {showBoxScore === game.game ? "Hide Box Score" : "View Box Score"}
+                  </Button>
+                  
+                  {showBoxScore === game.game && (
+                    <div className="grid md:grid-cols-2 gap-4 mt-4">
+                      {/* Wizards Box Score */}
+                      <div>
+                        <h4 className="font-bold text-red-500 mb-2">Washington Wizards</h4>
+                        <div className="overflow-x-auto">
+                          <table className="w-full text-sm">
+                            <thead>
+                              <tr className="border-b">
+                                <th className="text-left py-2">Player</th>
+                                <th className="text-center py-2">PTS</th>
+                                <th className="text-center py-2">REB</th>
+                                <th className="text-center py-2">AST</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {getBoxScoreForGame(game.game, "Wizards").map((player, i) => (
+                                <tr key={i} className="border-b border-muted">
+                                  <td className="py-1">{player.player}</td>
+                                  <td className="text-center">{player.pts}</td>
+                                  <td className="text-center">{player.reb}</td>
+                                  <td className="text-center">{player.ast}</td>
                                 </tr>
-                              </thead>
-                              <tbody>
-                                {getBoxScoreForGame(game.game, "Washington Wizards").map((player, i) => (
-                                  <tr key={i} className="border-b border-border/50 hover:bg-muted/30">
-                                    <td className="py-2 px-1 text-white font-medium">{player.player}</td>
-                                    <td className="text-center py-2 px-1 text-gray-400">{player.min}</td>
-                                    <td className="text-center py-2 px-1 text-blue-400 font-semibold">{player.pts}</td>
-                                    <td className="text-center py-2 px-1">{player.reb}</td>
-                                    <td className="text-center py-2 px-1">{player.ast}</td>
-                                    <td className="text-center py-2 px-1">{player.stl}</td>
-                                    <td className="text-center py-2 px-1">{player.blk}</td>
-                                    <td className="text-center py-2 px-1">{player.fgm}-{player.fga}</td>
-                                    <td className="text-center py-2 px-1">{player.threePM}-{player.threePA}</td>
-                                    <td className="text-center py-2 px-1">{player.ftm}-{player.fta}</td>
-                                  </tr>
-                                ))}
-                              </tbody>
-                            </table>
-                          </div>
-                        </div>
-
-                        {/* Rockets Box Score */}
-                        <div>
-                          <h4 className="text-red-400 font-semibold mb-2 flex items-center gap-2">
-                            <img src="/logos/rockets.png" alt="Rockets" className="w-5 h-5" />
-                            Houston Rockets
-                          </h4>
-                          <div className="overflow-x-auto">
-                            <table className="w-full text-xs">
-                              <thead>
-                                <tr className="text-gray-400 border-b border-border">
-                                  <th className="text-left py-2 px-1">Player</th>
-                                  <th className="text-center py-2 px-1">MIN</th>
-                                  <th className="text-center py-2 px-1">PTS</th>
-                                  <th className="text-center py-2 px-1">REB</th>
-                                  <th className="text-center py-2 px-1">AST</th>
-                                  <th className="text-center py-2 px-1">STL</th>
-                                  <th className="text-center py-2 px-1">BLK</th>
-                                  <th className="text-center py-2 px-1">FG</th>
-                                  <th className="text-center py-2 px-1">3PT</th>
-                                  <th className="text-center py-2 px-1">FT</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {getBoxScoreForGame(game.game, "Houston Rockets").map((player, i) => (
-                                  <tr key={i} className="border-b border-border/50 hover:bg-muted/30">
-                                    <td className="py-2 px-1 text-white font-medium">{player.player}</td>
-                                    <td className="text-center py-2 px-1 text-gray-400">{player.min}</td>
-                                    <td className="text-center py-2 px-1 text-red-400 font-semibold">{player.pts}</td>
-                                    <td className="text-center py-2 px-1">{player.reb}</td>
-                                    <td className="text-center py-2 px-1">{player.ast}</td>
-                                    <td className="text-center py-2 px-1">{player.stl}</td>
-                                    <td className="text-center py-2 px-1">{player.blk}</td>
-                                    <td className="text-center py-2 px-1">{player.fgm}-{player.fga}</td>
-                                    <td className="text-center py-2 px-1">{player.threePM}-{player.threePA}</td>
-                                    <td className="text-center py-2 px-1">{player.ftm}-{player.fta}</td>
-                                  </tr>
-                                ))}
-                              </tbody>
-                            </table>
-                          </div>
+                              ))}
+                            </tbody>
+                          </table>
                         </div>
                       </div>
-                    )}
-                  </div>
-                )}
-              </Card>
-            );
-          })}
+                      
+                      {/* Rockets Box Score */}
+                      <div>
+                        <h4 className="font-bold text-red-600 mb-2">Houston Rockets</h4>
+                        <div className="overflow-x-auto">
+                          <table className="w-full text-sm">
+                            <thead>
+                              <tr className="border-b">
+                                <th className="text-left py-2">Player</th>
+                                <th className="text-center py-2">PTS</th>
+                                <th className="text-center py-2">REB</th>
+                                <th className="text-center py-2">AST</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {getBoxScoreForGame(game.game, "Rockets").map((player, i) => (
+                                <tr key={i} className="border-b border-muted">
+                                  <td className="py-1">{player.player}</td>
+                                  <td className="text-center">{player.pts}</td>
+                                  <td className="text-center">{player.reb}</td>
+                                  <td className="text-center">{player.ast}</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              )}
+            </Card>
+          ))}
         </div>
       </section>
 
       {/* Looking Ahead */}
-      <section className="container py-8">
-        <Card className="bg-gradient-to-br from-purple-900/30 to-blue-900/30 border-purple-500/30">
+      <section className="py-8 px-4 max-w-6xl mx-auto mb-8">
+        <Card className="bg-gradient-to-r from-blue-900/20 to-purple-900/20 border-blue-500/30">
           <CardHeader>
-            <CardTitle className="text-2xl md:text-3xl text-purple-400 flex items-center gap-3">
-              <Eye className="w-8 h-8" />
-              {lookingAhead.title}
+            <CardTitle className="flex items-center gap-3">
+              <Eye className="w-6 h-6 text-blue-500" />
+              Looking Ahead
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-gray-300 leading-relaxed whitespace-pre-line">
-              {lookingAhead.body}
+            <p className="text-lg leading-relaxed text-muted-foreground">
+              {lookingAhead}
             </p>
           </CardContent>
         </Card>
