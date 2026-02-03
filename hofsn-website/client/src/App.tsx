@@ -29,6 +29,7 @@ import BucksSpursSeries from "./pages/BucksSpursSeries";
 import HawksHornetsSeries from "./pages/HawksHornetsSeries";
 import PistonsMavsSeries from "./pages/PistonsMavsSeries";
 import BucksRaptorsSeries from "./pages/BucksRaptorsSeries";
+import WizardsRocketsSeries from "./pages/WizardsRocketsSeries";
 import RecentGames from "./pages/RecentGames";
 
 import Season17Awards from "./pages/Season17Awards";
@@ -70,6 +71,7 @@ function Router() {
       <Route path="/playoffs/hawks-hornets-series" component={HawksHornetsSeries} />
       <Route path="/playoffs/pistons-mavs-series" component={PistonsMavsSeries} />
       <Route path="/playoffs/bucks-raptors-series" component={BucksRaptorsSeries} />
+      <Route path="/playoffs/wizards-rockets-series" component={WizardsRocketsSeries} />
       
       {/* Dynamic route for CSV-generated series pages */}
       <Route path="/series/:seriesSlug">
